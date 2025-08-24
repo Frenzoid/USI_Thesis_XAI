@@ -4,16 +4,15 @@ A comprehensive command-line system for evaluating Large Language Models' alignm
 
 ## 🚀 Features
 
-- **Multi-Dataset Support**: Work with any dataset by configuring field mappings in JSON
-- **Automatic Dataset Download**: System downloads and manages datasets automatically
-- **Flexible Field Mapping**: Configure question/answer fields for any dataset structure
-- **Prompt-Dataset Compatibility**: Automatic validation of prompt and dataset compatibility
+- **Individual Command Structure**: Separate commands for inference, evaluation, and visualization
+- **JSON-Based Configuration**: External configuration files for prompts, datasets, and models
 - **Multi-Model Support**: Test both open-source models (via Unsloth) and API-based models
-- **Generic & Specific Prompts**: Use general prompts across datasets or dataset-specific prompts
-- **Comprehensive Evaluation**: Token-based metrics, semantic similarity, and domain-specific evaluation
-- **Automatic Visualization**: Generate interactive plots and comprehensive reports
-- **Reproducible Experiments**: JSON-based configuration with automatic result caching
-- **Extensive Logging**: Detailed logging of all operations for debugging and monitoring
+- **Flexible Experiment Types**: Baseline experiments (with structure for future masking/impersonation)
+- **Temperature Control**: Configurable temperature parameter for generation
+- **Comprehensive Evaluation**: Token-based metrics, semantic similarity, and dataset-specific evaluation
+- **Advanced Visualization**: Interactive plots and comprehensive reports
+- **Configuration Validation**: Automatic prompt-dataset compatibility checking
+- **Descriptive Naming**: Clear experiment naming convention for easy organization
 
 ## 📋 Requirements
 
@@ -42,218 +41,196 @@ pip install -r requirements.txt
 
 4. **For open-source model support (optional):**
 ```bash
-# Install Unsloth for efficient fine-tuning
+# Install Unsloth for efficient model loading
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 pip install trl peft accelerate bitsandbytes
 ```
 
 ## 🔑 API Keys Setup
 
-The system automatically loads environment variables from a `.env` file (recommended) or system environment variables.
+Create a `.env` file in the project root:
 
-### Option 1: Using .env file (Recommended)
 ```bash
 # Copy the template
 cp .env.template .env
 
-# Edit the .env file with your API keys
-nano .env  # or use your preferred editor
+# Edit with your API keys
+nano .env
 ```
 
 The `.env` file should contain:
 ```
-OPENAI_API_KEY=your-actual-openai-api-key
-GENAI_API_KEY=your-actual-google-genai-api-key
-ANTHROPIC_API_KEY=your-actual-anthropic-api-key
+OPENAI_API_KEY=your-openai-api-key
+GENAI_API_KEY=your-google-genai-api-key
+ANTHROPIC_API_KEY=your-anthropic-api-key
 ```
 
-### Option 2: Using system environment variables
-```bash
-# OpenAI (for GPT models)
-export OPENAI_API_KEY="your-openai-api-key"
+## ⚙️ Configuration
 
-# Google GenAI (for Gemini models)
-export GENAI_API_KEY="your-google-genai-api-key"
+The system uses JSON files for configuration:
 
-# Anthropic (for Claude models)
-export ANTHROPIC_API_KEY="your-anthropic-api-key"
+### 📝 Prompts (configs/prompts.json)
+```json
+{
+  "gmeg_v1_basic": {
+    "type": "baseline",
+    "compatible_dataset": "gmeg",
+    "template": "Your prompt template with {variables}",
+    "description": "Prompt description"
+  }
+}
 ```
 
-**Note**: The system will automatically detect and load the `.env` file when the application starts. You'll see a confirmation message when the file is loaded successfully.
+### 📊 Datasets (configs/datasets.json)
+```json
+{
+  "gmeg": {
+    "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
+    "download_path": "DS_GMEG_EXP",
+    "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv",
+    "question_fields": ["original", "revised"],
+    "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable",
+    "description": "GMEG dataset for error correction explanation evaluation"
+  }
+}
+```
 
-## 📊 Quick Start
+### 🤖 Models (configs/models.json)
+```json
+{
+  "llama3.2-1b": {
+    "type": "local",
+    "model_path": "unsloth/llama-3.2-1b-instruct-bnb-4bit",
+    "max_tokens": 256,
+    "finetuned": false
+  },
+  "gpt-4o-mini": {
+    "type": "api",
+    "provider": "openai",
+    "model_name": "gpt-4o-mini",
+    "max_tokens": 256
+  }
+}
+```
+
+## 🚀 Quick Start
 
 ### 1. Check System Status
 ```bash
 python main.py status
+python main.py list-options
 ```
 
-### 2. Create Example Configuration Files
+### 2. Run Your First Experiment
 ```bash
-python main.py create-examples
+# Single experiment
+python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 20 --temperature 0.1
+
+# Multiple models
+python main.py run-experiment --model "llama3.2-1b gpt-4o-mini" --dataset gmeg --prompt gmeg_v1_basic --size 50
+
+# All available models and prompts
+python main.py run-experiment --experiment-type baseline
 ```
 
-### 3. Download Datasets
+### 3. Evaluate Results
 ```bash
-python main.py download --datasets-config datasets.json
+# Evaluate specific experiment
+python main.py evaluate --experiment baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1
+
+# Evaluate all baseline experiments
+python main.py evaluate --experiment-type baseline
 ```
 
-### 4. Run Experiments
+### 4. Generate Visualizations
 ```bash
-# Run all experiments
-python main.py run --config experiments.json
+# Individual plot
+python main.py plot --experiment baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1
 
-# Run specific models only
-python main.py run --config experiments.json --models llama3.2-1b gpt-4o-mini
+# Comparison plots
+python main.py plot --experiment "exp1,exp2,exp3" --compare
 
-# Force rerun existing experiments
-python main.py run --config experiments.json --force
-```
-
-### 5. Generate Visualizations
-```bash
-python main.py visualize
+# All plots
+python main.py plot --experiment-type baseline
 ```
 
 ## 📁 Project Structure
 
 ```
 xai-explanation-evaluation/
-├── main.py                 # CLI entry point
-├── config.py              # Configuration management
-├── utils.py               # Utility functions
-├── models.py              # Model management
-├── prompts.py             # Prompt templates
-├── dataset_manager.py     # Dataset handling
-├── evaluation.py          # Evaluation framework
-├── visualization.py       # Visualization generation
-├── experiments.py         # Experiment orchestration
-├── requirements.txt       # Python dependencies
-├── datasets.json         # Dataset configuration
-├── experiments.json      # Experiment configuration
-├── datasets/             # Downloaded datasets
-├── results/              # Experiment results
-├── plots/                # Generated visualizations
-├── models/               # Cached models
-└── logs/                 # System logs
+├── configs/
+│   ├── prompts.json          # Prompt templates
+│   ├── datasets.json         # Dataset configurations
+│   └── models.json           # Model configurations
+├── outputs/
+│   ├── responses/baseline/   # Inference results
+│   ├── evaluations/baseline/ # Evaluation metrics
+│   └── plots/baseline/      # Generated visualizations
+├── datasets/                # Downloaded datasets
+├── models_cache/            # Cached models
+├── finetuned_models/        # Finetuned models (future)
+├── logs/                    # System logs
+├── main.py                  # CLI entry point
+├── config.py                # Configuration management
+├── experiment_runner.py     # Experiment orchestration
+├── evaluator.py             # Evaluation runner
+├── plotter.py               # Visualization runner
+├── models.py                # Model management
+├── dataset_manager.py       # Dataset handling
+├── prompt_manager.py        # Prompt management
+├── evaluation.py            # Evaluation framework
+├── visualization.py         # Visualization framework
+└── utils.py                 # Utility functions
 ```
-
-## 📊 Multi-Dataset Support
-
-The system now supports multiple datasets with flexible field mapping:
-
-### **Currently Supported Datasets:**
-- **GMEG-EXP**: Grammar and fluency error correction explanations
-- **XAI-FUNGI**: Fungal species classification explanations  
-- **HateBRXplain**: Hate speech detection explanations
-- **ExplanationHardness**: Explanation complexity analysis
-- **ReframingHumanAI**: Human-AI explanation reframing
-
-### **Dataset Configuration Structure:**
-Each dataset is configured in `datasets.json` with:
-```json
-{
-  "name": "GMEG-EXP",
-  "field_mapping": {
-    "question_fields": ["original", "revised"],
-    "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable",
-    "question_template": "Original Text: {original}\n\nRevised Text: {revised}"
-  },
-  "compatible_prompts": ["gmeg_v1_basic", "gmeg_v2_enhanced", "general_explanation"],
-  "task_type": "text_correction_explanation"
-}
-```
-
-### **Key Features:**
-- **Automatic Download**: Datasets are downloaded automatically when needed
-- **Flexible Field Mapping**: Configure any column names as questions/answers
-- **Prompt Compatibility**: System validates prompt-dataset compatibility
-- **Generic Prompts**: Use `general_*` prompts across any dataset
-- **Dataset-Specific Prompts**: Use specialized prompts for specific tasks
-
-### **Adding New Datasets:**
-1. Add configuration to `datasets.json`
-2. Specify field mappings and download links
-3. Create compatible prompts (optional)
-4. Run experiments with any model
 
 ## 🎯 Available Commands
 
-### List Available Resources
-```bash
-# List available models
-python main.py list-models
-
-# List available prompts
-python main.py list-prompts
-
-# List available datasets (shows download status)
-python main.py list-datasets
-
-# Check dataset-prompt compatibility
-python main.py check-compatibility --dataset gmeg_exp --prompt gmeg_v1_basic
-
-# Show full compatibility matrix
-python main.py check-compatibility
-```
-
-### Download Datasets
-```bash
-python main.py download --datasets-config datasets.json
-```
-
-### Run Experiments
+### Inference Experiments
 ```bash
 # Basic usage
-python main.py run --config experiments.json
+python main.py run-experiment --model MODEL --dataset DATASET --prompt PROMPT
 
-# Advanced usage
-python main.py run --config experiments.json \
-  --models llama3.2-1b mistral-7b \
-  --prompts gmeg_v1_basic gmeg_v2_enhanced \
-  --force \
-  --no-viz
+# Advanced options
+python main.py run-experiment \
+  --model "llama3.2-1b gpt-4o-mini gemini-1.5-flash" \
+  --dataset gmeg \
+  --prompt "gmeg_v1_basic gmeg_v2_enhanced" \
+  --size 50 \
+  --temperature 0.1 \
+  --experiment-type baseline
 ```
 
-### Generate Visualizations
+### Evaluation
 ```bash
-python main.py visualize
+# Specific experiment
+python main.py evaluate --experiment EXPERIMENT_NAME
+
+# By experiment type
+python main.py evaluate --experiment-type baseline
+
+# All experiments
+python main.py evaluate
 ```
 
-### System Status
+### Visualization
 ```bash
+# Individual plots
+python main.py plot --experiment EXPERIMENT_NAME
+
+# Comparison plots
+python main.py plot --experiment "exp1,exp2,exp3" --compare
+
+# All plots for experiment type
+python main.py plot --experiment-type baseline
+```
+
+### Utilities
+```bash
+# List available options
+python main.py list-options
+
+# Check system status
 python main.py status
-```
-
-## ⚙️ Configuration
-
-### Datasets Configuration (`datasets.json`)
-```json
-[
-  {
-    "name": "GMEG-EXP",
-    "link": "https://github.com/your-repo/gmeg-exp/archive/main.zip",
-    "storage_folder": "DS_GMEG_EXP",
-    "description": "GMEG dataset for error correction explanation evaluation"
-  }
-]
-```
-
-### Experiments Configuration (`experiments.json`)
-```json
-{
-  "experiments": [
-    {
-      "experiment_name": "baseline_llama_basic",
-      "model_name": "llama3.2-1b",
-      "model_type": "open_source",
-      "prompt_key": "gmeg_v1_basic",
-      "sample_size": 50,
-      "dataset_type": "gmeg",
-      "dataset_name": "gmeg"
-    }
-  ]
-}
 ```
 
 ## 🧪 Supported Models
@@ -275,32 +252,17 @@ python main.py status
 
 ## 📝 Available Prompts
 
-### **Generic Prompts (work with any dataset):**
-- `general_explanation`: General explanation prompt for any task
-- `general_basic`: Basic general analysis prompt  
-- `general_detailed`: Detailed general analysis prompt
+All prompts are designed for the GMEG dataset (grammatical error correction explanations):
 
-### **GMEG-Specific Prompts:**
-- `gmeg_v1_basic`: Basic correction explanation prompt
-- `gmeg_v2_enhanced`: Enhanced with categorization
-- `gmeg_v3_detailed`: Detailed linguistic analysis
-- `gmeg_v4_minimal`: Minimal, concise explanations
-- `gmeg_v5_pedagogical`: Educational, teaching-focused
-- `gmeg_v6_formal`: Formal academic analysis
-- `gmeg_v7_casual`: Casual, conversational style
-- `gmeg_v8_comparative`: Side-by-side comparison
-- `gmeg_few_shot`: Few-shot learning with examples
-
-### **Dataset-Specific Prompts:**
-- `fungi_v1_basic`: Fungal classification explanations
-- `hate_speech_v1`: Hate speech detection explanations
-- `hardness_v1`: Explanation complexity analysis
-- `reframing_v1`: Explanation reframing analysis
-
-### **Prompt-Dataset Compatibility:**
-- Generic prompts work with any dataset
-- Dataset-specific prompts only work with their target dataset
-- Use `python main.py check-compatibility` to verify compatibility
+- **`gmeg_v1_basic`**: Basic correction explanation prompt
+- **`gmeg_v2_enhanced`**: Enhanced with categorization
+- **`gmeg_v3_detailed`**: Detailed linguistic analysis
+- **`gmeg_v4_minimal`**: Minimal, concise explanations
+- **`gmeg_v5_pedagogical`**: Educational, teaching-focused
+- **`gmeg_v6_formal`**: Formal academic analysis
+- **`gmeg_v7_casual`**: Casual, conversational style
+- **`gmeg_v8_comparative`**: Side-by-side comparison
+- **`gmeg_few_shot`**: Few-shot learning with examples
 
 ## 📊 Evaluation Metrics
 
@@ -310,96 +272,152 @@ python main.py status
 - **Jaccard Similarity**: Set-based similarity
 - **Semantic Similarity**: Embedding-based cosine similarity
 
-### Domain-Specific Metrics (GMEG)
-- **Bullet Point Ratio**: Format consistency
+### GMEG-Specific Metrics
+- **Bullet Point Ratio**: Format consistency measurement
 - **Correction Terminology Recall**: Use of correction-specific terms
 - **Structural Format Match**: Adherence to expected structure
 
 ## 📈 Visualization Outputs
 
 The system automatically generates:
-- **Metric Comparison Charts**: Bar charts comparing models across metrics
-- **Radar Charts**: Multi-dimensional model performance comparison
-- **Prompt Engineering Analysis**: Effects of different prompts
-- **Processing Time Analysis**: Performance benchmarks
-- **Comprehensive Reports**: Interactive HTML reports with all visualizations
+- **Individual Experiment Plots**: Bar charts with error bars
+- **Metric Comparison Charts**: Multi-model comparisons
+- **Radar Charts**: Multi-dimensional performance visualization
+- **Interactive HTML Reports**: Comprehensive analysis with navigation
+
+## 🔄 Experiment Types
+
+### Baseline Experiments (✅ Implemented)
+Standard LLM evaluation against human annotations:
+```bash
+python main.py run-experiment --experiment-type baseline
+```
+
+### Future Experiment Types (🚧 Structure Ready)
+- **Masked Experiments**: Partial information experiments
+- **Impersonation Experiments**: Demographic-specific evaluations
+
+## 🎯 Example Workflows
+
+### Complete Model Comparison Study
+```bash
+# 1. Run experiments with multiple models
+python main.py run-experiment \
+  --model "llama3.2-1b llama3.2-3b mistral-7b gpt-4o-mini gemini-1.5-flash" \
+  --dataset gmeg \
+  --prompt gmeg_v1_basic \
+  --size 100 \
+  --temperature 0.1
+
+# 2. Evaluate all results
+python main.py evaluate --experiment-type baseline
+
+# 3. Generate comprehensive comparison plots
+python main.py plot --experiment-type baseline
+```
+
+### Prompt Engineering Analysis
+```bash
+# Test multiple prompts with same model
+python main.py run-experiment \
+  --model llama3.2-1b \
+  --dataset gmeg \
+  --prompt "gmeg_v1_basic gmeg_v2_enhanced gmeg_v3_detailed gmeg_v4_minimal" \
+  --size 50
+
+# Evaluate and visualize prompt effects
+python main.py evaluate --experiment-type baseline
+python main.py plot --experiment-type baseline --compare
+```
+
+### Temperature Sensitivity Study
+```bash
+# Run same configuration with different temperatures
+python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 30 --temperature 0.0
+python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 30 --temperature 0.5
+python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 30 --temperature 1.0
+
+# Compare results
+python main.py evaluate --experiment-type baseline
+python main.py plot --experiment "baseline_gmeg_llama3.2-1b_gmeg_v1_basic_30_0p0,baseline_gmeg_llama3.2-1b_gmeg_v1_basic_30_0p5,baseline_gmeg_llama3.2-1b_gmeg_v1_basic_30_1p0" --compare
+```
+
+## 🎨 File Naming Convention
+
+Experiments use descriptive naming: `{experiment_type}_{dataset}_{model}_{prompt}_{size}_{temperature}`
+
+Examples:
+- `baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1`
+- `baseline_gmeg_gpt-4o-mini_gmeg_v2_enhanced_100_0p0`
 
 ## 🔧 Customization
 
-### Adding Custom Prompts
-```python
-# In prompts.py
-prompt_manager.add_prompt(
-    key="custom_prompt",
-    template="Your custom prompt template with {variables}",
-    description="Description of your custom prompt"
-)
+### Adding New Prompts
+Edit `configs/prompts.json`:
+```json
+{
+  "my_custom_prompt": {
+    "type": "baseline",
+    "compatible_dataset": "gmeg",
+    "template": "Your template with {original_text} and {revised_text}",
+    "description": "Your custom prompt description"
+  }
+}
 ```
 
-### Adding Custom Metrics
-```python
-# In evaluation.py
-def custom_metric(generated: str, expected: str) -> float:
-    # Your custom evaluation logic
-    return score
-
-evaluator.register_custom_metric("custom_metric", custom_metric)
+### Adding New Models
+Edit `configs/models.json`:
+```json
+{
+  "my_model": {
+    "type": "local",  // or "api"
+    "model_path": "path/to/model",
+    "max_tokens": 256,
+    "finetuned": false
+  }
+}
 ```
 
-### Adding New Datasets
-1. Update `datasets.json` with dataset information
-2. Implement dataset loading in `datasets.py`
-3. Add prompt preparation logic if needed
+### Finetuned Models Support
+Set `"finetuned": true` in model configuration. The system will look for models in `finetuned_models/` directory with `_finetuned` suffix.
 
-## 🐛 Troubleshooting
+## 🛠 Troubleshooting
 
-### Common Issues
+### System Issues
+```bash
+python main.py status  # Check system health
+```
 
-1. **Environment Variables Not Loading**
-   - Make sure you've copied `.env.template` to `.env`
-   - Check that the `.env` file is in the same directory as `main.py`
-   - Verify that `python-dotenv` is installed: `pip install python-dotenv`
-   - You should see "✅ Loaded environment variables from .env" when starting the application
+### Configuration Problems
+- Verify JSON syntax in config files
+- Check prompt-dataset compatibility
+- Ensure model availability
 
-2. **Import Conflicts with Package Names**
-   - **Problem**: `ImportError: cannot import name 'Dataset' from 'datasets'` 
-   - **Cause**: Local file names conflict with popular Python packages
-   - **Solution**: The project uses `dataset_manager.py` instead of `datasets.py` to avoid conflicts with the HuggingFace `datasets` package
-   - **Quick Fix**: If you see this error, run: `python fix_imports.py`
-   - **Manual Fix**: 
-     ```bash
-     # If you still have datasets.py, rename it:
-     mv datasets.py dataset_manager.py
-     # Update any imports in your code from 'datasets' to 'dataset_manager'
-     ```
-   - **Prevention**: Avoid naming local modules the same as popular packages (`datasets`, `transformers`, `torch`, `numpy`, etc.)
+### Common Errors
+- **Missing API keys**: Add to `.env` file
+- **Model not found**: Check if Unsloth is installed for local models
+- **Dataset download failed**: Check internet connection
+- **Compatibility error**: Use `--force` to override validation
 
-3. **CUDA Out of Memory**
-   - Reduce sample sizes in experiments
-   - Use smaller models (llama3.2-1b instead of mistral-7b)
-   - Clear GPU memory between experiments
+## 📊 Output Files
 
-4. **API Rate Limits**
-   - Add delays between API calls
-   - Use smaller sample sizes
-   - Check API quotas and billing
+### Inference Results
+`outputs/responses/baseline/inference_{experiment_name}.json`
+- Model responses with metadata
+- Processing times and error tracking
+- Complete experiment configuration
 
-5. **Missing Dependencies**
-   - Ensure all requirements are installed
-   - Check Python version compatibility
-   - Install optional dependencies for specific features
+### Evaluation Results
+`outputs/evaluations/baseline/evaluation_{experiment_name}.json`
+- Comprehensive metric calculations
+- Statistical summaries
+- Dataset-specific evaluations
 
-### Logging
-
-Logs are automatically generated in the `logs/` directory:
-- `main_YYYYMMDD.log`: Main application logs
-- `models_YYYYMMDD.log`: Model loading and inference logs
-- `evaluation_YYYYMMDD.log`: Evaluation process logs
-- `visualization_YYYYMMDD.log`: Visualization generation logs
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Visualization Files
+`outputs/plots/baseline/plot_{experiment_name}.html`
+- Interactive HTML visualizations
+- Comparison charts and analysis
+- Comprehensive experiment reports
 
 ## 🤝 Contributing
 
@@ -409,12 +427,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📧 Support
+## 📄 License
 
-For questions, issues, or contributions, please:
-- Open an issue on GitHub
-- Check the logs for detailed error information
-- Ensure your environment meets all requirements
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
