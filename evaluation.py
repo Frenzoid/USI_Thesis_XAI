@@ -30,23 +30,7 @@ class EvaluationFramework:
         
         logger.info("EvaluationFramework initialized")
     
-    # =============================================================================
-    # CUSTOM METRIC REGISTRATION
-    # =============================================================================
-    
-    def register_custom_metric(self, name: str, metric_function):
-        """
-        Register a custom evaluation metric function.
-        
-        Custom metrics should accept (generated: str, expected: str) and return float.
-        
-        Args:
-            name: Name for the metric
-            metric_function: Function that computes the metric
-        """
-        self.custom_metrics[name] = metric_function
-        logger.info(f"Registered custom metric: {name}")
-    
+
     # =============================================================================
     # SEMANTIC SIMILARITY COMPUTATION
     # =============================================================================
@@ -398,53 +382,7 @@ class EvaluationFramework:
         logger.debug(f"Aggregated {len(metrics)-1} metrics from {len(individual_scores)} scores")
         return aggregated
     
-    # =============================================================================
-    # EVALUATION COMPARISON AND ANALYSIS
-    # =============================================================================
-    
-    def compare_evaluations(self, eval1: Dict, eval2: Dict) -> Dict[str, Any]:
-        """
-        Compare two evaluation results to identify differences and improvements.
-        
-        Args:
-            eval1: First evaluation result dictionary
-            eval2: Second evaluation result dictionary
-            
-        Returns:
-            dict: Comparison results with metric differences and changes
-        """
-        logger.info(f"Comparing evaluations: {eval1.get('batch_name')} vs {eval2.get('batch_name')}")
-        
-        comparison = {
-            'eval1_name': eval1.get('batch_name', 'eval1'),
-            'eval2_name': eval2.get('batch_name', 'eval2'),
-            'sample_sizes': {
-                'eval1': eval1['num_samples'],
-                'eval2': eval2['num_samples']
-            },
-            'metric_differences': {}
-        }
-        
-        agg1 = eval1['aggregated_scores']
-        agg2 = eval2['aggregated_scores']
-        
-        # Compare metrics that exist in both evaluations
-        common_metrics = set(agg1.keys()) & set(agg2.keys())
-        
-        for metric in common_metrics:
-            diff = agg2[metric]['mean'] - agg1[metric]['mean']
-            pct_change = (diff / agg1[metric]['mean'] * 100) if agg1[metric]['mean'] != 0 else 0
-            
-            comparison['metric_differences'][metric] = {
-                'absolute_difference': diff,
-                'percentage_change': pct_change,
-                'eval1_mean': agg1[metric]['mean'],
-                'eval2_mean': agg2[metric]['mean']
-            }
-        
-        logger.info(f"Comparison completed for {len(common_metrics)} common metrics")
-        return comparison
-    
+ 
     # =============================================================================
     # EVALUATION HISTORY AND SUMMARY
     # =============================================================================

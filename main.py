@@ -10,7 +10,6 @@ import argparse
 import sys
 import os
 import shutil
-import glob
 from typing import List, Optional
 
 # Load environment variables first

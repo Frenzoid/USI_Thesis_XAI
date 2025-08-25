@@ -12,7 +12,7 @@ logger = setup_logging("dataset_manager")
 
 class DatasetManager:
     """
-    Centralized dataset management with JSON configuration support.
+    Centralized dataset management with JSON configuration support and generic field handling.
     
     This class handles:
     1. Loading dataset configurations from JSON
@@ -20,7 +20,7 @@ class DatasetManager:
     3. Loading and caching datasets in memory
     4. Validating dataset structure and fields
     5. Preparing data samples for experiments
-    6. Dataset-specific field mapping and processing
+    6. Generic field mapping without hardcoded dataset structures
     """
     
     def __init__(self):
@@ -356,93 +356,17 @@ class DatasetManager:
         if missing_fields:
             logger.error(f"Dataset {dataset_name} missing required fields: {missing_fields}")
             logger.info(f"Available columns: {list(df.columns)}")
-            
-            # Provide dataset-specific guidance
-            if dataset_name == 'gmeg':
-                logger.info("Expected GMEG fields: 'original', 'revised', 'please_explain_the_revisions_write_na_if_not_annotatable'")
-            
+            logger.info(f"Expected question fields: {config['question_fields']}")
+            logger.info(f"Expected answer field: {config['answer_field']}")
             return False
         
         logger.info(f"Dataset {dataset_name} validation passed")
         return True
     
+ 
     # =============================================================================
-    # DATA SAMPLING AND PREPARATION
+    # GENERIC DATA PROCESSING - REMOVED HARDCODED LOGIC
     # =============================================================================
-    
-    def get_sample_data(self, dataset_name: str, size: int, random_state: int = None) -> Optional[pd.DataFrame]:
-        """
-        Get a random sample from the dataset for experiments.
-        
-        Args:
-            dataset_name: Name of dataset to sample from
-            size: Number of samples to return
-            random_state: Random seed for reproducibility
-            
-        Returns:
-            pandas.DataFrame: Sampled data, or None if failed
-        """
-        logger.info(f"Getting sample of size {size} from dataset {dataset_name}")
-        
-        # Load dataset if not already loaded
-        if dataset_name not in self.datasets:
-            df = self.load_dataset(dataset_name)
-            if df is None:
-                return None
-        else:
-            df = self.datasets[dataset_name]
-        
-        # Handle case where requested sample is larger than dataset
-        if size >= len(df):
-            logger.info(f"Requested sample size ({size}) >= dataset size ({len(df)}), returning full dataset")
-            return df.copy()
-        else:
-            sample_df = df.sample(n=size, random_state=random_state or Config.RANDOM_SEED).reset_index(drop=True)
-            logger.info(f"Sampled {size} rows from dataset of {len(df)} total rows")
-            return sample_df
-    
-    # =============================================================================
-    # DATASET-SPECIFIC DATA PROCESSING
-    # =============================================================================
-    
-    def prepare_question_text(self, row: pd.Series, dataset_name: str) -> str:
-        """
-        Prepare question text from a dataset row for prompt generation.
-        
-        Different datasets have different field structures, so this method
-        handles dataset-specific formatting.
-        
-        Args:
-            row: Single row from dataset
-            dataset_name: Name of dataset (for format handling)
-            
-        Returns:
-            str: Formatted question text
-            
-        Raises:
-            ValueError: If dataset name is unknown
-        """
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
-        
-        config = self.datasets_config[dataset_name]
-        question_fields = config['question_fields']
-        
-        # Dataset-specific formatting
-        if dataset_name == 'gmeg':
-            # GMEG has original and revised texts for comparison
-            if len(question_fields) >= 2:
-                original = str(row.get(question_fields[0], ''))
-                revised = str(row.get(question_fields[1], ''))
-                return f"Original: {original}\nRevised: {revised}"
-        
-        # Default formatting: concatenate all question fields
-        question_parts = []
-        for field in question_fields:
-            if field in row and not pd.isna(row[field]):
-                question_parts.append(f"{field}: {str(row[field])}")
-        
-        return " | ".join(question_parts)
     
     def get_expected_answer(self, row: pd.Series, dataset_name: str) -> str:
         """
@@ -501,22 +425,3 @@ class DatasetManager:
                 downloaded.append(dataset_name)
         
         return downloaded
-    
-    def list_loaded_datasets(self) -> List[str]:
-        """
-        List names of datasets currently loaded in memory.
-        
-        Returns:
-            list: Names of loaded datasets
-        """
-        return list(self.datasets.keys())
-    
-    def cleanup_datasets(self):
-        """
-        Clear all loaded datasets from memory to free RAM.
-        
-        Useful when working with large datasets or running many experiments.
-        """
-        logger.info(f"Cleaning up {len(self.datasets)} loaded datasets")
-        self.datasets.clear()
-        logger.info("Dataset cleanup completed")

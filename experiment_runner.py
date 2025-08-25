@@ -18,9 +18,9 @@ class ExperimentRunner:
     """
     Handles running inference experiments with different models and configurations.
     
-    This class orchestrates the entire experiment pipeline:
-    1. Validates configurations
-    2. Prepares datasets and prompts
+    This class orchestrates the entire experiment pipeline using generic field mapping:
+    1. Validates configurations and field compatibility
+    2. Prepares datasets and prompts using generic field mapping
     3. Loads and queries models
     4. Saves results with metadata
     """
@@ -51,6 +51,7 @@ class ExperimentRunner:
         - Experiment type is valid
         - Model, dataset, and prompt exist in configurations
         - Prompt is compatible with the dataset
+        - Prompt placeholder count matches dataset question field count
         
         Args:
             config: Experiment configuration dictionary
@@ -87,9 +88,15 @@ class ExperimentRunner:
             return False
         
         # Check prompt-dataset compatibility
-        prompt_config = self.prompts_config[config['prompt']]
-        if prompt_config['compatible_dataset'] != config['dataset']:
+        if not self.prompt_manager.validate_prompt_dataset_compatibility(config['prompt'], config['dataset']):
             logger.error(f"Prompt '{config['prompt']}' not compatible with dataset '{config['dataset']}'")
+            return False
+        
+        # Validate prompt placeholder count matches dataset question fields
+        try:
+            self.prompt_manager.validate_prompt_field_count(config['prompt'], config['dataset'])
+        except ValueError as e:
+            logger.error(f"Field count validation failed: {e}")
             return False
         
         return True
@@ -170,38 +177,6 @@ class ExperimentRunner:
             # Always clean up temporary file
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-    
-    def prepare_prompts(self, df: pd.DataFrame, dataset_name: str, prompt_name: str) -> List[str]:
-        """
-        Prepare prompts for each row in the dataset.
-        
-        This is a legacy method maintained for compatibility. The actual prompt preparation
-        is now done in run_baseline_experiment with better error handling.
-        
-        Args:
-            df: Dataset DataFrame
-            dataset_name: Name of the dataset
-            prompt_name: Name of the prompt template
-            
-        Returns:
-            List[str]: List of formatted prompts
-        """
-        logger.info(f"Preparing prompts using: {prompt_name}")
-        
-        prompts = []
-        for idx, row in df.iterrows():
-            try:
-                # Use prompt manager to prepare prompt for this row
-                prompt = self.prompt_manager.prepare_prompt_for_row(prompt_name, row, dataset_name)
-                prompts.append(prompt)
-                
-            except Exception as e:
-                logger.error(f"Error preparing prompt for row {idx}: {e}")
-                # Add empty prompt as fallback
-                prompts.append("")
-        
-        logger.info(f"Prepared {len(prompts)} prompts")
-        return prompts
     
     def load_model(self, model_name: str):
         """
@@ -403,12 +378,9 @@ class ExperimentRunner:
             'processing_stats': {}
         }
         
-        # Add expected outputs for evaluation
-        dataset_config = self.datasets_config[experiment_config['dataset']]
-        answer_field = dataset_config['answer_field']
-        
+        # Add expected outputs for evaluation using generic method
         for idx, row in df.iterrows():
-            expected = str(row[answer_field]) if answer_field in row and not pd.isna(row[answer_field]) else ""
+            expected = self.dataset_manager.get_expected_answer(row, experiment_config['dataset'])
             results['expected_outputs'].append(expected)
         
         # Calculate comprehensive processing statistics
@@ -437,11 +409,11 @@ class ExperimentRunner:
     
     def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Run a complete baseline experiment with the given configuration.
+        Run a complete baseline experiment with the given configuration using generic field mapping.
         
         This is the main experiment execution method that:
-        1. Validates configuration
-        2. Prepares dataset and prompts
+        1. Validates configuration and field compatibility
+        2. Prepares dataset and prompts using generic field mapping
         3. Loads model
         4. Generates responses
         5. Saves results
@@ -454,7 +426,7 @@ class ExperimentRunner:
         """
         logger.info(f"Starting baseline experiment: {config}")
         
-        # Validate configuration
+        # Validate configuration including field compatibility
         if not self.validate_experiment_config(config):
             logger.error("Experiment configuration validation failed")
             return None
@@ -474,7 +446,7 @@ class ExperimentRunner:
             # Step 2: Load model
             self.load_model(config['model'])
             
-            # Step 3: Prepare prompts and expected outputs
+            # Step 3: Prepare prompts and expected outputs using generic field mapping
             prompts = []
             expected_outputs = []
             
@@ -490,13 +462,13 @@ class ExperimentRunner:
                     else:
                         additional_vars = {}
                     
-                    # Prepare prompt for this row
+                    # Prepare prompt for this row using generic field mapping
                     prompt = self.prompt_manager.prepare_prompt_for_row(
                         config['prompt'], row, config['dataset'], additional_vars
                     )
                     prompts.append(prompt)
                     
-                    # Get expected answer using dataset manager
+                    # Get expected answer using generic dataset manager method
                     expected_output = self.dataset_manager.get_expected_answer(row, config['dataset'])
                     expected_outputs.append(expected_output)
                     
@@ -505,7 +477,7 @@ class ExperimentRunner:
                     prompts.append("")  # Fallback empty prompt
                     expected_outputs.append("")
             
-            logger.info(f"Prepared {len(prompts)} prompts")
+            logger.info(f"Prepared {len(prompts)} prompts using generic field mapping")
             
             # Step 4: Generate responses
             responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'])
