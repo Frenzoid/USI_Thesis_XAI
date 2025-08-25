@@ -1,156 +1,42 @@
 # XAI Explanation Evaluation System
 
-A comprehensive command-line system for evaluating Large Language Models' alignment with user study results in XAI (Explainable AI) explanation evaluation.
-
-## 🚀 Features
-
-- **Individual Command Structure**: Separate commands for inference, evaluation, and visualization
-- **JSON-Based Configuration**: External configuration files for prompts, datasets, and models
-- **Multi-Model Support**: Test both open-source models (via Unsloth) and API-based models
-- **Flexible Experiment Types**: Baseline experiments (with structure for future masking/impersonation)
-- **Temperature Control**: Configurable temperature parameter for generation
-- **Comprehensive Evaluation**: Token-based metrics, semantic similarity, and dataset-specific evaluation
-- **Advanced Visualization**: Interactive plots and comprehensive reports
-- **Configuration Validation**: Automatic prompt-dataset compatibility checking
-- **Descriptive Naming**: Clear experiment naming convention for easy organization
-
-## 📋 Requirements
-
-- Python 3.8+
-- CUDA-capable GPU (recommended for open-source models)
-- API keys for external services (optional)
-
-## 🛠️ Installation
-
-1. **Clone the repository:**
-```bash
-git clone <repository-url>
-cd xai-explanation-evaluation
-```
-
-2. **Create a virtual environment:**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install dependencies:**
-```bash
-pip install -r requirements.txt
-```
-
-4. **For open-source model support (optional):**
-```bash
-# Install Unsloth for efficient model loading
-pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
-pip install trl peft accelerate bitsandbytes
-```
-
-## 🔑 API Keys Setup
-
-Create a `.env` file in the project root:
-
-```bash
-# Copy the template
-cp .env.template .env
-
-# Edit with your API keys
-nano .env
-```
-
-The `.env` file should contain:
-```
-OPENAI_API_KEY=your-openai-api-key
-GENAI_API_KEY=your-google-genai-api-key
-ANTHROPIC_API_KEY=your-anthropic-api-key
-```
-
-## ⚙️ Configuration
-
-The system uses JSON files for configuration:
-
-### 📝 Prompts (configs/prompts.json)
-```json
-{
-  "gmeg_v1_basic": {
-    "type": "baseline",
-    "compatible_dataset": "gmeg",
-    "template": "Your prompt template with {variables}",
-    "description": "Prompt description"
-  }
-}
-```
-
-### 📊 Datasets (configs/datasets.json)
-```json
-{
-  "gmeg": {
-    "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
-    "download_path": "DS_GMEG_EXP",
-    "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv",
-    "question_fields": ["original", "revised"],
-    "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable",
-    "description": "GMEG dataset for error correction explanation evaluation"
-  }
-}
-```
-
-### 🤖 Models (configs/models.json)
-```json
-{
-  "llama3.2-1b": {
-    "type": "local",
-    "model_path": "unsloth/llama-3.2-1b-instruct-bnb-4bit",
-    "max_tokens": 256,
-    "finetuned": false
-  },
-  "gpt-4o-mini": {
-    "type": "api",
-    "provider": "openai",
-    "model_name": "gpt-4o-mini",
-    "max_tokens": 256
-  }
-}
-```
+A command-line system for evaluating Large Language Models' performance in XAI (Explainable AI) explanation tasks, comparing their outputs against human annotations.
 
 ## 🚀 Quick Start
 
-### 1. Check System Status
+### Installation
+
+1. **Clone and setup environment:**
+```bash
+git clone <repository-url>
+cd xai-explanation-evaluation
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+2. **Configure API keys:**
+```bash
+cp .env.template .env
+# Edit .env with your API keys (OpenAI, Google GenAI, Anthropic)
+```
+
+3. **Check system status:**
 ```bash
 python main.py status
 python main.py list-options
 ```
 
-### 2. Run Your First Experiment
+### First Experiment
+
 ```bash
-# Single experiment
-python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 20 --temperature 0.1
+# Run a simple experiment
+python main.py run-experiment --model gpt-4o-mini --dataset gmeg --prompt gmeg_v1_basic --size 20
 
-# Multiple models
-python main.py run-experiment --model "llama3.2-1b gpt-4o-mini" --dataset gmeg --prompt gmeg_v1_basic --size 50
-
-# All available models and prompts
-python main.py run-experiment --experiment-type baseline
-```
-
-### 3. Evaluate Results
-```bash
-# Evaluate specific experiment
-python main.py evaluate --experiment baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1
-
-# Evaluate all baseline experiments
+# Evaluate results
 python main.py evaluate --experiment-type baseline
-```
 
-### 4. Generate Visualizations
-```bash
-# Individual plot
-python main.py plot --experiment baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1
-
-# Comparison plots
-python main.py plot --experiment "exp1,exp2,exp3" --compare
-
-# All plots
+# Generate plots
 python main.py plot --experiment-type baseline
 ```
 
@@ -158,282 +44,280 @@ python main.py plot --experiment-type baseline
 
 ```
 xai-explanation-evaluation/
-├── configs/
-│   ├── prompts.json          # Prompt templates
-│   ├── datasets.json         # Dataset configurations
-│   └── models.json           # Model configurations
-├── outputs/
-│   ├── responses/baseline/   # Inference results
-│   ├── evaluations/baseline/ # Evaluation metrics
-│   └── plots/baseline/      # Generated visualizations
+├── main.py                  # CLI entry point - command dispatcher
+├── config.py                # Configuration management and constants
+├── experiment_runner.py     # Orchestrates inference experiments
+├── evaluator.py             # Evaluation pipeline runner
+├── plotter.py               # Visualization pipeline runner
+├── models.py                # Model management (local + API)
+├── dataset_manager.py       # Dataset loading and preparation
+├── prompt_manager.py        # Prompt template management
+├── evaluation.py            # Core evaluation metrics framework
+├── visualization.py         # Core visualization framework
+├── utils.py                 # Utility functions and system setup
+├── requirements.txt         # Python dependencies
+├── configs/                 # Configuration files
+│   ├── models.json          # Model definitions and parameters
+│   ├── datasets.json        # Dataset sources and metadata
+│   └── prompts.json         # Prompt templates
+├── outputs/                 # Generated outputs
+│   ├── responses/baseline/  # Model inference results
+│   ├── evaluations/baseline/# Evaluation metrics
+│   └── plots/baseline/      # Visualizations
 ├── datasets/                # Downloaded datasets
-├── models_cache/            # Cached models
+├── cached_models/            # Cached model files (renamed for consistency)
 ├── finetuned_models/        # Finetuned models (future)
-├── logs/                    # System logs
-├── main.py                  # CLI entry point
-├── config.py                # Configuration management
-├── experiment_runner.py     # Experiment orchestration
-├── evaluator.py             # Evaluation runner
-├── plotter.py               # Visualization runner
-├── models.py                # Model management
-├── dataset_manager.py       # Dataset handling
-├── prompt_manager.py        # Prompt management
-├── evaluation.py            # Evaluation framework
-├── visualization.py         # Visualization framework
-└── utils.py                 # Utility functions
+└── logs/                    # System logs
 ```
 
 ## 🎯 Available Commands
 
-### Inference Experiments
-```bash
-# Basic usage
-python main.py run-experiment --model MODEL --dataset DATASET --prompt PROMPT
+### Core Experiment Commands
 
-# Advanced options
-python main.py run-experiment \
-  --model "llama3.2-1b gpt-4o-mini gemini-1.5-flash" \
-  --dataset gmeg \
-  --prompt "gmeg_v1_basic gmeg_v2_enhanced" \
-  --size 50 \
-  --temperature 0.1 \
-  --experiment-type baseline
+**`run-experiment`** - Run inference experiments
+```bash
+python main.py run-experiment [options]
+
+Options:
+  --model MODELS           Space-separated model names or 'all'
+  --dataset DATASETS       Space-separated dataset names or 'all'
+  --prompt PROMPTS         Space-separated prompt names or 'all'
+  --size SIZE              Sample size (default: 50)
+  --temperature TEMP       Generation temperature (default: 0.1)
+  --experiment-type TYPE   Experiment type (default: baseline)
+  --force                  Ignore validation errors
+
+Examples:
+  # Single experiment
+  python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic
+  
+  # Multiple models
+  python main.py run-experiment --model "gpt-4o-mini gemini-1.5-flash" --dataset gmeg --prompt gmeg_v1_basic
+  
+  # All configurations
+  python main.py run-experiment --experiment-type baseline
 ```
 
-### Evaluation
+**`evaluate`** - Evaluate experiment results
 ```bash
-# Specific experiment
-python main.py evaluate --experiment EXPERIMENT_NAME
+python main.py evaluate [options]
 
-# By experiment type
-python main.py evaluate --experiment-type baseline
+Options:
+  --experiment NAMES       Comma-separated experiment names
+  --experiment-type TYPE   Filter by experiment type
 
-# All experiments
-python main.py evaluate
+Examples:
+  # Specific experiment
+  python main.py evaluate --experiment baseline_gmeg_gpt-4o-mini_gmeg_v1_basic_50_0p1
+  
+  # All baseline experiments
+  python main.py evaluate --experiment-type baseline
 ```
 
-### Visualization
+**`plot`** - Generate visualizations
 ```bash
-# Individual plots
-python main.py plot --experiment EXPERIMENT_NAME
+python main.py plot [options]
 
-# Comparison plots
-python main.py plot --experiment "exp1,exp2,exp3" --compare
+Options:
+  --experiment NAMES       Comma-separated experiment names
+  --experiment-type TYPE   Filter by experiment type
+  --compare               Generate comparison plots
 
-# All plots for experiment type
-python main.py plot --experiment-type baseline
+Examples:
+  # Individual plots
+  python main.py plot --experiment baseline_gmeg_gpt-4o-mini_gmeg_v1_basic_50_0p1
+  
+  # Comparison plots
+  python main.py plot --experiment "exp1,exp2,exp3" --compare
+  
+  # All plots for experiment type
+  python main.py plot --experiment-type baseline
 ```
 
-### Utilities
+### Utility Commands
+
+**`download-datasets`** - Download datasets
 ```bash
-# List available options
+python main.py download-datasets --dataset DATASETS
+
+Examples:
+  python main.py download-datasets --dataset gmeg
+  python main.py download-datasets --dataset all
+```
+
+**`cleanup`** - Clean up system files
+```bash
+python main.py cleanup --target TARGETS [--dry-run]
+
+Targets: datasets, logs, results, cache, finetuned, all
+
+Examples:
+  python main.py cleanup --target logs --dry-run
+  python main.py cleanup --target all
+```
+
+**`list-options`** - Show available models, datasets, prompts
+```bash
 python main.py list-options
+```
 
-# Check system status
+**`list-commands`** - Show all commands with examples
+```bash
+python main.py list-commands
+```
+
+**`status`** - Check system status
+```bash
 python main.py status
 ```
 
-## 🧪 Supported Models
+## 🤖 Supported Models
 
-### Open Source Models (via Unsloth)
-- Llama 3.2 (1B, 3B)
-- Llama 3 (8B)
-- Mistral 7B
-- Qwen2 7B
-- Phi-3 (Mini, Medium)
-- Gemma 7B
-- CodeLlama 7B
-- TinyLlama 1B
+### Local Models (via Unsloth)
+- **Llama**: 3.2-1b, 3.2-3b, 3-8b
+- **Mistral**: 7b
+- **Others**: Qwen2, Phi-3, Gemma, CodeLlama, TinyLlama
 
 ### API Models
 - **OpenAI**: GPT-4o, GPT-4o-mini, GPT-4-turbo, GPT-3.5-turbo
-- **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 1.0 Pro
-- **Anthropic**: Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku
+- **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash
+- **Anthropic**: Claude 3.5 Sonnet, Claude 3 Opus
+
+## 📊 Available Datasets
+
+- **GMEG**: Grammatical error correction explanations dataset
 
 ## 📝 Available Prompts
 
-All prompts are designed for the GMEG dataset (grammatical error correction explanations):
+All prompts work with the GMEG dataset:
 
-- **`gmeg_v1_basic`**: Basic correction explanation prompt
-- **`gmeg_v2_enhanced`**: Enhanced with categorization
-- **`gmeg_v3_detailed`**: Detailed linguistic analysis
-- **`gmeg_v4_minimal`**: Minimal, concise explanations
-- **`gmeg_v5_pedagogical`**: Educational, teaching-focused
-- **`gmeg_v6_formal`**: Formal academic analysis
-- **`gmeg_v7_casual`**: Casual, conversational style
-- **`gmeg_v8_comparative`**: Side-by-side comparison
-- **`gmeg_few_shot`**: Few-shot learning with examples
+- `gmeg_v1_basic` - Basic correction explanation
+- `gmeg_v2_enhanced` - Enhanced with categorization
+- `gmeg_v3_detailed` - Detailed linguistic analysis
+- `gmeg_v4_minimal` - Minimal, concise explanations
+- `gmeg_v5_pedagogical` - Educational, teaching-focused
+- `gmeg_v6_formal` - Formal academic analysis
+- `gmeg_v7_casual` - Casual, conversational style
+- `gmeg_v8_comparative` - Side-by-side comparison
+- `gmeg_few_shot` - Few-shot learning with examples
 
-## 📊 Evaluation Metrics
+## 📈 Evaluation Metrics
 
-### Core Metrics
-- **Exact Match**: Perfect string matching
-- **Precision/Recall/F1**: Token overlap metrics
-- **Jaccard Similarity**: Set-based similarity
-- **Semantic Similarity**: Embedding-based cosine similarity
+- **Token-based**: F1, Precision, Recall, Exact Match, Jaccard
+- **Semantic**: Cosine similarity using sentence embeddings
+- **Dataset-specific**: GMEG correction terminology, format consistency
 
-### GMEG-Specific Metrics
-- **Bullet Point Ratio**: Format consistency measurement
-- **Correction Terminology Recall**: Use of correction-specific terms
-- **Structural Format Match**: Adherence to expected structure
+## 🔧 Configuration
 
-## 📈 Visualization Outputs
+Edit JSON files in `configs/`:
 
-The system automatically generates:
-- **Individual Experiment Plots**: Bar charts with error bars
-- **Metric Comparison Charts**: Multi-model comparisons
-- **Radar Charts**: Multi-dimensional performance visualization
-- **Interactive HTML Reports**: Comprehensive analysis with navigation
+- `models.json` - Add new models and parameters
+- `datasets.json` - Configure dataset sources
+- `prompts.json` - Create custom prompt templates
 
-## 🔄 Experiment Types
-
-### Baseline Experiments (✅ Implemented)
-Standard LLM evaluation against human annotations:
-```bash
-python main.py run-experiment --experiment-type baseline
+Example model configuration:
+```json
+{
+  "my-model": {
+    "type": "api",
+    "provider": "openai",
+    "model_name": "gpt-4",
+    "max_tokens": 256,
+    "description": "My custom model"
+  }
+}
 ```
 
-### Future Experiment Types (🚧 Structure Ready)
-- **Masked Experiments**: Partial information experiments
-- **Impersonation Experiments**: Demographic-specific evaluations
+## 🔍 Example Workflows
 
-## 🎯 Example Workflows
-
-### Complete Model Comparison Study
+**Model Comparison Study:**
 ```bash
-# 1. Run experiments with multiple models
-python main.py run-experiment \
-  --model "llama3.2-1b llama3.2-3b mistral-7b gpt-4o-mini gemini-1.5-flash" \
-  --dataset gmeg \
-  --prompt gmeg_v1_basic \
-  --size 100 \
-  --temperature 0.1
+# Run experiments with multiple models
+python main.py run-experiment --model "gpt-4o-mini gemini-1.5-flash llama3.2-1b" --dataset gmeg --prompt gmeg_v1_basic --size 100
 
-# 2. Evaluate all results
+# Evaluate all results
 python main.py evaluate --experiment-type baseline
 
-# 3. Generate comprehensive comparison plots
-python main.py plot --experiment-type baseline
-```
-
-### Prompt Engineering Analysis
-```bash
-# Test multiple prompts with same model
-python main.py run-experiment \
-  --model llama3.2-1b \
-  --dataset gmeg \
-  --prompt "gmeg_v1_basic gmeg_v2_enhanced gmeg_v3_detailed gmeg_v4_minimal" \
-  --size 50
-
-# Evaluate and visualize prompt effects
-python main.py evaluate --experiment-type baseline
+# Generate comparison plots
 python main.py plot --experiment-type baseline --compare
 ```
 
-### Temperature Sensitivity Study
+**Prompt Engineering Analysis:**
 ```bash
-# Run same configuration with different temperatures
-python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 30 --temperature 0.0
-python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 30 --temperature 0.5
-python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 30 --temperature 1.0
+# Test different prompts
+python main.py run-experiment --model gpt-4o-mini --dataset gmeg --prompt "gmeg_v1_basic gmeg_v2_enhanced gmeg_v4_minimal" --size 50
 
-# Compare results
-python main.py evaluate --experiment-type baseline
-python main.py plot --experiment "baseline_gmeg_llama3.2-1b_gmeg_v1_basic_30_0p0,baseline_gmeg_llama3.2-1b_gmeg_v1_basic_30_0p5,baseline_gmeg_llama3.2-1b_gmeg_v1_basic_30_1p0" --compare
+# Compare prompt effectiveness
+python main.py plot --experiment-type baseline --compare
 ```
 
-## 🎨 File Naming Convention
+## 🛠️ Dependencies
 
-Experiments use descriptive naming: `{experiment_type}_{dataset}_{model}_{prompt}_{size}_{temperature}`
+Core requirements (see `requirements.txt` for full list):
+- `torch` - PyTorch for local models
+- `transformers` - Hugging Face transformers
+- `openai` - OpenAI API client
+- `google-genai` - Google Gemini API
+- `anthropic` - Anthropic Claude API
+- `plotly` - Interactive visualizations
+- `pandas` - Data manipulation
 
-Examples:
-- `baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1`
-- `baseline_gmeg_gpt-4o-mini_gmeg_v2_enhanced_100_0p0`
+Optional for local models:
+- `unsloth` - Efficient local model loading
+- `trl` - Training and fine-tuning tools
 
-## 🔧 Customization
+## 🔑 API Keys
 
-### Adding New Prompts
-Edit `configs/prompts.json`:
-```json
-{
-  "my_custom_prompt": {
-    "type": "baseline",
-    "compatible_dataset": "gmeg",
-    "template": "Your template with {original_text} and {revised_text}",
-    "description": "Your custom prompt description"
-  }
-}
-```
-
-### Adding New Models
-Edit `configs/models.json`:
-```json
-{
-  "my_model": {
-    "type": "local",  // or "api"
-    "model_path": "path/to/model",
-    "max_tokens": 256,
-    "finetuned": false
-  }
-}
-```
-
-### Finetuned Models Support
-Set `"finetuned": true` in model configuration. The system will look for models in `finetuned_models/` directory with `_finetuned` suffix.
-
-## 🛠 Troubleshooting
-
-### System Issues
+Required environment variables in `.env`:
 ```bash
-python main.py status  # Check system health
+OPENAI_API_KEY=your-openai-key
+GENAI_API_KEY=your-google-genai-key
+ANTHROPIC_API_KEY=your-anthropic-key
 ```
 
-### Configuration Problems
-- Verify JSON syntax in config files
-- Check prompt-dataset compatibility
-- Ensure model availability
+## 📄 Output Files
 
-### Common Errors
-- **Missing API keys**: Add to `.env` file
-- **Model not found**: Check if Unsloth is installed for local models
-- **Dataset download failed**: Check internet connection
-- **Compatibility error**: Use `--force` to override validation
+Experiments generate structured outputs:
+- **Inference**: `outputs/responses/baseline/inference_{name}.json`
+- **Evaluation**: `outputs/evaluations/baseline/evaluation_{name}.json`
+- **Plots**: `outputs/plots/baseline/plot_{name}.html`
 
-## 📊 Output Files
+## 🎮 GPU/CPU Requirements
 
-### Inference Results
-`outputs/responses/baseline/inference_{experiment_name}.json`
-- Model responses with metadata
-- Processing times and error tracking
-- Complete experiment configuration
+### **GPU Recommended For:**
+- **Local Models**: Running Llama, Mistral, etc. requires significant memory
+- **Minimum**: 6GB VRAM for smaller models (1B-3B parameters)  
+- **Recommended**: 12GB+ VRAM for larger models (7B+ parameters)
 
-### Evaluation Results
-`outputs/evaluations/baseline/evaluation_{experiment_name}.json`
-- Comprehensive metric calculations
-- Statistical summaries
-- Dataset-specific evaluations
+### **CPU-Only Limitations:**
+- **Local models will be very slow** (10-100x slower than GPU)
+- **High RAM usage** (16GB+ recommended for larger models)
+- **API models work perfectly** on any system
 
-### Visualization Files
-`outputs/plots/baseline/plot_{experiment_name}.html`
-- Interactive HTML visualizations
-- Comparison charts and analysis
-- Comprehensive experiment reports
+## 🚨 Troubleshooting
+```bash
+# Check your system capabilities
+python main.py status
 
-## 🤝 Contributing
+# This will show:
+# - GPU availability and memory
+# - RAM status  
+# - Compatible model types
+# - Recommendations for your system
+```
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+The system **automatically prevents** GPU-dependent operations on incompatible hardware while allowing all other functionality.
 
-## 📄 License
+**Common Issues:**
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. **Missing API keys**: Add keys to `.env` file
+2. **Unsloth not found**: Install with `pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"`
+3. **Dataset download fails**: Check internet connection, try `python main.py download-datasets --dataset gmeg`
+4. **Configuration errors**: Use `python main.py status` to check system health
 
-## 🙏 Acknowledgments
-
-- Unsloth team for efficient model loading
-- Hugging Face for transformers and datasets
-- OpenAI, Google, and Anthropic for API access
-- The research community for datasets and evaluation methodologies
+**Getting Help:**
+```bash
+python main.py list-commands  # Show all commands
+python main.py status         # Check system status
+python main.py list-options   # Show available options
+```

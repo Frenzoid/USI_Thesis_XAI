@@ -8,6 +8,9 @@ Large Language Models' alignment with user study results in XAI explanation eval
 
 import argparse
 import sys
+import os
+import shutil
+import glob
 from typing import List, Optional
 
 # Load environment variables first
@@ -25,7 +28,7 @@ except ImportError:
     print("⚠️  python-dotenv not installed. Install with: pip install python-dotenv")
 
 from config import Config
-from utils import setup_logging, initialize_system
+from utils import setup_logging, initialize_system, print_system_status, validate_gpu_requirements_for_command
 from experiment_runner import ExperimentRunner
 from evaluator import EvaluationRunner
 from plotter import PlottingRunner
@@ -45,14 +48,75 @@ def parse_list_argument(arg_value: Optional[str], all_options: List[str]) -> Lis
     """Parse command line arguments that can be 'all' or a space-separated list"""
     if not arg_value or arg_value.lower() == 'all':
         return all_options
-    return arg_value.split()
+    # Handle both space-separated and comma-separated values
+    if ',' in arg_value:
+        return [item.strip() for item in arg_value.split(',')]
+    else:
+        return arg_value.split()
 
 def run_experiment_command(args):
     """Run experiments with specified parameters"""
     logger.info("Starting experiment execution...")
     
+    # Check if we can run experiments based on system capabilities
+    from utils import check_gpu_availability
+    gpu_status = check_gpu_availability()
+    
+    # Validate model types being requested
+    try:
+        models_config = Config.load_models_config()
+    except Exception as e:
+        logger.error(f"Failed to load models configuration: {e}")
+        return False
+    
+    # Parse model arguments
+    all_models = list(models_config.keys())
+    models_to_run = parse_list_argument(args.model, all_models)
+    
+    # Check if any local models are being requested
+    local_models_requested = []
+    api_models_requested = []
+    
+    for model in models_to_run:
+        if model in models_config:
+            if models_config[model]['type'] == 'local':
+                local_models_requested.append(model)
+            else:
+                api_models_requested.append(model)
+    
+    # Warn about local models on CPU or insufficient GPU
+    if local_models_requested:
+        if not gpu_status['cuda_available']:
+            if not gpu_status['torch_available']:
+                logger.error("❌ Cannot run local models: PyTorch not available")
+                logger.info("💡 Available options:")
+                logger.info("   - Install PyTorch with CUDA support for GPU acceleration")
+                logger.info("   - Use API-based models only (GPT, Gemini, Claude)")
+                return False
+            else:
+                logger.warning("⚠️  Local models requested but no GPU available")
+                logger.warning(f"   Requested local models: {', '.join(local_models_requested)}")
+                logger.warning("   This will be VERY slow and may require >16GB RAM")
+                
+                if not args.force:
+                    response = input("Continue with CPU-only local model inference? (y/N): ")
+                    if response.lower() != 'y':
+                        logger.info("💡 Consider using API models for better performance:")
+                        if api_models_requested:
+                            logger.info(f"   Available API models in your selection: {', '.join(api_models_requested)}")
+                        else:
+                            api_models = [m for m, c in models_config.items() if c['type'] == 'api']
+                            logger.info(f"   Available API models: {', '.join(api_models[:3])}...")
+                        return False
+        
+        elif not gpu_status['can_run_local_models']:
+            logger.warning(f"⚠️  GPU memory may be insufficient for local models ({gpu_status['total_memory']:.1f} GB available)")
+            logger.warning("   Consider using smaller models or API-based models for better reliability")
+    
     # Initialize experiment runner
     runner = ExperimentRunner()
+    
+    # ... rest of the existing function remains the same ...
     
     # Validate experiment type
     validate_experiment_type(args.experiment_type)
@@ -66,7 +130,7 @@ def run_experiment_command(args):
         logger.error(f"Failed to load configurations: {e}")
         return False
     
-    # Parse arguments
+    # Parse arguments - handle case where arguments might be None
     all_models = list(models_config.keys())
     all_datasets = list(datasets_config.keys())
     all_prompts = list(prompts_config.keys())
@@ -75,7 +139,7 @@ def run_experiment_command(args):
     datasets_to_run = parse_list_argument(args.dataset, all_datasets)
     prompts_to_run = parse_list_argument(args.prompt, all_prompts)
     
-    # Validate configurations
+    # Validate configurations for compatibility
     failed_validations = []
     for dataset in datasets_to_run:
         for prompt in prompts_to_run:
@@ -89,7 +153,7 @@ def run_experiment_command(args):
         logger.error("Use --force to ignore validation errors")
         return False
     
-    # Run experiments
+    # Execute experiments
     total_experiments = len(models_to_run) * len(datasets_to_run) * len(prompts_to_run)
     logger.info(f"Running {total_experiments} experiment configurations")
     
@@ -278,6 +342,70 @@ def download_datasets_command(args):
     
     return success_count > 0
 
+def cleanup_command(args):
+    """Clean up system files (datasets, logs, results, cache)"""
+    logger.info("Starting system cleanup...")
+    
+    cleanup_types = {
+        'datasets': Config.DATA_DIR,
+        'logs': Config.LOGS_DIR,
+        'results': Config.OUTPUTS_DIR,
+        'cache': Config.CACHED_MODELS_DIR,
+        'finetuned': Config.FINETUNED_MODELS_DIR
+    }
+    
+    # Parse cleanup targets
+    if args.target.lower() == 'all':
+        targets = list(cleanup_types.keys())
+    else:
+        targets = args.target.split()
+    
+    cleaned_items = []
+    errors = []
+    
+    for target in targets:
+        if target not in cleanup_types:
+            logger.warning(f"Unknown cleanup target: {target}")
+            continue
+        
+        target_dir = cleanup_types[target]
+        
+        try:
+            if os.path.exists(target_dir):
+                if args.dry_run:
+                    # Count items that would be deleted
+                    item_count = len(os.listdir(target_dir)) if os.path.isdir(target_dir) else 1
+                    logger.info(f"[DRY RUN] Would remove {item_count} items from {target_dir}")
+                else:
+                    # Actually delete
+                    if os.path.isdir(target_dir):
+                        shutil.rmtree(target_dir)
+                        # Recreate empty directory
+                        os.makedirs(target_dir, exist_ok=True)
+                        logger.info(f"✅ Cleaned directory: {target_dir}")
+                    else:
+                        os.remove(target_dir)
+                        logger.info(f"✅ Removed file: {target_dir}")
+                    
+                    cleaned_items.append(target)
+            else:
+                logger.info(f"Target does not exist: {target_dir}")
+                
+        except Exception as e:
+            error_msg = f"Error cleaning {target}: {e}"
+            logger.error(f"❌ {error_msg}")
+            errors.append(error_msg)
+    
+    # Summary
+    if args.dry_run:
+        logger.info(f"[DRY RUN] Would clean {len(targets)} targets")
+    else:
+        logger.info(f"Cleanup completed: {len(cleaned_items)} targets cleaned")
+        if errors:
+            logger.warning(f"{len(errors)} errors occurred during cleanup")
+    
+    return len(errors) == 0
+
 def list_available_options():
     """List available models, datasets, and prompts"""
     try:
@@ -309,58 +437,113 @@ def list_available_options():
     except Exception as e:
         print(f"Error loading configurations: {e}")
 
-def list_commands_command(parser):
-    """List all available commands and their arguments"""
+def list_commands_command():
+    """List all available commands and their arguments with proper formatting"""
     print("\n=== AVAILABLE COMMANDS ===")
-    subparsers_actions = [
-        action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
-    ]
-    for subparsers_action in subparsers_actions:
-        for choice, subparser in subparsers_action.choices.items():
-            print(f"\nCommand: {choice}")
-            print(f"  Description: {subparser.description}")
-            
-            # Print arguments
-            for action in subparser._actions:
-                if isinstance(action, argparse._SubParsersAction):
-                    continue
-                
-                # Format argument string
-                arg_string = ', '.join(action.option_strings)
-                default_value = f" (default: {action.default})" if action.default is not argparse.SUPPRESS and action.default is not None else ""
-                
-                if not arg_string:  # Positional arguments
-                    arg_string = action.dest
-                
-                print(f"    - {arg_string}: {action.help}{default_value}")
+    
+    print("\n1. run-experiment")
+    print("   Description: Run inference experiments with specified models, datasets, and prompts")
+    print("   Arguments:")
+    print("     --experiment-type TYPE    Experiment type (default: baseline)")
+    print("     --model MODELS           Model(s) to use (space-separated or 'all')")
+    print("     --dataset DATASETS       Dataset(s) to use (space-separated or 'all')")
+    print("     --prompt PROMPTS         Prompt(s) to use (space-separated or 'all')")
+    print("     --size SIZE              Sample size (default: 50)")
+    print("     --temperature TEMP       Temperature for generation (default: 0.1)")
+    print("     --force                  Force run even with validation errors")
+    
+    print("\n2. evaluate")
+    print("   Description: Evaluate experiment results using various metrics")
+    print("   Arguments:")
+    print("     --experiment NAMES       Specific experiment(s) to evaluate (comma-separated)")
+    print("     --experiment-type TYPE   Filter by experiment type")
+    
+    print("\n3. plot")
+    print("   Description: Generate plots and visualizations from evaluation results")
+    print("   Arguments:")
+    print("     --experiment NAMES       Specific experiment(s) to plot (comma-separated)")
+    print("     --experiment-type TYPE   Filter by experiment type")
+    print("     --compare               Generate comparison plots instead of individual")
+    
+    print("\n4. download-datasets")
+    print("   Description: Download specified datasets from configured sources")
+    print("   Arguments:")
+    print("     --dataset DATASETS       Dataset(s) to download (space-separated or 'all')")
+    
+    print("\n5. cleanup")
+    print("   Description: Clean up system files and directories")
+    print("   Arguments:")
+    print("     --target TARGETS         What to clean: datasets, logs, results, cache, finetuned, all")
+    print("     --dry-run               Show what would be cleaned without actually cleaning")
+    
+    print("\n6. list-options")
+    print("   Description: List available models, datasets, prompts, and experiment types")
+    print("   Arguments: None")
+    
+    print("\n7. list-commands")
+    print("   Description: Show this help message with all commands and their arguments")
+    print("   Arguments: None")
+    
+    print("\n8. status")
+    print("   Description: Check system status including configuration files and API keys")
+    print("   Arguments: None")
+    
+    print("\n=== EXAMPLE USAGE ===")
+    print("# Run single experiment")
+    print("python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic")
+    print("")
+    print("# Evaluate all baseline experiments") 
+    print("python main.py evaluate --experiment-type baseline")
+    print("")
+    print("# Generate comparison plots")
+    print("python main.py plot --experiment exp1,exp2,exp3 --compare")
+    print("")
+    print("# Clean up all temporary files")
+    print("python main.py cleanup --target all")
 
 def check_system_command(args):
     """Check system status"""
     logger.info("Checking system status...")
     
+    # Use the enhanced system status display
+    gpu_status, memory_status = print_system_status()
+    
     # Check configuration files
     config_status = Config.validate_configuration_files()
     
-    print("\n=== SYSTEM STATUS ===")
-    
-    print("\nConfiguration Files:")
+    print("📁 Configuration Files:")
     for config_type, exists in config_status.items():
         status = "✅" if exists else "❌"
-        print(f"  {config_type}.json: {status}")
+        print(f"   {config_type}.json: {status}")
     
     # Check directories
-    print("\nDirectories:")
+    print("\n📂 Directories:")
     try:
         created_dirs = Config.create_directories()
-        print(f"  Created/verified {len(created_dirs)} directories")
+        print(f"   Created/verified {len(created_dirs)} directories")
     except Exception as e:
-        print(f"  Error creating directories: {e}")
+        print(f"   Error creating directories: {e}")
     
     # Check API keys
-    print("\nAPI Keys:")
-    print(f"  OpenAI: {'✅' if Config.OPENAI_API_KEY else '❌'}")
-    print(f"  Google GenAI: {'✅' if Config.GENAI_API_KEY else '❌'}")
-    print(f"  Anthropic: {'✅' if Config.ANTHROPIC_API_KEY else '❌'}")
+    print("\n🔑 API Keys:")
+    print(f"   OpenAI: {'✅' if Config.OPENAI_API_KEY else '❌'}")
+    print(f"   Google GenAI: {'✅' if Config.GENAI_API_KEY else '❌'}")
+    print(f"   Anthropic: {'✅' if Config.ANTHROPIC_API_KEY else '❌'}")
+    
+    # Recommendations based on system status
+    print("\n💡 Recommendations:")
+    if not gpu_status['cuda_available']:
+        if gpu_status['torch_available']:
+            print("   - Consider API-based models for better performance")
+            print("   - Local models will be very slow on CPU")
+        else:
+            print("   - Install PyTorch to enable local model support")
+            print("   - Use API-based models (GPT, Gemini, Claude)")
+    elif not gpu_status['can_run_local_models']:
+        print(f"   - GPU memory ({gpu_status['total_memory']:.1f} GB) may limit local model size")
+        print("   - Consider smaller models or API-based alternatives")
+    else:
+        print("   - System ready for both local and API-based models")
     
     return all(config_status.values())
 
@@ -371,7 +554,7 @@ def main():
         initialize_system()
         global logger
         logger = setup_cli_logging()
-        logger.info("XAI Explanation Evaluation System - Refactored CLI")
+        logger.info("XAI Explanation Evaluation System - CLI")
     except Exception as e:
         print(f"System initialization failed: {e}")
         return 1
@@ -380,37 +563,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="XAI Explanation Evaluation System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Run single experiment
-  python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic --size 50 --temperature 0.1
-  
-  # Run multiple models with one dataset
-  python main.py run-experiment --model llama3.2-1b gpt-4o-mini --dataset gmeg --prompt gmeg_v1_basic
-  
-  # Run all models/datasets/prompts (baseline only)
-  python main.py run-experiment --experiment-type baseline
-  
-  # Evaluate specific experiment
-  python main.py evaluate --experiment baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1
-  
-  # Evaluate all baseline experiments
-  python main.py evaluate --experiment-type baseline
-  
-  # Generate individual plot
-  python main.py plot --experiment baseline_gmeg_llama3.2-1b_gmeg_v1_basic_50_0p1
-  
-  # Generate comparison plots
-  python main.py plot --experiment exp1,exp2,exp3 --compare
-  
-  # System utilities
-  python main.py list-options
-  python main.py status
-  
-  # Download datasets
-  python main.py download-datasets --dataset gmeg
-  python main.py download-datasets --dataset all
-        """
+        epilog="Use 'python main.py list-commands' to see all available commands and examples."
     )
     
     # Add subcommands
@@ -454,6 +607,14 @@ Examples:
     download_parser.add_argument('--dataset', type=str, default='all',
                                  help='Dataset(s) to download (space-separated, or "all" for all datasets)')
     
+    # Cleanup command
+    cleanup_parser = subparsers.add_parser('cleanup', help='Clean up system files and directories')
+    cleanup_parser.add_argument('--target', type=str, default='all',
+                               choices=['datasets', 'logs', 'results', 'cache', 'finetuned', 'all'],
+                               help='What to clean: datasets, logs, results, cache, finetuned, all')
+    cleanup_parser.add_argument('--dry-run', action='store_true',
+                               help='Show what would be cleaned without actually cleaning')
+    
     # Utility commands
     list_parser = subparsers.add_parser('list-options', help='List available models, datasets, and prompts')
     list_commands_parser = subparsers.add_parser('list-commands', help='List all available commands and their arguments')
@@ -476,11 +637,13 @@ Examples:
             success = plot_command(args)
         elif args.command == 'download-datasets':
             success = download_datasets_command(args)
+        elif args.command == 'cleanup':
+            success = cleanup_command(args)
         elif args.command == 'list-options':
             list_available_options()
             success = True
         elif args.command == 'list-commands':
-            list_commands_command(parser)
+            list_commands_command()
             success = True
         elif args.command == 'status':
             success = check_system_command(args)

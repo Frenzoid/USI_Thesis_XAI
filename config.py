@@ -4,63 +4,102 @@ from datetime import datetime
 from typing import Dict, Any
 
 class Config:
-    """Configuration management for XAI explanation evaluation system"""
+    """
+    Configuration management for XAI explanation evaluation system.
     
-    # Base paths
+    This class centralizes all configuration constants, paths, and settings
+    used throughout the system. It provides methods to load JSON configurations,
+    create directory structures, and generate file paths for experiments.
+    """
+    
+    # =============================================================================
+    # BASE PATHS AND DIRECTORIES
+    # =============================================================================
+    
     BASE_DIR = os.getcwd()
     
-    # Configuration directories
+    # Configuration directories - where JSON config files are stored
     CONFIGS_DIR = "./configs"
     PROMPTS_JSON = os.path.join(CONFIGS_DIR, "prompts.json")
     DATASETS_JSON = os.path.join(CONFIGS_DIR, "datasets.json")
     MODELS_JSON = os.path.join(CONFIGS_DIR, "models.json")
     
-    # Data and output directories
-    DATA_DIR = "./datasets"
-    OUTPUTS_DIR = "./outputs"
+    # Data and output directories - main storage locations
+    DATA_DIR = "./datasets"          # Downloaded datasets
+    OUTPUTS_DIR = "./outputs"        # All generated outputs
     
-    # Output subdirectories by experiment type
-    RESPONSES_DIR = os.path.join(OUTPUTS_DIR, "responses")
-    EVALUATIONS_DIR = os.path.join(OUTPUTS_DIR, "evaluations")
-    PLOTS_DIR = os.path.join(OUTPUTS_DIR, "plots")
+    # Output subdirectories organized by type
+    RESPONSES_DIR = os.path.join(OUTPUTS_DIR, "responses")      # Model inference results
+    EVALUATIONS_DIR = os.path.join(OUTPUTS_DIR, "evaluations") # Evaluation metrics
+    PLOTS_DIR = os.path.join(OUTPUTS_DIR, "plots")            # Visualizations
     
-    # Experiment type subdirectories
+    # Experiment type specific subdirectories
+    # Each experiment type gets its own organized structure
     BASELINE_RESPONSES_DIR = os.path.join(RESPONSES_DIR, "baseline")
     BASELINE_EVALUATIONS_DIR = os.path.join(EVALUATIONS_DIR, "baseline")
     BASELINE_PLOTS_DIR = os.path.join(PLOTS_DIR, "baseline")
     
-    # Cache and temporary directories
-    MODELS_CACHE_DIR = "./models_cache"
-    FINETUNED_MODELS_DIR = "./finetuned_models"
-    LOGS_DIR = "./logs"
+    # Cache and temporary directories - homogenous naming
+    CACHED_MODELS_DIR = "./cached_models"      # Downloaded/cached model files (renamed for consistency)
+    FINETUNED_MODELS_DIR = "./finetuned_models" # Custom finetuned models
+    LOGS_DIR = "./logs"                        # System logs
     
-    # Model configurations
+    # =============================================================================
+    # MODEL CONFIGURATION DEFAULTS
+    # =============================================================================
+    
+    # Default embedding model for semantic similarity calculations
     EMBEDDING_MODEL = 'sentence-transformers/all-mpnet-base-v2'
     
-    # LLM parameters (defaults - can be overridden)
-    MAX_NEW_TOKENS = 256
-    MAX_SEQ_LENGTH = 4096
-    DEFAULT_TEMPERATURE = 0.1
+    # LLM generation parameters (can be overridden per experiment)
+    MAX_NEW_TOKENS = 256           # Maximum tokens to generate per response
+    MAX_SEQ_LENGTH = 4096          # Maximum sequence length for local models
+    DEFAULT_TEMPERATURE = 0.1       # Default sampling temperature
     
-    # API Keys (loaded from environment variables)
+    # =============================================================================
+    # API CREDENTIALS
+    # =============================================================================
+    
+    # API Keys loaded from environment variables
+    # Users should set these in their .env file
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
     ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
     GENAI_API_KEY = os.getenv("GENAI_API_KEY", "")
     
-    # Experiment parameters
-    RANDOM_SEED = 42
-    DEFAULT_SAMPLE_SIZE = 50
+    # =============================================================================
+    # EXPERIMENT PARAMETERS
+    # =============================================================================
     
-    # Logging configuration
+    # Reproducibility and defaults
+    RANDOM_SEED = 42               # Fixed seed for reproducible experiments
+    DEFAULT_SAMPLE_SIZE = 50       # Default number of samples per experiment
+    
+    # Supported experiment types
+    # Currently only baseline is implemented, but structure allows for extension
+    EXPERIMENT_TYPES = ["baseline"]  # Future: "masked", "impersonation"
+    
+    # =============================================================================
+    # LOGGING CONFIGURATION
+    # =============================================================================
+    
     LOG_LEVEL = "INFO"
     LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     
-    # Supported experiment types
-    EXPERIMENT_TYPES = ["baseline"]  # Will expand later with "masked", "impersonation"
+    # =============================================================================
+    # DIRECTORY MANAGEMENT METHODS
+    # =============================================================================
     
     @classmethod
     def create_directories(cls):
-        """Create all necessary directories"""
+        """
+        Create all necessary directories for the system.
+        
+        This ensures the complete directory structure exists before
+        any operations that might try to write files.
+        
+        Returns:
+            list: List of created/verified directory paths
+        """
         directories = [
             cls.CONFIGS_DIR,
             cls.DATA_DIR,
@@ -71,7 +110,7 @@ class Config:
             cls.BASELINE_RESPONSES_DIR,
             cls.BASELINE_EVALUATIONS_DIR,
             cls.BASELINE_PLOTS_DIR,
-            cls.MODELS_CACHE_DIR,
+            cls.CACHED_MODELS_DIR,
             cls.FINETUNED_MODELS_DIR,
             cls.LOGS_DIR
         ]
@@ -81,9 +120,22 @@ class Config:
         
         return directories
     
+    # =============================================================================
+    # CONFIGURATION LOADING METHODS
+    # =============================================================================
+    
     @classmethod
     def load_prompts_config(cls) -> Dict[str, Any]:
-        """Load prompts configuration from JSON file"""
+        """
+        Load prompts configuration from JSON file.
+        
+        Returns:
+            dict: Prompt templates and metadata
+            
+        Raises:
+            FileNotFoundError: If prompts.json doesn't exist
+            ValueError: If JSON is malformed
+        """
         try:
             with open(cls.PROMPTS_JSON, 'r') as f:
                 return json.load(f)
@@ -94,7 +146,16 @@ class Config:
     
     @classmethod
     def load_datasets_config(cls) -> Dict[str, Any]:
-        """Load datasets configuration from JSON file"""
+        """
+        Load datasets configuration from JSON file.
+        
+        Returns:
+            dict: Dataset sources, paths, and metadata
+            
+        Raises:
+            FileNotFoundError: If datasets.json doesn't exist
+            ValueError: If JSON is malformed
+        """
         try:
             with open(cls.DATASETS_JSON, 'r') as f:
                 return json.load(f)
@@ -105,7 +166,16 @@ class Config:
     
     @classmethod
     def load_models_config(cls) -> Dict[str, Any]:
-        """Load models configuration from JSON file"""
+        """
+        Load models configuration from JSON file.
+        
+        Returns:
+            dict: Model definitions, parameters, and metadata
+            
+        Raises:
+            FileNotFoundError: If models.json doesn't exist
+            ValueError: If JSON is malformed
+        """
         try:
             with open(cls.MODELS_JSON, 'r') as f:
                 return json.load(f)
@@ -114,14 +184,37 @@ class Config:
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid JSON in models configuration: {e}")
     
+    # =============================================================================
+    # EXPERIMENT TYPE VALIDATION
+    # =============================================================================
+    
     @classmethod
     def validate_experiment_type(cls, experiment_type: str) -> bool:
-        """Validate experiment type is supported"""
+        """
+        Validate that an experiment type is supported.
+        
+        Args:
+            experiment_type: Type to validate
+            
+        Returns:
+            bool: True if supported, False otherwise
+        """
         return experiment_type in cls.EXPERIMENT_TYPES
     
     @classmethod
     def get_output_dirs_for_experiment_type(cls, experiment_type: str) -> Dict[str, str]:
-        """Get output directories for a specific experiment type"""
+        """
+        Get output directory paths for a specific experiment type.
+        
+        Args:
+            experiment_type: Type of experiment
+            
+        Returns:
+            dict: Directory paths for responses, evaluations, and plots
+            
+        Raises:
+            ValueError: If experiment type is not supported
+        """
         if not cls.validate_experiment_type(experiment_type):
             raise ValueError(f"Unsupported experiment type: {experiment_type}. Supported: {cls.EXPERIMENT_TYPES}")
         
@@ -131,17 +224,49 @@ class Config:
             'plots': os.path.join(cls.PLOTS_DIR, experiment_type)
         }
     
+    # =============================================================================
+    # EXPERIMENT NAMING AND FILE PATH GENERATION
+    # =============================================================================
+    
     @classmethod
     def generate_experiment_name(cls, experiment_type: str, dataset: str, model: str, 
                                 prompt: str, size: int, temperature: float) -> str:
-        """Generate experiment name based on configuration"""
-        # Clean temperature to avoid floating point precision issues
+        """
+        Generate a standardized experiment name based on configuration.
+        
+        Creates descriptive names that uniquely identify experiments:
+        Format: {experiment_type}_{dataset}_{model}_{prompt}_{size}_{temperature}
+        
+        Args:
+            experiment_type: Type of experiment (e.g., 'baseline')
+            dataset: Dataset name (e.g., 'gmeg')
+            model: Model name (e.g., 'gpt-4o-mini')
+            prompt: Prompt name (e.g., 'gmeg_v1_basic')
+            size: Sample size (e.g., 50)
+            temperature: Generation temperature (e.g., 0.1)
+            
+        Returns:
+            str: Standardized experiment name
+        """
+        # Format temperature to avoid floating point precision issues
+        # 0.1 becomes "0p1", 1.0 becomes "1p0"
         temp_str = f"{temperature:.1f}".replace(".", "p")
         return f"{experiment_type}_{dataset}_{model}_{prompt}_{size}_{temp_str}"
     
     @classmethod
     def generate_file_paths(cls, experiment_type: str, experiment_name: str) -> Dict[str, str]:
-        """Generate file paths for experiment outputs"""
+        """
+        Generate complete file paths for all experiment outputs.
+        
+        Creates organized file paths for inference results, evaluations, and plots.
+        
+        Args:
+            experiment_type: Type of experiment
+            experiment_name: Generated experiment name
+            
+        Returns:
+            dict: File paths for inference, evaluation, and plot outputs
+        """
         dirs = cls.get_output_dirs_for_experiment_type(experiment_type)
         
         return {
@@ -150,15 +275,38 @@ class Config:
             'plot': os.path.join(dirs['plots'], f"plot_{experiment_name}.html")
         }
     
+    # =============================================================================
+    # LOGGING UTILITIES
+    # =============================================================================
+    
     @classmethod
     def get_log_file(cls, name="main"):
-        """Get log file path for a specific component"""
+        """
+        Generate log file path for a specific component.
+        
+        Creates daily log files with component names for easy debugging.
+        
+        Args:
+            name: Component name for the log file
+            
+        Returns:
+            str: Path to log file
+        """
         timestamp = datetime.now().strftime("%Y%m%d")
         return os.path.join(cls.LOGS_DIR, f"{name}_{timestamp}.log")
     
+    # =============================================================================
+    # CONFIGURATION VALIDATION
+    # =============================================================================
+    
     @classmethod
     def validate_configuration_files(cls) -> Dict[str, bool]:
-        """Validate that all required configuration files exist"""
+        """
+        Validate that all required configuration files exist.
+        
+        Returns:
+            dict: Existence status for each configuration file
+        """
         files = {
             'prompts': os.path.exists(cls.PROMPTS_JSON),
             'datasets': os.path.exists(cls.DATASETS_JSON),

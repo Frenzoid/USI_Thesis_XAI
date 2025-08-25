@@ -14,19 +14,48 @@ from models import ModelManager
 logger = setup_logging("evaluation_runner")
 
 class EvaluationRunner:
-    """Handles evaluating experiment results using various metrics"""
+    """
+    Handles evaluating experiment results using comprehensive metrics.
+    
+    This class orchestrates the evaluation pipeline:
+    1. Finds and loads experiment result files
+    2. Extracts model responses and expected outputs
+    3. Runs evaluation using the EvaluationFramework
+    4. Saves evaluation results with metadata
+    5. Provides batch evaluation across multiple experiments
+    """
     
     def __init__(self):
+        """Initialize evaluation runner with framework and embedding model"""
         self.evaluation_framework = EvaluationFramework()
         self.model_manager = ModelManager()
         
-        # Load embedding model for semantic similarity
+        # Load embedding model for semantic similarity calculations
         self.model_manager.load_embedding_model()
         
         logger.info("EvaluationRunner initialized")
     
+    # =============================================================================
+    # EXPERIMENT FILE DISCOVERY AND LOADING
+    # =============================================================================
+    
     def find_experiment_files(self, experiment_type: Optional[str] = None) -> List[str]:
-        """Find all experiment result files"""
+        """
+        Find all experiment result files matching the specified type.
+        
+        Searches for inference result files that contain model responses
+        and can be evaluated against expected outputs.
+        
+        Args:
+            experiment_type: Type of experiments to find (e.g., 'baseline')
+                           If None, searches all experiment types
+            
+        Returns:
+            list: Paths to found experiment files
+            
+        Raises:
+            ValueError: If experiment type is invalid
+        """
         if experiment_type:
             if not Config.validate_experiment_type(experiment_type):
                 raise ValueError(f"Invalid experiment type: {experiment_type}")
@@ -42,7 +71,15 @@ class EvaluationRunner:
         return files
     
     def load_experiment_results(self, file_path: str) -> Optional[Dict[str, Any]]:
-        """Load experiment results from file"""
+        """
+        Load experiment results from a JSON file.
+        
+        Args:
+            file_path: Path to experiment result file
+            
+        Returns:
+            dict: Loaded experiment data, or None if failed
+        """
         try:
             with open(file_path, 'r') as f:
                 data = json.load(f)
@@ -54,12 +91,30 @@ class EvaluationRunner:
             logger.error(f"Error loading experiment results from {file_path}: {e}")
             return None
     
+    # =============================================================================
+    # DATA EXTRACTION AND PROCESSING
+    # =============================================================================
+    
     def extract_responses_and_expected(self, experiment_data: Dict[str, Any]) -> tuple:
-        """Extract generated responses and expected outputs from experiment data"""
+        """
+        Extract generated responses and expected outputs from experiment data.
+        
+        The length matching is critical because:
+        1. Each generated response must have a corresponding expected output for evaluation
+        2. Mismatched lengths indicate data corruption or incomplete experiments
+        3. We need paired data for meaningful metric computation (precision, recall, etc.)
+        4. Truncating to minimum length ensures we only evaluate complete pairs
+        
+        Args:
+            experiment_data: Loaded experiment result data
+            
+        Returns:
+            tuple: (generated_responses, expected_outputs) as lists of strings with matching lengths
+        """
         responses_data = experiment_data.get('responses', [])
         expected_outputs = experiment_data.get('expected_outputs', [])
         
-        # Extract just the response text from response objects
+        # Extract response text from response objects (which may include metadata)
         generated_responses = []
         for response_obj in responses_data:
             if isinstance(response_obj, dict):
@@ -68,35 +123,70 @@ class EvaluationRunner:
             else:
                 generated_responses.append(str(response_obj))
         
-        # Ensure both lists have the same length
+        # Critical: Ensure both lists have the same length for proper evaluation
+        # If lengths don't match, we can only evaluate the overlapping portion
         min_length = min(len(generated_responses), len(expected_outputs))
+        
         if min_length != len(generated_responses) or min_length != len(expected_outputs):
-            logger.warning(f"Mismatched lengths - Generated: {len(generated_responses)}, Expected: {len(expected_outputs)}")
+            logger.warning(f"Length mismatch detected - Generated: {len(generated_responses)}, Expected: {len(expected_outputs)}")
+            logger.warning(f"This may indicate incomplete experiment or data corruption")
+            logger.warning(f"Truncating to {min_length} pairs for evaluation")
+            
+            # Truncate both lists to the same length to ensure paired evaluation
             generated_responses = generated_responses[:min_length]
             expected_outputs = expected_outputs[:min_length]
         
-        logger.debug(f"Extracted {len(generated_responses)} response pairs")
+        logger.debug(f"Extracted {len(generated_responses)} response pairs for evaluation")
         return generated_responses, expected_outputs
     
     def determine_dataset_type(self, experiment_data: Dict[str, Any]) -> str:
-        """Determine dataset type for evaluation metrics"""
+        """
+        Determine the dataset type for appropriate evaluation metrics.
+        
+        Different datasets may require specialized evaluation metrics
+        beyond the standard token-based and semantic similarity metrics.
+        
+        Args:
+            experiment_data: Loaded experiment data
+            
+        Returns:
+            str: Dataset type for evaluation (e.g., 'gmeg', 'general')
+        """
         dataset_name = experiment_data.get('experiment_config', {}).get('dataset', 'general')
         
         # Map dataset names to evaluation types
         dataset_type_mapping = {
-            'gmeg': 'gmeg',
-            'xai_fungi': 'general',
-            'hatebrxplain': 'general', 
-            'explanationhardness': 'general',
-            'reframinghumanai': 'general'
+            'gmeg': 'gmeg',                    # Grammatical error correction explanations
+            'xai_fungi': 'general',            # General XAI explanations
+            'hatebrxplain': 'general',         # Hate speech explanations
+            'explanationhardness': 'general',  # General explanation difficulty
+            'reframinghumanai': 'general'      # Human-AI interaction explanations
         }
         
         mapped_type = dataset_type_mapping.get(dataset_name, 'general')
         logger.debug(f"Mapped dataset '{dataset_name}' to evaluation type '{mapped_type}'")
         return mapped_type
     
+    # =============================================================================
+    # CORE EVALUATION METHODS
+    # =============================================================================
+    
     def evaluate_experiment_from_data(self, experiment_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Evaluate experiment results from loaded data"""
+        """
+        Evaluate experiment results from loaded data.
+        
+        This is the core evaluation method that:
+        1. Extracts responses and expected outputs
+        2. Determines appropriate evaluation metrics
+        3. Runs comprehensive evaluation
+        4. Adds metadata and returns results
+        
+        Args:
+            experiment_data: Complete experiment data dictionary
+            
+        Returns:
+            dict: Evaluation results with metrics and metadata, or None if failed
+        """
         try:
             # Extract responses and expected outputs
             generated_responses, expected_outputs = self.extract_responses_and_expected(experiment_data)
@@ -105,10 +195,10 @@ class EvaluationRunner:
                 logger.error("No valid responses found for evaluation")
                 return None
             
-            # Determine dataset type for appropriate metrics
+            # Determine appropriate dataset type for specialized metrics
             dataset_type = self.determine_dataset_type(experiment_data)
             
-            # Run evaluation
+            # Run comprehensive evaluation
             experiment_name = experiment_data.get('experiment_name', 'unknown')
             logger.info(f"Evaluating experiment: {experiment_name}")
             
@@ -120,7 +210,7 @@ class EvaluationRunner:
                 dataset_type=dataset_type
             )
             
-            # Add experiment metadata
+            # Add comprehensive metadata
             evaluation_result.update({
                 'original_experiment_config': experiment_data.get('experiment_config', {}),
                 'original_experiment_name': experiment_name,
@@ -130,7 +220,7 @@ class EvaluationRunner:
             
             logger.info(f"Evaluation completed for: {experiment_name}")
             
-            # Log key metrics
+            # Log key performance metrics for quick assessment
             if evaluation_result.get('aggregated_scores'):
                 agg_scores = evaluation_result['aggregated_scores']
                 f1_mean = agg_scores.get('f1_score', {}).get('mean', 0)
@@ -149,9 +239,22 @@ class EvaluationRunner:
     
     def save_evaluation_results(self, evaluation_data: Dict[str, Any], experiment_name: str, 
                               experiment_type: str) -> str:
-        """Save evaluation results to file"""
+        """
+        Save evaluation results to JSON file with organized structure.
         
-        # Generate file path
+        Args:
+            evaluation_data: Complete evaluation results
+            experiment_name: Name of the original experiment
+            experiment_type: Type of experiment (for directory organization)
+            
+        Returns:
+            str: Path to saved evaluation file
+            
+        Raises:
+            Exception: If file cannot be saved
+        """
+        
+        # Generate organized file path
         file_paths = Config.generate_file_paths(experiment_type, experiment_name)
         output_file = file_paths['evaluation']
         
@@ -169,11 +272,24 @@ class EvaluationRunner:
             logger.error(f"Error saving evaluation results: {e}")
             raise
     
+    # =============================================================================
+    # SINGLE EXPERIMENT EVALUATION
+    # =============================================================================
+    
     def evaluate_experiment(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[Dict[str, Any]]:
-        """Evaluate a specific experiment by name"""
+        """
+        Evaluate a specific experiment by name.
+        
+        Args:
+            experiment_name: Name of experiment to evaluate
+            experiment_type: Type filter for finding the experiment
+            
+        Returns:
+            dict: Evaluation summary with file paths and key metrics, or None if failed
+        """
         logger.info(f"Evaluating experiment: {experiment_name}")
         
-        # Find the experiment file
+        # Find the experiment file by searching appropriate directories
         if experiment_type:
             search_dirs = [Config.get_output_dirs_for_experiment_type(experiment_type)['responses']]
         else:
@@ -193,12 +309,11 @@ class EvaluationRunner:
             logger.error(f"Experiment file not found: {experiment_name}")
             return None
         
-        # Load experiment data
+        # Load and evaluate experiment data
         experiment_data = self.load_experiment_results(experiment_file)
         if not experiment_data:
             return None
         
-        # Evaluate
         evaluation_result = self.evaluate_experiment_from_data(experiment_data)
         if not evaluation_result:
             return None
@@ -210,9 +325,9 @@ class EvaluationRunner:
                     experiment_type = exp_type
                     break
             else:
-                experiment_type = 'baseline'  # Default
+                experiment_type = 'baseline'  # Default fallback
         
-        # Save evaluation results
+        # Save evaluation results to organized location
         output_file = self.save_evaluation_results(evaluation_result, experiment_name, experiment_type)
         
         return {
@@ -224,11 +339,26 @@ class EvaluationRunner:
             'num_valid_evaluations': evaluation_result.get('num_valid_evaluations', 0)
         }
     
+    # =============================================================================
+    # BATCH EVALUATION
+    # =============================================================================
+    
     def evaluate_all_experiments(self, experiment_type: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Evaluate all experiments of the specified type"""
+        """
+        Evaluate all experiments of the specified type.
+        
+        Processes multiple experiments in batch with progress tracking
+        and comprehensive error handling.
+        
+        Args:
+            experiment_type: Type of experiments to evaluate (None for all types)
+            
+        Returns:
+            list: List of evaluation summaries for each processed experiment
+        """
         logger.info(f"Evaluating all experiments (type: {experiment_type or 'all'})")
         
-        # Find all experiment files
+        # Find all matching experiment files
         experiment_files = self.find_experiment_files(experiment_type)
         
         if not experiment_files:
@@ -245,7 +375,7 @@ class EvaluationRunner:
                 else:
                     experiment_name = file_name[:-5]  # Remove '.json' suffix
                 
-                # Load and evaluate
+                # Load and evaluate experiment
                 experiment_data = self.load_experiment_results(file_path)
                 if not experiment_data:
                     continue
@@ -262,7 +392,7 @@ class EvaluationRunner:
                             current_experiment_type = exp_type
                             break
                     else:
-                        current_experiment_type = 'baseline'  # Default
+                        current_experiment_type = 'baseline'  # Default fallback
                 
                 # Save evaluation results
                 output_file = self.save_evaluation_results(evaluation_result, experiment_name, current_experiment_type)
@@ -283,8 +413,20 @@ class EvaluationRunner:
         logger.info(f"Successfully evaluated {len(results)} out of {len(experiment_files)} experiments")
         return results
     
+    # =============================================================================
+    # EVALUATION SUMMARY AND ANALYTICS
+    # =============================================================================
+    
     def get_evaluation_summary(self, experiment_type: Optional[str] = None) -> Dict[str, Any]:
-        """Get summary of evaluation results"""
+        """
+        Get comprehensive summary of evaluation results across experiments.
+        
+        Args:
+            experiment_type: Type filter for evaluation files
+            
+        Returns:
+            dict: Summary statistics and performance overview
+        """
         # Find evaluation files
         if experiment_type:
             search_dir = Config.get_output_dirs_for_experiment_type(experiment_type)['evaluations']
@@ -300,6 +442,7 @@ class EvaluationRunner:
         # Load and summarize evaluations
         all_f1_scores = []
         all_semantic_similarities = []
+        all_exact_matches = []
         experiment_count = 0
         total_samples = 0
         
@@ -313,6 +456,8 @@ class EvaluationRunner:
                     all_f1_scores.append(agg_scores['f1_score']['mean'])
                 if 'semantic_similarity' in agg_scores:
                     all_semantic_similarities.append(agg_scores['semantic_similarity']['mean'])
+                if 'exact_match' in agg_scores:
+                    all_exact_matches.append(agg_scores['exact_match']['mean'])
                 
                 experiment_count += 1
                 total_samples += eval_data.get('num_valid_evaluations', 0)
@@ -321,26 +466,128 @@ class EvaluationRunner:
                 logger.warning(f"Error loading evaluation file {file_path}: {e}")
                 continue
         
+        # Compile comprehensive summary
         summary = {
             'total_evaluations': experiment_count,
             'total_samples_evaluated': total_samples,
             'experiment_type_filter': experiment_type
         }
         
+        # Add F1 score statistics
         if all_f1_scores:
             summary['f1_score_stats'] = {
                 'mean': np.mean(all_f1_scores),
                 'std': np.std(all_f1_scores),
                 'min': np.min(all_f1_scores),
-                'max': np.max(all_f1_scores)
+                'max': np.max(all_f1_scores),
+                'median': np.median(all_f1_scores)
             }
         
+        # Add semantic similarity statistics
         if all_semantic_similarities:
             summary['semantic_similarity_stats'] = {
                 'mean': np.mean(all_semantic_similarities),
                 'std': np.std(all_semantic_similarities),
                 'min': np.min(all_semantic_similarities),
-                'max': np.max(all_semantic_similarities)
+                'max': np.max(all_semantic_similarities),
+                'median': np.median(all_semantic_similarities)
+            }
+        
+        # Add exact match statistics
+        if all_exact_matches:
+            summary['exact_match_stats'] = {
+                'mean': np.mean(all_exact_matches),
+                'std': np.std(all_exact_matches),
+                'min': np.min(all_exact_matches),
+                'max': np.max(all_exact_matches),
+                'median': np.median(all_exact_matches)
             }
         
         return summary
+    
+    # =============================================================================
+    # EVALUATION COMPARISON AND ANALYSIS
+    # =============================================================================
+    
+    def compare_experiments(self, experiment_names: List[str], experiment_type: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Compare multiple experiments side by side.
+        
+        Args:
+            experiment_names: List of experiment names to compare
+            experiment_type: Type filter for experiments
+            
+        Returns:
+            dict: Comparison results with metric differences
+        """
+        logger.info(f"Comparing {len(experiment_names)} experiments")
+        
+        # Load evaluation results for all experiments
+        evaluations = []
+        for exp_name in experiment_names:
+            # Find evaluation file
+            if experiment_type:
+                search_dirs = [Config.get_output_dirs_for_experiment_type(experiment_type)['evaluations']]
+            else:
+                search_dirs = []
+                for exp_type in Config.EXPERIMENT_TYPES:
+                    search_dirs.append(Config.get_output_dirs_for_experiment_type(exp_type)['evaluations'])
+            
+            eval_file = None
+            for search_dir in search_dirs:
+                potential_file = os.path.join(search_dir, f"evaluation_{exp_name}.json")
+                if os.path.exists(potential_file):
+                    eval_file = potential_file
+                    break
+            
+            if eval_file:
+                try:
+                    with open(eval_file, 'r') as f:
+                        eval_data = json.load(f)
+                    evaluations.append(eval_data)
+                except Exception as e:
+                    logger.error(f"Error loading evaluation for {exp_name}: {e}")
+            else:
+                logger.warning(f"Evaluation file not found for: {exp_name}")
+        
+        if len(evaluations) < 2:
+            return {"error": "Need at least 2 valid evaluations for comparison"}
+        
+        # Create comparison matrix
+        comparison = {
+            'experiment_names': experiment_names[:len(evaluations)],
+            'metric_comparison': {},
+            'rankings': {},
+            'best_performers': {}
+        }
+        
+        # Extract metrics for comparison
+        common_metrics = set()
+        for eval_data in evaluations:
+            agg_scores = eval_data.get('aggregated_scores', {})
+            common_metrics.update(agg_scores.keys())
+        
+        # Compare each metric across experiments
+        for metric in common_metrics:
+            values = []
+            for eval_data in evaluations:
+                agg_scores = eval_data.get('aggregated_scores', {})
+                if metric in agg_scores:
+                    values.append(agg_scores[metric]['mean'])
+                else:
+                    values.append(0.0)
+            
+            comparison['metric_comparison'][metric] = values
+            
+            # Rank experiments for this metric
+            ranked_indices = np.argsort(values)[::-1]  # Descending order
+            comparison['rankings'][metric] = [experiment_names[i] for i in ranked_indices]
+            
+            # Best performer for this metric
+            best_idx = np.argmax(values)
+            comparison['best_performers'][metric] = {
+                'experiment': experiment_names[best_idx],
+                'value': values[best_idx]
+            }
+        
+        return comparison

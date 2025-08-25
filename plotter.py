@@ -11,81 +11,40 @@ from visualization import VisualizationFramework
 logger = setup_logging("plotting_runner")
 
 class PlottingRunner:
-    """Handles generating plots and visualizations from evaluation results"""
+    """
+    Handles generating plots and visualizations from evaluation results.
+    
+    This class serves as the interface between the CLI and the visualization
+    framework, providing methods to:
+    1. Find and load evaluation result files
+    2. Create individual experiment plots
+    3. Generate comparison plots across multiple experiments
+    4. Create comprehensive visualization reports
+    5. Manage plot organization and file paths
+    """
     
     def __init__(self):
+        """Initialize plotting runner with visualization framework"""
         self.visualization_framework = VisualizationFramework()
-        
-        # Ensure visualization framework has the individual plot method
-        if not hasattr(self.visualization_framework, 'create_individual_experiment_plot'):
-            # Add the method if it doesn't exist
-            import plotly.graph_objects as go
-            
-            def create_individual_experiment_plot(self, evaluation_result):
-                """Create a plot for an individual experiment"""
-                experiment_name = evaluation_result.get('batch_name', 'Unknown Experiment')
-                agg_scores = evaluation_result.get('aggregated_scores', {})
-                
-                if not agg_scores:
-                    # Create empty plot
-                    fig = go.Figure()
-                    fig.add_annotation(text="No evaluation metrics available", 
-                                      xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
-                    fig.update_layout(title=f"Results for {experiment_name}")
-                    return fig
-                
-                # Extract metrics for plotting
-                metrics = []
-                values = []
-                errors = []
-                
-                for metric, stats in agg_scores.items():
-                    if isinstance(stats, dict) and 'mean' in stats:
-                        metrics.append(metric.replace('_', ' ').title())
-                        values.append(stats['mean'])
-                        errors.append(stats.get('std', 0))
-                
-                if not metrics:
-                    # Create empty plot
-                    fig = go.Figure()
-                    fig.add_annotation(text="No valid metrics found", 
-                                      xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
-                    fig.update_layout(title=f"Results for {experiment_name}")
-                    return fig
-                
-                # Create bar plot with error bars
-                fig = go.Figure()
-                
-                fig.add_trace(go.Bar(
-                    x=metrics,
-                    y=values,
-                    error_y=dict(type='data', array=errors),
-                    text=[f'{v:.3f}' for v in values],
-                    textposition='auto',
-                    marker_color='lightblue'
-                ))
-                
-                fig.update_layout(
-                    title=f'Evaluation Results: {experiment_name}',
-                    xaxis_title='Metrics',
-                    yaxis_title='Score',
-                    yaxis=dict(range=[0, 1]),
-                    height=500,
-                    showlegend=False
-                )
-                
-                return fig
-            
-            # Bind the method to the instance
-            import types
-            self.visualization_framework.create_individual_experiment_plot = types.MethodType(
-                create_individual_experiment_plot, self.visualization_framework
-            )
-        
         logger.info("PlottingRunner initialized")
     
+    # =============================================================================
+    # FILE DISCOVERY AND LOADING
+    # =============================================================================
+    
     def find_evaluation_files(self, experiment_type: Optional[str] = None) -> List[str]:
-        """Find all evaluation result files"""
+        """
+        Find all evaluation result files for plotting.
+        
+        Args:
+            experiment_type: Type filter for evaluation files
+            
+        Returns:
+            list: Paths to evaluation files
+            
+        Raises:
+            ValueError: If experiment type is invalid
+        """
         if experiment_type:
             if not Config.validate_experiment_type(experiment_type):
                 raise ValueError(f"Invalid experiment type: {experiment_type}")
@@ -101,7 +60,15 @@ class PlottingRunner:
         return files
     
     def load_evaluation_results(self, file_path: str) -> Optional[Dict[str, Any]]:
-        """Load evaluation results from file"""
+        """
+        Load evaluation results from JSON file.
+        
+        Args:
+            file_path: Path to evaluation result file
+            
+        Returns:
+            dict: Loaded evaluation data, or None if failed
+        """
         try:
             with open(file_path, 'r') as f:
                 data = json.load(f)
@@ -114,10 +81,19 @@ class PlottingRunner:
             return None
     
     def load_evaluation_by_name(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[Dict[str, Any]]:
-        """Load evaluation results for a specific experiment by name"""
+        """
+        Load evaluation results for a specific experiment by name.
+        
+        Args:
+            experiment_name: Name of experiment to load
+            experiment_type: Type filter for search
+            
+        Returns:
+            dict: Evaluation data, or None if not found
+        """
         logger.info(f"Loading evaluation for: {experiment_name}")
         
-        # Find the evaluation file
+        # Determine search directories
         if experiment_type:
             search_dirs = [Config.get_output_dirs_for_experiment_type(experiment_type)['evaluations']]
         else:
@@ -126,6 +102,7 @@ class PlottingRunner:
             for exp_type in Config.EXPERIMENT_TYPES:
                 search_dirs.append(Config.get_output_dirs_for_experiment_type(exp_type)['evaluations'])
         
+        # Find evaluation file
         evaluation_file = None
         for search_dir in search_dirs:
             potential_file = os.path.join(search_dir, f"evaluation_{experiment_name}.json")
@@ -139,11 +116,26 @@ class PlottingRunner:
         
         return self.load_evaluation_results(evaluation_file)
     
+    # =============================================================================
+    # DATA FORMATTING FOR VISUALIZATION
+    # =============================================================================
+    
     def format_evaluation_for_visualization(self, evaluation_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Format evaluation data for visualization framework"""
+        """
+        Format evaluation data for compatibility with visualization framework.
+        
+        Transforms evaluation results into the format expected by the visualization
+        components, extracting key information and adding missing fields.
+        
+        Args:
+            evaluation_data: Raw evaluation results
+            
+        Returns:
+            dict: Formatted data ready for visualization
+        """
         experiment_config = evaluation_data.get('original_experiment_config', {})
         
-        # Create formatted result compatible with existing visualization framework
+        # Create formatted result compatible with visualization framework
         formatted_result = {
             'batch_name': evaluation_data.get('original_experiment_name', 'unknown'),
             'experiment_name': evaluation_data.get('original_experiment_name', 'unknown'),
@@ -161,7 +153,15 @@ class PlottingRunner:
         return formatted_result
     
     def _determine_model_type(self, model_name: str) -> str:
-        """Determine model type from model name"""
+        """
+        Determine model type from model name for visualization coloring.
+        
+        Args:
+            model_name: Name of the model
+            
+        Returns:
+            str: Model type ('api' or 'local')
+        """
         # Load models config to determine type
         try:
             models_config = Config.load_models_config()
@@ -170,14 +170,27 @@ class PlottingRunner:
         except:
             pass
         
-        # Fallback logic
+        # Fallback logic based on common naming patterns
         if any(api_indicator in model_name.lower() for api_indicator in ['gpt', 'gemini', 'claude']):
             return 'api'
         else:
             return 'local'
     
+    # =============================================================================
+    # INDIVIDUAL EXPERIMENT PLOTTING
+    # =============================================================================
+    
     def create_individual_plot(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[str]:
-        """Create individual plot for a single experiment"""
+        """
+        Create individual plot for a single experiment.
+        
+        Args:
+            experiment_name: Name of experiment to plot
+            experiment_type: Type filter for finding experiment
+            
+        Returns:
+            str: Path to generated plot file, or None if failed
+        """
         logger.info(f"Creating individual plot for: {experiment_name}")
         
         # Load evaluation data
@@ -210,7 +223,7 @@ class PlottingRunner:
             # Create individual metrics plot
             fig = self.visualization_framework.create_individual_experiment_plot(formatted_data)
             
-            # Save plot
+            # Save plot as interactive HTML
             fig.write_html(plot_file)
             
             logger.info(f"Individual plot created: {plot_file}")
@@ -220,9 +233,25 @@ class PlottingRunner:
             logger.error(f"Error creating individual plot for {experiment_name}: {e}")
             return None
     
+    # =============================================================================
+    # COMPARISON PLOTTING
+    # =============================================================================
+    
     def create_comparison_plots(self, experiment_names: List[str], 
                               experiment_type: Optional[str] = None) -> Optional[List[str]]:
-        """Create comparison plots for multiple experiments"""
+        """
+        Create comparison plots for multiple experiments.
+        
+        Generates various comparison visualizations including metric comparisons
+        and radar charts to analyze performance across experiments.
+        
+        Args:
+            experiment_names: List of experiment names to compare
+            experiment_type: Type filter for experiments
+            
+        Returns:
+            list: Paths to generated plot files, or None if failed
+        """
         logger.info(f"Creating comparison plots for {len(experiment_names)} experiments")
         
         # Load all evaluation data
@@ -248,7 +277,7 @@ class PlottingRunner:
                         experiment_type = exp_type
                         break
         
-        # Generate output directory
+        # Generate output directory and comparison name
         output_dir = Config.get_output_dirs_for_experiment_type(experiment_type)['plots']
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         comparison_name = f"comparison_{len(experiment_names)}exps_{timestamp}"
@@ -294,57 +323,17 @@ class PlottingRunner:
             logger.error(f"Error creating comparison plots: {e}")
             return None
     
-    def create_all_plots(self, experiment_type: Optional[str] = None) -> Optional[List[Dict[str, str]]]:
-        """Create plots for all evaluations of the specified type"""
-        logger.info(f"Creating plots for all evaluations (type: {experiment_type or 'all'})")
-        
-        # Find all evaluation files
-        evaluation_files = self.find_evaluation_files(experiment_type)
-        
-        if not evaluation_files:
-            logger.warning("No evaluation files found")
-            return None
-        
-        results = []
-        for file_path in evaluation_files:
-            try:
-                # Extract experiment name from file path
-                file_name = os.path.basename(file_path)
-                if file_name.startswith('evaluation_'):
-                    experiment_name = file_name[11:-5]  # Remove 'evaluation_' prefix and '.json' suffix
-                else:
-                    experiment_name = file_name[:-5]  # Remove '.json' suffix
-                
-                # Create individual plot
-                plot_file = self.create_individual_plot(experiment_name, experiment_type)
-                
-                if plot_file:
-                    results.append({
-                        'experiment_name': experiment_name,
-                        'plot_file': plot_file
-                    })
-                
-            except Exception as e:
-                logger.error(f"Error creating plot for {file_path}: {e}")
-                continue
-        
-        logger.info(f"Successfully created {len(results)} plots out of {len(evaluation_files)} evaluations")
-        
-        # Also create a comprehensive comparison if we have multiple results
-        if len(results) > 1:
-            try:
-                experiment_names = [r['experiment_name'] for r in results]
-                comparison_plots = self.create_comparison_plots(experiment_names, experiment_type)
-                if comparison_plots:
-                    logger.info(f"Also created comprehensive comparison with {len(comparison_plots)} files")
-            except Exception as e:
-                logger.warning(f"Could not create comprehensive comparison: {e}")
-        
-        return results
-    
     def _create_comparison_index(self, index_file: str, plot_files: List[str], 
                                experiment_names: List[str], comparison_name: str):
-        """Create an HTML index file for comparison plots"""
+        """
+        Create an HTML index file for comparison plots.
+        
+        Args:
+            index_file: Path for the index file
+            plot_files: List of plot file paths
+            experiment_names: Names of compared experiments
+            comparison_name: Name for this comparison
+        """
         html_content = f"""
         <!DOCTYPE html>
         <html>
@@ -420,3 +409,66 @@ class PlottingRunner:
             f.write(html_content)
         
         logger.info(f"Comparison index created: {index_file}")
+    
+    # =============================================================================
+    # BATCH PLOTTING
+    # =============================================================================
+    
+    def create_all_plots(self, experiment_type: Optional[str] = None) -> Optional[List[Dict[str, str]]]:
+        """
+        Create plots for all evaluations of the specified type.
+        
+        Generates individual plots for each evaluation and optionally creates
+        a comprehensive comparison if multiple experiments are found.
+        
+        Args:
+            experiment_type: Type filter for evaluations
+            
+        Returns:
+            list: List of dictionaries with experiment names and plot file paths
+        """
+        logger.info(f"Creating plots for all evaluations (type: {experiment_type or 'all'})")
+        
+        # Find all evaluation files
+        evaluation_files = self.find_evaluation_files(experiment_type)
+        
+        if not evaluation_files:
+            logger.warning("No evaluation files found")
+            return None
+        
+        results = []
+        for file_path in evaluation_files:
+            try:
+                # Extract experiment name from file path
+                file_name = os.path.basename(file_path)
+                if file_name.startswith('evaluation_'):
+                    experiment_name = file_name[11:-5]  # Remove 'evaluation_' prefix and '.json' suffix
+                else:
+                    experiment_name = file_name[:-5]  # Remove '.json' suffix
+                
+                # Create individual plot
+                plot_file = self.create_individual_plot(experiment_name, experiment_type)
+                
+                if plot_file:
+                    results.append({
+                        'experiment_name': experiment_name,
+                        'plot_file': plot_file
+                    })
+                
+            except Exception as e:
+                logger.error(f"Error creating plot for {file_path}: {e}")
+                continue
+        
+        logger.info(f"Successfully created {len(results)} plots out of {len(evaluation_files)} evaluations")
+        
+        # Also create a comprehensive comparison if we have multiple results
+        if len(results) > 1:
+            try:
+                experiment_names = [r['experiment_name'] for r in results]
+                comparison_plots = self.create_comparison_plots(experiment_names, experiment_type)
+                if comparison_plots:
+                    logger.info(f"Also created comprehensive comparison with {len(comparison_plots)} files")
+            except Exception as e:
+                logger.warning(f"Could not create comprehensive comparison: {e}")
+        
+        return results

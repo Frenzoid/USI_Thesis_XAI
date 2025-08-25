@@ -13,17 +13,37 @@ from utils import setup_logging
 logger = setup_logging("visualization")
 
 class VisualizationFramework:
-    """Comprehensive visualization system for experiment results with auto-generation"""
+    """
+    Comprehensive visualization system for experiment results.
+    
+    This framework provides:
+    1. Individual experiment visualizations
+    2. Comparative analysis across experiments
+    3. Model performance comparisons
+    4. Prompt engineering analysis
+    5. Interactive HTML reports with navigation
+    6. Automated plot generation and organization
+    """
     
     def __init__(self):
-        # Create plots directory structure
+        """Initialize visualization framework and create directory structure"""
+        # Base directory for all plots
         self.plots_base_dir = Config.PLOTS_DIR
         self.ensure_directory_structure()
         
         logger.info("VisualizationFramework initialized")
     
+    # =============================================================================
+    # DIRECTORY MANAGEMENT
+    # =============================================================================
+    
     def ensure_directory_structure(self):
-        """Ensure proper directory structure for plots"""
+        """
+        Ensure proper directory structure exists for organized plot storage.
+        
+        Creates subdirectories for different types of visualizations
+        to keep outputs organized and easy to navigate.
+        """
         directories = [
             self.plots_base_dir,
             os.path.join(self.plots_base_dir, "individual_experiments"),
@@ -38,9 +58,26 @@ class VisualizationFramework:
         
         logger.debug(f"Ensured {len(directories)} plot directories exist")
     
+    # =============================================================================
+    # METRIC COMPARISON VISUALIZATIONS
+    # =============================================================================
+    
     def plot_metric_comparison(self, evaluations: List[Dict], metric: str = 'f1_score',
                               save_path: str = None, show_error_bars: bool = True) -> go.Figure:
-        """Plot comparison of a specific metric across evaluations with enhanced styling"""
+        """
+        Create comparative bar chart for a specific metric across evaluations.
+        
+        Features modern styling with color-coded bars, error bars, and average lines.
+        
+        Args:
+            evaluations: List of evaluation result dictionaries
+            metric: Metric name to plot (e.g., 'f1_score', 'semantic_similarity')
+            save_path: Optional path to save the plot
+            show_error_bars: Whether to show standard deviation error bars
+            
+        Returns:
+            plotly.graph_objects.Figure: Interactive plot figure
+        """
         logger.info(f"Creating metric comparison plot for '{metric}' across {len(evaluations)} evaluations")
         
         names = []
@@ -48,15 +85,16 @@ class VisualizationFramework:
         stds = []
         colors = []
         
-        # Color scheme based on model type
+        # Color scheme based on model type for easy identification
         color_map = {
-            'open_source': '#1f77b4',  # Blue
-            'api': '#ff7f0e',          # Orange
-            'gpt': '#2ca02c',          # Green
-            'gemini': '#d62728',       # Red
-            'claude': '#9467bd'        # Purple
+            'open_source': '#1f77b4',  # Blue for open source models
+            'api': '#ff7f0e',          # Orange for API models
+            'gpt': '#2ca02c',          # Green for GPT models
+            'gemini': '#d62728',       # Red for Gemini models
+            'claude': '#9467bd'        # Purple for Claude models
         }
         
+        # Process each evaluation result
         for eval_result in evaluations:
             name = eval_result.get('batch_name', 'Unknown')
             model_type = eval_result.get('model_type', 'unknown')
@@ -65,6 +103,7 @@ class VisualizationFramework:
             names.append(name)
             agg_scores = eval_result['aggregated_scores']
             
+            # Extract metric values with fallback to 0
             if metric in agg_scores:
                 means.append(agg_scores[metric]['mean'])
                 stds.append(agg_scores[metric]['std'] if show_error_bars else 0)
@@ -72,7 +111,7 @@ class VisualizationFramework:
                 means.append(0)
                 stds.append(0)
             
-            # Determine color
+            # Determine color based on model characteristics
             if 'gpt' in model_name.lower():
                 colors.append(color_map.get('gpt', color_map['api']))
             elif 'gemini' in model_name.lower():
@@ -82,6 +121,7 @@ class VisualizationFramework:
             else:
                 colors.append(color_map.get(model_type, '#666666'))
         
+        # Create interactive bar chart
         fig = go.Figure()
         
         fig.add_trace(go.Bar(
@@ -94,6 +134,7 @@ class VisualizationFramework:
             textposition='auto'
         ))
         
+        # Style the plot with modern design
         fig.update_layout(
             title=f'{metric.replace("_", " ").title()} Comparison Across Models',
             xaxis_title='Experiment',
@@ -101,27 +142,46 @@ class VisualizationFramework:
             showlegend=False,
             xaxis_tickangle=-45,
             height=600,
-            margin=dict(b=150),  # More space for rotated labels
+            margin=dict(b=150),  # Extra space for rotated labels
             font=dict(size=12),
             title_font=dict(size=16, family="Arial Black")
         )
         
-        # Add horizontal line for average
+        # Add horizontal line showing average performance
         if means:
             avg_score = np.mean(means)
             fig.add_hline(y=avg_score, line_dash="dash", line_color="gray",
                          annotation_text=f"Average: {avg_score:.3f}")
         
+        # Save plot if path provided
         if save_path:
             fig.write_html(save_path)
             logger.info(f"Saved {metric} comparison plot to: {save_path}")
         
         return fig
     
+    # =============================================================================
+    # RADAR CHART VISUALIZATIONS
+    # =============================================================================
+    
     def plot_model_comparison_radar(self, evaluations: List[Dict], 
                                    metrics: List[str] = None, save_path: str = None,
                                    max_models: int = 8) -> go.Figure:
-        """Create radar chart comparing multiple models across metrics with improved styling"""
+        """
+        Create radar chart comparing multiple models across various metrics.
+        
+        Radar charts are excellent for comparing multi-dimensional performance
+        and identifying models that excel in specific areas.
+        
+        Args:
+            evaluations: List of evaluation results
+            metrics: List of metrics to include in radar (None for default set)
+            save_path: Optional path to save the plot
+            max_models: Maximum number of models to show (for readability)
+            
+        Returns:
+            plotly.graph_objects.Figure: Interactive radar chart
+        """
         logger.info(f"Creating radar chart for {len(evaluations)} evaluations")
         
         if metrics is None:
@@ -129,12 +189,13 @@ class VisualizationFramework:
         
         fig = go.Figure()
         
-        # Limit number of models for readability
+        # Limit number of models for chart readability
         evaluations_to_plot = evaluations[:max_models] if len(evaluations) > max_models else evaluations
         
         if len(evaluations) > max_models:
             logger.warning(f"Limiting radar chart to {max_models} models for readability")
         
+        # Use distinct colors for each model
         colors = px.colors.qualitative.Set3[:len(evaluations_to_plot)]
         
         for i, eval_result in enumerate(evaluations_to_plot):
@@ -142,7 +203,7 @@ class VisualizationFramework:
             model_name = eval_result.get('model_name', '')
             prompt_key = eval_result.get('prompt_key', '')
             
-            # Create shorter label
+            # Create shorter, more readable label
             short_name = f"{model_name}-{prompt_key}" if len(name) > 20 else name
             
             agg_scores = eval_result['aggregated_scores']
@@ -150,16 +211,18 @@ class VisualizationFramework:
             values = []
             labels = []
             
+            # Extract metric values
             for metric in metrics:
                 if metric in agg_scores:
                     values.append(agg_scores[metric]['mean'])
                     labels.append(metric.replace('_', ' ').title())
             
-            # Close the radar chart
+            # Close the radar chart by repeating first value
             if values:
                 values.append(values[0])
                 labels.append(labels[0])
             
+            # Add trace for this model
             fig.add_trace(go.Scatterpolar(
                 r=values,
                 theta=labels,
@@ -170,6 +233,7 @@ class VisualizationFramework:
                 opacity=0.6
             ))
         
+        # Style the radar chart
         fig.update_layout(
             polar=dict(
                 radialaxis=dict(
@@ -197,19 +261,37 @@ class VisualizationFramework:
             width=800
         )
         
+        # Save plot if path provided
         if save_path:
             fig.write_html(save_path)
             logger.info(f"Saved radar chart to: {save_path}")
         
         return fig
     
+    # =============================================================================
+    # PROMPT COMPARISON VISUALIZATIONS
+    # =============================================================================
+    
     def plot_prompt_comparison(self, evaluations: List[Dict], group_by_model: bool = True,
                               save_path: str = None) -> go.Figure:
-        """Create comparison plot focused on prompt engineering effects"""
+        """
+        Create visualization comparing prompt engineering effects.
+        
+        Can group by model (showing prompt effects per model) or by prompt
+        (showing model performance per prompt type).
+        
+        Args:
+            evaluations: List of evaluation results
+            group_by_model: If True, group by model; if False, group by prompt
+            save_path: Optional path to save the plot
+            
+        Returns:
+            plotly.graph_objects.Figure: Comparison plot
+        """
         logger.info(f"Creating prompt comparison plot, group_by_model={group_by_model}")
         
         if group_by_model:
-            # Group by model, compare prompts
+            # Group by model, compare prompts within each model
             model_groups = {}
             for eval_result in evaluations:
                 model_name = eval_result.get('model_name', 'Unknown')
@@ -217,6 +299,7 @@ class VisualizationFramework:
                     model_groups[model_name] = []
                 model_groups[model_name].append(eval_result)
             
+            # Create subplots for each model
             fig = make_subplots(
                 rows=1, cols=len(model_groups),
                 subplot_titles=list(model_groups.keys()),
@@ -241,8 +324,9 @@ class VisualizationFramework:
                 height=500,
                 font=dict(size=10)
             )
+            
         else:
-            # Group by prompt, compare models
+            # Group by prompt, compare models within each prompt
             prompt_groups = {}
             for eval_result in evaluations:
                 prompt_key = eval_result.get('prompt_key', 'Unknown')
@@ -270,14 +354,100 @@ class VisualizationFramework:
                 barmode='group'
             )
         
+        # Save plot if path provided
         if save_path:
             fig.write_html(save_path)
             logger.info(f"Saved prompt comparison plot to: {save_path}")
         
         return fig
     
+    # =============================================================================
+    # INDIVIDUAL EXPERIMENT VISUALIZATION
+    # =============================================================================
+    
+    def create_individual_experiment_plot(self, evaluation_result):
+        """
+        Create a comprehensive plot for an individual experiment.
+        
+        Shows all metrics as a bar chart with error bars and clear labeling.
+        
+        Args:
+            evaluation_result: Single evaluation result dictionary
+            
+        Returns:
+            plotly.graph_objects.Figure: Individual experiment plot
+        """
+        experiment_name = evaluation_result.get('batch_name', 'Unknown Experiment')
+        agg_scores = evaluation_result.get('aggregated_scores', {})
+        
+        if not agg_scores:
+            # Create empty plot with message
+            fig = go.Figure()
+            fig.add_annotation(text="No evaluation metrics available", 
+                              xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
+            fig.update_layout(title=f"Results for {experiment_name}")
+            return fig
+        
+        # Extract metrics for plotting
+        metrics = []
+        values = []
+        errors = []
+        
+        for metric, stats in agg_scores.items():
+            if isinstance(stats, dict) and 'mean' in stats:
+                metrics.append(metric.replace('_', ' ').title())
+                values.append(stats['mean'])
+                errors.append(stats.get('std', 0))
+        
+        if not metrics:
+            # Create empty plot with message
+            fig = go.Figure()
+            fig.add_annotation(text="No valid metrics found", 
+                              xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
+            fig.update_layout(title=f"Results for {experiment_name}")
+            return fig
+        
+        # Create bar plot with error bars
+        fig = go.Figure()
+        
+        fig.add_trace(go.Bar(
+            x=metrics,
+            y=values,
+            error_y=dict(type='data', array=errors),
+            text=[f'{v:.3f}' for v in values],
+            textposition='auto',
+            marker_color='lightblue'
+        ))
+        
+        fig.update_layout(
+            title=f'Evaluation Results: {experiment_name}',
+            xaxis_title='Metrics',
+            yaxis_title='Score',
+            yaxis=dict(range=[0, 1]),
+            height=500,
+            showlegend=False
+        )
+        
+        return fig
+    
+    # =============================================================================
+    # COMPREHENSIVE REPORT GENERATION
+    # =============================================================================
+    
     def create_experiment_report(self, evaluations: List[Dict], report_name: str = "experiment_report"):
-        """Generate comprehensive visualization report with organized structure"""
+        """
+        Generate comprehensive visualization report with multiple plot types.
+        
+        Creates an organized collection of visualizations with an HTML index
+        for easy navigation and analysis.
+        
+        Args:
+            evaluations: List of evaluation results
+            report_name: Name for the report directory
+            
+        Returns:
+            tuple: (plots_dict, report_directory_path)
+        """
         logger.info(f"Creating comprehensive experiment report: {report_name}")
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -287,7 +457,7 @@ class VisualizationFramework:
         plots = {}
         
         try:
-            # Generate all plot types
+            # Generate metric comparison plots
             plot_configs = [
                 ('f1_score', 'F1 Score'),
                 ('semantic_similarity', 'Semantic Similarity'),
@@ -306,7 +476,7 @@ class VisualizationFramework:
                 except Exception as e:
                     logger.error(f"Error creating {metric} comparison plot: {e}")
             
-            # Radar chart
+            # Create radar chart comparison
             try:
                 radar_fig = self.plot_model_comparison_radar(
                     evaluations,
@@ -316,7 +486,7 @@ class VisualizationFramework:
             except Exception as e:
                 logger.error(f"Error creating radar chart: {e}")
             
-            # Prompt comparison plots
+            # Create prompt comparison plots
             try:
                 prompt_fig1 = self.plot_prompt_comparison(
                     evaluations, group_by_model=True,
@@ -332,7 +502,7 @@ class VisualizationFramework:
             except Exception as e:
                 logger.error(f"Error creating prompt comparison plots: {e}")
             
-            # Create index HTML file
+            # Create comprehensive index HTML file
             self.create_report_index(report_dir, plots, evaluations)
             
         except Exception as e:
@@ -342,7 +512,14 @@ class VisualizationFramework:
         return plots, report_dir
     
     def create_report_index(self, report_dir: str, plots: Dict, evaluations: List[Dict]):
-        """Create an index.html file for the report"""
+        """
+        Create an HTML index file for comprehensive navigation of the report.
+        
+        Args:
+            report_dir: Directory containing the report
+            plots: Dictionary of generated plots
+            evaluations: Original evaluation data for statistics
+        """
         logger.info("Creating report index HTML")
         
         html_content = f"""
@@ -378,7 +555,7 @@ class VisualizationFramework:
             <div>
         """
         
-        # Add links to plots
+        # Add links to plots with readable names
         plot_names = {
             'f1_score_comparison': 'F1 Score Comparison',
             'semantic_similarity_comparison': 'Semantic Similarity Comparison',
@@ -406,7 +583,7 @@ class VisualizationFramework:
             total_samples = sum(eval_result.get('num_samples', 0) for eval_result in evaluations)
             total_valid = sum(eval_result.get('num_valid_evaluations', 0) for eval_result in evaluations)
             
-            # Get best performing experiment
+            # Find best performing experiment
             best_f1 = max(evaluations, 
                          key=lambda x: x.get('aggregated_scores', {}).get('f1_score', {}).get('mean', 0))
             
@@ -438,19 +615,32 @@ class VisualizationFramework:
         
         logger.info(f"Report index created: {index_path}")
     
-    def create_summary_csv(self, evaluations: List[Dict], save_path: str = None) -> str:
-        """Create a CSV summary of all evaluation results"""
+    # =============================================================================
+    # DATA EXPORT AND SUMMARY
+    # =============================================================================
+    
+    def create_summary_csv(self, evaluations: List[Dict], save_path) -> str:
+        """
+        Create a CSV summary of all evaluation results for further analysis.
+        
+        Args:
+            evaluations: List of evaluation results
+            save_path: Optional custom save path
+            
+        Returns:
+            str: Path to saved CSV file
+        """
         logger.info(f"Creating summary CSV for {len(evaluations)} evaluations")
         
         if save_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            save_path = os.path.join(Config.RESULTS_DIR, f"experiment_summary_{timestamp}.csv")
+            save_path = os.path.join(Config.OUTPUTS_DIR, f"experiment_summary_{timestamp}.csv")
         
         summary_data = []
         
+        # Extract key information from each evaluation
         for result in evaluations:
             agg_scores = result.get('aggregated_scores', {})
-            proc_stats = result.get('processing_stats', {})
             
             summary_row = {
                 'experiment_name': result.get('batch_name', 'Unknown'),
@@ -463,7 +653,7 @@ class VisualizationFramework:
                 'timestamp': result.get('timestamp', '')
             }
             
-            # Add key metrics
+            # Add key metrics with mean and standard deviation
             for metric in ['f1_score', 'semantic_similarity', 'precision', 'recall', 'exact_match']:
                 if metric in agg_scores:
                     summary_row[f'{metric}_mean'] = round(agg_scores[metric]['mean'], 4)
@@ -472,15 +662,13 @@ class VisualizationFramework:
                     summary_row[f'{metric}_mean'] = None
                     summary_row[f'{metric}_std'] = None
             
-            # Add processing stats
-            if proc_stats:
-                summary_row['avg_processing_time'] = round(proc_stats.get('avg_processing_time', 0), 2)
-                summary_row['total_processing_time'] = round(proc_stats.get('total_processing_time', 0), 2)
-            
             summary_data.append(summary_row)
         
-        # Create DataFrame and save
+        # Create and save DataFrame
         summary_df = pd.DataFrame(summary_data)
+        
+        # Ensure output directory exists
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
         summary_df.to_csv(save_path, index=False)
         
         logger.info(f"Summary CSV saved to: {save_path}")

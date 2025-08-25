@@ -15,9 +15,21 @@ import numpy as np
 
 from config import Config
 
-# Set up logging
+# =============================================================================
+# LOGGING SETUP
+# =============================================================================
+
 def setup_logging(name: str, level: str = None):
-    """Set up logging for a component"""
+    """
+    Set up logging for a component with both file and console output.
+    
+    Args:
+        name: Component name for logger and log file
+        level: Log level (defaults to Config.LOG_LEVEL)
+        
+    Returns:
+        logging.Logger: Configured logger instance
+    """
     logger = logging.getLogger(name)
     logger.setLevel(getattr(logging, level or Config.LOG_LEVEL))
     
@@ -26,15 +38,15 @@ def setup_logging(name: str, level: str = None):
         # Ensure logs directory exists
         os.makedirs(Config.LOGS_DIR, exist_ok=True)
         
-        # File handler
+        # File handler - saves all logs to file
         fh = logging.FileHandler(Config.get_log_file(name))
         fh.setLevel(logging.DEBUG)
         
-        # Console handler
+        # Console handler - shows important messages on screen
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
         
-        # Formatter
+        # Formatter for consistent log format
         formatter = logging.Formatter(Config.LOG_FORMAT)
         fh.setFormatter(formatter)
         ch.setFormatter(formatter)
@@ -47,8 +59,171 @@ def setup_logging(name: str, level: str = None):
 # Initialize main logger
 logger = setup_logging("utils")
 
+# =============================================================================
+# GPU/CPU DETECTION AND RESTRICTIONS
+# =============================================================================
+
+def check_gpu_availability():
+    """
+    Check GPU availability and return detailed status.
+    
+    Returns:
+        dict: GPU availability status and details
+    """
+    gpu_status = {
+        'torch_available': False,
+        'cuda_available': False,
+        'gpu_count': 0,
+        'gpu_names': [],
+        'total_memory': 0,
+        'can_run_local_models': False
+    }
+    
+    try:
+        import torch
+        gpu_status['torch_available'] = True
+        
+        if torch.cuda.is_available():
+            gpu_status['cuda_available'] = True
+            gpu_status['gpu_count'] = torch.cuda.device_count()
+            
+            for i in range(gpu_status['gpu_count']):
+                props = torch.cuda.get_device_properties(i)
+                gpu_status['gpu_names'].append(props.name)
+                gpu_status['total_memory'] += props.total_memory
+            
+            # Convert to GB for readability
+            gpu_status['total_memory'] = gpu_status['total_memory'] / (1024**3)
+            
+            # Check if we have enough memory for local models (at least 6GB recommended)
+            gpu_status['can_run_local_models'] = gpu_status['total_memory'] >= 6.0
+            
+    except ImportError:
+        logger.warning("PyTorch not available - local models cannot be used")
+    except Exception as e:
+        logger.error(f"Error checking GPU availability: {e}")
+    
+    return gpu_status
+
+def get_memory_status():
+    """
+    Get current memory status (RAM and GPU).
+    
+    Returns:
+        dict: Memory usage information
+    """
+    memory_status = {
+        'ram_total_gb': 0,
+        'ram_available_gb': 0,
+        'ram_percent_used': 0,
+        'gpu_memory_used_gb': 0,
+        'gpu_memory_total_gb': 0,
+        'gpu_memory_percent_used': 0
+    }
+    
+    try:
+        import psutil
+        
+        # RAM information
+        ram = psutil.virtual_memory()
+        memory_status['ram_total_gb'] = ram.total / (1024**3)
+        memory_status['ram_available_gb'] = ram.available / (1024**3)
+        memory_status['ram_percent_used'] = ram.percent
+        
+    except ImportError:
+        logger.warning("psutil not available for memory monitoring")
+    
+    try:
+        import torch
+        
+        if torch.cuda.is_available():
+            # GPU memory information
+            memory_status['gpu_memory_used_gb'] = torch.cuda.memory_allocated() / (1024**3)
+            memory_status['gpu_memory_total_gb'] = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+            
+            if memory_status['gpu_memory_total_gb'] > 0:
+                memory_status['gpu_memory_percent_used'] = (
+                    memory_status['gpu_memory_used_gb'] / memory_status['gpu_memory_total_gb'] * 100
+                )
+    
+    except Exception as e:
+        logger.debug(f"Could not get GPU memory status: {e}")
+    
+    return memory_status
+
+def print_system_status():
+    """Print comprehensive system status including GPU and memory."""
+    gpu_status = check_gpu_availability()
+    memory_status = get_memory_status()
+    
+    print("\n=== SYSTEM STATUS ===")
+    
+    # GPU Status
+    print(f"\n🖥️  Compute Status:")
+    if gpu_status['cuda_available']:
+        print(f"   ✅ GPU Available: {gpu_status['gpu_count']} device(s)")
+        for i, name in enumerate(gpu_status['gpu_names']):
+            print(f"      GPU {i}: {name}")
+        print(f"   📊 Total GPU Memory: {gpu_status['total_memory']:.1f} GB")
+        print(f"   🚀 Can run local models: {'Yes' if gpu_status['can_run_local_models'] else 'No (need ≥6GB)'}")
+    else:
+        if gpu_status['torch_available']:
+            print(f"   ⚠️  CPU Only (PyTorch available, no CUDA)")
+        else:
+            print(f"   ❌ No PyTorch - local models unavailable")
+    
+    # Memory Status
+    print(f"\n💾 Memory Status:")
+    if memory_status['ram_total_gb'] > 0:
+        print(f"   RAM: {memory_status['ram_available_gb']:.1f} GB available of {memory_status['ram_total_gb']:.1f} GB ({memory_status['ram_percent_used']:.1f}% used)")
+    
+    if memory_status['gpu_memory_total_gb'] > 0:
+        print(f"   GPU: {memory_status['gpu_memory_used_gb']:.1f} GB used of {memory_status['gpu_memory_total_gb']:.1f} GB ({memory_status['gpu_memory_percent_used']:.1f}% used)")
+    
+    print()
+    return gpu_status, memory_status
+
+def validate_gpu_requirements_for_command(command: str, gpu_status: dict = None) -> bool:
+    """
+    Validate if a command can be run based on GPU requirements.
+    
+    Args:
+        command: Command being executed
+        gpu_status: GPU status dictionary (will check if None)
+        
+    Returns:
+        bool: True if command can be run, False otherwise
+    """
+    if gpu_status is None:
+        gpu_status = check_gpu_availability()
+    
+    # Commands that require local model capability (GPU or sufficient CPU)
+    gpu_dependent_commands = {
+        'run-experiment': 'Running experiments with local models requires GPU/sufficient resources'
+    }
+    
+    # Commands that are always allowed regardless of GPU
+    always_allowed = {
+        'list-options', 'list-commands', 'status', 'cleanup', 
+        'download-datasets', 'evaluate', 'plot'
+    }
+    
+    if command in always_allowed:
+        return True
+    
+    if command in gpu_dependent_commands:
+        # For run-experiment, we need to be more specific about what's allowed
+        return True  # We'll check this more specifically when model is being loaded
+    
+    return True  # Default: allow command
+
 def clear_gpu_memory():
-    """Clear GPU memory and run garbage collection"""
+    """
+    Clear GPU memory and run garbage collection.
+    
+    Important for freeing memory when switching between large models
+    or when running multiple experiments sequentially.
+    """
     logger.debug("Clearing GPU memory...")
     
     if torch.cuda.is_available():
@@ -59,7 +234,12 @@ def clear_gpu_memory():
     logger.debug("GPU memory cleared")
 
 def show_gpu_stats():
-    """Display current GPU memory usage"""
+    """
+    Display current GPU memory usage and device information.
+    
+    Returns:
+        str: GPU status message
+    """
     if torch.cuda.is_available():
         gpu_stats = torch.cuda.get_device_properties(0)
         memory_used = torch.cuda.max_memory_reserved() / 1024**3
@@ -72,8 +252,17 @@ def show_gpu_stats():
         logger.warning("CUDA not available")
         return "CUDA not available"
 
+# =============================================================================
+# RANDOM SEED AND REPRODUCIBILITY
+# =============================================================================
+
 def set_random_seeds(seed: int = None):
-    """Set random seeds for reproducibility"""
+    """
+    Set random seeds for reproducibility across all libraries.
+    
+    Args:
+        seed: Random seed value (defaults to Config.RANDOM_SEED)
+    """
     seed = seed or Config.RANDOM_SEED
     random.seed(seed)
     np.random.seed(seed)
@@ -82,8 +271,17 @@ def set_random_seeds(seed: int = None):
         torch.cuda.manual_seed_all(seed)
     logger.info(f"Set random seeds to {seed}")
 
+# =============================================================================
+# SYSTEM INFORMATION AND DIAGNOSTICS
+# =============================================================================
+
 def get_system_info():
-    """Get system information for debugging"""
+    """
+    Collect comprehensive system information for debugging and logging.
+    
+    Returns:
+        dict: System information including Python, PyTorch, CUDA, and directory info
+    """
     info = {
         'python_version': sys.version,
         'torch_version': torch.__version__,
@@ -98,11 +296,12 @@ def get_system_info():
             'responses': Config.RESPONSES_DIR,
             'evaluations': Config.EVALUATIONS_DIR,
             'plots': Config.PLOTS_DIR,
-            'models_cache': Config.MODELS_CACHE_DIR,
+            'models_cache': Config.CACHED_MODELS_DIR,
             'finetuned_models': Config.FINETUNED_MODELS_DIR
         }
     }
     
+    # Get GPU details if available
     if torch.cuda.is_available():
         try:
             gpu_props = torch.cuda.get_device_properties(0)
@@ -120,8 +319,17 @@ def get_system_info():
     
     return info
 
+# =============================================================================
+# CONFIGURATION AND API KEY VALIDATION
+# =============================================================================
+
 def validate_api_keys():
-    """Validate that required API keys are present"""
+    """
+    Check which API keys are available and log their status.
+    
+    Returns:
+        dict: API key availability status for each provider
+    """
     api_status = {}
     
     if Config.OPENAI_API_KEY:
@@ -148,7 +356,12 @@ def validate_api_keys():
     return api_status
 
 def validate_configuration_files():
-    """Validate that configuration files exist and are valid"""
+    """
+    Validate that configuration files exist and can be loaded properly.
+    
+    Returns:
+        dict: Configuration validation results
+    """
     logger.info("Validating configuration files...")
     
     validation_results = {
@@ -183,9 +396,23 @@ def validate_configuration_files():
     
     return validation_results
 
+# =============================================================================
+# EXPERIMENT CONTEXT MANAGEMENT
+# =============================================================================
+
 @contextmanager
 def experiment_context(experiment_name: str):
-    """Context manager for experiments with cleanup and error handling"""
+    """
+    Context manager for experiments with automatic cleanup and error handling.
+    
+    Provides consistent experiment lifecycle management with timing and cleanup.
+    
+    Args:
+        experiment_name: Name of experiment for logging
+        
+    Yields:
+        None: Context for experiment execution
+    """
     logger.info(f"Starting experiment context: {experiment_name}")
     logger.info("=" * 50)
     
@@ -213,8 +440,21 @@ def experiment_context(experiment_name: str):
         except Exception as cleanup_error:
             logger.warning(f"GPU cleanup error: {cleanup_error}")
 
+# =============================================================================
+# LEGACY DATASET DOWNLOAD FUNCTION
+# =============================================================================
+
 def download_dataset(dataset_json: str, dataset_path: str):
-    """Download datasets from JSON configuration (legacy function for compatibility)"""
+    """
+    Download datasets from JSON configuration (legacy function for compatibility).
+    
+    This function maintains compatibility with the existing download infrastructure
+    used by the experiment runner.
+    
+    Args:
+        dataset_json: Path to JSON file with dataset configurations
+        dataset_path: Base path for dataset storage
+    """
     logger.info(f"Starting dataset download from {dataset_json}")
     
     if not os.path.exists(dataset_path):
@@ -243,9 +483,11 @@ def download_dataset(dataset_json: str, dataset_path: str):
             if not os.path.exists(filename):
                 logger.info(f"Downloading {dataset['name']}...")
                 try:
+                    # Download with wget (requires wget to be installed)
                     subprocess.run(["wget", "-q", "-O", filename, dataset["link"]], 
                                  check=True, timeout=300)
                     
+                    # Extract if it's a zip file
                     if filename.endswith('.zip'):
                         logger.info(f"Extracting {filename}...")
                         subprocess.run(["unzip", "-q", filename, "-d", os.path.dirname(filename)], 
@@ -267,8 +509,20 @@ def download_dataset(dataset_json: str, dataset_path: str):
         except Exception as e:
             logger.error(f"Error processing dataset configuration: {e}")
 
+# =============================================================================
+# UTILITY FUNCTIONS
+# =============================================================================
+
 def safe_filename(name: str) -> str:
-    """Create a safe filename from any string"""
+    """
+    Create a filesystem-safe filename from any string.
+    
+    Args:
+        name: Input string to make safe
+        
+    Returns:
+        str: Safe filename with problematic characters removed
+    """
     # Remove or replace problematic characters
     safe_chars = "".join(c for c in name if c.isalnum() or c in ('-', '_', '.'))
     # Ensure it's not empty and not too long
@@ -277,7 +531,15 @@ def safe_filename(name: str) -> str:
     return safe_chars[:100]  # Limit length
 
 def load_json_config(filepath: str) -> Dict[str, Any]:
-    """Load JSON configuration file"""
+    """
+    Load JSON configuration file with error handling.
+    
+    Args:
+        filepath: Path to JSON file
+        
+    Returns:
+        dict: Loaded configuration or empty dict if failed
+    """
     try:
         with open(filepath, 'r') as f:
             config = json.load(f)
@@ -287,15 +549,27 @@ def load_json_config(filepath: str) -> Dict[str, Any]:
         logger.error(f"Error loading configuration from {filepath}: {e}")
         return {}
 
+# =============================================================================
+# DIRECTORY AND SYSTEM SETUP
+# =============================================================================
+
 def create_directory_structure():
-    """Create all necessary directories for the system"""
+    """
+    Create all necessary directories for the system.
+    
+    Returns:
+        list: List of created/verified directories
+        
+    Raises:
+        Exception: If directory creation fails
+    """
     logger.info("Creating directory structure...")
     
     try:
         created_dirs = Config.create_directories()
         logger.info(f"Created/verified {len(created_dirs)} directories")
         
-        # Create configuration files if they don't exist
+        # Check configuration files and warn about missing ones
         config_files_status = Config.validate_configuration_files()
         
         missing_configs = [name for name, exists in config_files_status.items() if not exists]
@@ -317,19 +591,28 @@ def create_directory_structure():
         raise
 
 def check_system_requirements():
-    """Check system requirements and dependencies"""
+    """
+    Check system requirements and dependencies.
+    
+    Returns:
+        dict: Requirements status for different components
+    """
     logger.info("Checking system requirements...")
 
-    # Figure out torch / cuda availability without shadowing the global name
+    # Check torch/cuda availability with proper error handling
     torch_available = True
     cuda_available = False
     try:
-        # if torch is installed, this works; if not, the except block handles it
+        import torch
         cuda_available = torch.cuda.is_available()
-    except Exception:
+    except ImportError:
         torch_available = False
         cuda_available = False
         logger.error("PyTorch not available")
+    except Exception as e:
+        torch_available = True  # torch imported but cuda check failed
+        cuda_available = False
+        logger.warning(f"PyTorch available but CUDA check failed: {e}")
 
     requirements = {
         'python_version_ok': sys.version_info >= (3, 8),
@@ -362,10 +645,15 @@ def check_system_requirements():
     return requirements
 
 def initialize_system():
-    """Initialize the system - create directories, set seeds, validate configs"""
+    """
+    Initialize the system - create directories, set seeds, validate configs.
+    
+    Returns:
+        dict: Initialization results and system status
+    """
     logger.info("Initializing XAI explanation evaluation system...")
     
-    # Set random seeds
+    # Set random seeds for reproducibility
     set_random_seeds()
     
     # Check system requirements
@@ -378,31 +666,25 @@ def initialize_system():
     if torch.cuda.is_available():
         show_gpu_stats()
     
-    # Log initialization results
-    if requirements['python_version_ok']:
-        logger.info(f"✅ Python version: {sys.version.split()[0]}")
-    else:
-        logger.error(f"❌ Python version {sys.version.split()[0]} < 3.8 required")
+    # Log initialization results with status indicators
+    status_indicators = {
+        True: "✅",
+        False: "❌"
+    }
     
-    if requirements['torch_available']:
-        logger.info("✅ PyTorch available")
-    else:
-        logger.error("❌ PyTorch not available")
+    logger.info(f"{status_indicators[requirements['python_version_ok']]} Python version: {sys.version.split()[0]}")
+    if not requirements['python_version_ok']:
+        logger.error("Python version must be 3.8 or higher")
+    
+    logger.info(f"{status_indicators[requirements['torch_available']]} PyTorch available")
     
     if requirements['cuda_available']:
         logger.info("✅ CUDA available")
     else:
         logger.info("ℹ️  CUDA not available (will use CPU)")
     
-    if requirements['directories_created']:
-        logger.info("✅ Directory structure created")
-    else:
-        logger.error("❌ Directory structure creation failed")
-    
-    if requirements['config_files_valid']:
-        logger.info("✅ Configuration files valid")
-    else:
-        logger.error("❌ Configuration files invalid or missing")
+    logger.info(f"{status_indicators[requirements['directories_created']]} Directory structure")
+    logger.info(f"{status_indicators[requirements['config_files_valid']]} Configuration files")
     
     if requirements['api_keys_present']:
         logger.info("✅ API keys configured")
@@ -416,13 +698,3 @@ def initialize_system():
         'system_info': system_info,
         'api_status': validate_api_keys()
     }
-
-"""
-# Run initialization when imported (only if not already run)
-if __name__ != "__main__":
-    try:
-        _initialization_result = initialize_system()
-    except Exception as e:
-        logger.error(f"System initialization failed: {e}")
-        # Don't raise the exception to allow partial functionality
-"""

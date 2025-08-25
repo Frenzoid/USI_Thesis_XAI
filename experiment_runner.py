@@ -15,14 +15,23 @@ from prompt_manager import PromptManager
 logger = setup_logging("experiment_runner")
 
 class ExperimentRunner:
-    """Handles running inference experiments with different models and configurations"""
+    """
+    Handles running inference experiments with different models and configurations.
+    
+    This class orchestrates the entire experiment pipeline:
+    1. Validates configurations
+    2. Prepares datasets and prompts
+    3. Loads and queries models
+    4. Saves results with metadata
+    """
     
     def __init__(self):
+        """Initialize all component managers and load configurations"""
         self.model_manager = ModelManager()
         self.prompt_manager = PromptManager()
         self.dataset_manager = DatasetManager()
         
-        # Load configurations
+        # Load all configuration files at startup
         self.prompts_config = Config.load_prompts_config()
         self.datasets_config = Config.load_datasets_config()
         self.models_config = Config.load_models_config()
@@ -34,9 +43,24 @@ class ExperimentRunner:
         logger.info("ExperimentRunner initialized")
     
     def validate_experiment_config(self, config: Dict[str, Any]) -> bool:
-        """Validate experiment configuration"""
+        """
+        Validate experiment configuration for required fields and compatibility.
+        
+        Checks:
+        - All required fields are present
+        - Experiment type is valid
+        - Model, dataset, and prompt exist in configurations
+        - Prompt is compatible with the dataset
+        
+        Args:
+            config: Experiment configuration dictionary
+            
+        Returns:
+            bool: True if configuration is valid, False otherwise
+        """
         required_fields = ['experiment_type', 'model', 'dataset', 'prompt', 'size', 'temperature']
         
+        # Check all required fields are present
         for field in required_fields:
             if field not in config:
                 logger.error(f"Missing required field: {field}")
@@ -57,11 +81,12 @@ class ExperimentRunner:
             logger.error(f"Unknown dataset: {config['dataset']}")
             return False
         
-        # Validate prompt exists and is compatible
+        # Validate prompt exists
         if config['prompt'] not in self.prompts_config:
             logger.error(f"Unknown prompt: {config['prompt']}")
             return False
         
+        # Check prompt-dataset compatibility
         prompt_config = self.prompts_config[config['prompt']]
         if prompt_config['compatible_dataset'] != config['dataset']:
             logger.error(f"Prompt '{config['prompt']}' not compatible with dataset '{config['dataset']}'")
@@ -70,24 +95,39 @@ class ExperimentRunner:
         return True
     
     def prepare_dataset(self, dataset_name: str, size: int) -> pd.DataFrame:
-        """Load and prepare dataset for experiment"""
+        """
+        Load and prepare dataset for experiment.
+        
+        Downloads dataset if necessary, loads it, and samples to the requested size.
+        
+        Args:
+            dataset_name: Name of dataset to prepare
+            size: Number of samples to return
+            
+        Returns:
+            pandas.DataFrame: Prepared dataset sample
+            
+        Raises:
+            Exception: If dataset cannot be loaded or prepared
+        """
         logger.info(f"Preparing dataset: {dataset_name}")
         
         dataset_config = self.datasets_config[dataset_name]
         
-        # Download dataset if needed
+        # Construct path to dataset file
         dataset_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'], dataset_config['csv_file'])
         
+        # Download if not exists
         if not os.path.exists(dataset_path):
             logger.info(f"Dataset not found, downloading: {dataset_name}")
             self.download_dataset(dataset_name)
         
-        # Load dataset
+        # Load and sample dataset
         try:
             df = pd.read_csv(dataset_path)
             logger.info(f"Loaded dataset with {len(df)} rows")
             
-            # Sample data
+            # Sample data if requested size is smaller than dataset
             if size < len(df):
                 df = df.sample(n=size, random_state=Config.RANDOM_SEED).reset_index(drop=True)
                 logger.info(f"Sampled {size} rows from dataset")
@@ -99,13 +139,21 @@ class ExperimentRunner:
             raise
     
     def download_dataset(self, dataset_name: str):
-        """Download dataset from configured URL"""
+        """
+        Download dataset using the existing download infrastructure.
+        
+        Creates a temporary configuration file and uses the legacy download function.
+        This maintains compatibility with the existing download system.
+        
+        Args:
+            dataset_name: Name of dataset to download
+        """
         dataset_config = self.datasets_config[dataset_name]
         
         download_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'])
         os.makedirs(download_path, exist_ok=True)
         
-        # Use existing download functionality
+        # Create temporary configuration for legacy download function
         temp_config = [{
             'name': dataset_name,
             'link': dataset_config['download_link'],
@@ -119,11 +167,25 @@ class ExperimentRunner:
         try:
             download_dataset(temp_file, Config.DATA_DIR)
         finally:
+            # Always clean up temporary file
             if os.path.exists(temp_file):
                 os.remove(temp_file)
     
     def prepare_prompts(self, df: pd.DataFrame, dataset_name: str, prompt_name: str) -> List[str]:
-        """Prepare prompts for each row in the dataset"""
+        """
+        Prepare prompts for each row in the dataset.
+        
+        This is a legacy method maintained for compatibility. The actual prompt preparation
+        is now done in run_baseline_experiment with better error handling.
+        
+        Args:
+            df: Dataset DataFrame
+            dataset_name: Name of the dataset
+            prompt_name: Name of the prompt template
+            
+        Returns:
+            List[str]: List of formatted prompts
+        """
         logger.info(f"Preparing prompts using: {prompt_name}")
         
         prompts = []
@@ -142,22 +204,35 @@ class ExperimentRunner:
         return prompts
     
     def load_model(self, model_name: str):
-        """Load the specified model"""
+        """
+        Load the specified model for inference.
+        
+        Handles both local models (via Unsloth) and API models (validation only).
+        For local models, supports both base and finetuned variants.
+        
+        Args:
+            model_name: Name of model to load
+            
+        Raises:
+            ValueError: If model configuration is invalid or API keys missing
+        """
         model_config = self.models_config[model_name]
         
         if model_config['type'] == 'local':
-            # Handle finetuned models
+            # Handle local models with Unsloth
             if model_config.get('finetuned', False):
+                # Finetuned model: look in finetuned models directory
                 model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
                                         model_config['model_path'].split('/')[-1] + '_finetuned')
                 logger.info(f"Loading finetuned model from: {model_path}")
                 self.model_manager.load_finetuned_model(model_path)
             else:
+                # Base model: use configured path
                 logger.info(f"Loading base model: {model_config['model_path']}")
                 self.model_manager.load_open_source_model(model_name, model_config['model_path'])
         
         elif model_config['type'] == 'api':
-            # API models don't need loading, just validation
+            # API models: validate credentials
             provider = model_config['provider']
             if provider == 'openai' and not Config.OPENAI_API_KEY:
                 raise ValueError("OpenAI API key not configured")
@@ -171,8 +246,23 @@ class ExperimentRunner:
         else:
             raise ValueError(f"Unknown model type: {model_config['type']}")
     
-    def generate_responses(self, prompts: List[str], expected_outputs: List[str], model_name: str, temperature: float) -> List[Dict[str, Any]]:
-        """Generate responses using the loaded model"""
+    def generate_responses(self, prompts: List[str], expected_outputs: List[str], 
+                          model_name: str, temperature: float) -> List[Dict[str, Any]]:
+        """
+        Generate responses using the loaded model.
+        
+        Handles both local and API models, with comprehensive error handling
+        and performance tracking.
+        
+        Args:
+            prompts: List of prompts to send to model
+            expected_outputs: List of expected outputs for evaluation
+            model_name: Name of model to use
+            temperature: Temperature parameter for generation
+            
+        Returns:
+            List[Dict]: List of response objects with metadata
+        """
         logger.info(f"Generating {len(prompts)} responses using {model_name}")
         
         model_config = self.models_config[model_name]
@@ -188,11 +278,13 @@ class ExperimentRunner:
             expected_output = expected_outputs[i]
             
             try:
+                # Route to appropriate model type
                 if model_config['type'] == 'local':
                     response = self.model_manager.query_open_source(
                         prompt, max_tokens=max_tokens, temperature=temperature
                     )
                 elif model_config['type'] == 'api':
+                    # Route to appropriate API provider
                     provider = model_config['provider']
                     api_model_name = model_config['model_name']
                     
@@ -215,10 +307,11 @@ class ExperimentRunner:
                 
                 processing_time = time.time() - start_time
                 
-                # Remove the prompt from the model's response
+                # Clean response (remove prompt if model echoed it)
                 if response and response.startswith(prompt):
                     response = response[len(prompt):].strip()
                 
+                # Store successful response with metadata
                 responses.append({
                     'prompt': prompt,
                     'response': response,
@@ -235,9 +328,11 @@ class ExperimentRunner:
                 
                 logger.error(f"Error generating response {i+1}/{len(prompts)}: {error_msg}")
                 
+                # Store failed response with error info
                 responses.append({
                     'prompt': prompt,
                     'response': f"Error: {error_msg}",
+                    'expected_output': expected_output,
                     'processing_time': processing_time,
                     'success': False,
                     'error': error_msg
@@ -257,7 +352,23 @@ class ExperimentRunner:
     
     def save_experiment_results(self, experiment_config: Dict[str, Any], 
                               df: pd.DataFrame, responses: List[Dict[str, Any]]) -> str:
-        """Save experiment results to file"""
+        """
+        Save experiment results to JSON file with comprehensive metadata.
+        
+        Creates a structured output file containing all experiment data,
+        configuration, and processing statistics.
+        
+        Args:
+            experiment_config: Configuration used for the experiment
+            df: Original dataset DataFrame
+            responses: Generated responses with metadata
+            
+        Returns:
+            str: Path to saved file
+            
+        Raises:
+            Exception: If file cannot be saved
+        """
         
         # Generate experiment name and file paths
         experiment_name = Config.generate_experiment_name(
@@ -275,7 +386,7 @@ class ExperimentRunner:
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         
-        # Prepare results data
+        # Prepare comprehensive results data
         results = {
             'experiment_name': experiment_name,
             'experiment_config': experiment_config,
@@ -292,7 +403,7 @@ class ExperimentRunner:
             'processing_stats': {}
         }
         
-        # Add expected outputs
+        # Add expected outputs for evaluation
         dataset_config = self.datasets_config[experiment_config['dataset']]
         answer_field = dataset_config['answer_field']
         
@@ -300,7 +411,7 @@ class ExperimentRunner:
             expected = str(row[answer_field]) if answer_field in row and not pd.isna(row[answer_field]) else ""
             results['expected_outputs'].append(expected)
         
-        # Calculate processing statistics
+        # Calculate comprehensive processing statistics
         processing_times = [r['processing_time'] for r in responses]
         if processing_times:
             results['processing_stats'] = {
@@ -325,7 +436,22 @@ class ExperimentRunner:
             raise
     
     def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Run a baseline experiment with the given configuration"""
+        """
+        Run a complete baseline experiment with the given configuration.
+        
+        This is the main experiment execution method that:
+        1. Validates configuration
+        2. Prepares dataset and prompts
+        3. Loads model
+        4. Generates responses
+        5. Saves results
+        
+        Args:
+            config: Complete experiment configuration
+            
+        Returns:
+            Dict containing experiment results and metadata, or None if failed
+        """
         logger.info(f"Starting baseline experiment: {config}")
         
         # Validate configuration
@@ -334,10 +460,10 @@ class ExperimentRunner:
             return None
         
         try:
-            # Prepare dataset
+            # Step 1: Prepare dataset
             df = self.prepare_dataset(config['dataset'], config['size'])
             
-            # Fix: Ensure you only get the specified size of the dataset for iteration
+            # Ensure we only process the requested number of samples
             df_slice = df.head(config['size'])
             
             # Validate dataset has required fields
@@ -345,17 +471,18 @@ class ExperimentRunner:
                 logger.error(f"Dataset validation failed for {config['dataset']}")
                 return None
             
-            # Load model
+            # Step 2: Load model
             self.load_model(config['model'])
             
-            # Prepare prompts
+            # Step 3: Prepare prompts and expected outputs
             prompts = []
-            expected_outputs = [] # New list to store expected outputs
+            expected_outputs = []
+            
             for idx, row in df_slice.iterrows():
                 try:
                     # Handle few-shot prompts specially
                     if 'few_shot' in config['prompt']:
-                        # Generate few-shot examples
+                        # Generate few-shot examples from other samples
                         few_shot_examples = self.prompt_manager.generate_few_shot_examples(
                             df, config['dataset'], n_examples=3, exclude_indices=[idx]
                         )
@@ -363,12 +490,13 @@ class ExperimentRunner:
                     else:
                         additional_vars = {}
                     
+                    # Prepare prompt for this row
                     prompt = self.prompt_manager.prepare_prompt_for_row(
                         config['prompt'], row, config['dataset'], additional_vars
                     )
                     prompts.append(prompt)
                     
-                    # Use the dataset manager to get the MAPPED expected answer
+                    # Get expected answer using dataset manager
                     expected_output = self.dataset_manager.get_expected_answer(row, config['dataset'])
                     expected_outputs.append(expected_output)
                     
@@ -379,16 +507,17 @@ class ExperimentRunner:
             
             logger.info(f"Prepared {len(prompts)} prompts")
             
-            # Generate responses
+            # Step 4: Generate responses
             responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'])
             
-            # Save results
+            # Step 5: Save results
             output_file = self.save_experiment_results(config, df, responses)
             
             # Clean up GPU memory if using local models
             if self.models_config[config['model']]['type'] == 'local':
                 clear_gpu_memory()
             
+            # Return success summary
             experiment_name = Config.generate_experiment_name(
                 config['experiment_type'], config['dataset'], config['model'], 
                 config['prompt'], config['size'], config['temperature']
