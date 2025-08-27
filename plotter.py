@@ -12,16 +12,16 @@ logger = setup_logging("plotting_runner")
 
 class PlottingRunner:
     """
-    Handles generating plots and visualizations from evaluation results.
+    Handles generating plots and visualizations from evaluation results using metadata-based detection.
     
     This class serves as the interface between the CLI and the visualization
     framework, providing methods to:
-    1. Find and load evaluation result files with enhanced type detection
-    2. Create individual experiment plots
-    3. Generate comparison plots across multiple experiments
-    4. Create comprehensive visualization reports
-    5. Manage plot organization and file paths
-    6. Auto-detect experiment types from names and file paths
+    1. Find and load evaluation result files
+    2. Extract metadata from file content (not filename parsing)
+    3. Create individual experiment plots
+    4. Generate comparison plots across multiple experiments
+    5. Create comprehensive visualization reports
+    6. Manage plot organization and file paths
     """
     
     def __init__(self):
@@ -30,55 +30,39 @@ class PlottingRunner:
         logger.info("PlottingRunner initialized")
     
     # =============================================================================
-    # EXPERIMENT TYPE DETECTION
+    # METADATA EXTRACTION FROM FILE CONTENT
     # =============================================================================
     
-    def extract_experiment_type_from_name(self, experiment_name: str) -> Optional[str]:
+    def extract_metadata_from_evaluation_data(self, evaluation_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Extract experiment type from experiment name using Config method.
+        Extract experiment metadata from loaded evaluation file data.
         
         Args:
-            experiment_name: Name of the experiment
+            evaluation_data: Loaded evaluation result data
             
         Returns:
-            str: Experiment type if valid, None otherwise
+            dict: Extracted metadata including experiment_type, mode, model, etc.
         """
-        return Config.extract_experiment_type_from_name(experiment_name)
-    
-    def detect_experiment_type(self, experiment_name: str, experiment_file: str = None) -> str:
-        """
-        Detect experiment type using multiple methods with fallback chain.
+        # For evaluation files, metadata is in 'original_experiment_config'
+        metadata = evaluation_data.get('original_experiment_config', {})
         
-        Detection priority:
-        1. Extract from experiment name using Config method (most reliable)
-        2. Extract from file path (fallback)
-        3. Default to 'baseline' (ultimate fallback)
+        # Extract key fields with defaults
+        extracted = {
+            'experiment_type': metadata.get('experiment_type', 'baseline'),
+            'mode': metadata.get('mode', 'zero-shot'),
+            'model': metadata.get('model', 'unknown'),
+            'dataset': metadata.get('dataset', 'unknown'),
+            'prompt': metadata.get('prompt', 'unknown'),
+            'size': metadata.get('size', 0),
+            'temperature': metadata.get('temperature', 0.1),
+            'few_shot_row': metadata.get('few_shot_row')
+        }
         
-        Args:
-            experiment_name: Name of the experiment
-            experiment_file: Path to experiment file (optional)
-            
-        Returns:
-            str: Detected experiment type
-        """
-        # Method 1: Extract from experiment name using Config method
-        detected_type = self.extract_experiment_type_from_name(experiment_name)
-        if detected_type:
-            return detected_type
-        
-        # Method 2: Extract from file path
-        if experiment_file:
-            for exp_type in Config.EXPERIMENT_TYPES:
-                if exp_type in experiment_file:
-                    logger.debug(f"Detected experiment type '{exp_type}' from file path '{experiment_file}'")
-                    return exp_type
-        
-        # Method 3: Ultimate fallback
-        logger.warning(f"Could not detect experiment type for '{experiment_name}', using 'baseline' as fallback")
-        return 'baseline'
+        logger.debug(f"Extracted metadata from evaluation file: {extracted}")
+        return extracted
     
     # =============================================================================
-    # FILE DISCOVERY AND LOADING WITH ENHANCED TYPE DETECTION
+    # FILE DISCOVERY AND LOADING WITH METADATA-BASED DETECTION
     # =============================================================================
     
     def find_evaluation_files(self, experiment_type: Optional[str] = None) -> List[str]:
@@ -86,27 +70,21 @@ class PlottingRunner:
         Find all evaluation result files for plotting.
         
         Args:
-            experiment_type: Type filter for evaluation files
+            experiment_type: Type filter for evaluation files (will be applied via metadata)
             
         Returns:
             list: Paths to evaluation files
-            
-        Raises:
-            ValueError: If experiment type is invalid
         """
-        if experiment_type:
-            if not Config.validate_experiment_type(experiment_type):
-                raise ValueError(f"Invalid experiment type: {experiment_type}")
-            
-            search_dir = Config.get_output_dirs_for_experiment_type(experiment_type)['evaluations']
+        # Search across all experiment types since we'll filter by metadata
+        all_files = []
+        for exp_type in Config.EXPERIMENT_TYPES:
+            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
             pattern = os.path.join(search_dir, "evaluation_*.json")
-        else:
-            # Search all experiment types
-            pattern = os.path.join(Config.EVALUATIONS_DIR, "**", "evaluation_*.json")
+            files = glob.glob(pattern)
+            all_files.extend(files)
         
-        files = glob.glob(pattern, recursive=True)
-        logger.info(f"Found {len(files)} evaluation files")
-        return files
+        logger.info(f"Found {len(all_files)} evaluation files")
+        return all_files
     
     def load_evaluation_results(self, file_path: str) -> Optional[Dict[str, Any]]:
         """
@@ -131,43 +109,19 @@ class PlottingRunner:
     
     def load_evaluation_by_name(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """
-        Load evaluation results for a specific experiment by name with enhanced type detection.
-        
-        Args:
-            experiment_name: Name of experiment to load
-            experiment_type: Optional type hint (will auto-detect if None)
-            
-        Returns:
-            dict: Evaluation data, or None if not found
+        Load evaluation results for a specific experiment by name with metadata-based detection.
         """
         logger.info(f"Loading evaluation for: {experiment_name}")
         
-        # Step 1: Determine experiment type using enhanced detection
-        if not experiment_type:
-            experiment_type = self.extract_experiment_type_from_name(experiment_name)
-            if experiment_type:
-                logger.info(f"Auto-detected experiment type: {experiment_type}")
-        
-        # Step 2: Find evaluation file using detected/provided type
+        # Search across all experiment types since we'll determine the actual type from metadata
         evaluation_file = None
         
-        if experiment_type:
-            # Search in the specific type directory first
-            search_dir = Config.get_output_dirs_for_experiment_type(experiment_type)['evaluations']
+        for exp_type in Config.EXPERIMENT_TYPES:
+            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
             potential_file = os.path.join(search_dir, f"evaluation_{experiment_name}.json")
             if os.path.exists(potential_file):
                 evaluation_file = potential_file
-        
-        # Step 3: Fallback to searching all directories if not found
-        if not evaluation_file:
-            logger.debug("Searching all evaluation directories as fallback")
-            for exp_type in Config.EXPERIMENT_TYPES:
-                search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
-                potential_file = os.path.join(search_dir, f"evaluation_{experiment_name}.json")
-                if os.path.exists(potential_file):
-                    evaluation_file = potential_file
-                    logger.info(f"Found evaluation in {exp_type} directory")
-                    break
+                break
         
         if not evaluation_file:
             logger.error(f"Evaluation file not found: {experiment_name}")
@@ -181,32 +135,29 @@ class PlottingRunner:
     
     def format_evaluation_for_visualization(self, evaluation_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Format evaluation data for compatibility with visualization framework.
-        
-        Transforms evaluation results into the format expected by the visualization
-        components, extracting key information and adding missing fields.
-        
-        Args:
-            evaluation_data: Raw evaluation results
-            
-        Returns:
-            dict: Formatted data ready for visualization
+        Format evaluation data for compatibility with visualization framework using metadata-based detection.
         """
-        experiment_config = evaluation_data.get('original_experiment_config', {})
+        # Extract metadata from file content
+        metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
         
         # Create formatted result compatible with visualization framework
         formatted_result = {
             'batch_name': evaluation_data.get('original_experiment_name', 'unknown'),
             'experiment_name': evaluation_data.get('original_experiment_name', 'unknown'),
-            'model_name': experiment_config.get('model', 'unknown'),
-            'model_type': self._determine_model_type(experiment_config.get('model', '')),
-            'prompt_key': experiment_config.get('prompt', 'unknown'),
+            'model_name': metadata['model'],
+            'model_type': self._determine_model_type(metadata['model']),
+            'prompt_key': metadata['prompt'],
+            'mode': metadata['mode'],
+            'experiment_type': metadata['experiment_type'],
             'dataset_type': evaluation_data.get('dataset_type', 'general'),
-            'dataset_name': experiment_config.get('dataset', 'unknown'),
-            'sample_size': evaluation_data.get('num_samples', 0),
+            'dataset_name': metadata['dataset'],
+            'sample_size': metadata['size'],
+            'temperature': metadata['temperature'],
+            'few_shot_row': metadata['few_shot_row'],
             'num_valid_evaluations': evaluation_data.get('num_valid_evaluations', 0),
             'aggregated_scores': evaluation_data.get('aggregated_scores', {}),
-            'timestamp': evaluation_data.get('evaluation_timestamp', datetime.now().isoformat())
+            'timestamp': evaluation_data.get('evaluation_timestamp', datetime.now().isoformat()),
+            'extracted_metadata': metadata
         }
         
         return formatted_result
@@ -221,7 +172,6 @@ class PlottingRunner:
         Returns:
             str: Model type ('api' or 'local')
         """
-        # Load models config to determine type
         try:
             models_config = Config.load_models_config()
             if model_name in models_config:
@@ -236,35 +186,29 @@ class PlottingRunner:
             return 'local'
     
     # =============================================================================
-    # INDIVIDUAL EXPERIMENT PLOTTING WITH ENHANCED TYPE DETECTION
+    # INDIVIDUAL EXPERIMENT PLOTTING WITH METADATA-BASED DETECTION
     # =============================================================================
     
     def create_individual_plot(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[str]:
         """
-        Create individual plot for a single experiment with enhanced type detection.
-        
-        Args:
-            experiment_name: Name of experiment to plot
-            experiment_type: Optional type hint (will auto-detect if None)
-            
-        Returns:
-            str: Path to generated plot file, or None if failed
+        Create individual plot for a single experiment with metadata-based detection.
         """
         logger.info(f"Creating individual plot for: {experiment_name}")
         
-        # Load evaluation data using enhanced detection
+        # Load evaluation data
         evaluation_data = self.load_evaluation_by_name(experiment_name, experiment_type)
         if not evaluation_data:
             logger.error(f"Could not load evaluation data for: {experiment_name}")
             return None
         
-        # Format for visualization
+        # Format for visualization using metadata-based approach
         formatted_data = self.format_evaluation_for_visualization(evaluation_data)
         
-        # Determine experiment type using enhanced detection
-        final_experiment_type = self.detect_experiment_type(experiment_name)
+        # Extract actual experiment type from metadata
+        metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
+        final_experiment_type = metadata['experiment_type']
         
-        # Generate plot file path
+        # Generate plot file path using the correct type from metadata
         file_paths = Config.generate_file_paths(final_experiment_type, experiment_name)
         plot_file = file_paths['plot']
         
@@ -286,44 +230,37 @@ class PlottingRunner:
             return None
     
     # =============================================================================
-    # COMPARISON PLOTTING WITH ENHANCED TYPE DETECTION
+    # COMPARISON PLOTTING WITH METADATA-BASED DETECTION
     # =============================================================================
     
     def create_comparison_plots(self, experiment_names: List[str], 
                               experiment_type: Optional[str] = None) -> Optional[List[str]]:
         """
-        Create comparison plots for multiple experiments with enhanced type detection.
-        
-        Generates various comparison visualizations including metric comparisons
-        and radar charts to analyze performance across experiments.
-        
-        Args:
-            experiment_names: List of experiment names to compare
-            experiment_type: Optional type hint (will auto-detect for each experiment)
-            
-        Returns:
-            list: Paths to generated plot files, or None if failed
+        Create comparison plots for multiple experiments with metadata-based detection.
         """
         logger.info(f"Creating comparison plots for {len(experiment_names)} experiments")
         
-        # Load all evaluation data using enhanced detection
+        # Load all evaluation data using metadata-based detection
         evaluation_data_list = []
         detected_types = set()
         
         for experiment_name in experiment_names:
-            # Use provided type or auto-detect for each experiment
-            current_experiment_type = experiment_type
-            if not current_experiment_type:
-                current_experiment_type = self.extract_experiment_type_from_name(experiment_name)
-            
-            evaluation_data = self.load_evaluation_by_name(experiment_name, current_experiment_type)
+            evaluation_data = self.load_evaluation_by_name(experiment_name, experiment_type)
             if evaluation_data:
+                # Apply experiment type filter if specified
+                if experiment_type:
+                    metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
+                    file_experiment_type = metadata['experiment_type']
+                    if file_experiment_type != experiment_type:
+                        logger.info(f"Skipping {experiment_name}: type {file_experiment_type} doesn't match filter {experiment_type}")
+                        continue
+                
                 formatted_data = self.format_evaluation_for_visualization(evaluation_data)
                 evaluation_data_list.append(formatted_data)
                 
                 # Track detected types for output directory decision
-                detected_type = self.detect_experiment_type(experiment_name)
-                detected_types.add(detected_type)
+                metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
+                detected_types.add(metadata['experiment_type'])
             else:
                 logger.warning(f"Could not load data for: {experiment_name}")
         
@@ -331,18 +268,18 @@ class PlottingRunner:
             logger.error("No valid evaluation data found for comparison")
             return None
         
-        # Determine output directory based on detected types
+        # Determine output directory based on detected types or filter
         if experiment_type:
             final_experiment_type = experiment_type
         elif len(detected_types) == 1:
             final_experiment_type = detected_types.pop()
             logger.info(f"All experiments are of type: {final_experiment_type}")
         else:
-            # Mixed types - use the most common or fallback to baseline
+            # Mixed types - use the most common
             type_counts = {}
-            for exp_name in experiment_names:
-                detected_type = self.extract_experiment_type_from_name(exp_name) or 'baseline'
-                type_counts[detected_type] = type_counts.get(detected_type, 0) + 1
+            for data in evaluation_data_list:
+                exp_type = data['experiment_type']
+                type_counts[exp_type] = type_counts.get(exp_type, 0) + 1
             
             final_experiment_type = max(type_counts, key=lambda k: type_counts[k])
             logger.info(f"Mixed experiment types detected, using most common: {final_experiment_type}")
@@ -350,7 +287,7 @@ class PlottingRunner:
         # Generate output directory and comparison name
         output_dir = Config.get_output_dirs_for_experiment_type(final_experiment_type)['plots']
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        comparison_name = f"comparison_{len(experiment_names)}exps_{timestamp}"
+        comparison_name = f"comparison_{len(evaluation_data_list)}exps_{timestamp}"
         
         os.makedirs(output_dir, exist_ok=True)
         
@@ -397,12 +334,6 @@ class PlottingRunner:
                                experiment_names: List[str], comparison_name: str):
         """
         Create an HTML index file for comparison plots.
-        
-        Args:
-            index_file: Path for the index file
-            plot_files: List of plot file paths
-            experiment_names: Names of compared experiments
-            comparison_name: Name for this comparison
         """
         html_content = f"""
         <!DOCTYPE html>
@@ -481,33 +412,29 @@ class PlottingRunner:
         logger.info(f"Comparison index created: {index_file}")
     
     # =============================================================================
-    # BATCH PLOTTING WITH ENHANCED TYPE DETECTION
+    # BATCH PLOTTING WITH METADATA-BASED DETECTION
     # =============================================================================
     
     def create_all_plots(self, experiment_type: Optional[str] = None) -> Optional[List[Dict[str, str]]]:
         """
-        Create plots for all evaluations of the specified type with enhanced detection.
-        
-        Generates individual plots for each evaluation and optionally creates
-        a comprehensive comparison if multiple experiments are found.
-        
-        Args:
-            experiment_type: Type filter for evaluations
-            
-        Returns:
-            list: List of dictionaries with experiment names and plot file paths
+        Create plots for all evaluations with metadata-based filtering.
         """
-        logger.info(f"Creating plots for all evaluations (type: {experiment_type or 'all'})")
+        logger.info(f"Creating plots for all evaluations (type filter: {experiment_type or 'none'})")
         
-        # Find all evaluation files
-        evaluation_files = self.find_evaluation_files(experiment_type)
+        # Find evaluation files across all types since we'll filter by metadata
+        all_evaluation_files = []
+        for exp_type in Config.EXPERIMENT_TYPES:
+            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
+            pattern = os.path.join(search_dir, "evaluation_*.json")
+            files = glob.glob(pattern)
+            all_evaluation_files.extend(files)
         
-        if not evaluation_files:
+        if not all_evaluation_files:
             logger.warning("No evaluation files found")
             return None
         
         results = []
-        for file_path in evaluation_files:
+        for file_path in all_evaluation_files:
             try:
                 # Extract experiment name from file path
                 file_name = os.path.basename(file_path)
@@ -516,16 +443,29 @@ class PlottingRunner:
                 else:
                     experiment_name = file_name[:-5]  # Remove '.json' suffix
                 
-                # Use enhanced type detection
-                detected_experiment_type = self.detect_experiment_type(experiment_name, file_path)
+                # Load evaluation data
+                evaluation_data = self.load_evaluation_results(file_path)
+                if not evaluation_data:
+                    continue
+                
+                # Extract metadata from file content
+                metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
+                file_experiment_type = metadata['experiment_type']
+                
+                # Apply experiment type filter if specified
+                if experiment_type and file_experiment_type != experiment_type:
+                    logger.debug(f"Skipping {experiment_name}: type {file_experiment_type} doesn't match filter {experiment_type}")
+                    continue
                 
                 # Create individual plot
-                plot_file = self.create_individual_plot(experiment_name, detected_experiment_type)
+                plot_file = self.create_individual_plot(experiment_name, file_experiment_type)
                 
                 if plot_file:
                     results.append({
                         'experiment_name': experiment_name,
-                        'experiment_type': detected_experiment_type,
+                        'experiment_type': file_experiment_type,
+                        'mode': metadata['mode'],
+                        'model': metadata['model'],
                         'plot_file': plot_file
                     })
                 
@@ -533,9 +473,9 @@ class PlottingRunner:
                 logger.error(f"Error creating plot for {file_path}: {e}")
                 continue
         
-        logger.info(f"Successfully created {len(results)} plots out of {len(evaluation_files)} evaluations")
+        logger.info(f"Successfully created {len(results)} plots")
         
-        # Also create a comprehensive comparison if we have multiple results
+        # Create comprehensive comparison if we have multiple results
         if len(results) > 1:
             try:
                 experiment_names = [r['experiment_name'] for r in results]
@@ -544,7 +484,6 @@ class PlottingRunner:
                 if experiment_type:
                     comparison_type = experiment_type
                 else:
-                    # Use the most common detected type
                     type_counts = {}
                     for result in results:
                         result_type = result['experiment_type']
