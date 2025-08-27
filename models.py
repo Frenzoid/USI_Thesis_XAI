@@ -26,14 +26,14 @@ class ModelManager:
     """
     Centralized model management system with JSON configuration support.
     
-    Handles three types of models:
-    1. Local models via Unsloth (open-source LLMs)
+    Handles three types of models with conditional initialization:
+    1. Local models via Unsloth (only loaded when needed)
     2. API models (OpenAI, Google, Anthropic)
-    3. Embedding models for similarity calculations
+    3. Embedding models for similarity calculations (lazy loaded)
     """
     
     def __init__(self):
-        """Initialize model manager with empty state and check GPU availability"""
+        """Initialize model manager with minimal state - load components only when needed"""
         # Local model state
         self.current_model = None
         self.current_tokenizer = None
@@ -45,59 +45,68 @@ class ModelManager:
         self.genai_client = None
         self.anthropic_client = None
         
-        # System status
-        self.gpu_status = check_gpu_availability()
+        # Lazy initialization flags
+        self._gpu_status_checked = False
+        self._unsloth_availability_checked = False
+        self._gpu_status = None
+        self._unsloth_available = None
         
         # Load model configurations from JSON
         self.models_config = Config.load_models_config()
         
-        # Check if Unsloth is available for local model support
-        self.unsloth_available = self._check_unsloth_availability()
-        
-        # Log system capabilities
-        self._log_system_capabilities()
-        
-        logger.info("ModelManager initialized")
+        logger.info("ModelManager initialized (components will load on-demand)")
+    
+    def _get_gpu_status(self):
+        """Lazy initialization of GPU status checking"""
+        if not self._gpu_status_checked:
+            self._gpu_status = check_gpu_availability()
+            self._gpu_status_checked = True
+            self._log_system_capabilities()
+        return self._gpu_status
     
     def _log_system_capabilities(self):
         """Log what the system can and cannot do based on available hardware"""
-        if self.gpu_status['cuda_available']:
-            logger.info(f"🚀 GPU detected: {self.gpu_status['gpu_count']} device(s) with {self.gpu_status['total_memory']:.1f} GB total memory")
-            if self.gpu_status['can_run_local_models']:
-                logger.info("✅ System can run local models")
+        gpu_status = self._gpu_status
+        if gpu_status['cuda_available']:
+            logger.info(f"GPU detected: {gpu_status['gpu_count']} device(s) with {gpu_status['total_memory']:.1f} GB total memory")
+            if gpu_status['can_run_local_models']:
+                logger.info("System can run local models")
             else:
-                logger.warning("⚠️  GPU memory may be insufficient for larger local models")
+                logger.warning("GPU memory may be insufficient for larger local models")
         else:
-            if self.gpu_status['torch_available']:
-                logger.warning("⚠️  CPU-only mode detected - local models will be slow and may require significant RAM")
+            if gpu_status['torch_available']:
+                logger.info("CPU-only mode detected - local models will be slow")
             else:
-                logger.warning("❌ No PyTorch detected - local models unavailable")
+                logger.info("No PyTorch detected - local models unavailable")
         
         # Count available models by type
         local_models = sum(1 for m in self.models_config.values() if m['type'] == 'local')
         api_models = sum(1 for m in self.models_config.values() if m['type'] == 'api')
         
-        logger.info(f"📊 Models configured: {local_models} local, {api_models} API-based")
+        logger.info(f"Models configured: {local_models} local, {api_models} API-based")
     
     def _check_unsloth_availability(self):
         """
-        Check if Unsloth library is available for efficient local model loading.
-        
-        Unsloth provides optimized loading and inference for open-source models.
-        Without it, local model experiments cannot be run.
+        Lazy check for Unsloth library availability.
+        Only called when local models are actually needed.
         
         Returns:
             bool: True if Unsloth is available, False otherwise
         """
-        try:
-            from unsloth import FastLanguageModel, is_bfloat16_supported
-            from trl import SFTTrainer
-            from transformers import TrainingArguments
-            logger.info("Unsloth available for open-source model training")
-            return True
-        except ImportError:
-            logger.warning("Unsloth not available. Local model experiments will be disabled.")
-            return False
+        if not self._unsloth_availability_checked:
+            try:
+                from unsloth import FastLanguageModel, is_bfloat16_supported
+                from trl import SFTTrainer
+                from transformers import TrainingArguments
+                logger.info("Unsloth available for open-source model training")
+                self._unsloth_available = True
+            except ImportError:
+                logger.warning("Unsloth not available. Local model experiments will be disabled.")
+                self._unsloth_available = False
+            
+            self._unsloth_availability_checked = True
+        
+        return self._unsloth_available
     
     def cleanup_current_model(self):
         """
@@ -124,34 +133,56 @@ class ModelManager:
         Load embedding model for semantic similarity calculations.
         
         Uses sentence-transformers for high-quality embeddings.
-        Only loads once per session for efficiency.
+        Only loads when explicitly requested.
         
         Returns:
             HuggingFaceEmbeddings: Loaded embedding model
         """
         if self.embedding_model is None:
-            logger.info(f"🔄 Loading embedding model: {Config.EMBEDDING_MODEL}")
+            logger.info(f"Loading embedding model: {Config.EMBEDDING_MODEL}")
             
             # Show memory status before loading
             memory_before = get_memory_status()
             
-            self.embedding_model = HuggingFaceEmbeddings(
-                model_name=Config.EMBEDDING_MODEL,
-                cache_folder=Config.CACHED_MODELS_DIR  # Use consistent cache directory
-            )
+            try:
+                self.embedding_model = HuggingFaceEmbeddings(
+                    model_name=Config.EMBEDDING_MODEL,
+                    cache_folder=Config.CACHED_MODELS_DIR  # Use consistent cache directory
+                )
+                
+                logger.info("Embedding model loaded successfully")
+                
+                # Show memory status after loading
+                memory_after = get_memory_status()
+                if memory_before['ram_total_gb'] > 0 and memory_after['ram_total_gb'] > 0:
+                    ram_used = memory_before['ram_available_gb'] - memory_after['ram_available_gb']
+                    logger.info(f"Embedding model used ~{ram_used:.1f} GB RAM")
             
-            logger.info("✅ Embedding model loaded successfully")
-            
-            # Show memory status after loading
-            memory_after = get_memory_status()
-            if memory_before['ram_total_gb'] > 0 and memory_after['ram_total_gb'] > 0:
-                ram_used = memory_before['ram_available_gb'] - memory_after['ram_available_gb']
-                logger.info(f"   📈 Embedding model used ~{ram_used:.1f} GB RAM")
+            except Exception as e:
+                logger.error(f"Failed to load embedding model: {e}")
+                logger.info("This may be due to missing dependencies or network issues")
+                raise
             
         else:
-            logger.info("✅ Embedding model already loaded")
+            logger.debug("Embedding model already loaded")
         
         return self.embedding_model
+    
+    def requires_local_models(self, model_names: list) -> bool:
+        """
+        Check if any of the specified models are local models.
+        
+        Args:
+            model_names: List of model names to check
+            
+        Returns:
+            bool: True if any model is local, False if all are API
+        """
+        for model_name in model_names:
+            if model_name in self.models_config:
+                if self.models_config[model_name]['type'] == 'local':
+                    return True
+        return False
     
     def load_open_source_model(self, model_name: str, model_path: str):
         """
@@ -170,16 +201,18 @@ class ModelManager:
             RuntimeError: If GPU requirements are not met
         """
         # Check GPU requirements first
-        if not self.gpu_status['cuda_available'] and not self.gpu_status['torch_available']:
+        gpu_status = self._get_gpu_status()
+        if not gpu_status['cuda_available'] and not gpu_status['torch_available']:
             raise RuntimeError("Cannot load local models: PyTorch not available")
         
-        if not self.gpu_status['cuda_available']:
-            logger.warning("⚠️  Loading local model on CPU - this will be very slow and may require >16GB RAM")
+        if not gpu_status['cuda_available']:
+            logger.warning("Loading local model on CPU - this will be very slow and may require >16GB RAM")
             response = input("Continue loading local model on CPU? (y/N): ")
             if response.lower() != 'y':
                 raise RuntimeError("User cancelled CPU-only model loading")
         
-        if not self.unsloth_available:
+        # Check Unsloth availability only when actually needed
+        if not self._check_unsloth_availability():
             raise ImportError("Unsloth not available. Cannot load open source models.")
         
         if model_name not in self.models_config:
@@ -191,7 +224,7 @@ class ModelManager:
             raise ValueError(f"Model {model_name} is not a local model")
         
         # Show memory status before loading
-        logger.info("📊 Memory status before model loading:")
+        logger.info("Memory status before model loading:")
         memory_before = get_memory_status()
         if memory_before['ram_total_gb'] > 0:
             logger.info(f"   RAM: {memory_before['ram_available_gb']:.1f} GB available")
@@ -201,7 +234,7 @@ class ModelManager:
         # Clean up any existing model first
         self.cleanup_current_model()
         
-        logger.info(f"🔄 Loading open-source model: {model_path}")
+        logger.info(f"Loading open-source model: {model_path}")
         
         try:
             from unsloth import FastLanguageModel
@@ -218,23 +251,23 @@ class ModelManager:
             FastLanguageModel.for_inference(self.current_model)
             
             self.current_model_name = model_name
-            logger.info(f"✅ Successfully loaded model: {model_name}")
+            logger.info(f"Successfully loaded model: {model_name}")
             
             # Show memory status after loading
-            logger.info("📊 Memory status after model loading:")
+            logger.info("Memory status after model loading:")
             memory_after = get_memory_status()
             show_gpu_stats()
             
             if memory_after['ram_total_gb'] > 0:
                 ram_used = memory_before['ram_available_gb'] - memory_after['ram_available_gb']
-                logger.info(f"   📈 Model used ~{ram_used:.1f} GB RAM")
+                logger.info(f"Model used ~{ram_used:.1f} GB RAM")
             
             if memory_after['gpu_memory_total_gb'] > 0:
                 gpu_used = memory_after['gpu_memory_used_gb'] - memory_before['gpu_memory_used_gb']
-                logger.info(f"   📈 Model used ~{gpu_used:.1f} GB GPU memory")
+                logger.info(f"Model used ~{gpu_used:.1f} GB GPU memory")
             
         except Exception as e:
-            logger.error(f"❌ Failed to load model {model_name}: {e}")
+            logger.error(f"Failed to load model {model_name}: {e}")
             raise
     
     def load_finetuned_model(self, model_path: str):
@@ -250,7 +283,8 @@ class ModelManager:
         Raises:
             ImportError: If Unsloth is not available
         """
-        if not self.unsloth_available:
+        # Check Unsloth availability only when actually needed
+        if not self._check_unsloth_availability():
             raise ImportError("Unsloth not available. Cannot load finetuned models.")
         
         # Clean up any existing model first
@@ -287,6 +321,7 @@ class ModelManager:
         
         Only initializes clients for which API keys are available.
         Gracefully handles missing keys or initialization failures.
+        This method is safe to call on any system as it only sets up network clients.
         """
         logger.info("Setting up API clients...")
         
@@ -512,8 +547,8 @@ class ModelManager:
         model_config = self.models_config[model_name]
         
         if model_config['type'] == 'local':
-            # Check Unsloth availability first
-            if not self.unsloth_available:
+            # Check Unsloth availability only when needed
+            if not self._check_unsloth_availability():
                 return False
             
             # For finetuned models, check if the finetuned version exists

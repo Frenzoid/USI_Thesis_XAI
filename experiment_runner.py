@@ -7,7 +7,7 @@ from typing import Dict, List, Any, Optional
 from tqdm import tqdm
 
 from config import Config
-from utils import setup_logging, download_dataset, clear_gpu_memory
+from utils import setup_logging, clear_gpu_memory
 from models import ModelManager
 from dataset_manager import DatasetManager
 from prompt_manager import PromptManager
@@ -21,12 +21,12 @@ class ExperimentRunner:
     This class orchestrates the entire experiment pipeline using generic field mapping:
     1. Validates configurations and field compatibility
     2. Prepares datasets and prompts using generic field mapping
-    3. Loads and queries models
+    3. Loads and queries models (with conditional GPU component loading)
     4. Saves results with metadata
     """
     
     def __init__(self):
-        """Initialize all component managers and load configurations"""
+        """Initialize all component managers with conditional loading"""
         self.model_manager = ModelManager()
         self.prompt_manager = PromptManager()
         self.dataset_manager = DatasetManager()
@@ -36,11 +36,11 @@ class ExperimentRunner:
         self.datasets_config = Config.load_datasets_config()
         self.models_config = Config.load_models_config()
         
-        # Initialize system components
+        # Always initialize API clients (safe for all systems)
         self.model_manager.setup_api_clients()
-        self.model_manager.load_embedding_model()
         
-        logger.info("ExperimentRunner initialized")
+        # Don't automatically load embedding model - will load only when needed
+        logger.info("ExperimentRunner initialized (embedding model will load on-demand)")
     
     def validate_experiment_config(self, config: Dict[str, Any]) -> bool:
         """
@@ -146,44 +146,15 @@ class ExperimentRunner:
             raise
     
     def download_dataset(self, dataset_name: str):
-        """
-        Download dataset using the existing download infrastructure.
-        
-        Creates a temporary configuration file and uses the legacy download function.
-        This maintains compatibility with the existing download system.
-        
-        Args:
-            dataset_name: Name of dataset to download
-        """
-        dataset_config = self.datasets_config[dataset_name]
-        
-        download_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'])
-        os.makedirs(download_path, exist_ok=True)
-        
-        # Create temporary configuration for legacy download function
-        temp_config = [{
-            'name': dataset_name,
-            'link': dataset_config['download_link'],
-            'storage_folder': dataset_config['download_path']
-        }]
-        
-        temp_file = 'temp_dataset_config.json'
-        with open(temp_file, 'w') as f:
-            json.dump(temp_config, f)
-        
-        try:
-            download_dataset(temp_file, Config.DATA_DIR)
-        finally:
-            # Always clean up temporary file
-            if os.path.exists(temp_file):
-                os.remove(temp_file)
-    
+        """Download dataset using DatasetManager"""
+        return self.dataset_manager.download_dataset(dataset_name)
+
     def load_model(self, model_name: str):
         """
-        Load the specified model for inference.
+        Load the specified model for inference with conditional GPU loading.
         
-        Handles both local models (via Unsloth) and API models (validation only).
-        For local models, supports both base and finetuned variants.
+        Only initializes GPU-dependent components when local models are requested.
+        API models work on any system without GPU dependencies.
         
         Args:
             model_name: Name of model to load
@@ -194,7 +165,7 @@ class ExperimentRunner:
         model_config = self.models_config[model_name]
         
         if model_config['type'] == 'local':
-            # Handle local models with Unsloth
+            # Handle local models with Unsloth (GPU-dependent)
             if model_config.get('finetuned', False):
                 # Finetuned model: look in finetuned models directory
                 model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
@@ -207,7 +178,7 @@ class ExperimentRunner:
                 self.model_manager.load_open_source_model(model_name, model_config['model_path'])
         
         elif model_config['type'] == 'api':
-            # API models: validate credentials
+            # API models: validate credentials only
             provider = model_config['provider']
             if provider == 'openai' and not Config.OPENAI_API_KEY:
                 raise ValueError("OpenAI API key not configured")
@@ -216,10 +187,24 @@ class ExperimentRunner:
             elif provider == 'anthropic' and not Config.ANTHROPIC_API_KEY:
                 raise ValueError("Anthropic API key not configured")
             
-            logger.info(f"Using API model: {model_name}")
+            logger.info(f"Using API model: {model_name} (no GPU required)")
         
         else:
             raise ValueError(f"Unknown model type: {model_config['type']}")
+    
+    def ensure_embedding_model_loaded(self):
+        """
+        Ensure embedding model is loaded for few-shot examples.
+        
+        Only loads when actually needed, avoiding unnecessary GPU/CPU usage.
+        """
+        if self.model_manager.embedding_model is None:
+            logger.info("Loading embedding model for few-shot example generation...")
+            try:
+                self.model_manager.load_embedding_model()
+            except Exception as e:
+                logger.error(f"Failed to load embedding model: {e}")
+                logger.warning("Few-shot examples may not work properly")
     
     def generate_responses(self, prompts: List[str], expected_outputs: List[str], 
                           model_name: str, temperature: float) -> List[Dict[str, Any]]:
@@ -409,12 +394,12 @@ class ExperimentRunner:
     
     def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Run a complete baseline experiment with the given configuration using generic field mapping.
+        Run a complete baseline experiment with conditional GPU component loading.
         
         This is the main experiment execution method that:
         1. Validates configuration and field compatibility
         2. Prepares dataset and prompts using generic field mapping
-        3. Loads model
+        3. Loads model (only GPU components when needed)
         4. Generates responses
         5. Saves results
         
@@ -443,12 +428,17 @@ class ExperimentRunner:
                 logger.error(f"Dataset validation failed for {config['dataset']}")
                 return None
             
-            # Step 2: Load model
+            # Step 2: Load model (conditional GPU loading)
             self.load_model(config['model'])
             
             # Step 3: Prepare prompts and expected outputs using generic field mapping
             prompts = []
             expected_outputs = []
+            
+            # Check if we need embedding model for few-shot prompts
+            needs_embedding = 'few_shot' in config['prompt']
+            if needs_embedding:
+                self.ensure_embedding_model_loaded()
             
             for idx, row in df_slice.iterrows():
                 try:

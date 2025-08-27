@@ -53,25 +53,18 @@ def parse_list_argument(arg_value: Optional[str], all_options: List[str]) -> Lis
     else:
         return arg_value.split()
 
-def run_experiment_command(args):
-    """Run experiments with specified parameters"""
-    logger.info("Starting experiment execution...")
+def validate_local_model_capability(models_to_run: List[str], models_config: dict, force: bool = False) -> bool:
+    """
+    Validate that the system can run local models if they are requested.
     
-    # Check if we can run experiments based on system capabilities
-    from utils import check_gpu_availability
-    gpu_status = check_gpu_availability()
-    
-    # Validate model types being requested
-    try:
-        models_config = Config.load_models_config()
-    except Exception as e:
-        logger.error(f"Failed to load models configuration: {e}")
-        return False
-    
-    # Parse model arguments
-    all_models = list(models_config.keys())
-    models_to_run = parse_list_argument(args.model, all_models)
-    
+    Args:
+        models_to_run: List of model names to run
+        models_config: Models configuration dictionary
+        force: Whether to force run despite warnings
+        
+    Returns:
+        bool: True if can proceed, False if should abort
+    """
     # Check if any local models are being requested
     local_models_requested = []
     api_models_requested = []
@@ -83,42 +76,47 @@ def run_experiment_command(args):
             else:
                 api_models_requested.append(model)
     
+    # If no local models requested, proceed
+    if not local_models_requested:
+        return True
+    
+    # Check GPU status
+    from utils import check_gpu_availability
+    gpu_status = check_gpu_availability()
+    
     # Warn about local models on CPU or insufficient GPU
-    if local_models_requested:
-        if not gpu_status['cuda_available']:
-            if not gpu_status['torch_available']:
-                logger.error("❌ Cannot run local models: PyTorch not available")
-                logger.info("💡 Available options:")
-                logger.info("   - Install PyTorch with CUDA support for GPU acceleration")
-                logger.info("   - Use API-based models only (GPT, Gemini, Claude)")
-                return False
-            else:
-                logger.warning("⚠️  Local models requested but no GPU available")
-                logger.warning(f"   Requested local models: {', '.join(local_models_requested)}")
-                logger.warning("   This will be VERY slow and may require >16GB RAM")
-                
-                if not args.force:
-                    response = input("Continue with CPU-only local model inference? (y/N): ")
-                    if response.lower() != 'y':
-                        logger.info("💡 Consider using API models for better performance:")
-                        if api_models_requested:
-                            logger.info(f"   Available API models in your selection: {', '.join(api_models_requested)}")
-                        else:
-                            api_models = [m for m, c in models_config.items() if c['type'] == 'api']
-                            logger.info(f"   Available API models: {', '.join(api_models[:3])}...")
-                        return False
-        
-        elif not gpu_status['can_run_local_models']:
-            logger.warning(f"⚠️  GPU memory may be insufficient for local models ({gpu_status['total_memory']:.1f} GB available)")
-            logger.warning("   Consider using smaller models or API-based models for better reliability")
+    if not gpu_status['cuda_available']:
+        if not gpu_status['torch_available']:
+            logger.error("❌ Cannot run local models: PyTorch not available")
+            logger.info("💡 Available options:")
+            logger.info("   - Install PyTorch with CUDA support for GPU acceleration")
+            logger.info("   - Use API-based models only (GPT, Gemini, Claude)")
+            return False
+        else:
+            logger.warning("⚠️  Local models requested but no GPU available")
+            logger.warning(f"   Requested local models: {', '.join(local_models_requested)}")
+            logger.warning("   This will be VERY slow and may require >16GB RAM")
+            
+            if not force:
+                response = input("Continue with CPU-only local model inference? (y/N): ")
+                if response.lower() != 'y':
+                    logger.info("💡 Consider using API models for better performance:")
+                    if api_models_requested:
+                        logger.info(f"   Available API models in your selection: {', '.join(api_models_requested)}")
+                    else:
+                        api_models = [m for m, c in models_config.items() if c['type'] == 'api']
+                        logger.info(f"   Available API models: {', '.join(api_models[:3])}...")
+                    return False
     
-    # Initialize experiment runner
-    runner = ExperimentRunner()
+    elif not gpu_status['can_run_local_models']:
+        logger.warning(f"⚠️  GPU memory may be insufficient for local models ({gpu_status['total_memory']:.1f} GB available)")
+        logger.warning("   Consider using smaller models or API-based models for better reliability")
     
-    # ... rest of the existing function remains the same ...
-    
-    # Validate experiment type
-    validate_experiment_type(args.experiment_type)
+    return True
+
+def run_baseline_experiment_command(args):
+    """Run baseline experiments with specified parameters"""
+    logger.info("Starting baseline experiment execution...")
     
     # Load configurations
     try:
@@ -138,6 +136,13 @@ def run_experiment_command(args):
     datasets_to_run = parse_list_argument(args.dataset, all_datasets)
     prompts_to_run = parse_list_argument(args.prompt, all_prompts)
     
+    # Validate model capability
+    if not validate_local_model_capability(models_to_run, models_config, args.force):
+        return False
+    
+    # Initialize experiment runner
+    runner = ExperimentRunner()
+    
     # Validate configurations for compatibility
     failed_validations = []
     for dataset in datasets_to_run:
@@ -154,7 +159,7 @@ def run_experiment_command(args):
     
     # Execute experiments
     total_experiments = len(models_to_run) * len(datasets_to_run) * len(prompts_to_run)
-    logger.info(f"Running {total_experiments} experiment configurations")
+    logger.info(f"Running {total_experiments} baseline experiment configurations")
     
     results = []
     success_count = 0
@@ -169,10 +174,10 @@ def run_experiment_command(args):
                     continue
                 
                 try:
-                    logger.info(f"Running experiment: {model} + {dataset} + {prompt}")
+                    logger.info(f"Running baseline experiment: {model} + {dataset} + {prompt}")
                     
                     experiment_config = {
-                        'experiment_type': args.experiment_type,
+                        'experiment_type': 'baseline',
                         'model': model,
                         'dataset': dataset,
                         'prompt': prompt,
@@ -180,10 +185,7 @@ def run_experiment_command(args):
                         'temperature': args.temperature
                     }
                     
-                    if args.experiment_type == "baseline":
-                        result = runner.run_baseline_experiment(experiment_config)
-                    else:
-                        raise ValueError(f"Experiment type '{args.experiment_type}' not implemented yet")
+                    result = runner.run_baseline_experiment(experiment_config)
                     
                     if result:
                         results.append(result)
@@ -199,7 +201,7 @@ def run_experiment_command(args):
                     continue
     
     # Summary
-    logger.info(f"Experiment batch completed: {success_count} successful, {failure_count} failed")
+    logger.info(f"Baseline experiment batch completed: {success_count} successful, {failure_count} failed")
     
     if results:
         logger.info("Generated experiment files:")
@@ -207,6 +209,8 @@ def run_experiment_command(args):
             logger.info(f"  - {result['output_file']}")
     
     return success_count > 0
+
+
 
 def evaluate_command(args):
     """Evaluate experiment results"""
@@ -440,10 +444,9 @@ def list_commands_command():
     """List all available commands and their arguments with proper formatting"""
     print("\n=== AVAILABLE COMMANDS ===")
     
-    print("\n1. run-experiment")
-    print("   Description: Run inference experiments with specified models, datasets, and prompts")
+    print("\n1. run-baseline-exp")
+    print("   Description: Run baseline inference experiments")
     print("   Arguments:")
-    print("     --experiment-type TYPE    Experiment type (default: baseline)")
     print("     --model MODELS           Model(s) to use (space-separated or 'all')")
     print("     --dataset DATASETS       Dataset(s) to use (space-separated or 'all')")
     print("     --prompt PROMPTS         Prompt(s) to use (space-separated or 'all')")
@@ -488,8 +491,11 @@ def list_commands_command():
     print("   Arguments: None")
     
     print("\n=== EXAMPLE USAGE ===")
-    print("# Run single experiment")
-    print("python main.py run-experiment --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic")
+    print("# Run single baseline experiment")
+    print("python main.py run-baseline-exp --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic")
+    print("")
+    print("# Run baseline with multiple models")
+    print("python main.py run-baseline-exp --model \"gpt-4o-mini gemini-1.5-flash\" --dataset gmeg --prompt gmeg_v1_basic")
     print("")
     print("# Evaluate all baseline experiments") 
     print("python main.py evaluate --experiment-type baseline")
@@ -510,7 +516,7 @@ def check_system_command(args):
     # Check configuration files
     config_status = Config.validate_configuration_files()
     
-    print("📁 Configuration Files:")
+    print("📄 Configuration Files:")
     for config_type, exists in config_status.items():
         status = "✅" if exists else "❌"
         print(f"   {config_type}.json: {status}")
@@ -568,22 +574,20 @@ def main():
     # Add subcommands
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
-    # Run experiment command
-    run_parser = subparsers.add_parser('run-experiment', help='Run inference experiments')
-    run_parser.add_argument('--experiment-type', type=str, default='baseline',
-                          help='Type of experiment to run (default: baseline)')
-    run_parser.add_argument('--model', type=str,
-                          help='Model(s) to use (space-separated, or "all" for all models)')
-    run_parser.add_argument('--dataset', type=str,
-                          help='Dataset(s) to use (space-separated, or "all" for all datasets)')
-    run_parser.add_argument('--prompt', type=str,
-                          help='Prompt(s) to use (space-separated, or "all" for all prompts)')
-    run_parser.add_argument('--size', type=int, default=Config.DEFAULT_SAMPLE_SIZE,
-                          help=f'Sample size (default: {Config.DEFAULT_SAMPLE_SIZE})')
-    run_parser.add_argument('--temperature', type=float, default=Config.DEFAULT_TEMPERATURE,
-                          help=f'Temperature for generation (default: {Config.DEFAULT_TEMPERATURE})')
-    run_parser.add_argument('--force', action='store_true',
-                          help='Force run even with validation errors')
+    # Baseline experiment command
+    baseline_parser = subparsers.add_parser('run-baseline-exp', help='Run baseline inference experiments')
+    baseline_parser.add_argument('--model', type=str,
+                                help='Model(s) to use (space-separated, or "all" for all models)')
+    baseline_parser.add_argument('--dataset', type=str,
+                                help='Dataset(s) to use (space-separated, or "all" for all datasets)')
+    baseline_parser.add_argument('--prompt', type=str,
+                                help='Prompt(s) to use (space-separated, or "all" for all prompts)')
+    baseline_parser.add_argument('--size', type=int, default=Config.DEFAULT_SAMPLE_SIZE,
+                                help=f'Sample size (default: {Config.DEFAULT_SAMPLE_SIZE})')
+    baseline_parser.add_argument('--temperature', type=float, default=Config.DEFAULT_TEMPERATURE,
+                                help=f'Temperature for generation (default: {Config.DEFAULT_TEMPERATURE})')
+    baseline_parser.add_argument('--force', action='store_true',
+                                help='Force run even with validation errors')
     
     # Evaluate command
     eval_parser = subparsers.add_parser('evaluate', help='Evaluate experiment results')
@@ -628,8 +632,8 @@ def main():
     
     # Execute command
     try:
-        if args.command == 'run-experiment':
-            success = run_experiment_command(args)
+        if args.command == 'run-baseline-exp':
+            success = run_baseline_experiment_command(args)
         elif args.command == 'evaluate':
             success = evaluate_command(args)
         elif args.command == 'plot':

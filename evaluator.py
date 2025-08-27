@@ -23,6 +23,7 @@ class EvaluationRunner:
     3. Runs evaluation using the EvaluationFramework
     4. Saves evaluation results with metadata
     5. Provides batch evaluation across multiple experiments
+    6. Auto-detects experiment types from names and file paths
     """
     
     def __init__(self):
@@ -34,6 +35,72 @@ class EvaluationRunner:
         self.model_manager.load_embedding_model()
         
         logger.info("EvaluationRunner initialized")
+    
+    # =============================================================================
+    # EXPERIMENT TYPE DETECTION
+    # =============================================================================
+    
+    def extract_experiment_type_from_name(self, experiment_name: str) -> Optional[str]:
+        """
+        Extract experiment type from experiment name.
+        
+        Experiment names follow the pattern: {type}_{dataset}_{model}_{prompt}_{size}_{temp}
+        For example: baseline_gmeg_gpt-4o-mini_gmeg_v1_basic_50_0p1
+        
+        Args:
+            experiment_name: Name of the experiment
+            
+        Returns:
+            str: Experiment type if valid, None otherwise
+        """
+        if not experiment_name:
+            return None
+        
+        # Extract the first part of the experiment name
+        name_parts = experiment_name.split('_')
+        if not name_parts:
+            return None
+        
+        potential_type = name_parts[0]
+        
+        # Validate that it's a known experiment type
+        if potential_type in Config.EXPERIMENT_TYPES:
+            logger.debug(f"Extracted experiment type '{potential_type}' from name '{experiment_name}'")
+            return potential_type
+        
+        return None
+    
+    def detect_experiment_type(self, experiment_name: str, experiment_file: str = None) -> str:
+        """
+        Detect experiment type using multiple methods with fallback chain.
+        
+        Detection priority:
+        1. Extract from experiment name (most reliable)
+        2. Extract from file path (fallback)
+        3. Default to 'baseline' (ultimate fallback)
+        
+        Args:
+            experiment_name: Name of the experiment
+            experiment_file: Path to experiment file (optional)
+            
+        Returns:
+            str: Detected experiment type
+        """
+        # Method 1: Extract from experiment name
+        detected_type = self.extract_experiment_type_from_name(experiment_name)
+        if detected_type:
+            return detected_type
+        
+        # Method 2: Extract from file path
+        if experiment_file:
+            for exp_type in Config.EXPERIMENT_TYPES:
+                if exp_type in experiment_file:
+                    logger.debug(f"Detected experiment type '{exp_type}' from file path '{experiment_file}'")
+                    return exp_type
+        
+        # Method 3: Ultimate fallback
+        logger.warning(f"Could not detect experiment type for '{experiment_name}', using 'baseline' as fallback")
+        return 'baseline'
     
     # =============================================================================
     # EXPERIMENT FILE DISCOVERY AND LOADING
@@ -273,43 +340,65 @@ class EvaluationRunner:
             raise
     
     # =============================================================================
-    # SINGLE EXPERIMENT EVALUATION
+    # SINGLE EXPERIMENT EVALUATION WITH ENHANCED TYPE DETECTION
     # =============================================================================
     
     def evaluate_experiment(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """
-        Evaluate a specific experiment by name.
+        Evaluate a specific experiment by name with enhanced type detection.
+        
+        This method now:
+        1. Auto-detects experiment type from name if not provided
+        2. Searches appropriate directories based on detected/provided type
+        3. Falls back to searching all directories if needed
         
         Args:
             experiment_name: Name of experiment to evaluate
-            experiment_type: Type filter for finding the experiment
+            experiment_type: Optional type hint (will auto-detect if None)
             
         Returns:
             dict: Evaluation summary with file paths and key metrics, or None if failed
         """
         logger.info(f"Evaluating experiment: {experiment_name}")
         
-        # Find the experiment file by searching appropriate directories
-        if experiment_type:
-            search_dirs = [Config.get_output_dirs_for_experiment_type(experiment_type)['responses']]
-        else:
-            # Search all experiment types
-            search_dirs = []
-            for exp_type in Config.EXPERIMENT_TYPES:
-                search_dirs.append(Config.get_output_dirs_for_experiment_type(exp_type)['responses'])
+        # Step 1: Determine experiment type using enhanced detection
+        if not experiment_type:
+            experiment_type = self.extract_experiment_type_from_name(experiment_name)
+            if experiment_type:
+                logger.info(f"Auto-detected experiment type: {experiment_type}")
         
+        # Step 2: Find the experiment file using detected/provided type
         experiment_file = None
-        for search_dir in search_dirs:
+        
+        if experiment_type:
+            # Search in the specific type directory first
+            search_dir = Config.get_output_dirs_for_experiment_type(experiment_type)['responses']
             potential_file = os.path.join(search_dir, f"inference_{experiment_name}.json")
             if os.path.exists(potential_file):
                 experiment_file = potential_file
-                break
+        
+        # Step 3: Fallback to searching all directories if not found
+        if not experiment_file:
+            logger.debug("Searching all experiment directories as fallback")
+            for exp_type in Config.EXPERIMENT_TYPES:
+                search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['responses']
+                potential_file = os.path.join(search_dir, f"inference_{experiment_name}.json")
+                if os.path.exists(potential_file):
+                    experiment_file = potential_file
+                    # Update experiment_type based on where we found it
+                    if not experiment_type:
+                        experiment_type = exp_type
+                        logger.info(f"Found experiment in {exp_type} directory")
+                    break
         
         if not experiment_file:
             logger.error(f"Experiment file not found: {experiment_name}")
             return None
         
-        # Load and evaluate experiment data
+        # Step 4: Final type detection using all available information
+        final_experiment_type = self.detect_experiment_type(experiment_name, experiment_file)
+        
+        # Step 5: Load and evaluate experiment data
         experiment_data = self.load_experiment_results(experiment_file)
         if not experiment_data:
             return None
@@ -318,21 +407,12 @@ class EvaluationRunner:
         if not evaluation_result:
             return None
         
-        # Determine experiment type from file path if not provided
-        if not experiment_type:
-            for exp_type in Config.EXPERIMENT_TYPES:
-                if exp_type in experiment_file:
-                    experiment_type = exp_type
-                    break
-            else:
-                experiment_type = 'baseline'  # Default fallback
-        
-        # Save evaluation results to organized location
-        output_file = self.save_evaluation_results(evaluation_result, experiment_name, experiment_type)
+        # Step 6: Save evaluation results using detected type
+        output_file = self.save_evaluation_results(evaluation_result, experiment_name, final_experiment_type)
         
         return {
             'experiment_name': experiment_name,
-            'experiment_type': experiment_type,
+            'experiment_type': final_experiment_type,
             'evaluation_file': output_file,
             'metrics': evaluation_result.get('aggregated_scores', {}),
             'num_samples': evaluation_result.get('num_samples', 0),
@@ -340,15 +420,16 @@ class EvaluationRunner:
         }
     
     # =============================================================================
-    # BATCH EVALUATION
+    # BATCH EVALUATION WITH ENHANCED TYPE DETECTION
     # =============================================================================
     
     def evaluate_all_experiments(self, experiment_type: Optional[str] = None) -> List[Dict[str, Any]]:
         """
-        Evaluate all experiments of the specified type.
+        Evaluate all experiments of the specified type with enhanced detection.
         
         Processes multiple experiments in batch with progress tracking
-        and comprehensive error handling.
+        and comprehensive error handling. Now uses enhanced type detection
+        for each individual experiment.
         
         Args:
             experiment_type: Type of experiments to evaluate (None for all types)
@@ -375,7 +456,7 @@ class EvaluationRunner:
                 else:
                     experiment_name = file_name[:-5]  # Remove '.json' suffix
                 
-                # Load and evaluate experiment
+                # Load and evaluate experiment using enhanced detection
                 experiment_data = self.load_experiment_results(file_path)
                 if not experiment_data:
                     continue
@@ -384,22 +465,15 @@ class EvaluationRunner:
                 if not evaluation_result:
                     continue
                 
-                # Determine experiment type from file path
-                current_experiment_type = experiment_type
-                if not current_experiment_type:
-                    for exp_type in Config.EXPERIMENT_TYPES:
-                        if exp_type in file_path:
-                            current_experiment_type = exp_type
-                            break
-                    else:
-                        current_experiment_type = 'baseline'  # Default fallback
+                # Use enhanced type detection
+                detected_experiment_type = self.detect_experiment_type(experiment_name, file_path)
                 
                 # Save evaluation results
-                output_file = self.save_evaluation_results(evaluation_result, experiment_name, current_experiment_type)
+                output_file = self.save_evaluation_results(evaluation_result, experiment_name, detected_experiment_type)
                 
                 results.append({
                     'experiment_name': experiment_name,
-                    'experiment_type': current_experiment_type,
+                    'experiment_type': detected_experiment_type,
                     'evaluation_file': output_file,
                     'metrics': evaluation_result.get('aggregated_scores', {}),
                     'num_samples': evaluation_result.get('num_samples', 0),
@@ -511,11 +585,11 @@ class EvaluationRunner:
     
     def compare_experiments(self, experiment_names: List[str], experiment_type: Optional[str] = None) -> Dict[str, Any]:
         """
-        Compare multiple experiments side by side.
+        Compare multiple experiments side by side with enhanced type detection.
         
         Args:
             experiment_names: List of experiment names to compare
-            experiment_type: Type filter for experiments
+            experiment_type: Optional type filter for experiments
             
         Returns:
             dict: Comparison results with metric differences
@@ -525,15 +599,20 @@ class EvaluationRunner:
         # Load evaluation results for all experiments
         evaluations = []
         for exp_name in experiment_names:
+            # Use enhanced type detection if no type provided
+            search_experiment_type = experiment_type
+            if not search_experiment_type:
+                search_experiment_type = self.extract_experiment_type_from_name(exp_name)
+            
             # Find evaluation file
-            if experiment_type:
-                search_dirs = [Config.get_output_dirs_for_experiment_type(experiment_type)['evaluations']]
+            eval_file = None
+            if search_experiment_type:
+                search_dirs = [Config.get_output_dirs_for_experiment_type(search_experiment_type)['evaluations']]
             else:
                 search_dirs = []
                 for exp_type in Config.EXPERIMENT_TYPES:
                     search_dirs.append(Config.get_output_dirs_for_experiment_type(exp_type)['evaluations'])
             
-            eval_file = None
             for search_dir in search_dirs:
                 potential_file = os.path.join(search_dir, f"evaluation_{exp_name}.json")
                 if os.path.exists(potential_file):

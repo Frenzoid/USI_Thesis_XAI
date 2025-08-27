@@ -1,56 +1,66 @@
 {
   "gmeg_v1_basic": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\n{}\n\nRevised Text:\n{}\n\n",
     "description": "Basic correction explanation prompt"
   },
   "gmeg_v2_enhanced": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "You are an expert in text correction analysis. You will be given an original text and a revised version.\n\nYour task:\n1. Identify each correction made between the original and revised text\n2. Categorize each correction (spelling, grammar, word choice, punctuation, etc.)\n3. Provide a clear explanation for each change\n4. Present all changes as bullet points\n\nFormat: \"- [Category] Change description\"\n\nExample:\nOriginal: \"The effect of the new policy will effect everyone.\"\nRevised: \"The effect of the new policy will affect everyone.\"\nOutput:\n- [Word Choice] \"effect\" changed to \"affect\" (correct verb form for influence)\n\nOriginal Text:\n{}\n\nRevised Text:\n{}",
     "description": "Enhanced correction explanation with categorization"
   },
   "gmeg_v3_detailed": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "As a linguistics expert, analyze the corrections made between these two texts:\n\nOriginal Text: {}\nRevised Text: {}\n\nProvide a comprehensive analysis including:\n1. Type of error corrected (grammatical, lexical, syntactic, semantic)\n2. Linguistic rule or principle applied\n3. Impact on text clarity and correctness\n4. Alternative corrections that could have been made\n\nFormat each analysis as:\n- [Error Type] Original → Corrected: Explanation (Linguistic principle: X)\n\nBe thorough and educational in your explanations.",
     "description": "Detailed linguistic analysis prompt"
   },
   "gmeg_v4_minimal": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "Compare these texts and list only the essential changes:\n\nOriginal: {}\nRevised: {}\n\nOutput format:\n- Changed X to Y\n- Added/Removed Z\n\nBe concise and direct.",
     "description": "Minimal, concise correction explanation"
   },
   "gmeg_v5_pedagogical": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "You are a writing tutor explaining corrections to a student. Compare these texts:\n\nOriginal: {}\nRevised: {}\n\nExplain each correction in a way that helps the student learn:\n- What was wrong and why\n- The correct form and why it's better\n- How to avoid this mistake in the future\n\nUse encouraging, educational language suitable for language learners.",
     "description": "Educational teaching-focused prompt"
   },
   "gmeg_v6_formal": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "Conduct a formal textual analysis of the revisions made:\n\nText A (Original): {}\nText B (Revised): {}\n\nAnalysis:\nExamine the modifications systematically, categorizing each change according to linguistic taxonomy and explaining the rationale behind each editorial decision. Consider morphological, syntactic, semantic, and pragmatic dimensions of the alterations.\n\nPresent findings in academic format with precise terminology.",
     "description": "Formal academic analysis style"
   },
   "gmeg_v7_casual": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "Hey! I need to explain what changed between these two texts:\n\nOriginal: {}\nFixed: {}\n\nHere's what got corrected:\n\n(Explain in a friendly, casual way what was wrong and how it got fixed. Use everyday language that anyone can understand.)",
     "description": "Casual, conversational explanation style"
   },
   "gmeg_v8_comparative": {
     "type": "baseline",
+    "mode": "zero-shot",
     "compatible_dataset": "gmeg",
     "template": "BEFORE vs AFTER Analysis:\n\nBEFORE: {}\nAFTER:  {}\n\nChanges Made:\n[Analyze each change by directly comparing the before and after states, highlighting what specifically changed and why each change improves the text]\n\nFocus on the transformation process and improvement achieved.",
     "description": "Side-by-side comparative analysis"
   },
   "gmeg_few_shot": {
     "type": "baseline",
+    "mode": "few-shot",
     "compatible_dataset": "gmeg",
-    "template": "\n\nNow analyze the following:\n\nOriginal Text:\n{}\n\nRevised Text:\n{}",
+    "few_shot_example": "Given this example:\n\nOriginal: \"{}\"\nRevised: \"{}.\"\nExplanation:\n{}\n",
+    "template": "\nNow, analyze the following texts:\n\nOriginal: {}\nRevised: {}\n\nProvide explanations in the same format as above.",
     "description": "Few-shot learning prompt with examples"
   }
 }
