@@ -230,17 +230,18 @@ class Config:
     
     @classmethod
     def generate_experiment_name(cls, experiment_type: str, dataset: str, model: str, 
-                                prompt: str, size: int, temperature: float) -> str:
+                                mode: str, prompt: str, size: int, temperature: float) -> str:
         """
-        Generate a standardized experiment name based on configuration.
+        Generate a standardized experiment name.
         
         Creates descriptive names that uniquely identify experiments:
-        Format: {experiment_type}_{dataset}_{model}_{prompt}_{size}_{temperature}
+        Format: {experiment_type}_{dataset}_{model}_{mode}_{prompt}_{size}_{temperature}
         
         Args:
             experiment_type: Type of experiment (e.g., 'baseline')
             dataset: Dataset name (e.g., 'gmeg')
             model: Model name (e.g., 'gpt-4o-mini')
+            mode: Prompting mode ('zero-shot' or 'few-shot')
             prompt: Prompt name (e.g., 'gmeg_v1_basic')
             size: Sample size (e.g., 50)
             temperature: Generation temperature (e.g., 0.1)
@@ -251,7 +252,7 @@ class Config:
         # Format temperature to avoid floating point precision issues
         # 0.1 becomes "0p1", 1.0 becomes "1p0"
         temp_str = f"{temperature:.1f}".replace(".", "p")
-        return f"{experiment_type}_{dataset}_{model}_{prompt}_{size}_{temp_str}"
+        return f"{experiment_type}_{dataset}_{model}_{mode}_{prompt}_{size}_{temp_str}"
     
     @classmethod
     def generate_file_paths(cls, experiment_type: str, experiment_name: str) -> Dict[str, str]:
@@ -262,7 +263,7 @@ class Config:
         
         Args:
             experiment_type: Type of experiment
-            experiment_name: Generated experiment name
+            experiment_name: Generated experiment name (with or without mode)
             
         Returns:
             dict: File paths for inference, evaluation, and plot outputs
@@ -274,6 +275,54 @@ class Config:
             'evaluation': os.path.join(dirs['evaluations'], f"evaluation_{experiment_name}.json"),
             'plot': os.path.join(dirs['plots'], f"plot_{experiment_name}.html")
         }
+    
+    @classmethod
+    def extract_experiment_type_from_name(cls, experiment_name: str) -> str:
+        """
+        Extract experiment type from experiment name.
+        
+        Args:
+            experiment_name: Full experiment name
+            
+        Returns:
+            str: Experiment type (e.g., 'baseline')
+        """
+        if not experiment_name:
+            raise ValueError("Experiment name cannot be empty")
+        
+        name_parts = experiment_name.split('_')
+        if not name_parts:
+            raise ValueError("Invalid experiment name format")
+        
+        # First part should be the experiment type
+        potential_type = name_parts[0]
+        
+        if potential_type in cls.EXPERIMENT_TYPES:
+            return potential_type
+        
+        raise ValueError(f"Experiment type '{potential_type}' not recognized. Supported types: {cls.EXPERIMENT_TYPES}")
+        
+    
+    @classmethod 
+    def extract_mode_from_name(cls, experiment_name: str) -> str:
+        """
+        Extract mode from experiment name by substring search.
+        
+        Args:
+            experiment_name: Full experiment name
+            
+        Returns:
+            str: Mode ('zero-shot', 'few-shot', or 'unknown')
+        """
+        if not experiment_name:
+            raise ValueError("Experiment name cannot be empty")
+            
+        if "zero-shot" in experiment_name:
+            return "zero-shot"
+        if "few-shot" in experiment_name:
+            return "few-shot"
+        
+        raise ValueError("Mode not found in experiment name. Expected 'zero-shot' or 'few-shot'.")
     
     # =============================================================================
     # LOGGING UTILITIES

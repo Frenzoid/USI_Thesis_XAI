@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import re
 
 from config import Config
@@ -9,15 +9,15 @@ logger = setup_logging("prompt_manager")
 
 class PromptManager:
     """
-    Centralized prompt management with JSON configuration support and generic field mapping.
+    Centralized prompt management with mode-based prompting support.
     
     This class handles:
-    1. Loading and validating prompt templates with positional placeholders
+    1. Loading and validating prompt templates with mode support (zero-shot/few-shot)
     2. Generic dataset field mapping without hardcoded structures
-    3. Formatting templates using question fields in order
-    4. Checking prompt-dataset compatibility and field count validation
-    5. Generating few-shot examples
-    6. Providing prompt statistics and information
+    3. Mode validation and filtering
+    4. Few-shot example generation from dataset rows
+    5. Template concatenation for few-shot prompts
+    6. Prompt-dataset compatibility checking
     """
     
     def __init__(self):
@@ -38,7 +38,7 @@ class PromptManager:
             prompt_name: Specific prompt to get info for, or None for all prompts
             
         Returns:
-            dict: Prompt information including required placeholder count
+            dict: Prompt information including required placeholder count and mode
         """
         if prompt_name:
             # Information for specific prompt
@@ -48,10 +48,15 @@ class PromptManager:
             config = self.prompts_config[prompt_name]
             info = dict(config)
             
-            # Count positional placeholders {}
+            # Count positional placeholders in template
             template = config['template']
             placeholder_count = template.count('{}')
-            info['required_placeholder_count'] = placeholder_count
+            info['template_placeholder_count'] = placeholder_count
+            
+            # For few-shot prompts, also count placeholders in few_shot_example
+            if config.get('mode') == 'few-shot' and 'few_shot_example' in config:
+                few_shot_count = config['few_shot_example'].count('{}')
+                info['few_shot_example_placeholder_count'] = few_shot_count
             
             return info
         else:
@@ -60,6 +65,82 @@ class PromptManager:
             for prompt_key in self.prompts_config:
                 all_info[prompt_key] = self.get_prompt_info(prompt_key)
             return all_info
+    
+    def get_prompts_by_mode(self, mode: str) -> List[str]:
+        """
+        Get list of prompt names that match the specified mode.
+        
+        Args:
+            mode: Mode to filter by ('zero-shot' or 'few-shot')
+            
+        Returns:
+            list: Names of prompts that match the specified mode
+        """
+        matching_prompts = []
+        for prompt_name, config in self.prompts_config.items():
+            prompt_mode = config.get('mode', 'zero-shot')  # Default to zero-shot
+            if prompt_mode == mode:
+                matching_prompts.append(prompt_name)
+        
+        return matching_prompts
+    
+    # =============================================================================
+    # MODE VALIDATION
+    # =============================================================================
+    
+    def validate_mode_compatibility(self, prompt_name: str, requested_mode: str) -> bool:
+        """
+        Validate that a prompt's mode matches the requested mode.
+        
+        Args:
+            prompt_name: Name of prompt to check
+            requested_mode: Requested mode ('zero-shot' or 'few-shot')
+            
+        Returns:
+            bool: True if modes match, False otherwise
+        """
+        if prompt_name not in self.prompts_config:
+            logger.error(f"Unknown prompt: {prompt_name}")
+            return False
+        
+        config = self.prompts_config[prompt_name]
+        prompt_mode = config.get('mode', 'zero-shot')
+        
+        if prompt_mode != requested_mode:
+            logger.error(f"Mode mismatch: prompt '{prompt_name}' is {prompt_mode}, but {requested_mode} was requested")
+            return False
+        
+        return True
+    
+    def validate_few_shot_prompt_structure(self, prompt_name: str) -> bool:
+        """
+        Validate that a few-shot prompt has the required structure.
+        
+        Args:
+            prompt_name: Name of prompt to validate
+            
+        Returns:
+            bool: True if structure is valid, False otherwise
+        """
+        if prompt_name not in self.prompts_config:
+            logger.error(f"Unknown prompt: {prompt_name}")
+            return False
+        
+        config = self.prompts_config[prompt_name]
+        
+        if config.get('mode') != 'few-shot':
+            return True  # Zero-shot prompts don't need few-shot validation
+        
+        # Few-shot prompts must have both template and few_shot_example
+        if 'few_shot_example' not in config:
+            logger.error(f"Few-shot prompt '{prompt_name}' missing 'few_shot_example' field")
+            return False
+        
+        if 'template' not in config:
+            logger.error(f"Few-shot prompt '{prompt_name}' missing 'template' field")
+            return False
+        
+        return True
     
     # =============================================================================
     # COMPATIBILITY VALIDATION
@@ -92,14 +173,18 @@ class PromptManager:
     
     def validate_prompt_field_count(self, prompt_name: str, dataset_name: str) -> bool:
         """
-        Validate that the number of placeholders in the prompt matches the number of question fields.
+        Validate that the number of placeholders matches the dataset fields.
+        
+        For zero-shot: template placeholders = question_fields count
+        For few-shot: template placeholders = question_fields count, 
+                     few_shot_example placeholders = question_fields + answer_field count
         
         Args:
             prompt_name: Name of prompt template
             dataset_name: Name of dataset
             
         Returns:
-            bool: True if placeholder count matches question field count
+            bool: True if field counts match, False otherwise
             
         Raises:
             ValueError: If field counts don't match
@@ -110,33 +195,53 @@ class PromptManager:
         if dataset_name not in self.datasets_config:
             raise ValueError(f"Unknown dataset: {dataset_name}")
         
-        # Count placeholders in prompt template
-        template = self.prompts_config[prompt_name]['template']
-        placeholder_count = template.count('{}')
-        
-        # Count question fields in dataset (only question fields, not answer field)
+        prompt_config = self.prompts_config[prompt_name]
         dataset_config = self.datasets_config[dataset_name]
+        
         question_fields = dataset_config.get('question_fields', [])
         question_field_count = len(question_fields)
         
-        if placeholder_count != question_field_count:
+        # Validate template placeholder count
+        template = prompt_config['template']
+        template_placeholder_count = template.count('{}')
+        
+        if template_placeholder_count != question_field_count:
             error_msg = (
-                f"Prompt '{prompt_name}' has {placeholder_count} placeholders but "
+                f"Template in prompt '{prompt_name}' has {template_placeholder_count} placeholders but "
                 f"dataset '{dataset_name}' has {question_field_count} question fields. "
                 f"Question fields: {question_fields}"
             )
             logger.error(error_msg)
             raise ValueError(error_msg)
         
-        logger.debug(f"Prompt-dataset field count validation passed: {placeholder_count} placeholders = {question_field_count} question fields")
+        # For few-shot prompts, validate few_shot_example placeholder count
+        if prompt_config.get('mode') == 'few-shot':
+            if 'few_shot_example' not in prompt_config:
+                raise ValueError(f"Few-shot prompt '{prompt_name}' missing 'few_shot_example' field")
+            
+            few_shot_example = prompt_config['few_shot_example']
+            few_shot_placeholder_count = few_shot_example.count('{}')
+            expected_few_shot_count = question_field_count + 1  # question_fields + answer_field
+            
+            if few_shot_placeholder_count != expected_few_shot_count:
+                error_msg = (
+                    f"Few-shot example in prompt '{prompt_name}' has {few_shot_placeholder_count} placeholders but "
+                    f"expected {expected_few_shot_count} (question fields + answer field). "
+                    f"Question fields: {question_fields}, Answer field: {dataset_config.get('answer_field', 'N/A')}"
+                )
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+        
+        logger.debug(f"Prompt-dataset field count validation passed for '{prompt_name}' + '{dataset_name}'")
         return True
     
-    def get_compatible_prompts(self, dataset_name: str) -> List[str]:
+    def get_compatible_prompts(self, dataset_name: str, mode: str = None) -> List[str]:
         """
-        Get list of prompts that are compatible with a specific dataset.
+        Get list of prompts that are compatible with a specific dataset and optional mode.
         
         Args:
             dataset_name: Name of dataset to find prompts for
+            mode: Optional mode filter ('zero-shot' or 'few-shot')
             
         Returns:
             list: Names of compatible prompts
@@ -144,10 +249,80 @@ class PromptManager:
         compatible = []
         
         for prompt_name, config in self.prompts_config.items():
-            if config.get('compatible_dataset') == dataset_name:
-                compatible.append(prompt_name)
+            # Check dataset compatibility
+            if config.get('compatible_dataset') != dataset_name:
+                continue
+            
+            # Check mode compatibility if specified
+            if mode is not None:
+                prompt_mode = config.get('mode', 'zero-shot')
+                if prompt_mode != mode:
+                    continue
+            
+            compatible.append(prompt_name)
         
         return compatible
+    
+    # =============================================================================
+    # FEW-SHOT EXAMPLE GENERATION
+    # =============================================================================
+    
+    def generate_few_shot_example(self, dataset: pd.DataFrame, dataset_name: str, 
+                                 row_index: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Generate a few-shot example from a specific or random row in the dataset.
+        
+        Args:
+            dataset: Full dataset DataFrame
+            dataset_name: Name of dataset (for field mapping)
+            row_index: Specific row to use (0-based), or None for random
+            
+        Returns:
+            dict: Contains 'question_values' (list) and 'answer_value' (str)
+            
+        Raises:
+            ValueError: If dataset not supported or row_index out of bounds
+        """
+        if dataset_name not in self.datasets_config:
+            raise ValueError(f"Dataset '{dataset_name}' not supported for few-shot generation")
+        
+        dataset_config = self.datasets_config[dataset_name]
+        question_fields = dataset_config.get('question_fields', [])
+        answer_field = dataset_config.get('answer_field', '')
+        
+        if not answer_field:
+            raise ValueError(f"Dataset '{dataset_name}' has no answer field for few-shot examples")
+        
+        # Validate row index
+        if row_index is not None:
+            if row_index < 0 or row_index >= len(dataset):
+                raise ValueError(f"Row index {row_index} out of bounds for dataset with {len(dataset)} rows")
+            row = dataset.iloc[row_index]
+            logger.debug(f"Using specified row {row_index} for few-shot example")
+        else:
+            # Random row selection
+            row = dataset.sample(n=1, random_state=Config.RANDOM_SEED).iloc[0]
+            logger.debug("Using random row for few-shot example")
+        
+        # Extract question field values
+        question_values = []
+        for field in question_fields:
+            value = str(row.get(field, 'N/A')) if field in row and not pd.isna(row[field]) else 'N/A'
+            question_values.append(value)
+        
+        # Extract answer field value
+        answer_value = str(row.get(answer_field, 'N/A')) if answer_field in row and not pd.isna(row[answer_field]) else 'N/A'
+        
+        # Skip examples marked as 'NA' or 'not annotatable'
+        na_patterns = ['na', 'n/a', 'not applicable', 'not annotatable', '', 'none']
+        if answer_value.lower().strip() in na_patterns:
+            logger.warning("Selected few-shot example has NA answer, this may affect prompt quality")
+        
+        return {
+            'question_values': question_values,
+            'answer_value': answer_value,
+            'row_index': row_index if row_index is not None else row.name
+        }
     
     # =============================================================================
     # PROMPT FORMATTING AND GENERATION
@@ -184,173 +359,154 @@ class PromptManager:
         try:
             # Use Python's format method with positional arguments
             formatted_prompt = template.format(*field_values)
-            logger.debug(f"Formatted prompt '{prompt_name}' with {len(field_values)} field values")
+            logger.debug(f"Formatted template for prompt '{prompt_name}' with {len(field_values)} field values")
             return formatted_prompt
             
         except Exception as e:
             logger.error(f"Template formatting error for prompt '{prompt_name}': {e}")
             raise
     
-    def prepare_prompt_for_row(self, prompt_name: str, row: pd.Series, dataset_name: str, 
-                              additional_vars: Dict[str, Any] = None) -> str:
+    def format_few_shot_example(self, prompt_name: str, question_values: List[str], answer_value: str) -> str:
         """
-        Prepare a formatted prompt for a specific dataset row using generic field mapping.
+        Format a few-shot example template with provided values.
         
-        This method extracts question fields from the dataset row in order and maps them
-        to positional placeholders in the prompt template.
+        Args:
+            prompt_name: Name of prompt template
+            question_values: List of question field values
+            answer_value: Answer field value
+            
+        Returns:
+            str: Formatted few-shot example
+            
+        Raises:
+            ValueError: If prompt is not few-shot or field count mismatch
+        """
+        if prompt_name not in self.prompts_config:
+            raise ValueError(f"Unknown prompt: {prompt_name}")
+        
+        prompt_config = self.prompts_config[prompt_name]
+        
+        if prompt_config.get('mode') != 'few-shot':
+            raise ValueError(f"Prompt '{prompt_name}' is not a few-shot prompt")
+        
+        if 'few_shot_example' not in prompt_config:
+            raise ValueError(f"Few-shot prompt '{prompt_name}' missing 'few_shot_example' field")
+        
+        few_shot_template = prompt_config['few_shot_example']
+        
+        # Combine question values and answer value
+        all_values = question_values + [answer_value]
+        
+        # Count required placeholders
+        placeholder_count = few_shot_template.count('{}')
+        
+        if len(all_values) != placeholder_count:
+            logger.error(f"Few-shot field count mismatch for prompt '{prompt_name}': expected {placeholder_count}, got {len(all_values)}")
+            raise ValueError(f"Expected {placeholder_count} field values for few-shot example, got {len(all_values)}")
+        
+        try:
+            formatted_example = few_shot_template.format(*all_values)
+            logger.debug(f"Formatted few-shot example for prompt '{prompt_name}'")
+            return formatted_example
+            
+        except Exception as e:
+            logger.error(f"Few-shot example formatting error for prompt '{prompt_name}': {e}")
+            raise
+    
+    def prepare_prompt_for_row(self, prompt_name: str, row: pd.Series, dataset_name: str, 
+                              mode: str, dataset: pd.DataFrame = None, 
+                              few_shot_row: Optional[int] = None) -> str:
+        """
+        Prepare a complete formatted prompt for a specific dataset row with mode support.
         
         Args:
             prompt_name: Name of prompt template to use
-            row: Dataset row containing the data
+            row: Dataset row containing the current data
             dataset_name: Name of the dataset (for field mapping)
-            additional_vars: Extra variables (e.g., few-shot examples) - handled separately
+            mode: Prompting mode ('zero-shot' or 'few-shot')
+            dataset: Full dataset DataFrame (required for few-shot mode)
+            few_shot_row: Specific row index for few-shot example (optional)
             
         Returns:
-            str: Formatted prompt ready for model input
+            str: Complete formatted prompt ready for model input
             
         Raises:
-            ValueError: If dataset not supported or field count mismatch
+            ValueError: If validation fails or required parameters missing
         """
+        # Validate basic parameters
         if dataset_name not in self.datasets_config:
             raise ValueError(f"Dataset '{dataset_name}' not supported")
         
-        # Validate compatibility (with warning, not hard failure)
-        if not self.validate_prompt_dataset_compatibility(prompt_name, dataset_name):
-            logger.warning(f"Using potentially incompatible prompt '{prompt_name}' with dataset '{dataset_name}'")
+        # Validate mode compatibility
+        if not self.validate_mode_compatibility(prompt_name, mode):
+            raise ValueError(f"Prompt '{prompt_name}' is not compatible with mode '{mode}'")
         
         # Validate field count matches
         self.validate_prompt_field_count(prompt_name, dataset_name)
         
-        # Get question fields from dataset configuration
+        # Get dataset configuration
         dataset_config = self.datasets_config[dataset_name]
         question_fields = dataset_config.get('question_fields', [])
         
-        # Extract field values in order
-        field_values = []
+        # Extract field values for current row
+        current_question_values = []
         for field in question_fields:
             if field in row and not pd.isna(row[field]):
-                field_values.append(str(row[field]))
+                current_question_values.append(str(row[field]))
             else:
-                field_values.append("")  # Empty string for missing fields
-                logger.warning(f"Missing or null field '{field}' in dataset row, using empty string")
+                current_question_values.append("")
+                logger.warning(f"Missing or null field '{field}' in current row, using empty string")
         
-        # Handle few-shot prompts specially by inserting examples at the beginning
-        if 'few_shot' in prompt_name and additional_vars and 'few_shot_examples' in additional_vars:
-            # For few-shot prompts, the first placeholder is for examples
-            field_values = [additional_vars['few_shot_examples']] + field_values
+        if mode == 'zero-shot':
+            # Simple template formatting for zero-shot
+            return self.format_prompt(prompt_name, current_question_values)
         
-        # Format the prompt with field values
-        return self.format_prompt(prompt_name, field_values)
-    
-    # =============================================================================
-    # FEW-SHOT EXAMPLE GENERATION
-    # =============================================================================
-    
-    def generate_few_shot_examples(self, dataset: pd.DataFrame, dataset_name: str, 
-                                 n_examples: int = 3, exclude_indices: List[int] = None) -> str:
-        """
-        Generate few-shot examples from a dataset for in-context learning.
-        
-        Creates formatted examples showing input-output pairs that help
-        the model understand the expected task format and quality.
-        
-        Args:
-            dataset: Full dataset to sample examples from
-            dataset_name: Name of dataset (for field mapping)
-            n_examples: Number of examples to generate
-            exclude_indices: Row indices to exclude (e.g., current test sample)
+        elif mode == 'few-shot':
+            # Few-shot requires dataset for example generation
+            if dataset is None:
+                raise ValueError("Dataset is required for few-shot prompting")
             
-        Returns:
-            str: Formatted few-shot examples ready for inclusion in prompts
+            # Generate few-shot example
+            example_data = self.generate_few_shot_example(dataset, dataset_name, few_shot_row)
             
-        Raises:
-            ValueError: If dataset not supported for few-shot generation
-        """
-        logger.info(f"Generating {n_examples} few-shot examples for dataset {dataset_name}")
+            # Format few-shot example
+            few_shot_example = self.format_few_shot_example(
+                prompt_name, 
+                example_data['question_values'], 
+                example_data['answer_value']
+            )
+            
+            # Format current prompt template
+            current_template = self.format_prompt(prompt_name, current_question_values)
+            
+            # Concatenate few-shot example + template
+            final_prompt = few_shot_example + current_template
+            
+            logger.debug(f"Created few-shot prompt with example from row {example_data['row_index']}")
+            return final_prompt
         
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Few-shot generation not implemented for dataset: {dataset_name}")
-        
-        dataset_config = self.datasets_config[dataset_name]
-        question_fields = dataset_config.get('question_fields', [])
-        answer_field = dataset_config.get('answer_field', '')
-        
-        # Filter out excluded indices (typically the current test sample)
-        if exclude_indices:
-            available_data = dataset[~dataset.index.isin(exclude_indices)]
         else:
-            available_data = dataset
-        
-        # Ensure we have enough data
-        if len(available_data) < n_examples:
-            logger.warning(f"Not enough data for {n_examples} examples, using {len(available_data)}")
-            n_examples = len(available_data)
-        
-        # Sample examples with fixed seed for reproducibility
-        examples = available_data.sample(n=n_examples, random_state=Config.RANDOM_SEED)
-        
-        formatted_examples = []
-        
-        # Process each example
-        for _, row in examples.iterrows():
-            # Get question field values
-            question_values = []
-            for field in question_fields:
-                value = str(row.get(field, 'N/A'))
-                question_values.append(value)
-            
-            # Get the answer field value
-            explanation = str(row.get(answer_field, 'N/A')) if answer_field else 'N/A'
-            
-            # Skip examples marked as 'NA' or 'not annotatable'
-            na_patterns = ['na', 'n/a', 'not applicable', 'not annotatable', '', 'none']
-            if explanation.lower().strip() in na_patterns:
-                continue
-            
-            # Format example based on dataset structure - generic approach
-            if dataset_name == 'gmeg':
-                # GMEG has original and revised texts
-                if len(question_values) >= 2:
-                    example_text = f"Original: {question_values[0]}\nRevised: {question_values[1]}\nExplanation: {explanation}"
-                else:
-                    example_text = f"Text: {' | '.join(question_values)}\nExplanation: {explanation}"
-            else:
-                # Generic format for other datasets
-                field_pairs = []
-                for i, field in enumerate(question_fields):
-                    if i < len(question_values):
-                        field_pairs.append(f"{field}: {question_values[i]}")
-                example_text = f"{' | '.join(field_pairs)}\nExplanation: {explanation}"
-            
-            formatted_examples.append(example_text)
-        
-        # If we don't have enough valid examples after filtering NA, use fallback
-        if not formatted_examples and len(examples) > 0:
-            row = examples.iloc[0]
-            question_values = [str(row.get(field, 'N/A')) for field in question_fields]
-            if dataset_name == 'gmeg' and len(question_values) >= 2:
-                example_text = f"Original: {question_values[0]}\nRevised: {question_values[1]}\nExplanation: (Example explanation would go here)"
-            else:
-                field_pairs = [f"{field}: {question_values[i]}" for i, field in enumerate(question_fields) if i < len(question_values)]
-                example_text = f"{' | '.join(field_pairs)}\nExplanation: (Example explanation would go here)"
-            formatted_examples.append(example_text)
-        
-        # Join examples with separators
-        result = "\n\n".join(formatted_examples[:n_examples])
-        logger.debug(f"Generated few-shot examples with {len(formatted_examples)} examples")
-        
-        return result
+            raise ValueError(f"Unknown mode: {mode}")
     
     # =============================================================================
     # PROMPT CATALOG AND STATISTICS
     # =============================================================================
     
-    def list_prompts(self) -> Dict[str, str]:
+    def list_prompts(self, mode: str = None) -> Dict[str, str]:
         """
-        List all available prompts with their descriptions.
+        List available prompts with their descriptions, optionally filtered by mode.
         
+        Args:
+            mode: Optional mode filter ('zero-shot' or 'few-shot')
+            
         Returns:
             dict: Mapping of prompt names to descriptions
         """
-        return {name: config['description'] for name, config in self.prompts_config.items()}
-    
+        prompts = {}
+        for name, config in self.prompts_config.items():
+            if mode is None or config.get('mode', 'zero-shot') == mode:
+                description = config.get('description', 'No description')
+                prompt_mode = config.get('mode', 'zero-shot')
+                prompts[name] = f"{description} [{prompt_mode}]"
+        
+        return prompts

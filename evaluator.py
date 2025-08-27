@@ -42,10 +42,7 @@ class EvaluationRunner:
     
     def extract_experiment_type_from_name(self, experiment_name: str) -> Optional[str]:
         """
-        Extract experiment type from experiment name.
-        
-        Experiment names follow the pattern: {type}_{dataset}_{model}_{prompt}_{size}_{temp}
-        For example: baseline_gmeg_gpt-4o-mini_gmeg_v1_basic_50_0p1
+        Extract experiment type from experiment name using Config method.
         
         Args:
             experiment_name: Name of the experiment
@@ -53,29 +50,14 @@ class EvaluationRunner:
         Returns:
             str: Experiment type if valid, None otherwise
         """
-        if not experiment_name:
-            return None
-        
-        # Extract the first part of the experiment name
-        name_parts = experiment_name.split('_')
-        if not name_parts:
-            return None
-        
-        potential_type = name_parts[0]
-        
-        # Validate that it's a known experiment type
-        if potential_type in Config.EXPERIMENT_TYPES:
-            logger.debug(f"Extracted experiment type '{potential_type}' from name '{experiment_name}'")
-            return potential_type
-        
-        return None
+        return Config.extract_experiment_type_from_name(experiment_name)
     
     def detect_experiment_type(self, experiment_name: str, experiment_file: str = None) -> str:
         """
         Detect experiment type using multiple methods with fallback chain.
         
         Detection priority:
-        1. Extract from experiment name (most reliable)
+        1. Extract from experiment name using Config method (most reliable)
         2. Extract from file path (fallback)
         3. Default to 'baseline' (ultimate fallback)
         
@@ -86,7 +68,7 @@ class EvaluationRunner:
         Returns:
             str: Detected experiment type
         """
-        # Method 1: Extract from experiment name
+        # Method 1: Extract from experiment name using Config method
         detected_type = self.extract_experiment_type_from_name(experiment_name)
         if detected_type:
             return detected_type

@@ -21,12 +21,12 @@ class ExperimentRunner:
     This class orchestrates the entire experiment pipeline using generic field mapping:
     1. Validates configurations and field compatibility
     2. Prepares datasets and prompts using generic field mapping
-    3. Loads and queries models (with conditional GPU component loading)
+    3. Loads and queries models
     4. Saves results with metadata
     """
     
     def __init__(self):
-        """Initialize all component managers with conditional loading"""
+        """Initialize all component managers"""
         self.model_manager = ModelManager()
         self.prompt_manager = PromptManager()
         self.dataset_manager = DatasetManager()
@@ -39,8 +39,7 @@ class ExperimentRunner:
         # Always initialize API clients (safe for all systems)
         self.model_manager.setup_api_clients()
         
-        # Don't automatically load embedding model - will load only when needed
-        logger.info("ExperimentRunner initialized (embedding model will load on-demand)")
+        logger.info("ExperimentRunner initialized")
     
     def validate_experiment_config(self, config: Dict[str, Any]) -> bool:
         """
@@ -50,6 +49,8 @@ class ExperimentRunner:
         - All required fields are present
         - Experiment type is valid
         - Model, dataset, and prompt exist in configurations
+        - Mode is valid and matches prompt mode
+        - Few-shot row is valid if specified
         - Prompt is compatible with the dataset
         - Prompt placeholder count matches dataset question field count
         
@@ -59,7 +60,7 @@ class ExperimentRunner:
         Returns:
             bool: True if configuration is valid, False otherwise
         """
-        required_fields = ['experiment_type', 'model', 'dataset', 'prompt', 'size', 'temperature']
+        required_fields = ['experiment_type', 'model', 'dataset', 'prompt', 'mode', 'size', 'temperature']
         
         # Check all required fields are present
         for field in required_fields:
@@ -70,6 +71,11 @@ class ExperimentRunner:
         # Validate experiment type
         if not Config.validate_experiment_type(config['experiment_type']):
             logger.error(f"Invalid experiment type: {config['experiment_type']}")
+            return False
+        
+        # Validate mode
+        if config['mode'] not in ['zero-shot', 'few-shot']:
+            logger.error(f"Invalid mode: {config['mode']}")
             return False
         
         # Validate model exists
@@ -87,6 +93,14 @@ class ExperimentRunner:
             logger.error(f"Unknown prompt: {config['prompt']}")
             return False
         
+        # Validate mode compatibility with prompt
+        if not self.prompt_manager.validate_mode_compatibility(config['prompt'], config['mode']):
+            return False
+        
+        # Validate prompt structure if needed
+        if not self.prompt_manager.validate_few_shot_prompt_structure(config['prompt']):
+            return False
+        
         # Check prompt-dataset compatibility
         if not self.prompt_manager.validate_prompt_dataset_compatibility(config['prompt'], config['dataset']):
             logger.error(f"Prompt '{config['prompt']}' not compatible with dataset '{config['dataset']}'")
@@ -98,6 +112,15 @@ class ExperimentRunner:
         except ValueError as e:
             logger.error(f"Field count validation failed: {e}")
             return False
+        
+        # Validate few-shot row if specified
+        if config.get('few_shot_row') is not None:
+            if config['mode'] != 'few-shot':
+                logger.error("Cannot specify few_shot_row for non-few-shot experiments")
+                return False
+            if config['few_shot_row'] < 0:
+                logger.error(f"Few-shot row must be non-negative: {config['few_shot_row']}")
+                return False
         
         return True
     
@@ -146,15 +169,15 @@ class ExperimentRunner:
             raise
     
     def download_dataset(self, dataset_name: str):
-        """Download dataset using DatasetManager"""
+        """Use DatasetManager's download method"""
         return self.dataset_manager.download_dataset(dataset_name)
-
+    
     def load_model(self, model_name: str):
         """
-        Load the specified model for inference with conditional GPU loading.
+        Load the specified model for inference.
         
-        Only initializes GPU-dependent components when local models are requested.
-        API models work on any system without GPU dependencies.
+        Handles both local models (via Unsloth) and API models (validation only).
+        For local models, supports both base and finetuned variants.
         
         Args:
             model_name: Name of model to load
@@ -165,7 +188,7 @@ class ExperimentRunner:
         model_config = self.models_config[model_name]
         
         if model_config['type'] == 'local':
-            # Handle local models with Unsloth (GPU-dependent)
+            # Handle local models with Unsloth
             if model_config.get('finetuned', False):
                 # Finetuned model: look in finetuned models directory
                 model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
@@ -187,24 +210,10 @@ class ExperimentRunner:
             elif provider == 'anthropic' and not Config.ANTHROPIC_API_KEY:
                 raise ValueError("Anthropic API key not configured")
             
-            logger.info(f"Using API model: {model_name} (no GPU required)")
+            logger.info(f"Using API model: {model_name}")
         
         else:
             raise ValueError(f"Unknown model type: {model_config['type']}")
-    
-    def ensure_embedding_model_loaded(self):
-        """
-        Ensure embedding model is loaded for few-shot examples.
-        
-        Only loads when actually needed, avoiding unnecessary GPU/CPU usage.
-        """
-        if self.model_manager.embedding_model is None:
-            logger.info("Loading embedding model for few-shot example generation...")
-            try:
-                self.model_manager.load_embedding_model()
-            except Exception as e:
-                logger.error(f"Failed to load embedding model: {e}")
-                logger.warning("Few-shot examples may not work properly")
     
     def generate_responses(self, prompts: List[str], expected_outputs: List[str], 
                           model_name: str, temperature: float) -> List[Dict[str, Any]]:
@@ -330,11 +339,12 @@ class ExperimentRunner:
             Exception: If file cannot be saved
         """
         
-        # Generate experiment name and file paths
+        # Generate experiment name
         experiment_name = Config.generate_experiment_name(
             experiment_config['experiment_type'],
             experiment_config['dataset'],
             experiment_config['model'],
+            experiment_config['mode'],
             experiment_config['prompt'],
             experiment_config['size'],
             experiment_config['temperature']
@@ -394,14 +404,14 @@ class ExperimentRunner:
     
     def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Run a complete baseline experiment with conditional GPU component loading.
+        Run a complete baseline experiment with mode-based prompting support.
         
         This is the main experiment execution method that:
-        1. Validates configuration and field compatibility
-        2. Prepares dataset and prompts using generic field mapping
-        3. Loads model (only GPU components when needed)
-        4. Generates responses
-        5. Saves results
+        1. Validates configuration including mode and few-shot compatibility
+        2. Prepares dataset and validates few-shot row if specified
+        3. Loads model
+        4. Generates prompts using mode-based system
+        5. Generates responses and saves results
         
         Args:
             config: Complete experiment configuration
@@ -409,9 +419,9 @@ class ExperimentRunner:
         Returns:
             Dict containing experiment results and metadata, or None if failed
         """
-        logger.info(f"Starting baseline experiment: {config}")
+        logger.info(f"Starting {config['mode']} baseline experiment: {config}")
         
-        # Validate configuration including field compatibility
+        # Validate configuration including mode compatibility
         if not self.validate_experiment_config(config):
             logger.error("Experiment configuration validation failed")
             return None
@@ -428,33 +438,34 @@ class ExperimentRunner:
                 logger.error(f"Dataset validation failed for {config['dataset']}")
                 return None
             
-            # Step 2: Load model (conditional GPU loading)
+            # Step 2: Validate few-shot row if specified
+            if config['mode'] == 'few-shot' and config.get('few_shot_row') is not None:
+                if config['few_shot_row'] >= len(df):
+                    logger.error(f"Few-shot row {config['few_shot_row']} out of bounds for dataset with {len(df)} rows")
+                    return None
+                logger.info(f"Using specified few-shot row: {config['few_shot_row']}")
+            elif config['mode'] == 'few-shot':
+                logger.info("Using random few-shot examples")
+            
+            # Step 3: Load model
             self.load_model(config['model'])
             
-            # Step 3: Prepare prompts and expected outputs using generic field mapping
+            # Step 4: Prepare prompts using mode-based system
             prompts = []
             expected_outputs = []
             
-            # Check if we need embedding model for few-shot prompts
-            needs_embedding = 'few_shot' in config['prompt']
-            if needs_embedding:
-                self.ensure_embedding_model_loaded()
+            logger.info(f"Preparing {config['mode']} prompts for {len(df_slice)} samples")
             
             for idx, row in df_slice.iterrows():
                 try:
-                    # Handle few-shot prompts specially
-                    if 'few_shot' in config['prompt']:
-                        # Generate few-shot examples from other samples
-                        few_shot_examples = self.prompt_manager.generate_few_shot_examples(
-                            df, config['dataset'], n_examples=3, exclude_indices=[idx]
-                        )
-                        additional_vars = {'few_shot_examples': few_shot_examples}
-                    else:
-                        additional_vars = {}
-                    
-                    # Prepare prompt for this row using generic field mapping
+                    # Use the mode-based prompt preparation
                     prompt = self.prompt_manager.prepare_prompt_for_row(
-                        config['prompt'], row, config['dataset'], additional_vars
+                        prompt_name=config['prompt'],
+                        row=row,
+                        dataset_name=config['dataset'],
+                        mode=config['mode'],
+                        dataset=df,
+                        few_shot_row=config.get('few_shot_row')
                     )
                     prompts.append(prompt)
                     
@@ -463,26 +474,31 @@ class ExperimentRunner:
                     expected_outputs.append(expected_output)
                     
                 except Exception as e:
-                    logger.error(f"Error preparing prompt for row {idx}: {e}")
+                    logger.error(f"Error preparing {config['mode']} prompt for row {idx}: {e}")
                     prompts.append("")  # Fallback empty prompt
                     expected_outputs.append("")
             
-            logger.info(f"Prepared {len(prompts)} prompts using generic field mapping")
+            logger.info(f"Prepared {len(prompts)} {config['mode']} prompts")
             
-            # Step 4: Generate responses
+            # Step 5: Generate responses
             responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'])
             
-            # Step 5: Save results
+            # Step 6: Save results
             output_file = self.save_experiment_results(config, df, responses)
             
             # Clean up GPU memory if using local models
             if self.models_config[config['model']]['type'] == 'local':
                 clear_gpu_memory()
             
-            # Return success summary
+            # Generate experiment name
             experiment_name = Config.generate_experiment_name(
-                config['experiment_type'], config['dataset'], config['model'], 
-                config['prompt'], config['size'], config['temperature']
+                config['experiment_type'], 
+                config['dataset'],
+                config['model'],
+                config['mode'],
+                config['prompt'],
+                config['size'],
+                config['temperature']
             )
             
             return {
@@ -495,7 +511,7 @@ class ExperimentRunner:
             }
             
         except Exception as e:
-            logger.error(f"Baseline experiment failed: {e}")
+            logger.error(f"{config['mode']} baseline experiment failed: {e}")
             import traceback
             logger.error(traceback.format_exc())
             return None

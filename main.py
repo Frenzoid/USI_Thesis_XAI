@@ -84,6 +84,9 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
     from utils import check_gpu_availability
     gpu_status = check_gpu_availability()
     
+    # Get logger
+    logger = setup_logging("model_validation", "INFO")
+    
     # Warn about local models on CPU or insufficient GPU
     if not gpu_status['cuda_available']:
         if not gpu_status['torch_available']:
@@ -115,7 +118,7 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
     return True
 
 def run_baseline_experiment_command(args):
-    """Run baseline experiments with specified parameters"""
+    """Run baseline experiments with specified parameters and mode support"""
     logger.info("Starting baseline experiment execution...")
     
     # Load configurations
@@ -135,6 +138,39 @@ def run_baseline_experiment_command(args):
     models_to_run = parse_list_argument(args.model, all_models)
     datasets_to_run = parse_list_argument(args.dataset, all_datasets)
     prompts_to_run = parse_list_argument(args.prompt, all_prompts)
+    
+    # Handle mode filtering
+    if args.mode:
+        # Filter prompts by specified mode
+        filtered_prompts = []
+        for prompt_name in prompts_to_run:
+            if prompt_name in prompts_config:
+                prompt_mode = prompts_config[prompt_name].get('mode', 'zero-shot')
+                if prompt_mode == args.mode:
+                    filtered_prompts.append(prompt_name)
+                else:
+                    logger.warning(f"Skipping prompt '{prompt_name}' (mode: {prompt_mode}) - doesn't match requested mode: {args.mode}")
+        prompts_to_run = filtered_prompts
+        
+        if not prompts_to_run:
+            logger.error(f"No prompts available for mode: {args.mode}")
+            return False
+        
+        modes_to_run = [args.mode]
+        logger.info(f"Running experiments in {args.mode} mode with {len(prompts_to_run)} prompts")
+    else:
+        # No mode specified - run both zero-shot and few-shot experiments
+        modes_to_run = ['zero-shot', 'few-shot']
+        logger.info(f"Running experiments in both zero-shot and few-shot modes")
+    
+    # Validate few-shot row parameter
+    if args.few_shot_row is not None:
+        if args.few_shot_row < 0:
+            logger.error(f"Few-shot row index must be non-negative, got: {args.few_shot_row}")
+            return False
+        if args.mode == 'zero-shot':
+            logger.error("Cannot specify --few-shot-row with zero-shot mode")
+            return False
     
     # Validate model capability
     if not validate_local_model_capability(models_to_run, models_config, args.force):
@@ -157,48 +193,62 @@ def run_baseline_experiment_command(args):
         logger.error("Use --force to ignore validation errors")
         return False
     
-    # Execute experiments
-    total_experiments = len(models_to_run) * len(datasets_to_run) * len(prompts_to_run)
-    logger.info(f"Running {total_experiments} baseline experiment configurations")
-    
+    # Execute experiments for each mode
     results = []
     success_count = 0
     failure_count = 0
     
-    for model in models_to_run:
-        for dataset in datasets_to_run:
-            for prompt in prompts_to_run:
-                # Skip invalid combinations unless forced
-                if not args.force and prompts_config[prompt]['compatible_dataset'] != dataset:
-                    logger.warning(f"Skipping incompatible combination: {prompt} + {dataset}")
-                    continue
-                
-                try:
-                    logger.info(f"Running baseline experiment: {model} + {dataset} + {prompt}")
+    for mode in modes_to_run:
+        # Filter prompts for current mode
+        mode_prompts = []
+        for prompt_name in prompts_to_run:
+            if prompt_name in prompts_config:
+                prompt_mode = prompts_config[prompt_name].get('mode', 'zero-shot')
+                if prompt_mode == mode:
+                    mode_prompts.append(prompt_name)
+        
+        if not mode_prompts:
+            logger.info(f"No prompts available for {mode} mode, skipping")
+            continue
+        
+        logger.info(f"Running {mode} experiments with prompts: {mode_prompts}")
+        
+        for model in models_to_run:
+            for dataset in datasets_to_run:
+                for prompt in mode_prompts:
+                    # Skip invalid combinations unless forced
+                    if not args.force and prompts_config[prompt]['compatible_dataset'] != dataset:
+                        logger.warning(f"Skipping incompatible combination: {prompt} + {dataset}")
+                        continue
                     
-                    experiment_config = {
-                        'experiment_type': 'baseline',
-                        'model': model,
-                        'dataset': dataset,
-                        'prompt': prompt,
-                        'size': args.size,
-                        'temperature': args.temperature
-                    }
+                    try:
+                        logger.info(f"Running {mode} experiment: {model} + {dataset} + {prompt}")
+                        
+                        experiment_config = {
+                            'experiment_type': 'baseline',
+                            'model': model,
+                            'dataset': dataset,
+                            'prompt': prompt,
+                            'mode': mode,
+                            'few_shot_row': args.few_shot_row,
+                            'size': args.size,
+                            'temperature': args.temperature
+                        }
+                        
+                        result = runner.run_baseline_experiment(experiment_config)
+                        
+                        if result:
+                            results.append(result)
+                            success_count += 1
+                            logger.info(f"Completed {mode} experiment: {result['experiment_name']}")
+                        else:
+                            failure_count += 1
+                            logger.error(f"Failed {mode} experiment: {model} + {dataset} + {prompt}")
                     
-                    result = runner.run_baseline_experiment(experiment_config)
-                    
-                    if result:
-                        results.append(result)
-                        success_count += 1
-                        logger.info(f"✅ Completed experiment: {result['experiment_name']}")
-                    else:
+                    except Exception as e:
                         failure_count += 1
-                        logger.error(f"❌ Failed experiment: {model} + {dataset} + {prompt}")
-                
-                except Exception as e:
-                    failure_count += 1
-                    logger.error(f"❌ Error in experiment {model} + {dataset} + {prompt}: {e}")
-                    continue
+                        logger.error(f"Error in {mode} experiment {model} + {dataset} + {prompt}: {e}")
+                        continue
     
     # Summary
     logger.info(f"Baseline experiment batch completed: {success_count} successful, {failure_count} failed")
@@ -445,11 +495,13 @@ def list_commands_command():
     print("\n=== AVAILABLE COMMANDS ===")
     
     print("\n1. run-baseline-exp")
-    print("   Description: Run baseline inference experiments")
+    print("   Description: Run baseline inference experiments with zero-shot or few-shot prompting")
     print("   Arguments:")
     print("     --model MODELS           Model(s) to use (space-separated or 'all')")
     print("     --dataset DATASETS       Dataset(s) to use (space-separated or 'all')")
     print("     --prompt PROMPTS         Prompt(s) to use (space-separated or 'all')")
+    print("     --mode MODE              Prompting mode: zero-shot or few-shot (if not specified, runs both)")
+    print("     --few-shot-row ROW       Specific row number for few-shot example (0-based, defaults to random)")
     print("     --size SIZE              Sample size (default: 50)")
     print("     --temperature TEMP       Temperature for generation (default: 0.1)")
     print("     --force                  Force run even with validation errors")
@@ -491,20 +543,20 @@ def list_commands_command():
     print("   Arguments: None")
     
     print("\n=== EXAMPLE USAGE ===")
-    print("# Run single baseline experiment")
-    print("python main.py run-baseline-exp --model llama3.2-1b --dataset gmeg --prompt gmeg_v1_basic")
+    print("# Run zero-shot experiment")
+    print("python main.py run-baseline-exp --model gpt-4o-mini --dataset gmeg --prompt gmeg_v1_basic --mode zero-shot")
     print("")
-    print("# Run baseline with multiple models")
-    print("python main.py run-baseline-exp --model \"gpt-4o-mini gemini-1.5-flash\" --dataset gmeg --prompt gmeg_v1_basic")
+    print("# Run few-shot with specific example row")
+    print("python main.py run-baseline-exp --model gpt-4o-mini --dataset gmeg --prompt gmeg_few_shot --mode few-shot --few-shot-row 5")
+    print("")
+    print("# Run both zero-shot and few-shot experiments")
+    print("python main.py run-baseline-exp --model gpt-4o-mini --dataset gmeg --prompt \"gmeg_v1_basic gmeg_few_shot\"")
     print("")
     print("# Evaluate all baseline experiments") 
     print("python main.py evaluate --experiment-type baseline")
     print("")
     print("# Generate comparison plots")
     print("python main.py plot --experiment exp1,exp2,exp3 --compare")
-    print("")
-    print("# Clean up all temporary files")
-    print("python main.py cleanup --target all")
 
 def check_system_command(args):
     """Check system status"""
@@ -582,6 +634,10 @@ def main():
                                 help='Dataset(s) to use (space-separated, or "all" for all datasets)')
     baseline_parser.add_argument('--prompt', type=str,
                                 help='Prompt(s) to use (space-separated, or "all" for all prompts)')
+    baseline_parser.add_argument('--mode', type=str, choices=['zero-shot', 'few-shot'],
+                                help='Prompting mode: zero-shot or few-shot (if not specified, runs both modes)')
+    baseline_parser.add_argument('--few-shot-row', type=int,
+                                help='Specific row number to use for few-shot example (0-based indexing, defaults to random)')
     baseline_parser.add_argument('--size', type=int, default=Config.DEFAULT_SAMPLE_SIZE,
                                 help=f'Sample size (default: {Config.DEFAULT_SAMPLE_SIZE})')
     baseline_parser.add_argument('--temperature', type=float, default=Config.DEFAULT_TEMPERATURE,
@@ -655,10 +711,10 @@ def main():
             success = False
         
         if success:
-            logger.info("✅ Command completed successfully")
+            logger.info("Command completed successfully")
             return 0
         else:
-            logger.error("❌ Command failed")
+            logger.error("Command failed")
             return 1
             
     except KeyboardInterrupt:

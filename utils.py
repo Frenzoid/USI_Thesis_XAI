@@ -159,7 +159,7 @@ def print_system_status():
     print("\n=== SYSTEM STATUS ===")
     
     # GPU Status
-    print(f"\n🖥️  Compute Status:")
+    print(f"\nCompute Status:")
     if gpu_status['cuda_available']:
         print(f"   ✅ GPU Available: {gpu_status['gpu_count']} device(s)")
         for i, name in enumerate(gpu_status['gpu_names']):
@@ -199,7 +199,7 @@ def validate_gpu_requirements_for_command(command: str, gpu_status: dict = None)
     
     # Commands that require local model capability (GPU or sufficient CPU)
     gpu_dependent_commands = {
-        'run-experiment': 'Running experiments with local models requires GPU/sufficient resources'
+        'run-baseline-exp': 'Running experiments with local models requires GPU/sufficient resources'
     }
     
     # Commands that are always allowed regardless of GPU
@@ -212,7 +212,7 @@ def validate_gpu_requirements_for_command(command: str, gpu_status: dict = None)
         return True
     
     if command in gpu_dependent_commands:
-        # For run-experiment, we need to be more specific about what's allowed
+        # For run-baseline-exp, we need to be more specific about what's allowed
         return True  # We'll check this more specifically when model is being loaded
     
     return True  # Default: allow command
@@ -440,6 +440,26 @@ def experiment_context(experiment_name: str):
         except Exception as cleanup_error:
             logger.warning(f"GPU cleanup error: {cleanup_error}")
 
+# =============================================================================
+# UTILITY FUNCTIONS
+# =============================================================================
+
+def safe_filename(name: str) -> str:
+    """
+    Create a filesystem-safe filename from any string.
+    
+    Args:
+        name: Input string to make safe
+        
+    Returns:
+        str: Safe filename with problematic characters removed
+    """
+    # Remove or replace problematic characters
+    safe_chars = "".join(c for c in name if c.isalnum() or c in ('-', '_', '.'))
+    # Ensure it's not empty and not too long
+    if not safe_chars:
+        safe_chars = "unnamed"
+    return safe_chars[:100]  # Limit length
 
 def load_json_config(filepath: str) -> Dict[str, Any]:
     """
