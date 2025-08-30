@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-XAI Explanation Evaluation System - Refactored CLI
+XAI Explanation Evaluation System - Comprehensive CLI
 
 This script provides a command-line interface for running experiments to evaluate
 Large Language Models' alignment with user study results in XAI explanation evaluation.
+Handles all possible argument permutations intelligently.
 """
 
 import argparse
 import sys
 import os
 import shutil
-from typing import List, Optional
+from typing import List, Optional, Dict, Set, Tuple
+from dataclasses import dataclass
+from enum import Enum
 
 # Load environment variables first
 try:
@@ -33,6 +36,505 @@ from evaluator import EvaluationRunner
 from plotter import PlottingRunner
 from dataset_manager import DatasetManager
 
+# =============================================================================
+# COMPREHENSIVE ARGUMENT PERMUTATION SYSTEM
+# =============================================================================
+
+class ArgumentType(Enum):
+    """Enumeration of argument types for systematic handling"""
+    MODEL = "model"
+    DATASET = "dataset" 
+    PROMPT = "prompt"
+    MODE = "mode"
+
+@dataclass
+class ArgumentSpec:
+    """Specification of which arguments were provided by user"""
+    model: bool = False
+    dataset: bool = False
+    prompt: bool = False
+    mode: bool = False
+    
+    def __post_init__(self):
+        """Calculate permutation signature for systematic handling"""
+        self.signature = (self.model, self.dataset, self.prompt, self.mode)
+        self.count = sum(self.signature)
+        
+    def get_permutation_name(self) -> str:
+        """Get human-readable name for this permutation"""
+        provided = []
+        if self.model: provided.append("model")
+        if self.dataset: provided.append("dataset") 
+        if self.prompt: provided.append("prompt")
+        if self.mode: provided.append("mode")
+        
+        if not provided:
+            return "no_arguments"
+        return "+".join(provided)
+
+@dataclass
+class ExperimentCombination:
+    """A valid experiment combination after filtering"""
+    model: str
+    dataset: str
+    prompt: str
+    mode: str
+    
+    def __str__(self):
+        return f"{self.model}+{self.dataset}+{self.prompt}+{self.mode}"
+
+class ComprehensiveArgumentResolver:
+    """
+    Systematic resolver for all possible argument combinations.
+    
+    Handles all 16 possible permutations (including no arguments) with
+    explicit logic for each case and comprehensive compatibility filtering.
+    """
+    
+    def __init__(self, prompts_config: dict, datasets_config: dict, models_config: dict):
+        self.prompts_config = prompts_config
+        self.datasets_config = datasets_config
+        self.models_config = models_config
+        
+        # Precompute all available options
+        self.all_models = list(models_config.keys())
+        self.all_datasets = list(datasets_config.keys())
+        self.all_prompts = list(prompts_config.keys())
+        self.all_modes = ['zero-shot', 'few-shot']
+        
+        # Build compatibility maps for efficient filtering
+        self.dataset_to_prompts = self._build_dataset_to_prompts_map()
+        self.prompt_to_dataset = self._build_prompt_to_dataset_map()
+        self.mode_to_prompts = self._build_mode_to_prompts_map()
+        self.prompt_to_mode = self._build_prompt_to_mode_map()
+        
+        self.logger = setup_logging("argument_resolver")
+    
+    def _build_dataset_to_prompts_map(self) -> Dict[str, List[str]]:
+        """Build mapping from datasets to compatible prompts"""
+        mapping = {}
+        for dataset in self.all_datasets:
+            mapping[dataset] = []
+            for prompt_name, prompt_config in self.prompts_config.items():
+                if prompt_config.get('compatible_dataset') == dataset:
+                    mapping[dataset].append(prompt_name)
+        return mapping
+    
+    def _build_prompt_to_dataset_map(self) -> Dict[str, str]:
+        """Build mapping from prompts to their compatible dataset"""
+        mapping = {}
+        for prompt_name, prompt_config in self.prompts_config.items():
+            mapping[prompt_name] = prompt_config.get('compatible_dataset', '')
+        return mapping
+    
+    def _build_mode_to_prompts_map(self) -> Dict[str, List[str]]:
+        """Build mapping from modes to compatible prompts"""
+        mapping = {'zero-shot': [], 'few-shot': []}
+        for prompt_name, prompt_config in self.prompts_config.items():
+            mode = prompt_config.get('mode', 'zero-shot')
+            if mode in mapping:
+                mapping[mode].append(prompt_name)
+        return mapping
+    
+    def _build_prompt_to_mode_map(self) -> Dict[str, str]:
+        """Build mapping from prompts to their mode"""
+        mapping = {}
+        for prompt_name, prompt_config in self.prompts_config.items():
+            mapping[prompt_name] = prompt_config.get('mode', 'zero-shot')
+        return mapping
+    
+    def resolve_arguments(self, args, force: bool = False) -> List[ExperimentCombination]:
+        """
+        Main entry point - resolves all argument combinations systematically.
+        
+        Args:
+            args: Parsed command line arguments
+            force: Whether to ignore compatibility errors
+            
+        Returns:
+            List of valid experiment combinations
+        """
+        # Parse user inputs
+        specified_models = self._parse_list_arg(args.model, self.all_models)
+        specified_datasets = self._parse_list_arg(args.dataset, self.all_datasets) 
+        specified_prompts = self._parse_list_arg(args.prompt, self.all_prompts)
+        specified_mode = args.mode
+        
+        # Determine argument specification
+        arg_spec = ArgumentSpec(
+            model = bool(args.model),
+            dataset = bool(args.dataset),
+            prompt = bool(args.prompt), 
+            mode = bool(args.mode)
+        )
+        
+        self.logger.info(f"Resolving permutation: {arg_spec.get_permutation_name()} ({arg_spec.count} arguments)")
+        
+        # Route to appropriate resolution strategy
+        return self._resolve_by_permutation(
+            arg_spec, specified_models, specified_datasets, 
+            specified_prompts, specified_mode, force
+        )
+    
+    def _parse_list_arg(self, arg_value: Optional[str], all_options: List[str]) -> List[str]:
+        """Parse space or comma separated argument values"""
+        if not arg_value:
+            return []
+        if arg_value.lower() == 'all':
+            return all_options
+        if ',' in arg_value:
+            return [item.strip() for item in arg_value.split(',')]
+        return arg_value.split()
+    
+    def _resolve_by_permutation(self, arg_spec: ArgumentSpec, specified_models: List[str],
+                               specified_datasets: List[str], specified_prompts: List[str], 
+                               specified_mode: Optional[str], force: bool) -> List[ExperimentCombination]:
+        """Route to specific permutation handler based on argument pattern"""
+        
+        # Handle all 16 possible permutations explicitly
+        if arg_spec.signature == (False, False, False, False):
+            return self._handle_no_arguments()
+            
+        elif arg_spec.signature == (True, False, False, False):
+            return self._handle_model_only(specified_models)
+            
+        elif arg_spec.signature == (False, True, False, False):
+            return self._handle_dataset_only(specified_datasets)
+            
+        elif arg_spec.signature == (False, False, True, False):
+            return self._handle_prompt_only(specified_prompts)
+            
+        elif arg_spec.signature == (False, False, False, True):
+            return self._handle_mode_only(specified_mode)
+            
+        elif arg_spec.signature == (True, True, False, False):
+            return self._handle_model_dataset(specified_models, specified_datasets)
+            
+        elif arg_spec.signature == (True, False, True, False):
+            return self._handle_model_prompt(specified_models, specified_prompts)
+            
+        elif arg_spec.signature == (True, False, False, True):
+            return self._handle_model_mode(specified_models, specified_mode)
+            
+        elif arg_spec.signature == (False, True, True, False):
+            return self._handle_dataset_prompt(specified_datasets, specified_prompts, force)
+            
+        elif arg_spec.signature == (False, True, False, True):
+            return self._handle_dataset_mode(specified_datasets, specified_mode)
+            
+        elif arg_spec.signature == (False, False, True, True):
+            return self._handle_prompt_mode(specified_prompts, specified_mode, force)
+            
+        elif arg_spec.signature == (True, True, True, False):
+            return self._handle_model_dataset_prompt(specified_models, specified_datasets, specified_prompts, force)
+            
+        elif arg_spec.signature == (True, True, False, True):
+            return self._handle_model_dataset_mode(specified_models, specified_datasets, specified_mode)
+            
+        elif arg_spec.signature == (True, False, True, True):
+            return self._handle_model_prompt_mode(specified_models, specified_prompts, specified_mode, force)
+            
+        elif arg_spec.signature == (False, True, True, True):
+            return self._handle_dataset_prompt_mode(specified_datasets, specified_prompts, specified_mode, force)
+            
+        elif arg_spec.signature == (True, True, True, True):
+            return self._handle_all_arguments(specified_models, specified_datasets, specified_prompts, specified_mode, force)
+        
+        else:
+            raise ValueError(f"Unhandled argument permutation: {arg_spec.signature}")
+    
+    # =============================================================================
+    # SINGLE ARGUMENT PERMUTATION HANDLERS  
+    # =============================================================================
+    
+    def _handle_no_arguments(self) -> List[ExperimentCombination]:
+        """Handle case: python main.py run-baseline-exp"""
+        self.logger.info("No arguments provided - running all compatible combinations")
+        return self._build_all_compatible_combinations()
+    
+    def _handle_model_only(self, models: List[str]) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini"""
+        self.logger.info(f"Model only: running all compatible combinations with models {models}")
+        combinations = []
+        for model in models:
+            combinations.extend(self._build_combinations_for_model(model))
+        return combinations
+    
+    def _handle_dataset_only(self, datasets: List[str]) -> List[ExperimentCombination]:
+        """Handle case: --dataset gmeg"""
+        self.logger.info(f"Dataset only: running with compatible prompts for datasets {datasets}")
+        combinations = []
+        for dataset in datasets:
+            compatible_prompts = self.dataset_to_prompts.get(dataset, [])
+            self.logger.info(f"  Dataset {dataset}: {len(compatible_prompts)} compatible prompts")
+            for model in self.all_models:
+                for prompt in compatible_prompts:
+                    mode = self.prompt_to_mode[prompt]
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        return combinations
+    
+    def _handle_prompt_only(self, prompts: List[str]) -> List[ExperimentCombination]:
+        """Handle case: --prompt gmeg_v1_basic"""
+        self.logger.info(f"Prompt only: inferring datasets and using all models for prompts {prompts}")
+        combinations = []
+        inferred_datasets = set()
+        for prompt in prompts:
+            dataset = self.prompt_to_dataset.get(prompt)
+            if dataset:
+                inferred_datasets.add(dataset)
+                mode = self.prompt_to_mode[prompt]
+                for model in self.all_models:
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        self.logger.info(f"  Inferred datasets: {list(inferred_datasets)}")
+        return combinations
+    
+    def _handle_mode_only(self, mode: str) -> List[ExperimentCombination]:
+        """Handle case: --mode few-shot"""
+        self.logger.info(f"Mode only: running all {mode} compatible prompts")
+        compatible_prompts = self.mode_to_prompts.get(mode, [])
+        self.logger.info(f"  Found {len(compatible_prompts)} prompts supporting {mode} mode")
+        
+        combinations = []
+        for prompt in compatible_prompts:
+            dataset = self.prompt_to_dataset[prompt]
+            for model in self.all_models:
+                combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        return combinations
+    
+    # =============================================================================
+    # TWO ARGUMENT PERMUTATION HANDLERS
+    # =============================================================================
+    
+    def _handle_model_dataset(self, models: List[str], datasets: List[str]) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini --dataset gmeg"""
+        self.logger.info(f"Model+Dataset: finding compatible prompts")
+        combinations = []
+        for model in models:
+            for dataset in datasets:
+                compatible_prompts = self.dataset_to_prompts.get(dataset, [])
+                self.logger.info(f"  {model}+{dataset}: {len(compatible_prompts)} compatible prompts")
+                for prompt in compatible_prompts:
+                    mode = self.prompt_to_mode[prompt]
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        return combinations
+    
+    def _handle_model_prompt(self, models: List[str], prompts: List[str]) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini --prompt gmeg_v1_basic"""
+        self.logger.info(f"Model+Prompt: inferring datasets")
+        combinations = []
+        inferred_datasets = set()
+        for model in models:
+            for prompt in prompts:
+                dataset = self.prompt_to_dataset.get(prompt)
+                if dataset:
+                    inferred_datasets.add(dataset)
+                    mode = self.prompt_to_mode[prompt]
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        self.logger.info(f"  Inferred datasets: {list(inferred_datasets)}")
+        return combinations
+    
+    def _handle_model_mode(self, models: List[str], mode: str) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini --mode few-shot"""
+        self.logger.info(f"Model+Mode: finding compatible prompts for {mode}")
+        compatible_prompts = self.mode_to_prompts.get(mode, [])
+        self.logger.info(f"  Found {len(compatible_prompts)} prompts supporting {mode}")
+        
+        combinations = []
+        for model in models:
+            for prompt in compatible_prompts:
+                dataset = self.prompt_to_dataset[prompt]
+                combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        return combinations
+    
+    def _handle_dataset_prompt(self, datasets: List[str], prompts: List[str], force: bool) -> List[ExperimentCombination]:
+        """Handle case: --dataset gmeg --prompt gmeg_v1_basic"""
+        self.logger.info(f"Dataset+Prompt: validating compatibility")
+        combinations = []
+        
+        for dataset in datasets:
+            for prompt in prompts:
+                expected_dataset = self.prompt_to_dataset.get(prompt)
+                if expected_dataset != dataset and not force:
+                    self.logger.warning(f"  Skipping incompatible: {prompt} (for {expected_dataset}) + {dataset}")
+                    continue
+                
+                mode = self.prompt_to_mode[prompt]
+                for model in self.all_models:
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    def _handle_dataset_mode(self, datasets: List[str], mode: str) -> List[ExperimentCombination]:
+        """Handle case: --dataset gmeg --mode few-shot"""
+        self.logger.info(f"Dataset+Mode: finding prompts compatible with both")
+        combinations = []
+        
+        for dataset in datasets:
+            dataset_prompts = set(self.dataset_to_prompts.get(dataset, []))
+            mode_prompts = set(self.mode_to_prompts.get(mode, []))
+            compatible_prompts = list(dataset_prompts & mode_prompts)
+            
+            self.logger.info(f"  {dataset}+{mode}: {len(compatible_prompts)} compatible prompts")
+            for model in self.all_models:
+                for prompt in compatible_prompts:
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    def _handle_prompt_mode(self, prompts: List[str], mode: str, force: bool) -> List[ExperimentCombination]:
+        """Handle case: --prompt gmeg_v1_basic --mode zero-shot"""
+        self.logger.info(f"Prompt+Mode: validating mode compatibility")
+        combinations = []
+        
+        for prompt in prompts:
+            prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
+            if prompt_mode != mode and not force:
+                self.logger.warning(f"  Skipping incompatible: {prompt} (is {prompt_mode}) with {mode}")
+                continue
+                
+            dataset = self.prompt_to_dataset[prompt]
+            for model in self.all_models:
+                combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    # =============================================================================
+    # THREE ARGUMENT PERMUTATION HANDLERS
+    # =============================================================================
+    
+    def _handle_model_dataset_prompt(self, models: List[str], datasets: List[str], prompts: List[str], force: bool) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini --dataset gmeg --prompt gmeg_v1_basic"""
+        self.logger.info(f"Model+Dataset+Prompt: validating all compatibility")
+        combinations = []
+        
+        for model in models:
+            for dataset in datasets:
+                for prompt in prompts:
+                    expected_dataset = self.prompt_to_dataset.get(prompt)
+                    if expected_dataset != dataset and not force:
+                        self.logger.warning(f"  Skipping incompatible: {prompt}+{dataset}")
+                        continue
+                    
+                    mode = self.prompt_to_mode[prompt]
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    def _handle_model_dataset_mode(self, models: List[str], datasets: List[str], mode: str) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini --dataset gmeg --mode few-shot"""
+        self.logger.info(f"Model+Dataset+Mode: finding compatible prompts")
+        combinations = []
+        
+        for model in models:
+            for dataset in datasets:
+                dataset_prompts = set(self.dataset_to_prompts.get(dataset, []))
+                mode_prompts = set(self.mode_to_prompts.get(mode, []))
+                compatible_prompts = list(dataset_prompts & mode_prompts)
+                
+                self.logger.info(f"  {model}+{dataset}+{mode}: {len(compatible_prompts)} compatible prompts")
+                for prompt in compatible_prompts:
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    def _handle_model_prompt_mode(self, models: List[str], prompts: List[str], mode: str, force: bool) -> List[ExperimentCombination]:
+        """Handle case: --model gpt-4o-mini --prompt gmeg_v1_basic --mode zero-shot"""
+        self.logger.info(f"Model+Prompt+Mode: validating mode compatibility and inferring datasets")
+        combinations = []
+        
+        for model in models:
+            for prompt in prompts:
+                prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
+                if prompt_mode != mode and not force:
+                    self.logger.warning(f"  Skipping incompatible: {prompt} (is {prompt_mode}) with {mode}")
+                    continue
+                
+                dataset = self.prompt_to_dataset[prompt]
+                combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    def _handle_dataset_prompt_mode(self, datasets: List[str], prompts: List[str], mode: str, force: bool) -> List[ExperimentCombination]:
+        """Handle case: --dataset gmeg --prompt gmeg_v1_basic --mode zero-shot"""
+        self.logger.info(f"Dataset+Prompt+Mode: validating all compatibility")
+        combinations = []
+        
+        for dataset in datasets:
+            for prompt in prompts:
+                # Check dataset compatibility
+                expected_dataset = self.prompt_to_dataset.get(prompt)
+                if expected_dataset != dataset and not force:
+                    self.logger.warning(f"  Skipping incompatible: {prompt}+{dataset}")
+                    continue
+                
+                # Check mode compatibility  
+                prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
+                if prompt_mode != mode and not force:
+                    self.logger.warning(f"  Skipping incompatible: {prompt} (is {prompt_mode}) with {mode}")
+                    continue
+                
+                for model in self.all_models:
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    # =============================================================================
+    # ALL ARGUMENTS HANDLER
+    # =============================================================================
+    
+    def _handle_all_arguments(self, models: List[str], datasets: List[str], prompts: List[str], mode: str, force: bool) -> List[ExperimentCombination]:
+        """Handle case: all arguments specified"""
+        self.logger.info(f"All arguments specified: validating complete compatibility")
+        combinations = []
+        
+        for model in models:
+            for dataset in datasets:
+                for prompt in prompts:
+                    # Check dataset compatibility
+                    expected_dataset = self.prompt_to_dataset.get(prompt)
+                    if expected_dataset != dataset and not force:
+                        self.logger.warning(f"  Skipping incompatible: {prompt}+{dataset}")
+                        continue
+                    
+                    # Check mode compatibility
+                    prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')  
+                    if prompt_mode != mode and not force:
+                        self.logger.warning(f"  Skipping incompatible: {prompt} (is {prompt_mode}) with {mode}")
+                        continue
+                    
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        
+        return combinations
+    
+    # =============================================================================
+    # UTILITY METHODS
+    # =============================================================================
+    
+    def _build_all_compatible_combinations(self) -> List[ExperimentCombination]:
+        """Build all possible valid combinations"""
+        combinations = []
+        for model in self.all_models:
+            for dataset in self.all_datasets:
+                for prompt in self.dataset_to_prompts.get(dataset, []):
+                    mode = self.prompt_to_mode[prompt]
+                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        return combinations
+    
+    def _build_combinations_for_model(self, model: str) -> List[ExperimentCombination]:
+        """Build all valid combinations for a specific model"""
+        combinations = []
+        for dataset in self.all_datasets:
+            for prompt in self.dataset_to_prompts.get(dataset, []):
+                mode = self.prompt_to_mode[prompt]
+                combinations.append(ExperimentCombination(model, dataset, prompt, mode))
+        return combinations
+
+# =============================================================================
+# MAIN CLI FUNCTIONS
+# =============================================================================
+
 def setup_cli_logging():
     """Setup logging for CLI"""
     logger = setup_logging("main", "INFO")
@@ -42,16 +544,6 @@ def validate_experiment_type(experiment_type: str):
     """Validate experiment type"""
     if not Config.validate_experiment_type(experiment_type):
         raise ValueError(f"Unsupported experiment type: {experiment_type}. Supported: {Config.EXPERIMENT_TYPES}")
-
-def parse_list_argument(arg_value: Optional[str], all_options: List[str]) -> List[str]:
-    """Parse command line arguments that can be 'all' or a space-separated list"""
-    if not arg_value or arg_value.lower() == 'all':
-        return all_options
-    # Handle both space-separated and comma-separated values
-    if ',' in arg_value:
-        return [item.strip() for item in arg_value.split(',')]
-    else:
-        return arg_value.split()
 
 def validate_local_model_capability(models_to_run: List[str], models_config: dict, force: bool = False) -> bool:
     """
@@ -118,8 +610,8 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
     return True
 
 def run_baseline_experiment_command(args):
-    """Run baseline experiments with specified parameters and mode support"""
-    logger.info("Starting baseline experiment execution...")
+    """Run baseline experiments with comprehensive argument permutation handling"""
+    logger.info("Starting baseline experiment execution with comprehensive permutation handling...")
     
     # Load configurations
     try:
@@ -130,137 +622,115 @@ def run_baseline_experiment_command(args):
         logger.error(f"Failed to load configurations: {e}")
         return False
     
-    # Parse arguments - handle case where arguments might be None
-    all_models = list(models_config.keys())
-    all_datasets = list(datasets_config.keys())
-    all_prompts = list(prompts_config.keys())
+    # Initialize the comprehensive argument resolver
+    resolver = ComprehensiveArgumentResolver(prompts_config, datasets_config, models_config)
     
-    models_to_run = parse_list_argument(args.model, all_models)
-    datasets_to_run = parse_list_argument(args.dataset, all_datasets)
-    prompts_to_run = parse_list_argument(args.prompt, all_prompts)
+    # Resolve all argument combinations
+    try:
+        combinations = resolver.resolve_arguments(args, force=args.force)
+    except Exception as e:
+        logger.error(f"Error resolving arguments: {e}")
+        return False
     
-    # Handle mode filtering
-    if args.mode:
-        # Filter prompts by specified mode
-        filtered_prompts = []
-        for prompt_name in prompts_to_run:
-            if prompt_name in prompts_config:
-                prompt_mode = prompts_config[prompt_name].get('mode', 'zero-shot')
-                if prompt_mode == args.mode:
-                    filtered_prompts.append(prompt_name)
-                else:
-                    logger.warning(f"Skipping prompt '{prompt_name}' (mode: {prompt_mode}) - doesn't match requested mode: {args.mode}")
-        prompts_to_run = filtered_prompts
+    if not combinations:
+        logger.error("No valid experiment combinations found")
+        logger.info("Check your arguments and use --force to ignore compatibility warnings")
+        return False
+    
+    # Group combinations by mode for organized execution
+    combinations_by_mode = {}
+    for combo in combinations:
+        mode = combo.mode
+        if mode not in combinations_by_mode:
+            combinations_by_mode[mode] = []
+        combinations_by_mode[mode].append(combo)
+    
+    # Log execution plan
+    logger.info(f"Resolved to {len(combinations)} total experiment combinations:")
+    for mode, mode_combos in combinations_by_mode.items():
+        logger.info(f"  {mode}: {len(mode_combos)} experiments")
         
-        if not prompts_to_run:
-            logger.error(f"No prompts available for mode: {args.mode}")
-            return False
-        
-        modes_to_run = [args.mode]
-        logger.info(f"Running experiments in {args.mode} mode with {len(prompts_to_run)} prompts")
-    else:
-        # No mode specified - run both zero-shot and few-shot experiments
-        modes_to_run = ['zero-shot', 'few-shot']
-        logger.info(f"Running experiments in both zero-shot and few-shot modes")
+        # Show sample combinations for verification
+        sample_count = min(3, len(mode_combos))
+        for i in range(sample_count):
+            combo = mode_combos[i]
+            logger.info(f"    - {combo}")
+        if len(mode_combos) > sample_count:
+            logger.info(f"    ... and {len(mode_combos) - sample_count} more")
     
     # Validate few-shot row parameter
     if args.few_shot_row is not None:
         if args.few_shot_row < 0:
             logger.error(f"Few-shot row index must be non-negative, got: {args.few_shot_row}")
             return False
-        if args.mode == 'zero-shot':
-            logger.error("Cannot specify --few-shot-row with zero-shot mode")
+        if 'few-shot' not in combinations_by_mode:
+            logger.error("Cannot specify --few-shot-row when no few-shot experiments will be run")
             return False
     
     # Validate model capability
-    if not validate_local_model_capability(models_to_run, models_config, args.force):
+    unique_models = list(set(combo.model for combo in combinations))
+    if not validate_local_model_capability(unique_models, models_config, args.force):
         return False
     
     # Initialize experiment runner
     runner = ExperimentRunner()
     
-    # Validate configurations for compatibility
-    failed_validations = []
-    for dataset in datasets_to_run:
-        for prompt in prompts_to_run:
-            if prompts_config[prompt]['compatible_dataset'] != dataset:
-                failed_validations.append(f"Prompt '{prompt}' not compatible with dataset '{dataset}'")
-    
-    if failed_validations and not args.force:
-        logger.error("Configuration validation failures:")
-        for failure in failed_validations:
-            logger.error(f"  - {failure}")
-        logger.error("Use --force to ignore validation errors")
-        return False
-    
-    # Execute experiments for each mode
+    # Execute all combinations
     results = []
     success_count = 0
     failure_count = 0
     
-    for mode in modes_to_run:
-        # Filter prompts for current mode
-        mode_prompts = []
-        for prompt_name in prompts_to_run:
-            if prompt_name in prompts_config:
-                prompt_mode = prompts_config[prompt_name].get('mode', 'zero-shot')
-                if prompt_mode == mode:
-                    mode_prompts.append(prompt_name)
+    for mode, mode_combinations in combinations_by_mode.items():
+        logger.info(f"Executing {len(mode_combinations)} {mode} experiments...")
         
-        if not mode_prompts:
-            logger.info(f"No prompts available for {mode} mode, skipping")
-            continue
-        
-        logger.info(f"Running {mode} experiments with prompts: {mode_prompts}")
-        
-        for model in models_to_run:
-            for dataset in datasets_to_run:
-                for prompt in mode_prompts:
-                    # Skip invalid combinations unless forced
-                    if not args.force and prompts_config[prompt]['compatible_dataset'] != dataset:
-                        logger.warning(f"Skipping incompatible combination: {prompt} + {dataset}")
-                        continue
-                    
-                    try:
-                        logger.info(f"Running {mode} experiment: {model} + {dataset} + {prompt}")
-                        
-                        experiment_config = {
-                            'experiment_type': 'baseline',
-                            'model': model,
-                            'dataset': dataset,
-                            'prompt': prompt,
-                            'mode': mode,
-                            'few_shot_row': args.few_shot_row,
-                            'size': args.size,
-                            'temperature': args.temperature
-                        }
-                        
-                        result = runner.run_baseline_experiment(experiment_config)
-                        
-                        if result:
-                            results.append(result)
-                            success_count += 1
-                            logger.info(f"Completed {mode} experiment: {result['experiment_name']}")
-                        else:
-                            failure_count += 1
-                            logger.error(f"Failed {mode} experiment: {model} + {dataset} + {prompt}")
-                    
-                    except Exception as e:
-                        failure_count += 1
-                        logger.error(f"Error in {mode} experiment {model} + {dataset} + {prompt}: {e}")
-                        continue
+        for combo in mode_combinations:
+            try:
+                logger.info(f"Running {mode} experiment: {combo}")
+                
+                experiment_config = {
+                    'experiment_type': 'baseline',
+                    'model': combo.model,
+                    'dataset': combo.dataset,
+                    'prompt': combo.prompt,
+                    'mode': combo.mode,
+                    'few_shot_row': args.few_shot_row,
+                    'size': args.size,
+                    'temperature': args.temperature
+                }
+                
+                result = runner.run_baseline_experiment(experiment_config)
+                
+                if result:
+                    results.append(result)
+                    success_count += 1
+                    logger.info(f"✅ Completed: {result['experiment_name']}")
+                else:
+                    failure_count += 1
+                    logger.error(f"❌ Failed: {combo}")
+            
+            except Exception as e:
+                failure_count += 1
+                logger.error(f"❌ Error in experiment {combo}: {e}")
+                continue
     
-    # Summary
-    logger.info(f"Baseline experiment batch completed: {success_count} successful, {failure_count} failed")
+    # Final summary
+    logger.info(f"Experiment execution completed:")
+    logger.info(f"  ✅ Success: {success_count}")
+    logger.info(f"  ❌ Failed: {failure_count}")
+    logger.info(f"  📊 Total: {len(combinations)} combinations processed")
     
     if results:
         logger.info("Generated experiment files:")
-        for result in results:
+        for result in results[:5]:  # Show first 5
             logger.info(f"  - {result['output_file']}")
+        if len(results) > 5:
+            logger.info(f"  ... and {len(results) - 5} more files")
     
     return success_count > 0
 
-
+# =============================================================================
+# OTHER COMMAND HANDLERS (unchanged)
+# =============================================================================
 
 def evaluate_command(args):
     """Evaluate experiment results"""
@@ -367,7 +837,15 @@ def download_datasets_command(args):
     
     manager = DatasetManager()
     all_datasets = list(manager.datasets_config.keys())
-    datasets_to_download = parse_list_argument(args.dataset, all_datasets)
+    
+    # Parse dataset arguments properly
+    if not args.dataset or args.dataset.lower() == 'all':
+        datasets_to_download = all_datasets
+    else:
+        if ',' in args.dataset:
+            datasets_to_download = [item.strip() for item in args.dataset.split(',')]
+        else:
+            datasets_to_download = args.dataset.split()
     
     success_count = 0
     failure_count = 0
@@ -481,7 +959,8 @@ def list_available_options():
         print(f"\nPrompts ({len(prompts_config)}):")
         for prompt_name, config in prompts_config.items():
             compatible = config['compatible_dataset']
-            print(f"  - {prompt_name}: {config['description']} [for {compatible}]")
+            mode = config.get('mode', 'zero-shot')
+            print(f"  - {prompt_name}: {config['description']} [for {compatible}, {mode}]")
         
         print(f"\nExperiment Types ({len(Config.EXPERIMENT_TYPES)}):")
         for exp_type in Config.EXPERIMENT_TYPES:
@@ -495,16 +974,22 @@ def list_commands_command():
     print("\n=== AVAILABLE COMMANDS ===")
     
     print("\n1. run-baseline-exp")
-    print("   Description: Run baseline inference experiments with zero-shot or few-shot prompting")
+    print("   Description: Run baseline inference experiments with intelligent argument resolution")
     print("   Arguments:")
     print("     --model MODELS           Model(s) to use (space-separated or 'all')")
     print("     --dataset DATASETS       Dataset(s) to use (space-separated or 'all')")
     print("     --prompt PROMPTS         Prompt(s) to use (space-separated or 'all')")
-    print("     --mode MODE              Prompting mode: zero-shot or few-shot (if not specified, runs both)")
+    print("     --mode MODE              Prompting mode: zero-shot or few-shot")
     print("     --few-shot-row ROW       Specific row number for few-shot example (0-based, defaults to random)")
     print("     --size SIZE              Sample size (default: 50)")
     print("     --temperature TEMP       Temperature for generation (default: 0.1)")
     print("     --force                  Force run even with validation errors")
+    
+    print("\n   Intelligent Argument Resolution:")
+    print("     • Specify any combination of arguments - system handles compatibility automatically")
+    print("     • Unspecified arguments default to all compatible options")
+    print("     • Dataset+prompt combinations are validated for compatibility")
+    print("     • Mode filtering only uses prompts that support the specified mode")
     
     print("\n2. evaluate")
     print("   Description: Evaluate experiment results using various metrics")
@@ -543,20 +1028,20 @@ def list_commands_command():
     print("   Arguments: None")
     
     print("\n=== EXAMPLE USAGE ===")
-    print("# Run zero-shot experiment")
+    print("# Any single argument - system finds compatible combinations")
+    print("python main.py run-baseline-exp --dataset gmeg")
+    print("python main.py run-baseline-exp --mode few-shot")
+    print("python main.py run-baseline-exp --model gpt-4o-mini")
+    print("")
+    print("# Multiple arguments - system validates compatibility")
+    print("python main.py run-baseline-exp --model gpt-4o-mini --mode few-shot")
+    print("python main.py run-baseline-exp --dataset gmeg --mode zero-shot")
+    print("")
+    print("# Complex combinations")
+    print("python main.py run-baseline-exp --model \"gpt-4o-mini claude-3.5-sonnet\" --dataset gmeg")
+    print("")
+    print("# All arguments - traditional explicit specification")
     print("python main.py run-baseline-exp --model gpt-4o-mini --dataset gmeg --prompt gmeg_v1_basic --mode zero-shot")
-    print("")
-    print("# Run few-shot with specific example row")
-    print("python main.py run-baseline-exp --model gpt-4o-mini --dataset gmeg --prompt gmeg_few_shot --mode few-shot --few-shot-row 5")
-    print("")
-    print("# Run both zero-shot and few-shot experiments")
-    print("python main.py run-baseline-exp --model gpt-4o-mini --dataset gmeg --prompt \"gmeg_v1_basic gmeg_few_shot\"")
-    print("")
-    print("# Evaluate all baseline experiments") 
-    print("python main.py evaluate --experiment-type baseline")
-    print("")
-    print("# Generate comparison plots")
-    print("python main.py plot --experiment exp1,exp2,exp3 --compare")
 
 def check_system_command(args):
     """Check system status"""
@@ -611,14 +1096,14 @@ def main():
         initialize_system()
         global logger
         logger = setup_cli_logging()
-        logger.info("XAI Explanation Evaluation System - CLI")
+        logger.info("XAI Explanation Evaluation System - Comprehensive CLI")
     except Exception as e:
         print(f"System initialization failed: {e}")
         return 1
     
     # Create main parser
     parser = argparse.ArgumentParser(
-        description="XAI Explanation Evaluation System",
+        description="XAI Explanation Evaluation System - Comprehensive Argument Handling",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="Use 'python main.py list-commands' to see all available commands and examples."
     )
@@ -635,7 +1120,7 @@ def main():
     baseline_parser.add_argument('--prompt', type=str,
                                 help='Prompt(s) to use (space-separated, or "all" for all prompts)')
     baseline_parser.add_argument('--mode', type=str, choices=['zero-shot', 'few-shot'],
-                                help='Prompting mode: zero-shot or few-shot (if not specified, runs both modes)')
+                                help='Prompting mode: zero-shot or few-shot')
     baseline_parser.add_argument('--few-shot-row', type=int,
                                 help='Specific row number to use for few-shot example (0-based indexing, defaults to random)')
     baseline_parser.add_argument('--size', type=int, default=Config.DEFAULT_SAMPLE_SIZE,
