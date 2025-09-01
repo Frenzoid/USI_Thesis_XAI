@@ -3,19 +3,7 @@ import os
 from typing import Optional
 from langchain_huggingface import HuggingFaceEmbeddings
 from openai import OpenAI
-try:
-    import google.generativeai as genai
-    # For newer Google GenAI SDK
-    genai_available = True
-except ImportError:
-    try:
-        # Fallback for older SDK structure
-        from google import genai
-        from google.genai import types
-        genai_available = True
-    except ImportError:
-        genai_available = False
-        logger.warning("Google GenAI SDK not available")
+import google.generativeai as genai
 
 from config import Config
 from utils import setup_logging, clear_gpu_memory, show_gpu_stats, check_gpu_availability, get_memory_status
@@ -334,10 +322,10 @@ class ModelManager:
                 logger.error(f"Failed to initialize OpenAI client: {e}")
         
         # Google GenAI client setup
-        if Config.GENAI_API_KEY and genai_available:
+        if Config.GENAI_API_KEY:
             try:
                 # Configure the API key for the newer SDK
-                genai.configure(api_key=Config.GENAI_API_KEY)
+                genai.Client(api_key=Config.GENAI_API_KEY)
                 self.genai_client = genai  # Use module directly
                 logger.info("Google GenAI client initialized")
             except Exception as e:
