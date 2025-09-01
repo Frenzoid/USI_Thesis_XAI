@@ -485,7 +485,7 @@ class ExperimentRunner:
                     
                     current_question_values = []
                     for field in question_fields:
-                        if field in row and not pd.isna(row[field]):
+                        if field in row.index and not pd.isna(row.at[field]):
                             current_question_values.append(str(row[field]))
                         else:
                             current_question_values.append("")
