@@ -429,7 +429,7 @@ class ExperimentRunner:
         try:
             # Step 1: Prepare dataset
             df = self.prepare_dataset(config['dataset'], config['size'])
-            
+
             # Ensure we only process the requested number of samples
             df_slice = df.head(config['size'])
             
@@ -442,6 +442,7 @@ class ExperimentRunner:
             if config['mode'] == 'few-shot' and config.get('few_shot_row') is not None:
                 if config['few_shot_row'] >= len(df):
                     logger.error(f"Few-shot row {config['few_shot_row']} out of bounds for dataset with {len(df)} rows")
+                    logger.error(df)
                     return None
                 logger.info(f"Using specified few-shot row: {config['few_shot_row']}")
             elif config['mode'] == 'few-shot':

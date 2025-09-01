@@ -1,0 +1,15 @@
+BUG: Fix few shot few-shot-row specification, it doesnt work.
+BUG: Find better multi-parametrics permutation handling implementation than hardcoding it into the main.py.
+
+FEATURE: Create a command to show a populated template of the prompt given a dataset and prompt.
+FEATURE: ( FOR CUSTOM METRICS ) Include in the inference results the question fields aswell.
+FEATURE: Allow to use custom metrics to be used ( imported from a file or similar instead of hardcoded as it is right now for gmeg ) based on what dataset its being used ( when evaluating, check which custom metrics are compatible with the dataset ), where the metric will receive for each row all the response JSON, and return a value.
+FEATURE: We need to discern the dataset type: qualitative / quantitative to allow the system to know what kind of GENERAL metrics to use
+
+ANALISIS: Prompts must be the same as the dataset's questionnaire
+ANALISIS: Calculate each models 1 row inference
+
+
+FEATURE: Add to the dataset info a short description of what does each row represent, this can be used for better prompt engineering in masking experiments.
+FEATURE: Masking experiments prompts will be dynamically generated. Example: Given this information thats about {dataset short desc of row} and these values: for each col: print key: value. predict what will the {answer_col_key} have.
+FEATURE: In masking experiments, we should have the following attributes: --masking_column 
