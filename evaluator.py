@@ -21,7 +21,7 @@ class EvaluationRunner:
     1. Finds and loads experiment result files
     2. Extracts metadata from file content (not filename parsing)
     3. Extracts model responses and expected outputs
-    4. Runs evaluation using the EvaluationFramework
+    4. Runs evaluation using the EvaluationFramework with custom metrics
     5. Saves evaluation results with metadata
     6. Provides batch evaluation across multiple experiments
     """
@@ -137,22 +137,35 @@ class EvaluationRunner:
             experiment_data: Loaded experiment result data
             
         Returns:
-            tuple: (generated_responses, expected_outputs) as lists of strings with matching lengths
+            tuple: (generated_responses, expected_outputs, response_data_list) 
+                   as lists of strings and full response data with matching lengths
         """
         responses_data = experiment_data.get('responses', [])
         expected_outputs = experiment_data.get('expected_outputs', [])
         
         # Extract response text from response objects
         generated_responses = []
+        full_response_data = []
+        
         for response_obj in responses_data:
             if isinstance(response_obj, dict):
                 response_text = response_obj.get('response', '')
                 generated_responses.append(response_text)
+                # Keep the full response data for custom metrics
+                full_response_data.append(response_obj)
             else:
                 generated_responses.append(str(response_obj))
+                # Create minimal response data for legacy format
+                full_response_data.append({
+                    'response': str(response_obj),
+                    'success': True,
+                    'error': None,
+                    'prompt': '',
+                    'question_values': []
+                })
         
-        # Ensure both lists have the same length for proper evaluation
-        min_length = min(len(generated_responses), len(expected_outputs))
+        # Ensure all lists have the same length for proper evaluation
+        min_length = min(len(generated_responses), len(expected_outputs), len(full_response_data))
         
         if min_length != len(generated_responses) or min_length != len(expected_outputs):
             logger.warning(f"Length mismatch detected - Generated: {len(generated_responses)}, Expected: {len(expected_outputs)}")
@@ -160,35 +173,17 @@ class EvaluationRunner:
             
             generated_responses = generated_responses[:min_length]
             expected_outputs = expected_outputs[:min_length]
+            full_response_data = full_response_data[:min_length]
+        
+        # Add expected outputs to response data for custom metrics
+        for i, response_data in enumerate(full_response_data):
+            if i < len(expected_outputs):
+                response_data['expected_output'] = expected_outputs[i]
+            else:
+                response_data['expected_output'] = ''
         
         logger.debug(f"Extracted {len(generated_responses)} response pairs for evaluation")
-        return generated_responses, expected_outputs
-    
-    def determine_dataset_type(self, experiment_data: Dict[str, Any]) -> str:
-        """
-        Determine the dataset type for appropriate evaluation metrics.
-        
-        Args:
-            experiment_data: Loaded experiment data
-            
-        Returns:
-            str: Dataset type for evaluation (e.g., 'gmeg', 'general')
-        """
-        metadata = self.extract_metadata_from_file_data(experiment_data)
-        dataset_name = metadata.get('dataset', 'general')
-        
-        # Map dataset names to evaluation types
-        dataset_type_mapping = {
-            'gmeg': 'gmeg',
-            'xai_fungi': 'general',
-            'hatebrxplain': 'general',
-            'explanationhardness': 'general',
-            'reframinghumanai': 'general'
-        }
-        
-        mapped_type = dataset_type_mapping.get(dataset_name, 'general')
-        logger.debug(f"Mapped dataset '{dataset_name}' to evaluation type '{mapped_type}'")
-        return mapped_type
+        return generated_responses, expected_outputs, full_response_data
     
     # =============================================================================
     # CORE EVALUATION METHODS
@@ -196,11 +191,11 @@ class EvaluationRunner:
     
     def evaluate_experiment_from_data(self, experiment_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Evaluate experiment results from loaded data using metadata-based detection.
+        Evaluate experiment results from loaded data using metadata-based detection and custom metrics.
         """
         try:
-            # Extract responses and expected outputs
-            generated_responses, expected_outputs = self.extract_responses_and_expected(experiment_data)
+            # Extract responses and expected outputs with full response data
+            generated_responses, expected_outputs, response_data_list = self.extract_responses_and_expected(experiment_data)
             
             if not generated_responses or not expected_outputs:
                 logger.error("No valid responses found for evaluation")
@@ -209,20 +204,19 @@ class EvaluationRunner:
             # Extract metadata from file content
             metadata = self.extract_metadata_from_file_data(experiment_data)
             experiment_type = metadata['experiment_type']
+            dataset_name = metadata['dataset']
             
-            # Determine appropriate dataset type for specialized metrics
-            dataset_type = self.determine_dataset_type(experiment_data)
-            
-            # Run comprehensive evaluation
+            # Run comprehensive evaluation with custom metrics
             experiment_name = experiment_data.get('experiment_name', 'unknown')
-            logger.info(f"Evaluating experiment: {experiment_name} (type: {experiment_type}, mode: {metadata['mode']})")
+            logger.info(f"Evaluating experiment: {experiment_name} (type: {experiment_type}, mode: {metadata['mode']}, dataset: {dataset_name})")
             
             evaluation_result = self.evaluation_framework.evaluate_batch(
                 generated_responses=generated_responses,
                 expected_responses=expected_outputs,
                 embedding_model=self.model_manager.embedding_model,
                 batch_name=experiment_name,
-                dataset_type=dataset_type
+                dataset_name=dataset_name,
+                response_data_list=response_data_list  # Pass full response data for custom metrics
             )
             
             # Add comprehensive metadata including extracted fields
@@ -230,7 +224,7 @@ class EvaluationRunner:
                 'original_experiment_config': experiment_data.get('experiment_config', {}),
                 'original_experiment_name': experiment_name,
                 'evaluation_timestamp': datetime.now().isoformat(),
-                'dataset_type': dataset_type,
+                'dataset_name': dataset_name,
                 'extracted_metadata': metadata
             })
             
@@ -244,6 +238,12 @@ class EvaluationRunner:
                 exact_match_mean = agg_scores.get('exact_match', {}).get('mean', 0)
                 
                 logger.info(f"Results - F1: {f1_mean:.3f}, Semantic Similarity: {sem_sim_mean:.3f}, Exact Match: {exact_match_mean:.3f}")
+                
+                # Log custom metrics if any were computed
+                custom_metrics = [metric for metric in agg_scores.keys() 
+                                if metric not in ['f1_score', 'semantic_similarity', 'exact_match', 'precision', 'recall', 'jaccard']]
+                if custom_metrics:
+                    logger.info(f"Custom metrics computed: {', '.join(custom_metrics)}")
             
             return evaluation_result
             
@@ -328,6 +328,7 @@ class EvaluationRunner:
             'experiment_type': final_experiment_type,
             'mode': metadata['mode'],
             'model': metadata['model'],
+            'dataset': metadata['dataset'],
             'evaluation_file': output_file,
             'metrics': evaluation_result.get('aggregated_scores', {}),
             'num_samples': evaluation_result.get('num_samples', 0),
@@ -392,6 +393,7 @@ class EvaluationRunner:
                     'experiment_type': file_experiment_type,
                     'mode': metadata['mode'],
                     'model': metadata['model'],
+                    'dataset': metadata['dataset'],
                     'evaluation_file': output_file,
                     'metrics': evaluation_result.get('aggregated_scores', {}),
                     'num_samples': evaluation_result.get('num_samples', 0),
