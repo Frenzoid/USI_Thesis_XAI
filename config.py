@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 class Config:
     """
@@ -230,12 +230,14 @@ class Config:
     
     @classmethod
     def generate_experiment_name(cls, experiment_type: str, dataset: str, model: str, 
-                                mode: str, prompt: str, size: int, temperature: float) -> str:
+                                mode: str, prompt: str, size: int, temperature: float,
+                                few_shot_row: Optional[int] = None) -> str:
         """
         Generate a standardized experiment name.
         
         Creates descriptive names that uniquely identify experiments:
-        Format: {experiment_type}_{dataset}_{model}_{mode}_{prompt}_{size}_{temperature}
+        Format for zero-shot: {experiment_type}_{dataset}_{model}_{mode}_{prompt}_{size}_{temperature}
+        Format for few-shot: {experiment_type}_{dataset}_{model}_{mode}-{few_shot_row}_{prompt}_{size}_{temperature}
         
         Args:
             experiment_type: Type of experiment (e.g., 'baseline')
@@ -245,14 +247,24 @@ class Config:
             prompt: Prompt name (e.g., 'gmeg_v1_basic')
             size: Sample size (e.g., 50)
             temperature: Generation temperature (e.g., 0.1)
+            few_shot_row: Row number used for few-shot example (only for few-shot mode)
             
         Returns:
             str: Standardized experiment name
         """
-        # Format temperature to avoid floating point precision issues
+
+        # Format temperature to avoid floatding point precision issues
         # 0.1 becomes "0p1", 1.0 becomes "1p0"
-        temp_str = f"{temperature:.1f}".replace(".", "p")
-        return f"{experiment_type}_{dataset}_{model}_{mode}_{prompt}_{size}_{temp_str}"
+        temp_str = f"{temperature:.3f}".replace(".", "p")
+        
+        # For few-shot experiments, include the row number used for the example
+        if mode == 'few-shot' and few_shot_row is not None:
+            mode_with_row = f"{mode}-{few_shot_row}"
+        else:
+            mode_with_row = mode
+
+        print(f"{experiment_type}__{dataset}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}")
+        return f"{experiment_type}__{dataset}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}"
     
     @classmethod
     def generate_file_paths(cls, experiment_type: str, experiment_name: str) -> Dict[str, str]:
@@ -301,28 +313,6 @@ class Config:
             return potential_type
         
         raise ValueError(f"Experiment type '{potential_type}' not recognized. Supported types: {cls.EXPERIMENT_TYPES}")
-        
-    
-    @classmethod 
-    def extract_mode_from_name(cls, experiment_name: str) -> str:
-        """
-        Extract mode from experiment name by substring search.
-        
-        Args:
-            experiment_name: Full experiment name
-            
-        Returns:
-            str: Mode ('zero-shot', 'few-shot', or 'unknown')
-        """
-        if not experiment_name:
-            raise ValueError("Experiment name cannot be empty")
-            
-        if "zero-shot" in experiment_name:
-            return "zero-shot"
-        if "few-shot" in experiment_name:
-            return "few-shot"
-        
-        raise ValueError("Mode not found in experiment name. Expected 'zero-shot' or 'few-shot'.")
     
     # =============================================================================
     # LOGGING UTILITIES

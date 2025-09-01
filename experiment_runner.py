@@ -3,7 +3,7 @@ import time
 import json
 import pandas as pd
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from tqdm import tqdm
 
 from config import Config
@@ -124,18 +124,19 @@ class ExperimentRunner:
         
         return True
     
-    def prepare_dataset(self, dataset_name: str, size: int) -> pd.DataFrame:
+    def prepare_dataset(self, dataset_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
         """
         Load and prepare dataset for experiment.
         
         Downloads dataset if necessary, loads it, and samples to the requested size.
+        Returns both the full dataset (for few-shot generation) and the sample (for experiment).
         
         Args:
             dataset_name: Name of dataset to prepare
             size: Number of samples to return
             
         Returns:
-            pandas.DataFrame: Prepared dataset sample
+            Tuple[pd.DataFrame, pd.DataFrame]: (full_dataset, sampled_dataset)
             
         Raises:
             Exception: If dataset cannot be loaded or prepared
@@ -152,17 +153,20 @@ class ExperimentRunner:
             logger.info(f"Dataset not found, downloading: {dataset_name}")
             self.download_dataset(dataset_name)
         
-        # Load and sample dataset
+        # Load full dataset
         try:
-            df = pd.read_csv(dataset_path)
-            logger.info(f"Loaded dataset with {len(df)} rows")
+            full_df = pd.read_csv(dataset_path)
+            logger.info(f"Loaded full dataset with {len(full_df)} rows")
             
             # Sample data if requested size is smaller than dataset
-            if size < len(df):
-                df = df.sample(n=size, random_state=Config.RANDOM_SEED).reset_index(drop=True)
-                logger.info(f"Sampled {size} rows from dataset")
+            if size < len(full_df):
+                sampled_df = full_df.sample(n=size, random_state=Config.RANDOM_SEED).reset_index(drop=True)
+                logger.info(f"Sampled {size} rows from dataset for experiment")
+            else:
+                sampled_df = full_df.copy()
+                logger.info(f"Using all {len(full_df)} rows (requested size >= dataset size)")
             
-            return df
+            return full_df, sampled_df
             
         except Exception as e:
             logger.error(f"Error loading dataset {dataset_name}: {e}")
@@ -216,7 +220,7 @@ class ExperimentRunner:
             raise ValueError(f"Unknown model type: {model_config['type']}")
     
     def generate_responses(self, prompts: List[str], expected_outputs: List[str], 
-                          model_name: str, temperature: float) -> List[Dict[str, Any]]:
+                          model_name: str, temperature: float, question_values_list: List[List[str]]) -> List[Dict[str, Any]]:
         """
         Generate responses using the loaded model.
         
@@ -228,6 +232,7 @@ class ExperimentRunner:
             expected_outputs: List of expected outputs for evaluation
             model_name: Name of model to use
             temperature: Temperature parameter for generation
+            question_values_list: List of question field values used to populate each prompt
             
         Returns:
             List[Dict]: List of response objects with metadata
@@ -243,8 +248,9 @@ class ExperimentRunner:
         for i, prompt in enumerate(tqdm(prompts, desc=f"Generating ({model_name})")):
             start_time = time.time()
             
-            # Get the corresponding expected output
+            # Get the corresponding expected output and question values
             expected_output = expected_outputs[i]
+            question_values = question_values_list[i] if i < len(question_values_list) else []
             
             try:
                 # Route to appropriate model type
@@ -280,11 +286,12 @@ class ExperimentRunner:
                 if response and response.startswith(prompt):
                     response = response[len(prompt):].strip()
                 
-                # Store successful response with metadata
+                # Store successful response with metadata including question values
                 responses.append({
                     'prompt': prompt,
                     'response': response,
                     'expected_output': expected_output,
+                    'question_values': question_values,
                     'processing_time': processing_time,
                     'success': True,
                     'error': None
@@ -297,11 +304,12 @@ class ExperimentRunner:
                 
                 logger.error(f"Error generating response {i+1}/{len(prompts)}: {error_msg}")
                 
-                # Store failed response with error info
+                # Store failed response with error info including question values
                 responses.append({
                     'prompt': prompt,
                     'response': f"Error: {error_msg}",
                     'expected_output': expected_output,
+                    'question_values': question_values,
                     'processing_time': processing_time,
                     'success': False,
                     'error': error_msg
@@ -329,7 +337,7 @@ class ExperimentRunner:
         
         Args:
             experiment_config: Configuration used for the experiment
-            df: Original dataset DataFrame
+            df: Original dataset DataFrame (this should be the sampled dataset for the experiment)
             responses: Generated responses with metadata
             
         Returns:
@@ -339,7 +347,7 @@ class ExperimentRunner:
             Exception: If file cannot be saved
         """
         
-        # Generate experiment name
+        # Generate experiment name with few-shot row information
         experiment_name = Config.generate_experiment_name(
             experiment_config['experiment_type'],
             experiment_config['dataset'],
@@ -347,7 +355,8 @@ class ExperimentRunner:
             experiment_config['mode'],
             experiment_config['prompt'],
             experiment_config['size'],
-            experiment_config['temperature']
+            experiment_config['temperature'],
+            few_shot_row=experiment_config.get('few_shot_row')
         )
         
         file_paths = Config.generate_file_paths(experiment_config['experiment_type'], experiment_name)
@@ -427,26 +436,36 @@ class ExperimentRunner:
             return None
         
         try:
-            # Step 1: Prepare dataset
-            df = self.prepare_dataset(config['dataset'], config['size'])
+            # Step 1: Prepare dataset - returns both full dataset and sample
+            full_df, sampled_df = self.prepare_dataset(config['dataset'], config['size'])
 
             # Ensure we only process the requested number of samples
-            df_slice = df.head(config['size'])
+            df_slice = sampled_df.head(config['size'])
             
             # Validate dataset has required fields
             if not self.dataset_manager.validate_dataset_fields(config['dataset']):
                 logger.error(f"Dataset validation failed for {config['dataset']}")
                 return None
             
-            # Step 2: Validate few-shot row if specified
-            if config['mode'] == 'few-shot' and config.get('few_shot_row') is not None:
-                if config['few_shot_row'] >= len(df):
-                    logger.error(f"Few-shot row {config['few_shot_row']} out of bounds for dataset with {len(df)} rows")
-                    logger.error(df)
-                    return None
-                logger.info(f"Using specified few-shot row: {config['few_shot_row']}")
-            elif config['mode'] == 'few-shot':
-                logger.info("Using random few-shot examples")
+            # Step 2: Determine few-shot row to use for consistency across all prompts
+            actual_few_shot_row = None
+            if config['mode'] == 'few-shot':
+                if config.get('few_shot_row') is not None:
+                    # User specified a row
+                    if config['few_shot_row'] >= len(full_df):
+                        logger.error(f"Few-shot row {config['few_shot_row']} out of bounds for full dataset with {len(full_df)} rows")
+                        return None
+                    actual_few_shot_row = config['few_shot_row']
+                    logger.info(f"Using specified few-shot row {actual_few_shot_row} from full dataset ({len(full_df)} rows)")
+                else:
+                    # Generate a random row once for consistency across all prompts
+                    import random
+                    random.seed(Config.RANDOM_SEED)
+                    actual_few_shot_row = random.randint(0, len(full_df) - 1)
+                    logger.info(f"Generated random few-shot row {actual_few_shot_row} from full dataset ({len(full_df)} rows)")
+                
+                # Update config with the actual row used for saving and naming
+                config['few_shot_row'] = actual_few_shot_row
             
             # Step 3: Load model
             self.load_model(config['model'])
@@ -454,19 +473,34 @@ class ExperimentRunner:
             # Step 4: Prepare prompts using mode-based system
             prompts = []
             expected_outputs = []
+            question_values_list = []
             
             logger.info(f"Preparing {config['mode']} prompts for {len(df_slice)} samples")
             
             for idx, row in df_slice.iterrows():
                 try:
-                    # Use the mode-based prompt preparation
+                    # Extract question field values for this row
+                    dataset_config = self.datasets_config[config['dataset']]
+                    question_fields = dataset_config.get('question_fields', [])
+                    
+                    current_question_values = []
+                    for field in question_fields:
+                        if field in row and not pd.isna(row[field]):
+                            current_question_values.append(str(row[field]))
+                        else:
+                            current_question_values.append("")
+                            logger.warning(f"Missing or null field '{field}' in row {idx}, using empty string")
+                    
+                    question_values_list.append(current_question_values)
+                    
+                    # Use the mode-based prompt preparation with FULL dataset for few-shot generation
                     prompt = self.prompt_manager.prepare_prompt_for_row(
                         prompt_name=config['prompt'],
                         row=row,
                         dataset_name=config['dataset'],
                         mode=config['mode'],
-                        dataset=df,
-                        few_shot_row=config.get('few_shot_row')
+                        dataset=full_df,  # Use full dataset for few-shot generation
+                        few_shot_row=actual_few_shot_row  # Use the determined row for consistency
                     )
                     prompts.append(prompt)
                     
@@ -478,20 +512,21 @@ class ExperimentRunner:
                     logger.error(f"Error preparing {config['mode']} prompt for row {idx}: {e}")
                     prompts.append("")  # Fallback empty prompt
                     expected_outputs.append("")
+                    question_values_list.append([])  # Fallback empty question values
             
             logger.info(f"Prepared {len(prompts)} {config['mode']} prompts")
             
             # Step 5: Generate responses
-            responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'])
+            responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'], question_values_list)
             
-            # Step 6: Save results
-            output_file = self.save_experiment_results(config, df, responses)
+            # Step 6: Save results (use sampled dataset for result metadata)
+            output_file = self.save_experiment_results(config, df_slice, responses)
             
             # Clean up GPU memory if using local models
             if self.models_config[config['model']]['type'] == 'local':
                 clear_gpu_memory()
             
-            # Generate experiment name
+            # Generate experiment name with few-shot row information
             experiment_name = Config.generate_experiment_name(
                 config['experiment_type'], 
                 config['dataset'],
@@ -499,7 +534,8 @@ class ExperimentRunner:
                 config['mode'],
                 config['prompt'],
                 config['size'],
-                config['temperature']
+                config['temperature'],
+                few_shot_row=actual_few_shot_row
             )
             
             return {
