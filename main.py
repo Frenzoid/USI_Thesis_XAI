@@ -34,6 +34,7 @@ from experiment_runner import ExperimentRunner
 from evaluator_runner import EvaluationRunner
 from plotter import PlottingRunner
 from dataset_manager import DatasetManager
+from prompt_manager import PromptManager
 
 # =============================================================================
 # INTELLIGENT ARGUMENT RESOLVER
@@ -744,6 +745,115 @@ def plot_command(args):
         logger.error(f"Plot generation failed: {e}")
         return False
 
+def show_prompt_command(args):
+    """Show a populated prompt template using dataset data"""
+    logger.info("Showing populated prompt template...")
+    
+    # Load configurations
+    try:
+        prompts_config = Config.load_prompts_config()
+        datasets_config = Config.load_datasets_config()
+    except Exception as e:
+        logger.error(f"Failed to load configurations: {e}")
+        return False
+    
+    # Validate prompt exists
+    if args.prompt not in prompts_config:
+        logger.error(f"Unknown prompt: {args.prompt}")
+        logger.info(f"Available prompts: {list(prompts_config.keys())}")
+        return False
+    
+    # Initialize managers
+    prompt_manager = PromptManager()
+    dataset_manager = DatasetManager()
+    
+    try:
+        # Get prompt configuration
+        prompt_config = prompts_config[args.prompt]
+        compatible_dataset = prompt_config.get('compatible_dataset', '')
+        prompt_mode = prompt_config.get('mode', 'zero-shot')
+        
+        if not compatible_dataset:
+            logger.error(f"Prompt '{args.prompt}' has no compatible dataset specified")
+            return False
+        
+        # Load the compatible dataset
+        logger.info(f"Loading dataset: {compatible_dataset}")
+        dataset = dataset_manager.load_dataset(compatible_dataset)
+        if dataset is None:
+            logger.error(f"Failed to load dataset: {compatible_dataset}")
+            return False
+        
+        # Validate dataset has required fields
+        if not dataset_manager.validate_dataset_fields(compatible_dataset):
+            logger.error(f"Dataset validation failed for {compatible_dataset}")
+            return False
+        
+        # Determine which row to use
+        if args.row is not None:
+            if args.row < 0 or args.row >= len(dataset):
+                logger.error(f"Row index {args.row} out of bounds for dataset with {len(dataset)} rows")
+                return False
+            row = dataset.iloc[args.row]
+            logger.info(f"Using specified row {args.row}")
+        else:
+            # Use random row
+            import random
+            random.seed(Config.RANDOM_SEED)
+            row_index = random.randint(0, len(dataset) - 1)
+            row = dataset.iloc[row_index]
+            logger.info(f"Using random row {row_index}")
+        
+        # Prepare the populated prompt
+        populated_prompt = prompt_manager.prepare_prompt_for_row(
+            prompt_name=args.prompt,
+            row=row,
+            dataset_name=compatible_dataset,
+            mode=prompt_mode,
+            dataset=dataset,  # Full dataset for few-shot
+            few_shot_row=args.row if prompt_mode == 'few-shot' and args.row is not None else None
+        )
+        
+        # Display results
+        print("\n" + "=" * 80)
+        print(f"POPULATED PROMPT TEMPLATE")
+        print("=" * 80)
+        print(f"Prompt: {args.prompt}")
+        print(f"Mode: {prompt_mode}")
+        print(f"Compatible Dataset: {compatible_dataset}")
+        print(f"Row Used: {args.row if args.row is not None else row_index}")
+        print(f"Dataset Size: {len(dataset)} rows")
+        print("=" * 80)
+        print(f"\nPOPULATED TEMPLATE:")
+        print("-" * 40)
+        print(populated_prompt)
+        print("-" * 40)
+        
+        # Show the original data used
+        dataset_config = datasets_config[compatible_dataset]
+        question_fields = dataset_config.get('question_fields', [])
+        answer_field = dataset_config.get('answer_field', '')
+        
+        print(f"\nORIGINAL DATA USED:")
+        print("-" * 40)
+        for field in question_fields:
+            value = str(row.get(field, 'N/A')) if field in row else 'N/A'
+            print(f"{field}: {value}")
+        
+        if answer_field and answer_field in row:
+            answer_value = str(row.get(answer_field, 'N/A'))
+            print(f"\nExpected Answer ({answer_field}): {answer_value}")
+        
+        print("=" * 80)
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error generating populated prompt: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return False
+
 def download_datasets_command(args):
     """Download specified datasets"""
     logger.info("Starting dataset download...")
@@ -918,26 +1028,33 @@ def list_commands_command():
     print("     --experiment-type TYPE   Filter by experiment type")
     print("     --compare               Generate comparison plots instead of individual")
     
-    print("\n4. download-datasets")
+    print("\n4. show-prompt")
+    print("   Description: Display a populated prompt template using real dataset data")
+    print("   Arguments:")
+    print("     --prompt PROMPT_NAME     Name of prompt template to show (required)")
+    print("     --row ROW_NUMBER         Specific row number to use from dataset (0-based, optional)")
+    print("                              If not specified, uses a random row")
+    
+    print("\n5. download-datasets")
     print("   Description: Download specified datasets from configured sources")
     print("   Arguments:")
     print("     --dataset DATASETS       Dataset(s) to download (space-separated or 'all')")
     
-    print("\n5. cleanup")
+    print("\n6. cleanup")
     print("   Description: Clean up system files and directories")
     print("   Arguments:")
     print("     --target TARGETS         What to clean: datasets, logs, results, cache, finetuned, all")
     print("     --dry-run               Show what would be cleaned without actually cleaning")
     
-    print("\n6. list-options")
+    print("\n7. list-options")
     print("   Description: List available models, datasets, prompts, and experiment types")
     print("   Arguments: None")
     
-    print("\n7. list-commands")
+    print("\n8. list-commands / help / show-commands")
     print("   Description: Show this help message with all commands and their arguments")
     print("   Arguments: None")
     
-    print("\n8. status")
+    print("\n9. status")
     print("   Description: Check system status including configuration files and API keys")
     print("   Arguments: None")
     
@@ -950,6 +1067,12 @@ def list_commands_command():
     print("")
     print("# Specific prompts with automatic dataset inference")
     print("python main.py run-baseline-exp --prompt 'gmeg_v1_basic qald_v1_basic'")
+    print("")
+    print("# Show populated prompt template with specific data")
+    print("python main.py show-prompt --prompt gmeg_v1_basic --row 42")
+    print("")
+    print("# Show populated prompt template with random data")
+    print("python main.py show-prompt --prompt gmeg_v2_enhanced")
     print("")
     print("# Mixed arguments with compatibility validation")
     print("python main.py run-baseline-exp --model 'gpt-4o-mini' --dataset gmeg --mode zero-shot")
@@ -969,7 +1092,7 @@ def check_system_command(args):
     
     print("Configuration Files:")
     for config_type, exists in config_status.items():
-        status = "✓" if exists else "✗"
+        status = "✅" if exists else "❌"
         print(f"   {config_type}.json: {status}")
     
     # Check directories
@@ -982,9 +1105,9 @@ def check_system_command(args):
     
     # Check API keys
     print("\nAPI Keys:")
-    print(f"   OpenAI: {'✓' if Config.OPENAI_API_KEY else '✗'}")
-    print(f"   Google GenAI: {'✓' if Config.GENAI_API_KEY else '✗'}")
-    print(f"   Anthropic: {'✓' if Config.ANTHROPIC_API_KEY else '✗'}")
+    print(f"   OpenAI: {'✅' if Config.OPENAI_API_KEY else '❌'}")
+    print(f"   Google GenAI: {'✅' if Config.GENAI_API_KEY else '❌'}")
+    print(f"   Anthropic: {'✅' if Config.ANTHROPIC_API_KEY else '❌'}")
     
     # Recommendations based on system status
     print("\nRecommendations:")
@@ -1060,6 +1183,13 @@ def main():
     plot_parser.add_argument('--compare', action='store_true',
                            help='Generate comparison plots instead of individual plots')
     
+    # Show prompt command
+    show_prompt_parser = subparsers.add_parser('show-prompt', help='Display populated prompt template')
+    show_prompt_parser.add_argument('--prompt', type=str, required=True,
+                                   help='Name of prompt template to show')
+    show_prompt_parser.add_argument('--row', type=int,
+                                   help='Specific row number to use from dataset (0-based, uses random if not specified)')
+    
     # Download datasets command
     download_parser = subparsers.add_parser('download-datasets', help='Download specified datasets')
     download_parser.add_argument('--dataset', type=str, default='all',
@@ -1076,6 +1206,8 @@ def main():
     # Utility commands
     list_parser = subparsers.add_parser('list-options', help='List available models, datasets, and prompts')
     list_commands_parser = subparsers.add_parser('list-commands', help='List all available commands and their arguments')
+    help_parser = subparsers.add_parser('help', help='Show all available commands and their arguments')
+    show_commands_parser = subparsers.add_parser('show-commands', help='Show all available commands and their arguments')
     status_parser = subparsers.add_parser('status', help='Check system status')
     
     # Parse arguments
@@ -1093,6 +1225,8 @@ def main():
             success = evaluate_command(args)
         elif args.command == 'plot':
             success = plot_command(args)
+        elif args.command == 'show-prompt':
+            success = show_prompt_command(args)
         elif args.command == 'download-datasets':
             success = download_datasets_command(args)
         elif args.command == 'cleanup':
@@ -1101,6 +1235,12 @@ def main():
             list_available_options()
             success = True
         elif args.command == 'list-commands':
+            list_commands_command()
+            success = True
+        elif args.command == 'help':
+            list_commands_command()
+            success = True
+        elif args.command == 'show-commands':
             list_commands_command()
             success = True
         elif args.command == 'status':

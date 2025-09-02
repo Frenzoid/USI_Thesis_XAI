@@ -37,7 +37,7 @@ class EvaluationFramework:
         self.dataset_configs = {}
         self._load_dataset_evaluation_configs()
         
-        logger.info("EvaluationFramework initialized")
+        logger.info("🚀 EvaluationFramework initialized")
     
     def _load_dataset_evaluation_configs(self):
         """Load dataset-specific evaluation configurations"""
@@ -52,7 +52,7 @@ class EvaluationFramework:
                     'custom_preprocessing': eval_config.get('custom_preprocessing', None)
                 }
         except Exception as e:
-            logger.warning(f"Could not load dataset evaluation configs: {e}")
+            logger.warning(f"⚠️ Could not load dataset evaluation configs: {e}")
             # Set default configuration
             self.dataset_configs['default'] = {
                 'na_indicators': ['na', 'n/a', 'not applicable', 'not annotatable', ''],
@@ -87,11 +87,11 @@ class EvaluationFramework:
         try:
             datasets_config = Config.load_datasets_config()
         except Exception as e:
-            logger.error(f"Failed to load datasets config: {e}")
+            logger.error(f"❌ Failed to load datasets config: {e}")
             return {}
         
         if dataset_name not in datasets_config:
-            logger.warning(f"Dataset {dataset_name} not found in configuration")
+            logger.warning(f"⚠️ Dataset {dataset_name} not found in configuration")
             self.dataset_custom_metrics[dataset_name] = {}
             return {}
         
@@ -99,7 +99,7 @@ class EvaluationFramework:
         custom_metrics_config = dataset_config.get('custom_metrics', {})
         
         if not custom_metrics_config:
-            logger.info(f"No custom metrics configured for dataset: {dataset_name}")
+            logger.info(f"📄 No custom metrics configured for dataset: {dataset_name}")
             self.dataset_custom_metrics[dataset_name] = {}
             return {}
         
@@ -108,12 +108,12 @@ class EvaluationFramework:
         metrics_registry = custom_metrics_config.get('metrics_registry')
         
         if not module_path or not metrics_registry:
-            logger.warning(f"Incomplete custom metrics configuration for {dataset_name}")
+            logger.warning(f"⚠️ Incomplete custom metrics configuration for {dataset_name}")
             self.dataset_custom_metrics[dataset_name] = {}
             return {}
         
         try:
-            logger.info(f"Loading custom metrics for {dataset_name} from {module_path}")
+            logger.info(f"📦 Loading custom metrics for {dataset_name} from {module_path}")
             
             # Import the module
             module = importlib.import_module(module_path)
@@ -129,21 +129,21 @@ class EvaluationFramework:
                         if callable(metric_func):
                             valid_metrics[metric_name] = metric_func
                         else:
-                            logger.warning(f"Metric {metric_name} is not callable, skipping")
+                            logger.warning(f"⚠️ Metric {metric_name} is not callable, skipping")
                     
-                    logger.info(f"Loaded {len(valid_metrics)} custom metrics for {dataset_name}: {list(valid_metrics.keys())}")
+                    logger.info(f"✅ Loaded {len(valid_metrics)} custom metrics for {dataset_name}: {list(valid_metrics.keys())}")
                     self.dataset_custom_metrics[dataset_name] = valid_metrics
                     return valid_metrics
                 else:
-                    logger.error(f"Metrics registry {metrics_registry} is not a dictionary")
+                    logger.error(f"❌ Metrics registry {metrics_registry} is not a dictionary")
             else:
-                logger.error(f"Metrics registry {metrics_registry} not found in module {module_path}")
+                logger.error(f"❌ Metrics registry {metrics_registry} not found in module {module_path}")
                 
         except ImportError as e:
-            logger.error(f"Failed to import custom metrics module {module_path}: {e}")
-            logger.info("Make sure the custom_metrics directory exists and contains __init__.py")
+            logger.error(f"❌ Failed to import custom metrics module {module_path}: {e}")
+            logger.info("💡 Make sure the custom_metrics directory exists and contains __init__.py")
         except Exception as e:
-            logger.error(f"Error loading custom metrics for {dataset_name}: {e}")
+            logger.error(f"❌ Error loading custom metrics for {dataset_name}: {e}")
         
         # Cache empty result on failure
         self.dataset_custom_metrics[dataset_name] = {}
@@ -161,7 +161,7 @@ class EvaluationFramework:
             raise ValueError(f"Metric function for {name} must be callable")
         
         self.custom_metrics[name] = metric_func
-        logger.info(f"Registered custom metric: {name}")
+        logger.info(f"✅ Registered custom metric: {name}")
     
     # =============================================================================
     # SEMANTIC SIMILARITY COMPUTATION
@@ -192,7 +192,7 @@ class EvaluationFramework:
             logger.debug(f"Computed similarity: {similarity:.4f}")
             return similarity
         except Exception as e:
-            logger.error(f"Error computing similarity: {e}")
+            logger.error(f"❌ Error computing similarity: {e}")
             return 0.0
     
     # =============================================================================
@@ -267,11 +267,6 @@ class EvaluationFramework:
         if not config.get('case_sensitive', False):
             text = text.lower()
         
-        # Apply custom preprocessing if specified
-        preprocessing_func = config.get('custom_preprocessing')
-        if preprocessing_func and callable(preprocessing_func):
-            text = preprocessing_func(text)
-        
         return text.strip()
     
     def _should_skip_evaluation(self, generated: str, expected: str, success: bool, dataset_name: str) -> tuple:
@@ -281,6 +276,7 @@ class EvaluationFramework:
         Returns:
             tuple: (should_skip, skip_reason, skip_type)
         """
+        
         # Check if generation failed
         if not success:
             return True, "Response generation failed", "generation_failed"
@@ -289,12 +285,14 @@ class EvaluationFramework:
         
         # Check for NA indicators in expected output
         na_indicators = config.get('na_indicators', [])
-        if expected and expected.lower().strip() in [ind.lower() for ind in na_indicators]:
+        
+        if expected.lower().strip() in [ind.lower() for ind in na_indicators]:
             return True, "Expected output marked as NA", "skipped_na"
         
         # Check for empty responses if configured
         if config.get('skip_empty_responses', True):
             if not generated.strip():
+                logger.info("📭 Skipping: Generated response is empty")
                 return True, "Generated response is empty", "empty_response"
         
         return False, None, None
@@ -364,10 +362,10 @@ class EvaluationFramework:
                     if isinstance(metric_value, (int, float)):
                         metrics[metric_name] = float(metric_value)
                     else:
-                        logger.warning(f"Custom metric {metric_name} returned non-numeric value: {metric_value}")
+                        logger.warning(f"⚠️ Custom metric {metric_name} returned non-numeric value: {metric_value}")
                         metrics[metric_name] = 0.0
                 except Exception as e:
-                    logger.error(f"Error computing custom metric {metric_name}: {e}")
+                    logger.error(f"❌ Error computing custom metric {metric_name}: {e}")
                     metrics[metric_name] = 0.0
         
         # Apply any registered custom metrics (global)
@@ -377,10 +375,10 @@ class EvaluationFramework:
                 if isinstance(metric_value, (int, float)):
                     metrics[metric_name] = float(metric_value)
                 else:
-                    logger.warning(f"Registered metric {metric_name} returned non-numeric value: {metric_value}")
+                    logger.warning(f"⚠️ Registered metric {metric_name} returned non-numeric value: {metric_value}")
                     metrics[metric_name] = 0.0
             except Exception as e:
-                logger.error(f"Error computing registered metric {metric_name}: {e}")
+                logger.error(f"❌ Error computing registered metric {metric_name}: {e}")
                 metrics[metric_name] = 0.0
         
         # Mark as valid evaluation (not skipped)
@@ -396,7 +394,7 @@ class EvaluationFramework:
     
     def evaluate_batch(self, generated_responses: List[str], expected_responses: List[str],
                              embedding_model, batch_name: str = "batch", dataset_name: str = 'general',
-                             response_data_list: List[Dict[str, Any]] = None) -> Dict[str, Any]:
+                             response_data_list: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         """
         Evaluate a batch of responses and compute aggregate statistics.
         
@@ -421,7 +419,7 @@ class EvaluationFramework:
         if len(generated_responses) != len(expected_responses):
             raise ValueError("Generated and expected responses must have same length")
         
-        logger.info(f"Evaluating batch '{batch_name}' with {len(generated_responses)} responses")
+        logger.info(f"📊 Evaluating batch '{batch_name}' with {len(generated_responses)} responses")
         
         individual_scores = []
         skipped_count = 0
@@ -462,10 +460,10 @@ class EvaluationFramework:
         # Compute aggregate statistics from valid scores
         if valid_scores:
             aggregated = self.aggregate_scores(valid_scores)
-            logger.info(f"Aggregated scores from {len(valid_scores)} valid evaluations")
+            logger.info(f"📈 Aggregated scores from {len(valid_scores)} valid evaluations")
         else:
             aggregated = {}
-            logger.warning("No valid scores to aggregate (all samples may have been marked as NA or failed)")
+            logger.warning("⚠️ No valid scores to aggregate (all samples may have been marked as NA or failed)")
         
         # Compile complete results
         result = {
@@ -482,17 +480,17 @@ class EvaluationFramework:
         
         # Log summary information
         if skipped_count > 0:
-            logger.info(f"Skipped {skipped_count} items marked as 'NA' or 'not annotatable'")
+            logger.info(f"⏭️  Skipped {skipped_count} items marked as 'NA' or 'not annotatable'")
         if failed_count > 0:
-            logger.info(f"Skipped {failed_count} items with failed response generation")
+            logger.info(f"❌  Skipped {failed_count} items with failed response generation")
         
-        logger.info(f"Valid evaluations: {len(valid_scores)} out of {len(generated_responses)}")
+        logger.info(f"✅ Valid evaluations: {len(valid_scores)} out of {len(generated_responses)}")
         
         # Log key performance metrics
         if aggregated:
             f1_mean = aggregated.get('f1_score', {}).get('mean', 0)
             sem_sim_mean = aggregated.get('semantic_similarity', {}).get('mean', 0)
-            logger.info(f"Batch results - F1: {f1_mean:.4f}, Semantic Similarity: {sem_sim_mean:.4f}")
+            logger.info(f"🎯 Batch results - F1: {f1_mean:.4f}, Semantic Similarity: {sem_sim_mean:.4f}")
         
         # Add to evaluation history for later analysis
         self.evaluation_history.append(result)
