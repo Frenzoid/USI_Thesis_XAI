@@ -209,13 +209,42 @@ python main.py cleanup --target TARGETS [--dry-run]
 Targets: datasets, logs, results, cache, finetuned, all
 ```
 
-**Information Commands:**
+**Information and Help Commands:**
+
+**`list-options`** - Show available models, datasets, and prompts
 ```bash
-python main.py list-options    # Show available models, datasets, prompts
-python main.py list-commands   # Show all commands with examples
-python main.py help            # Same as list-commands
+python main.py list-options
+
+# Shows all configured:
+# - Models (with type: local/api)  
+# - Datasets (with descriptions)
+# - Prompts (with compatibility info)
+# - Experiment types
+```
+
+**`list-commands` / `help` / `show-commands`** - Show all available commands
+```bash
+python main.py list-commands   # Detailed command reference
+python main.py help            # Same as list-commands  
 python main.py show-commands   # Same as list-commands
-python main.py status          # Check system status and capabilities
+
+# All three commands show:
+# - Complete command syntax
+# - All available arguments
+# - Usage examples
+# - Intelligent argument resolution guide
+```
+
+**`status`** - Check system status and capabilities
+```bash
+python main.py status
+
+# Shows:
+# - GPU/CPU availability and memory
+# - Configuration file validation
+# - API key status
+# - Directory structure
+# - Hardware recommendations
 ```
 
 ## 🤖 Supported Models
@@ -251,10 +280,10 @@ python main.py status          # Check system status and capabilities
 - `gmeg_v7_casual` - Casual, conversational style
 - `gmeg_v8_comparative` - Side-by-side comparison
 
-### GMEG-Compatible Prompts (Few-shot Prompts)
+### GMEG-Compatible Prompts (Few-shot)
 - `gmeg_few_shot` - Few-shot learning with examples
 
-### RHAI_1 and RHAI_2 Compatible Prompts (Zero-Shot)
+### RHAI_1 and RHAI_2 Experiments Prompts (Zero-Shot)
 - `exp1_explanation` - RHAI_1 compatible explanation prompt
 - `exp2_choice_selection` - RHAI_2 compatible choice selection prompt
 
@@ -301,6 +330,11 @@ The system uses JSON configuration files with validation:
     "question_fields": ["input_text", "context"],
     "answer_field": "expected_output",
     "description": "My custom dataset",
+    "evaluation_config": {
+      "na_indicators": ["N/A", "not annotatable", "", "unclear"],
+      "case_sensitive": false,
+      "skip_empty_responses": true
+    },
     "custom_metrics": {
       "module_path": "custom_metrics.my_dataset_metrics",
       "metrics_registry": "MY_METRICS"
@@ -321,6 +355,127 @@ The system uses JSON configuration files with validation:
   }
 }
 ```
+
+### Creating Custom Metrics for Datasets
+
+**Step 1: Create a custom metrics module** (`custom_metrics/my_dataset_metrics.py`)
+```python
+"""
+Custom metrics for my-dataset.
+
+Each metric function receives a response dictionary with fields:
+- response: Model's generated response  
+- expected_output: Expected/reference response
+- question_values: List of question field values
+- success: Boolean indicating if generation was successful
+- error: Error message if success is False
+
+Each function should return a float between 0.0 and 1.0.
+"""
+
+def keyword_coverage(response_data):
+    """Check if response covers expected keywords."""
+    generated = response_data.get('response', '').lower()
+    expected = response_data.get('expected_output', '').lower()
+    
+    if not response_data.get('success', False):
+        return 0.0
+    
+    # Extract keywords from expected output
+    expected_keywords = set(expected.split())
+    if not expected_keywords:
+        return 1.0
+    
+    # Count how many keywords appear in generated response
+    covered_keywords = sum(1 for keyword in expected_keywords 
+                          if keyword in generated)
+    
+    return covered_keywords / len(expected_keywords)
+
+def response_length_ratio(response_data):
+    """Compare response length to expected length."""
+    generated = response_data.get('response', '')
+    expected = response_data.get('expected_output', '')
+    
+    if not response_data.get('success', False):
+        return 0.0
+    
+    gen_len = len(generated.split())
+    exp_len = len(expected.split())
+    
+    if exp_len == 0:
+        return 1.0 if gen_len == 0 else 0.0
+    
+    # Return ratio capped at 1.0 to avoid penalizing longer responses too much
+    ratio = gen_len / exp_len
+    return min(ratio, 1.0)
+
+# Required: Registry dictionary
+MY_DATASET_METRICS = {
+    'keyword_coverage': keyword_coverage,
+    'response_length_ratio': response_length_ratio
+}
+```
+
+**Step 2: Update dataset configuration** (`configs/datasets.json`)
+```json
+{
+  "my-dataset": {
+    "download_link": "https://example.com/dataset.zip",
+    "download_path": "my_dataset_folder", 
+    "csv_file": "data.csv",
+    "question_fields": ["input_text", "context"],
+    "answer_field": "expected_output",
+    "description": "My custom dataset",
+    "evaluation_config": {
+      "na_indicators": ["N/A", "not available", ""],
+      "case_sensitive": true,
+      "skip_empty_responses": false
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.my_dataset_metrics",
+      "metrics_registry": "MY_DATASET_METRICS"
+    }
+  }
+}
+```
+
+**Step 3: Create `custom_metrics/__init__.py`** (required for Python imports)
+```python
+# Empty file - just needs to exist for Python to treat directory as package
+```
+
+### Evaluation Configuration Options
+
+Add an `evaluation_config` section to any dataset in `configs/datasets.json`:
+
+```json
+{
+  "dataset_name": {
+    "evaluation_config": {
+      "na_indicators": ["N/A", "not annotatable", "", "unclear"],
+      "case_sensitive": false,
+      "skip_empty_responses": true
+    }
+  }
+}
+```
+
+**Available Options:**
+
+- **`na_indicators`** (list): Strings that mark unannotatable samples ( expected answers )
+  - Examples: `["N/A", "not available", "", "unclear"]`
+  - These samples are excluded from evaluation metrics
+  - Case-insensitive matching after whitespace stripping
+
+- **`case_sensitive`** (boolean): Whether text comparison is case-sensitive  
+  - `false`: "Hello" matches "hello" (default)
+  - `true`: "Hello" does not match "hello"
+
+- **`skip_empty_responses`** (boolean): Whether to skip empty generated responses
+  - `true`: Empty responses don't contribute to metrics (default)
+  - `false`: Empty responses count as zero scores
+
 
 ## 💡 Example Workflows
 
@@ -531,6 +686,18 @@ python main.py show-prompt --prompt gmeg_v2_enhanced --row 100
 python main.py list-options  # Shows prompt compatibility
 ```
 
+### System Compatibility Matrix
+
+| Feature | Any CPU | GPU (6GB+) | GPU (12GB+) | API Keys |
+|---------|---------|------------|-------------|----------|
+| API Models | ✅ | ✅ | ✅ | Required |
+| Small Local Models (1-3B) | ⚠️ Slow | ✅ | ✅ | - |
+| Large Local Models (7B+) | ❌ | ⚠️ Limited | ✅ | - |
+| Evaluation & Plotting | ✅ | ✅ | ✅ | - |
+| Custom Metrics | ✅ | ✅ | ✅ | - |
+| Prompt Preview | ✅ | ✅ | ✅ | - |
+
+*The system gracefully handles limitations and provides clear guidance for your specific setup*
 
 ## 📚 Advanced Features
 
