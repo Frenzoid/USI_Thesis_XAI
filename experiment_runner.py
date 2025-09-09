@@ -20,9 +20,9 @@ class ExperimentRunner:
     
     This class orchestrates the entire experiment pipeline using generic field mapping:
     1. Validates configurations and field compatibility
-    2. Prepares datasets and prompts using generic field mapping
+    2. Prepares datasets and prompts using generic field mapping with row pruning
     3. Loads and queries models
-    4. Saves results with metadata
+    4. Saves results with metadata including pruning statistics
     """
     
     def __init__(self):
@@ -124,22 +124,25 @@ class ExperimentRunner:
         
         return True
     
-    def prepare_dataset(self, dataset_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    def prepare_dataset(self, dataset_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int, List[str]]:
         """
-        Load and prepare dataset for experiment.
+        Load and prepare dataset for experiment with row pruning.
         
-        Downloads dataset if necessary, loads it, and samples to the requested size.
-        Returns both the full dataset (for few-shot generation) and the sample (for experiment).
+        Downloads dataset if necessary, loads it, applies row pruning based on dataset 
+        configuration, and samples to the requested size.
+        Returns the original dataset, filtered dataset, and sample.
         
         Args:
             dataset_name: Name of dataset to prepare
             size: Number of samples to return
             
         Returns:
-            Tuple[pd.DataFrame, pd.DataFrame]: (full_dataset, sampled_dataset)
+            Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int, List[str]]: 
+                (original_dataset, full_dataset_filtered, sampled_dataset, pruned_count, prune_reasons)
             
         Raises:
             Exception: If dataset cannot be loaded or prepared
+            ValueError: If pruning configuration has invalid regex patterns
         """
         logger.info(f"Preparing dataset: {dataset_name}")
         
@@ -151,73 +154,47 @@ class ExperimentRunner:
         # Download if not exists
         if not os.path.exists(dataset_path):
             logger.info(f"Dataset not found, downloading: {dataset_name}")
-            self.download_dataset(dataset_name)
+            if not self.dataset_manager.download_dataset(dataset_name):
+                logger.error(f"Could not download dataset: {dataset_name}")
+                raise ValueError(f"Failed to download dataset: {dataset_name}")
         
-        # Load full dataset
+        # Load full original dataset
         try:
-            full_df = pd.read_csv(dataset_path)
-            logger.info(f"Loaded full dataset with {len(full_df)} rows")
+            original_df = pd.read_csv(dataset_path)
+            logger.info(f"Loaded original dataset with {len(original_df)} rows")
             
-            # Sample data if requested size is smaller than dataset
-            if size < len(full_df):
-                sampled_df = full_df.sample(n=size, random_state=Config.RANDOM_SEED).reset_index(drop=True)
-                logger.info(f"Sampled {size} rows from dataset for experiment")
+            # Apply row pruning based on dataset configuration
+            try:
+                full_df_filtered, pruned_count, prune_reasons = self.dataset_manager.filter_dataset_rows(
+                    original_df, dataset_name
+                )
+            except ValueError as e:
+                # This catches both invalid regex patterns and other pruning configuration errors
+                logger.error(f"Row pruning failed for dataset {dataset_name}: {e}")
+                if "regex pattern" in str(e).lower():
+                    logger.error("Check your prune_row configuration for invalid regex patterns")
+                    logger.info("Regex patterns should use 'regex:' prefix, e.g., 'regex:^\\\\s*$'")
+                raise  # Re-raise to fail the experiment with clear error message
+            
+            logger.info(f"After pruning: {len(full_df_filtered)} rows remaining, {pruned_count} rows pruned")
+            
+            # Check if we have enough data left after pruning
+            if len(full_df_filtered) == 0:
+                raise ValueError(f"All rows in dataset {dataset_name} were pruned. Check pruning configuration.")
+            
+            # Sample data if requested size is smaller than filtered dataset
+            if size < len(full_df_filtered):
+                sampled_df = full_df_filtered.sample(n=size, random_state=Config.RANDOM_SEED).reset_index(drop=True)
+                logger.info(f"Sampled {size} rows from filtered dataset for experiment")
             else:
-                sampled_df = full_df.copy()
-                logger.info(f"Using all {len(full_df)} rows (requested size >= dataset size)")
+                sampled_df = full_df_filtered.copy()
+                logger.info(f"Using all {len(full_df_filtered)} filtered rows (requested size >= filtered dataset size)")
             
-            return full_df, sampled_df
+            return original_df, full_df_filtered, sampled_df, pruned_count, prune_reasons
             
         except Exception as e:
-            logger.error(f"Error loading dataset {dataset_name}: {e}")
+            logger.error(f"Error preparing dataset {dataset_name}: {e}")
             raise
-    
-    def download_dataset(self, dataset_name: str):
-        """Use DatasetManager's download method"""
-        return self.dataset_manager.download_dataset(dataset_name)
-    
-    def load_model(self, model_name: str):
-        """
-        Load the specified model for inference.
-        
-        Handles both local models (via Unsloth) and API models (validation only).
-        For local models, supports both base and finetuned variants.
-        
-        Args:
-            model_name: Name of model to load
-            
-        Raises:
-            ValueError: If model configuration is invalid or API keys missing
-        """
-        model_config = self.models_config[model_name]
-        
-        if model_config['type'] == 'local':
-            # Handle local models with Unsloth
-            if model_config.get('finetuned', False):
-                # Finetuned model: look in finetuned models directory
-                model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
-                                        model_config['model_path'].split('/')[-1] + '_finetuned')
-                logger.info(f"Loading finetuned model from: {model_path}")
-                self.model_manager.load_finetuned_model(model_path)
-            else:
-                # Base model: use configured path
-                logger.info(f"Loading base model: {model_config['model_path']}")
-                self.model_manager.load_open_source_model(model_name, model_config['model_path'])
-        
-        elif model_config['type'] == 'api':
-            # API models: validate credentials only
-            provider = model_config['provider']
-            if provider == 'openai' and not Config.OPENAI_API_KEY:
-                raise ValueError("OpenAI API key not configured")
-            elif provider == 'google' and not Config.GENAI_API_KEY:
-                raise ValueError("Google GenAI API key not configured")
-            elif provider == 'anthropic' and not Config.ANTHROPIC_API_KEY:
-                raise ValueError("Anthropic API key not configured")
-            
-            logger.info(f"Using API model: {model_name}")
-        
-        else:
-            raise ValueError(f"Unknown model type: {model_config['type']}")
     
     def generate_responses(self, prompts: List[str], expected_outputs: List[str], 
                           model_name: str, temperature: float, question_values_list: List[List[str]]) -> List[Dict[str, Any]]:
@@ -328,17 +305,19 @@ class ExperimentRunner:
         return responses
     
     def save_experiment_results(self, experiment_config: Dict[str, Any], 
-                              df: pd.DataFrame, responses: List[Dict[str, Any]]) -> str:
+                              df: pd.DataFrame, responses: List[Dict[str, Any]],
+                              pruning_stats: Dict[str, Any]) -> str:
         """
-        Save experiment results to JSON file with comprehensive metadata.
+        Save experiment results to JSON file with comprehensive metadata including pruning statistics.
         
         Creates a structured output file containing all experiment data,
-        configuration, and processing statistics.
+        configuration, processing statistics, and pruning information.
         
         Args:
             experiment_config: Configuration used for the experiment
-            df: Original dataset DataFrame (this should be the sampled dataset for the experiment)
+            df: Sampled dataset DataFrame used for the experiment
             responses: Generated responses with metadata
+            pruning_stats: Statistics about row pruning (count, reasons, etc.)
             
         Returns:
             str: Path to saved file
@@ -372,8 +351,17 @@ class ExperimentRunner:
             'timestamp': datetime.now().isoformat(),
             'dataset_info': {
                 'name': experiment_config['dataset'],
-                'size': len(df),
+                'original_size': pruning_stats.get('original_size', 0),
+                'pruned_rows': pruning_stats.get('pruned_count', 0),
+                'final_size_before_sampling': pruning_stats.get('filtered_size', len(df)),
+                'sampled_size': len(df),
                 'columns': list(df.columns)
+            },
+            'pruning_stats': {
+                'rows_pruned': pruning_stats.get('pruned_count', 0),
+                'rows_kept_after_pruning': pruning_stats.get('filtered_size', len(df)),
+                'prune_reasons_sample': pruning_stats.get('prune_reasons', [])[:10],  # First 10 reasons
+                'total_prune_reasons': len(pruning_stats.get('prune_reasons', []))
             },
             'model_info': self.models_config[experiment_config['model']],
             'prompt_info': self.prompts_config[experiment_config['prompt']],
@@ -405,6 +393,8 @@ class ExperimentRunner:
                 json.dump(results, f, indent=2, default=str)
             
             logger.info(f"Experiment results saved: {output_file}")
+            logger.info(f"Pruning summary: {pruning_stats['pruned_count']} rows pruned, "
+                       f"{pruning_stats['filtered_size']} rows kept")
             return output_file
             
         except Exception as e:
@@ -413,14 +403,14 @@ class ExperimentRunner:
     
     def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Run a complete baseline experiment with mode-based prompting support.
+        Run a complete baseline experiment with mode-based prompting support and row pruning.
         
         This is the main experiment execution method that:
         1. Validates configuration including mode and few-shot compatibility
-        2. Prepares dataset and validates few-shot row if specified
+        2. Prepares dataset with row pruning and validates few-shot row if specified
         3. Loads model
         4. Generates prompts using mode-based system
-        5. Generates responses and saves results
+        5. Generates responses and saves results with pruning statistics
         
         Args:
             config: Complete experiment configuration
@@ -436,8 +426,18 @@ class ExperimentRunner:
             return None
         
         try:
-            # Step 1: Prepare dataset - returns both full dataset and sample
-            full_df, sampled_df = self.prepare_dataset(config['dataset'], config['size'])
+            # Step 1: Prepare dataset with pruning - returns original, filtered, and sampled datasets
+            original_df, full_df_filtered, sampled_df, pruned_count, prune_reasons = self.prepare_dataset(
+                config['dataset'], config['size']
+            )
+
+            # Store pruning statistics for results
+            pruning_stats = {
+                'original_size': len(original_df),
+                'pruned_count': pruned_count,
+                'filtered_size': len(full_df_filtered),
+                'prune_reasons': prune_reasons
+            }
 
             # Ensure we only process the requested number of samples
             df_slice = sampled_df.head(config['size'])
@@ -451,24 +451,61 @@ class ExperimentRunner:
             actual_few_shot_row = None
             if config['mode'] == 'few-shot':
                 if config.get('few_shot_row') is not None:
-                    # User specified a row
-                    if config['few_shot_row'] >= len(full_df):
-                        logger.error(f"Few-shot row {config['few_shot_row']} out of bounds for full dataset with {len(full_df)} rows")
+                    # User specified a row - validate against ORIGINAL dataset (before pruning)
+                    if config['few_shot_row'] >= len(original_df):
+                        logger.error(f"Few-shot row {config['few_shot_row']} out of bounds for original dataset with {len(original_df)} rows")
                         return None
                     actual_few_shot_row = config['few_shot_row']
-                    logger.info(f"Using specified few-shot row {actual_few_shot_row} from full dataset ({len(full_df)} rows)")
+                    logger.info(f"Using specified few-shot row {actual_few_shot_row} from original dataset ({len(original_df)} rows)")
+                    
+                    # Check if the specified row would be pruned (warning only)
+                    try:
+                        original_row = original_df.iloc[actual_few_shot_row]
+                        would_be_pruned, prune_reason = self.dataset_manager.should_prune_row(original_row, config['dataset'])
+                        if would_be_pruned:
+                            logger.warning(f"Few-shot row {actual_few_shot_row} would be pruned ({prune_reason}), but will still be used for few-shot examples")
+                    except Exception as e:
+                        logger.warning(f"Could not check if few-shot row would be pruned: {e}")
                 else:
-                    # Generate a random row once for consistency across all prompts
+                    # Generate a random row from ORIGINAL dataset for consistency across all prompts
                     import random
                     random.seed(Config.RANDOM_SEED)
-                    actual_few_shot_row = random.randint(0, len(full_df) - 1)
-                    logger.info(f"Generated random few-shot row {actual_few_shot_row} from full dataset ({len(full_df)} rows)")
+                    actual_few_shot_row = random.randint(0, len(original_df) - 1)
+                    logger.info(f"Generated random few-shot row {actual_few_shot_row} from original dataset ({len(original_df)} rows)")
                 
                 # Update config with the actual row used for saving and naming
                 config['few_shot_row'] = actual_few_shot_row
             
-            # Step 3: Load model
-            self.load_model(config['model'])
+            # Step 3: Load model using ModelManager directly
+            model_config = self.models_config[config['model']]
+            
+            if model_config['type'] == 'local':
+                # Handle local models with Unsloth
+                if model_config.get('finetuned', False):
+                    # Finetuned model: look in finetuned models directory
+                    model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
+                                            model_config['model_path'].split('/')[-1] + '_finetuned')
+                    logger.info(f"Loading finetuned model from: {model_path}")
+                    self.model_manager.load_finetuned_model(model_path)
+                else:
+                    # Base model: use configured path
+                    logger.info(f"Loading base model: {model_config['model_path']}")
+                    self.model_manager.load_open_source_model(config['model'], model_config['model_path'])
+            
+            elif model_config['type'] == 'api':
+                # API models: validate credentials only
+                provider = model_config['provider']
+                if provider == 'openai' and not Config.OPENAI_API_KEY:
+                    raise ValueError("OpenAI API key not configured")
+                elif provider == 'google' and not Config.GENAI_API_KEY:
+                    raise ValueError("Google GenAI API key not configured")
+                elif provider == 'anthropic' and not Config.ANTHROPIC_API_KEY:
+                    raise ValueError("Anthropic API key not configured")
+                
+                logger.info(f"Using API model: {config['model']}")
+            
+            else:
+                raise ValueError(f"Unknown model type: {model_config['type']}")
             
             # Step 4: Prepare prompts using mode-based system
             prompts = []
@@ -493,14 +530,15 @@ class ExperimentRunner:
                     
                     question_values_list.append(current_question_values)
                     
-                    # Use the mode-based prompt preparation with FULL dataset for few-shot generation
+                    # Use the mode-based prompt preparation with ORIGINAL dataset for few-shot generation
+                    # This ensures few_shot_row refers to original dataset positions, not filtered positions
                     prompt = self.prompt_manager.prepare_prompt_for_row(
                         prompt_name=config['prompt'],
                         row=row,
                         dataset_name=config['dataset'],
                         mode=config['mode'],
-                        dataset=full_df,  # Use full dataset for few-shot generation
-                        few_shot_row=actual_few_shot_row  # Use the determined row for consistency
+                        dataset=original_df,  # Use original dataset (before pruning) for few-shot generation
+                        few_shot_row=actual_few_shot_row  # This refers to original dataset row numbers
                     )
                     prompts.append(prompt)
                     
@@ -519,8 +557,8 @@ class ExperimentRunner:
             # Step 5: Generate responses
             responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'], question_values_list)
             
-            # Step 6: Save results (use sampled dataset for result metadata)
-            output_file = self.save_experiment_results(config, df_slice, responses)
+            # Step 6: Save results with pruning statistics
+            output_file = self.save_experiment_results(config, df_slice, responses, pruning_stats)
             
             # Clean up GPU memory if using local models
             if self.models_config[config['model']]['type'] == 'local':
@@ -544,7 +582,12 @@ class ExperimentRunner:
                 'output_file': output_file,
                 'success': True,
                 'num_responses': len(responses),
-                'success_rate': sum(1 for r in responses if r['success']) / len(responses) if responses else 0
+                'success_rate': sum(1 for r in responses if r['success']) / len(responses) if responses else 0,
+                'pruning_summary': {
+                    'rows_pruned': pruned_count,
+                    'rows_kept': len(full_df_filtered),
+                    'rows_sampled': len(df_slice)
+                }
             }
             
         except Exception as e:

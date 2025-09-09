@@ -22,8 +22,9 @@ class EvaluationRunner:
     2. Extracts metadata from file content (not filename parsing)
     3. Extracts model responses and expected outputs
     4. Runs evaluation using the EvaluationFramework with custom metrics
-    5. Saves evaluation results with metadata
-    6. Provides batch evaluation across multiple experiments
+    5. Includes pruning statistics from inference stage
+    6. Saves evaluation results with metadata
+    7. Provides batch evaluation across multiple experiments
     """
     
     def __init__(self):
@@ -71,6 +72,34 @@ class EvaluationRunner:
         
         logger.debug(f"Extracted metadata from file: {extracted}")
         return extracted
+    
+    def extract_pruning_stats_from_file_data(self, experiment_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Extract pruning statistics from loaded inference file data.
+        
+        Args:
+            experiment_data: Loaded inference result data
+            
+        Returns:
+            dict: Pruning statistics from the inference stage
+        """
+        pruning_stats = experiment_data.get('pruning_stats', {})
+        
+        # Also include dataset_info for additional context
+        dataset_info = experiment_data.get('dataset_info', {})
+        
+        # Combine both sources of information
+        combined_stats = {
+            'rows_pruned': pruning_stats.get('rows_pruned', 0),
+            'rows_kept_after_pruning': pruning_stats.get('rows_kept_after_pruning', 0),
+            'prune_reasons_sample': pruning_stats.get('prune_reasons_sample', []),
+            'total_prune_reasons': pruning_stats.get('total_prune_reasons', 0),
+            'original_size': dataset_info.get('original_size', 0),
+            'final_size_before_sampling': dataset_info.get('final_size_before_sampling', 0),
+            'sampled_size': dataset_info.get('sampled_size', 0)
+        }
+        
+        return combined_stats
     
     # =============================================================================
     # EXPERIMENT FILE DISCOVERY AND LOADING
@@ -206,9 +235,17 @@ class EvaluationRunner:
             experiment_type = metadata['experiment_type']
             dataset_name = metadata['dataset']
             
-            # Run comprehensive evaluation with custom metrics
+            # Extract pruning statistics from inference stage
+            inference_pruning_stats = self.extract_pruning_stats_from_file_data(experiment_data)
+            
+            # Run comprehensive evaluation with custom metrics and pruning stats
             experiment_name = experiment_data.get('experiment_name', 'unknown')
             logger.info(f"Evaluating experiment: {experiment_name} (type: {experiment_type}, mode: {metadata['mode']}, dataset: {dataset_name})")
+            
+            # Log pruning summary from inference stage
+            if inference_pruning_stats.get('rows_pruned', 0) > 0:
+                logger.info(f"Inference pruning: {inference_pruning_stats['rows_pruned']} rows were pruned, "
+                           f"{inference_pruning_stats['rows_kept_after_pruning']} rows kept")
             
             evaluation_result = self.evaluation_framework.evaluate_batch(
                 generated_responses=generated_responses,
@@ -216,7 +253,8 @@ class EvaluationRunner:
                 embedding_model=self.model_manager.embedding_model,
                 batch_name=experiment_name,
                 dataset_name=dataset_name,
-                response_data_list=response_data_list  # Pass full response data for custom metrics
+                response_data_list=response_data_list,  # Pass full response data for custom metrics
+                inference_pruning_stats=inference_pruning_stats  # Pass pruning stats from inference
             )
             
             # Add comprehensive metadata including extracted fields
@@ -332,7 +370,8 @@ class EvaluationRunner:
             'evaluation_file': output_file,
             'metrics': evaluation_result.get('aggregated_scores', {}),
             'num_samples': evaluation_result.get('num_samples', 0),
-            'num_valid_evaluations': evaluation_result.get('num_valid_evaluations', 0)
+            'num_valid_evaluations': evaluation_result.get('num_valid_evaluations', 0),
+            'pruning_summary': evaluation_result.get('inference_pruning_stats', {})
         }
     
     # =============================================================================
@@ -388,6 +427,9 @@ class EvaluationRunner:
                 # Save evaluation results
                 output_file = self.save_evaluation_results(evaluation_result, experiment_name, file_experiment_type)
                 
+                # Extract pruning stats for summary
+                pruning_stats = evaluation_result.get('inference_pruning_stats', {})
+                
                 results.append({
                     'experiment_name': experiment_name,
                     'experiment_type': file_experiment_type,
@@ -397,7 +439,12 @@ class EvaluationRunner:
                     'evaluation_file': output_file,
                     'metrics': evaluation_result.get('aggregated_scores', {}),
                     'num_samples': evaluation_result.get('num_samples', 0),
-                    'num_valid_evaluations': evaluation_result.get('num_valid_evaluations', 0)
+                    'num_valid_evaluations': evaluation_result.get('num_valid_evaluations', 0),
+                    'pruning_summary': {
+                        'rows_pruned': pruning_stats.get('rows_pruned', 0),
+                        'rows_kept': pruning_stats.get('rows_kept_after_pruning', 0),
+                        'original_size': pruning_stats.get('original_size', 0)
+                    }
                 })
                 
             except Exception as e:
@@ -405,6 +452,16 @@ class EvaluationRunner:
                 continue
         
         logger.info(f"Successfully evaluated {len(results)} out of {len(all_experiment_files)} experiments")
+        
+        # Log overall pruning summary
+        if results:
+            total_pruned = sum(r['pruning_summary']['rows_pruned'] for r in results)
+            total_kept = sum(r['pruning_summary']['rows_kept'] for r in results)
+            total_original = sum(r['pruning_summary']['original_size'] for r in results)
+            
+            if total_pruned > 0:
+                logger.info(f"Overall pruning summary: {total_pruned} rows pruned out of {total_original} original rows ({total_pruned/total_original*100:.1f}%)")
+        
         return results
     
     # =============================================================================
@@ -428,6 +485,9 @@ class EvaluationRunner:
         
         # Load and filter evaluations by metadata
         valid_evaluations = []
+        total_pruned_across_all = 0
+        total_original_across_all = 0
+        
         for file_path in all_evaluation_files:
             try:
                 with open(file_path, 'r') as f:
@@ -441,6 +501,11 @@ class EvaluationRunner:
                     continue
                 
                 valid_evaluations.append(eval_data)
+                
+                # Accumulate pruning statistics
+                pruning_stats = eval_data.get('inference_pruning_stats', {})
+                total_pruned_across_all += pruning_stats.get('rows_pruned', 0)
+                total_original_across_all += pruning_stats.get('original_size', 0)
                 
             except Exception as e:
                 logger.warning(f"Error loading evaluation file {file_path}: {e}")
@@ -469,7 +534,12 @@ class EvaluationRunner:
         summary = {
             'total_evaluations': len(valid_evaluations),
             'total_samples_evaluated': total_samples,
-            'experiment_type_filter': experiment_type
+            'experiment_type_filter': experiment_type,
+            'overall_pruning_stats': {
+                'total_rows_pruned': total_pruned_across_all,
+                'total_original_rows': total_original_across_all,
+                'pruning_rate': (total_pruned_across_all / total_original_across_all * 100) if total_original_across_all > 0 else 0
+            }
         }
         
         if all_f1_scores:
@@ -550,7 +620,8 @@ class EvaluationRunner:
             'experiment_names': [eval_data.get('original_experiment_name', 'Unknown') for eval_data in evaluations],
             'metric_comparison': {},
             'rankings': {},
-            'best_performers': {}
+            'best_performers': {},
+            'pruning_comparison': []
         }
         
         # Extract metrics for comparison
@@ -581,5 +652,18 @@ class EvaluationRunner:
                 'experiment': comparison['experiment_names'][best_idx],
                 'value': values[best_idx]
             }
+        
+        # Add pruning statistics comparison
+        for eval_data in evaluations:
+            pruning_stats = eval_data.get('inference_pruning_stats', {})
+            exp_name = eval_data.get('original_experiment_name', 'Unknown')
+            
+            comparison['pruning_comparison'].append({
+                'experiment_name': exp_name,
+                'rows_pruned': pruning_stats.get('rows_pruned', 0),
+                'rows_kept': pruning_stats.get('rows_kept_after_pruning', 0),
+                'original_size': pruning_stats.get('original_size', 0),
+                'pruning_rate': (pruning_stats.get('rows_pruned', 0) / pruning_stats.get('original_size', 1) * 100) if pruning_stats.get('original_size', 0) > 0 else 0
+            })
         
         return comparison

@@ -2,7 +2,8 @@ import os
 import pandas as pd
 import subprocess
 import shutil
-from typing import Dict, Optional, List
+import re
+from typing import Dict, Optional, List, Tuple, Any
 from urllib.parse import urlparse
 
 from config import Config
@@ -19,7 +20,7 @@ class DatasetManager:
     2. Downloading datasets from configured sources
     3. Loading and caching datasets in memory
     4. Validating dataset structure and fields
-    5. Preparing data samples for experiments
+    5. Preparing data samples for experiments with row pruning
     6. Generic field mapping without hardcoded dataset structures
     """
     
@@ -65,6 +66,231 @@ class DatasetManager:
         """
         dataset_path = self.get_dataset_path(dataset_name)
         return os.path.exists(dataset_path)
+    
+    # =============================================================================
+    # ROW PRUNING LOGIC
+    # =============================================================================
+    
+    def _compile_pattern(self, pattern: str) -> Tuple[bool, Any]:
+        """
+        Compile a pattern, detecting if it's regex or literal.
+        
+        Args:
+            pattern: Pattern string, with optional "regex:" prefix
+            
+        Returns:
+            Tuple[bool, any]: (is_regex, compiled_pattern_or_string)
+            
+        Raises:
+            ValueError: If regex pattern is invalid
+        """
+        if pattern.startswith("regex:"):
+            regex_pattern = pattern[6:]  # Remove "regex:" prefix
+            try:
+                compiled = re.compile(regex_pattern)
+                return True, compiled
+            except re.error as e:
+                raise ValueError(f"Invalid regex pattern '{regex_pattern}': {e}")
+        else:
+            return False, pattern
+    
+    def _value_matches_pattern(self, value: str, pattern_info: Tuple[bool, Any]) -> bool:
+        """
+        Check if a value matches a compiled pattern.
+        
+        Args:
+            value: String value to check
+            pattern_info: Tuple from _compile_pattern()
+            
+        Returns:
+            bool: True if value matches pattern
+        """
+        is_regex, pattern = pattern_info
+        
+        # Defensive: ensure value is a string
+        str_value = str(value) if value is not None else ""
+        
+        try:
+            if is_regex:
+                return bool(pattern.search(str_value))
+            else:
+                return str_value == pattern
+        except Exception as e:
+            # This should rarely happen, but provides safety net
+            logger.warning(f"Error matching pattern {pattern} against value '{str_value}': {e}")
+            return False
+    
+    def _validate_prune_columns(self, dataset_name: str, dataset_columns: List[str]) -> None:
+        """
+        Validate that prune_row columns exist in the actual dataset.
+        
+        Args:
+            dataset_name: Name of dataset
+            dataset_columns: List of actual column names in the dataset
+            
+        Raises:
+            ValueError: If unknown columns are specified in prune_row config
+        """
+        dataset_config = self.datasets_config[dataset_name]
+        prune_config = dataset_config.get('prune_row', {})
+        
+        if not prune_config:
+            return
+        
+        # Get columns specified in prune config (excluding "*")
+        specified_columns = [col for col in prune_config.keys() if col != "*"]
+        
+        # Find columns that don't exist in the dataset
+        unknown_columns = [col for col in specified_columns if col not in dataset_columns]
+        
+        if unknown_columns:
+            logger.warning(f"Dataset '{dataset_name}' prune_row config references unknown columns: {unknown_columns}")
+            logger.info(f"Available columns in dataset: {dataset_columns}")
+            logger.info("Unknown columns will be ignored during pruning")
+            
+            # Optionally make this a hard error instead of warning:
+            # raise ValueError(f"Dataset '{dataset_name}' prune_row config contains unknown columns: {unknown_columns}")
+    
+    def has_pruning_config(self, dataset_name: str) -> bool:
+        """
+        Check if a dataset has pruning configuration.
+        
+        Args:
+            dataset_name: Name of dataset to check
+            
+        Returns:
+            bool: True if dataset has prune_row configuration
+        """
+        if dataset_name not in self.datasets_config:
+            return False
+        
+        dataset_config = self.datasets_config[dataset_name]
+        prune_config = dataset_config.get('prune_row', {})
+        
+        # Check if prune_row exists and is not empty
+        return bool(prune_config)
+    
+    def should_prune_row(self, row: pd.Series, dataset_name: str) -> Tuple[bool, str]:
+        """
+        Check if a row should be pruned based on dataset pruning configuration.
+        
+        Args:
+            row: Dataset row to check
+            dataset_name: Name of dataset (for pruning config)
+            
+        Returns:
+            Tuple[bool, str]: (should_prune, reason)
+            
+        Raises:
+            ValueError: If dataset unknown or regex pattern invalid
+        """
+        if dataset_name not in self.datasets_config:
+            raise ValueError(f"Unknown dataset: {dataset_name}")
+        
+        dataset_config = self.datasets_config[dataset_name]
+        prune_config = dataset_config.get('prune_row', {})
+        
+        if not prune_config:
+            return False, ""
+        
+        # Compile all patterns once for this row check
+        compiled_patterns = {}
+        try:
+            for column, patterns in prune_config.items():
+                compiled_patterns[column] = [self._compile_pattern(p) for p in patterns]
+        except ValueError as e:
+            raise ValueError(f"Dataset '{dataset_name}' pruning config error: {e}")
+        
+        # Check * rules first (priority)
+        if "*" in compiled_patterns:
+            for pattern_info in compiled_patterns["*"]:
+                # Check this pattern against ALL columns in the row
+                for col_name, col_value in row.items():
+                    if pd.isna(col_value):
+                        col_value = ""
+                    
+                    if self._value_matches_pattern(str(col_value), pattern_info):
+                        is_regex, pattern = pattern_info
+                        pattern_str = pattern.pattern if is_regex else pattern
+                        return True, f"Global pattern '{pattern_str}' matched column '{col_name}' with value '{col_value}'"
+        
+        # Check specific column rules
+        for column, pattern_list in compiled_patterns.items():
+            if column == "*":  # Already checked above
+                continue
+                
+            if column not in row:
+                logger.debug(f"Column '{column}' specified in prune config but not found in dataset row")
+                continue  # Column doesn't exist in this row, skip
+                
+            col_value = row[column]
+            if pd.isna(col_value):
+                col_value = ""
+            
+            for pattern_info in pattern_list:
+                if self._value_matches_pattern(str(col_value), pattern_info):
+                    is_regex, pattern = pattern_info
+                    pattern_str = pattern.pattern if is_regex else pattern
+                    return True, f"Column '{column}' pattern '{pattern_str}' matched value '{col_value}'"
+        
+        return False, ""
+    
+    def filter_dataset_rows(self, df: pd.DataFrame, dataset_name: str) -> Tuple[pd.DataFrame, int, List[str]]:
+        """
+        Filter dataset rows based on pruning configuration.
+        
+        Args:
+            df: Dataset DataFrame
+            dataset_name: Name of dataset (for pruning config)
+            
+        Returns:
+            Tuple[pd.DataFrame, int, List[str]]: (filtered_df, skipped_count, skip_reasons)
+            
+        Raises:
+            ValueError: If dataset unknown or regex pattern invalid
+        """
+        logger.info(f"Filtering dataset '{dataset_name}' with {len(df)} total rows")
+        
+        # Check if pruning is configured for this dataset
+        if not self.has_pruning_config(dataset_name):
+            logger.info(f"No pruning configuration found for dataset '{dataset_name}', keeping all rows")
+            return df.copy(), 0, []
+        
+        logger.info(f"Applying pruning rules for dataset '{dataset_name}'")
+        
+        # Validate that specified columns exist in the dataset
+        self._validate_prune_columns(dataset_name, list(df.columns))
+        
+        filtered_rows = []
+        skip_reasons = []
+        skipped_count = 0
+        
+        for idx, row in df.iterrows():
+            should_skip, reason = self.should_prune_row(row, dataset_name)
+            
+            if should_skip:
+                skipped_count += 1
+                skip_reasons.append(f"Row {idx}: {reason}")
+                logger.debug(f"Skipping row {idx}: {reason}")
+            else:
+                filtered_rows.append(row)
+        
+        if filtered_rows:
+            filtered_df = pd.DataFrame(filtered_rows).reset_index(drop=True)
+        else:
+            # Create empty DataFrame with same columns if all rows were filtered
+            filtered_df = df.iloc[0:0].copy()
+        
+        logger.info(f"Filtered dataset: kept {len(filtered_df)} rows, skipped {skipped_count} rows")
+        
+        if skipped_count > 0:
+            # Log first few reasons for debugging
+            sample_reasons = skip_reasons[:5]
+            logger.info(f"Sample skip reasons: {sample_reasons}")
+            if len(skip_reasons) > 5:
+                logger.info(f"... and {len(skip_reasons) - 5} more")
+        
+        return filtered_df, skipped_count, skip_reasons
     
     # =============================================================================
     # DATASET DOWNLOADING
@@ -275,7 +501,8 @@ class DatasetManager:
             'question_fields': config['question_fields'],
             'answer_field': config['answer_field'],
             'is_downloaded': is_downloaded,
-            'is_loaded': is_loaded
+            'is_loaded': is_loaded,
+            'prune_config': config.get('prune_row', {})
         }
         
         # Add detailed statistics if dataset is loaded
@@ -294,15 +521,9 @@ class DatasetManager:
             if answer_field in df.columns:
                 answer_series = df[answer_field]
                 
-                # Count NA/empty answers (common patterns for unannotated data)
-                na_patterns = ['na', 'n/a', 'not applicable', 'not annotatable', '', 'none']
-                na_mask = answer_series.fillna('').astype(str).str.lower().str.strip().isin(na_patterns)
-                na_count = na_mask.sum()
-                
                 info['answer_field_stats'] = {
                     'total_answers': len(answer_series),
-                    'valid_answers': len(answer_series) - na_count,
-                    'na_answers': int(na_count),
+                    'null_answers': answer_series.isnull().sum(),
                     'avg_answer_length': answer_series.fillna('').astype(str).str.len().mean(),
                     'max_answer_length': answer_series.fillna('').astype(str).str.len().max()
                 }
@@ -363,7 +584,6 @@ class DatasetManager:
         logger.info(f"Dataset {dataset_name} validation passed")
         return True
     
- 
     # =============================================================================
     # GENERIC DATA PROCESSING - REMOVED HARDCODED LOGIC
     # =============================================================================

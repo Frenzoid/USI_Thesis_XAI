@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch import cosine_similarity
-from typing import Dict, List, Any, Callable, Union, Optional
+from typing import Dict, List, Any, Callable, Optional
 from datetime import datetime
 from tqdm import tqdm
 import importlib
@@ -24,6 +24,9 @@ class EvaluationFramework:
     5. Batch processing with aggregation
     6. Evaluation history and comparison tools
     7. Dataset-specific configuration support
+    
+    Note: Row pruning/filtering is now handled during inference in experiment_runner.py,
+    so this class focuses purely on metric computation for provided responses.
     """
     
     def __init__(self):
@@ -33,37 +36,7 @@ class EvaluationFramework:
         self.custom_metrics = {}        # Registry for custom evaluation metrics
         self.dataset_custom_metrics = {}  # Cache for loaded dataset-specific metrics
         
-        # Dataset-specific configurations (loaded from datasets config)
-        self.dataset_configs = {}
-        self._load_dataset_evaluation_configs()
-        
         logger.info("🚀 EvaluationFramework initialized")
-    
-    def _load_dataset_evaluation_configs(self):
-        """Load dataset-specific evaluation configurations"""
-        try:
-            datasets_config = Config.load_datasets_config()
-            for dataset_name, config in datasets_config.items():
-                eval_config = config.get('evaluation_config', {})
-                self.dataset_configs[dataset_name] = {
-                    'na_indicators': eval_config.get('na_indicators', ['']),
-                    'skip_empty_responses': eval_config.get('skip_empty_responses', True),
-                    'case_sensitive': eval_config.get('case_sensitive', False),
-                    'custom_preprocessing': eval_config.get('custom_preprocessing', None)
-                }
-        except Exception as e:
-            logger.warning(f"⚠️ Could not load dataset evaluation configs: {e}")
-            # Set default configuration
-            self.dataset_configs['default'] = {
-                'na_indicators': ['na', 'n/a', 'not applicable', 'not annotatable', ''],
-                'skip_empty_responses': True,
-                'case_sensitive': False,
-                'custom_preprocessing': None
-            }
-    
-    def get_dataset_config(self, dataset_name: str) -> Dict[str, Any]:
-        """Get evaluation configuration for a specific dataset"""
-        return self.dataset_configs.get(dataset_name, self.dataset_configs.get('default', {}))
     
     # =============================================================================
     # CUSTOM METRICS LOADING AND MANAGEMENT
@@ -199,7 +172,7 @@ class EvaluationFramework:
     # TOKEN-BASED METRICS
     # =============================================================================
     
-    def compute_token_metrics(self, generated: str, expected: str, dataset_name: str = 'default') -> Dict[str, float]:
+    def compute_token_metrics(self, generated: str, expected: str) -> Dict[str, float]:
         """
         Compute token-level overlap metrics between generated and expected text.
         
@@ -213,17 +186,13 @@ class EvaluationFramework:
         Args:
             generated: Generated text from model
             expected: Expected/reference text
-            dataset_name: Dataset name for configuration
             
         Returns:
             dict: Dictionary of metric names to scores
         """
-        # Get dataset-specific configuration
-        config = self.get_dataset_config(dataset_name)
-        
-        # Apply preprocessing
-        gen_clean = self._preprocess_text(generated, config)
-        exp_clean = self._preprocess_text(expected, config)
+        # Convert to strings and handle None/empty cases
+        gen_clean = str(generated).strip() if generated else ""
+        exp_clean = str(expected).strip() if expected else ""
         
         # Handle edge cases where one or both texts are empty
         if not gen_clean and not exp_clean:
@@ -234,11 +203,11 @@ class EvaluationFramework:
             return {'exact_match': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0, 'jaccard': 0.0}
         
         # Tokenize into sets for overlap computation
-        gen_tokens = set(gen_clean.split())
-        exp_tokens = set(exp_clean.split())
+        gen_tokens = set(gen_clean.lower().split())
+        exp_tokens = set(exp_clean.lower().split())
         
-        # Exact match check
-        exact_match = float(gen_clean == exp_clean)
+        # Exact match check (case-insensitive)
+        exact_match = float(gen_clean.lower() == exp_clean.lower())
         
         # Token overlap metrics
         common_tokens = gen_tokens & exp_tokens
@@ -258,45 +227,6 @@ class EvaluationFramework:
             'jaccard': jaccard
         }
     
-    def _preprocess_text(self, text: str, config: Dict[str, Any]) -> str:
-        """Apply dataset-specific preprocessing to text"""
-        if not text:
-            return ""
-        
-        # Apply case sensitivity setting
-        if not config.get('case_sensitive', False):
-            text = text.lower()
-        
-        return text.strip()
-    
-    def _should_skip_evaluation(self, generated: str, expected: str, success: bool, dataset_name: str) -> tuple:
-        """
-        Determine if evaluation should be skipped based on dataset-specific rules.
-        
-        Returns:
-            tuple: (should_skip, skip_reason, skip_type)
-        """
-        
-        # Check if generation failed
-        if not success:
-            return True, "Response generation failed", "generation_failed"
-        
-        config = self.get_dataset_config(dataset_name)
-        
-        # Check for NA indicators in expected output
-        na_indicators = config.get('na_indicators', [])
-        
-        if expected.lower().strip() in [ind.lower() for ind in na_indicators]:
-            return True, "Expected output marked as NA", "skipped_na"
-        
-        # Check for empty responses if configured
-        if config.get('skip_empty_responses', True):
-            if not generated.strip():
-                logger.info("📭 Skipping: Generated response is empty")
-                return True, "Generated response is empty", "empty_response"
-        
-        return False, None, None
-    
     # =============================================================================
     # SINGLE RESPONSE EVALUATION
     # =============================================================================
@@ -306,7 +236,7 @@ class EvaluationFramework:
         Evaluate a single generated response against expected output.
         
         This is the core evaluation method that computes all metrics for
-        one generated response. It handles edge cases and combines multiple
+        one generated response. Handles generation failures and combines multiple
         metric types into a comprehensive evaluation.
         
         Args:
@@ -331,10 +261,9 @@ class EvaluationFramework:
         generated = str(generated)
         expected = str(expected)
         
-        # Check dataset-specific skip conditions
-        should_skip, skip_reason, skip_type = self._should_skip_evaluation(generated, expected, success, dataset_name)
-        if should_skip:
-            logger.debug(f"Skipping evaluation: {skip_reason}")
+        # Check if generation failed
+        if not success:
+            logger.debug("Skipping evaluation: Response generation failed")
             return {
                 'exact_match': 0.0,
                 'precision': 0.0,
@@ -342,12 +271,11 @@ class EvaluationFramework:
                 'f1_score': 0.0,
                 'jaccard': 0.0,
                 'semantic_similarity': 0.0,
-                'skipped_na': 1.0 if skip_type == 'skipped_na' else 0.0,
-                'generation_failed': 1.0 if skip_type == 'generation_failed' else 0.0
+                'generation_failed': 1.0
             }
         
         # Compute core token-based metrics
-        metrics = self.compute_token_metrics(generated, expected, dataset_name)
+        metrics = self.compute_token_metrics(generated, expected)
         
         # Add semantic similarity using embeddings
         metrics['semantic_similarity'] = self.compute_text_similarity(generated, expected, embedding_model)
@@ -381,8 +309,7 @@ class EvaluationFramework:
                 logger.error(f"❌ Error computing registered metric {metric_name}: {e}")
                 metrics[metric_name] = 0.0
         
-        # Mark as valid evaluation (not skipped)
-        metrics['skipped_na'] = 0.0
+        # Mark as successful evaluation (not skipped due to generation failure)
         metrics['generation_failed'] = 0.0
         
         logger.debug(f"Evaluated single response with {len(metrics)} metrics")
@@ -394,7 +321,8 @@ class EvaluationFramework:
     
     def evaluate_batch(self, generated_responses: List[str], expected_responses: List[str],
                              embedding_model, batch_name: str = "batch", dataset_name: str = 'general',
-                             response_data_list: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+                             response_data_list: Optional[List[Dict[str, Any]]] = None,
+                             inference_pruning_stats: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Evaluate a batch of responses and compute aggregate statistics.
         
@@ -408,6 +336,7 @@ class EvaluationFramework:
             batch_name: Name for this batch (for logging and identification)
             dataset_name: Name of dataset for loading custom metrics
             response_data_list: List of full response data dictionaries (with all fields)
+            inference_pruning_stats: Statistics about row pruning from inference stage
             
         Returns:
             dict: Complete evaluation results with individual and aggregate scores
@@ -422,7 +351,6 @@ class EvaluationFramework:
         logger.info(f"📊 Evaluating batch '{batch_name}' with {len(generated_responses)} responses")
         
         individual_scores = []
-        skipped_count = 0
         failed_count = 0
         
         # Evaluate each response pair with progress tracking
@@ -447,15 +375,13 @@ class EvaluationFramework:
             scores = self.evaluate_single_response(response_data, embedding_model, dataset_name=dataset_name)
             individual_scores.append(scores)
             
-            # Count items that were skipped due to NA annotations or failed generation
-            if scores.get('skipped_na', 0) == 1.0:
-                skipped_count += 1
-            elif scores.get('generation_failed', 0) == 1.0:
+            # Count items that failed generation
+            if scores.get('generation_failed', 0) == 1.0:
                 failed_count += 1
         
-        # Filter out skipped items for meaningful aggregation
+        # Filter out failed items for meaningful aggregation
         valid_scores = [score for score in individual_scores 
-                       if score.get('skipped_na', 0) == 0.0 and score.get('generation_failed', 0) == 0.0]
+                       if score.get('generation_failed', 0) == 0.0]
         
         # Compute aggregate statistics from valid scores
         if valid_scores:
@@ -463,26 +389,32 @@ class EvaluationFramework:
             logger.info(f"📈 Aggregated scores from {len(valid_scores)} valid evaluations")
         else:
             aggregated = {}
-            logger.warning("⚠️ No valid scores to aggregate (all samples may have been marked as NA or failed)")
+            logger.warning("⚠️ No valid scores to aggregate (all responses may have failed generation)")
         
-        # Compile complete results
+        # Compile complete results including pruning stats from inference
         result = {
             'batch_name': batch_name,
             'dataset_name': dataset_name,
             'num_samples': len(generated_responses),
             'num_valid_evaluations': len(valid_scores),
-            'num_skipped_na': skipped_count,
             'num_failed_generation': failed_count,
             'individual_scores': individual_scores,
             'aggregated_scores': aggregated,
             'timestamp': datetime.now().isoformat()
         }
         
+        # Include pruning statistics from inference stage if available
+        if inference_pruning_stats:
+            result['inference_pruning_stats'] = inference_pruning_stats
+            
+            # Log pruning summary
+            pruned_count = inference_pruning_stats.get('rows_pruned', 0)
+            if pruned_count > 0:
+                logger.info(f"📊 Inference pruning: {pruned_count} rows were pruned during dataset preparation")
+        
         # Log summary information
-        if skipped_count > 0:
-            logger.info(f"⏭️  Skipped {skipped_count} items marked as 'NA' or 'not annotatable'")
         if failed_count > 0:
-            logger.info(f"❌  Skipped {failed_count} items with failed response generation")
+            logger.info(f"❌ Skipped {failed_count} items with failed response generation")
         
         logger.info(f"✅ Valid evaluations: {len(valid_scores)} out of {len(generated_responses)}")
         
@@ -517,7 +449,7 @@ class EvaluationFramework:
         
         for metric in metrics:
             # Skip flags in aggregation
-            if metric in ['skipped_na', 'generation_failed']:
+            if metric in ['generation_failed']:
                 continue
             
             values = [score[metric] for score in individual_scores if isinstance(score.get(metric), (int, float))]
@@ -530,7 +462,7 @@ class EvaluationFramework:
                     'median': np.median(values)
                 }
         
-        logger.debug(f"Aggregated {len([m for m in metrics if m not in ['skipped_na', 'generation_failed']])} metrics from {len(individual_scores)} scores")
+        logger.debug(f"Aggregated {len([m for m in metrics if m not in ['generation_failed']])} metrics from {len(individual_scores)} scores")
         return aggregated
     
     # =============================================================================
