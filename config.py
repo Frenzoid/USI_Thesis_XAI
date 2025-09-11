@@ -51,10 +51,82 @@ class Config:
     # Default embedding model for semantic similarity calculations
     EMBEDDING_MODEL = 'sentence-transformers/all-mpnet-base-v2'
     
-    # LLM generation parameters (can be overridden per experiment)
+    # LLM generation parameters (can be overridden per experiment and per model)
     MAX_NEW_TOKENS = 256           # Maximum tokens to generate per response
     MAX_SEQ_LENGTH = 4096          # Maximum sequence length for local models
     DEFAULT_TEMPERATURE = 0.1       # Default sampling temperature
+    
+    # =============================================================================
+    # LOCAL MODEL LOADING DEFAULTS
+    # =============================================================================
+    
+    # Unsloth/FastLanguageModel defaults
+    DEFAULT_LOAD_IN_4BIT = False
+    DEFAULT_TRUST_REMOTE_CODE = False
+    DEFAULT_LOCAL_FILES_ONLY = False
+    DEFAULT_USE_UNSLOTH = False  # Whether to prefer Unsloth over standard transformers
+    
+    # Standard Transformers defaults
+    DEFAULT_TORCH_DTYPE = "auto"
+    DEFAULT_DEVICE_MAP = "auto"
+    DEFAULT_USE_CHAT_TEMPLATE = True
+    
+    # =============================================================================
+    # REASONING MODEL DEFAULTS
+    # =============================================================================
+    
+    # Reasoning/thinking model specific parameters
+    DEFAULT_IS_REASONING_MODEL = False
+    DEFAULT_THINKING_BUDGET = 512
+    DEFAULT_TOKENIZE_CHAT_TEMPLATE = False  # Most models use False, reasoning models use True
+    DEFAULT_DECODE_FULL_OUTPUT = False      # Reasoning models typically decode full output
+    
+    # =============================================================================
+    # GENERATION PARAMETER DEFAULTS
+    # =============================================================================
+    
+    # Core generation parameters
+    DEFAULT_TOP_P = 0.9
+    DEFAULT_TOP_K = 50
+    DEFAULT_REPETITION_PENALTY = 1.0
+    DEFAULT_DO_SAMPLE = True
+    DEFAULT_NUM_BEAMS = 1
+    DEFAULT_EARLY_STOPPING = False
+    
+    # Advanced generation parameters
+    DEFAULT_LENGTH_PENALTY = 1.0
+    DEFAULT_NO_REPEAT_NGRAM_SIZE = 0
+    DEFAULT_ENCODER_NO_REPEAT_NGRAM_SIZE = 0
+    DEFAULT_BAD_WORDS_IDS = None
+    DEFAULT_FORCE_WORDS_IDS = None
+    DEFAULT_RENORMALIZE_LOGITS = False
+    DEFAULT_CONSTRAINTS = None
+    DEFAULT_FORCED_BOS_TOKEN_ID = None
+    DEFAULT_FORCED_EOS_TOKEN_ID = None
+    DEFAULT_REMOVE_INVALID_VALUES = False
+    DEFAULT_EXPONENTIAL_DECAY_LENGTH_PENALTY = None
+    DEFAULT_SUPPRESS_TOKENS = None
+    DEFAULT_BEGIN_SUPPRESS_TOKENS = None
+    DEFAULT_FORCED_DECODER_IDS = None
+    
+    # Chat template defaults
+    DEFAULT_CHAT_TEMPLATE_ROLE = "user"
+    DEFAULT_ADD_GENERATION_PROMPT = True
+    
+    # =============================================================================
+    # INFERENCE PIPELINE DEFAULTS
+    # =============================================================================
+    
+    # Token handling
+    DEFAULT_SKIP_SPECIAL_TOKENS = True
+    DEFAULT_CLEAN_UP_TOKENIZATION_SPACES = True
+    DEFAULT_TRUNCATION = True
+    DEFAULT_PADDING = True
+    DEFAULT_RETURN_TENSORS = "pt"
+    
+    # Output processing
+    DEFAULT_STRIP_PROMPT_FROM_OUTPUT = True
+    DEFAULT_RETURN_FULL_TEXT = False
     
     # =============================================================================
     # API CREDENTIALS
@@ -84,6 +156,68 @@ class Config:
     
     LOG_LEVEL = "INFO"
     LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    
+    # =============================================================================
+    # HELPER METHODS FOR DEFAULTS
+    # =============================================================================
+    
+    @classmethod
+    def get_default_generation_config(cls) -> Dict[str, Any]:
+        """
+        Get default generation configuration dictionary.
+        
+        Returns:
+            dict: Default generation parameters
+        """
+        return {
+            'max_new_tokens': cls.MAX_NEW_TOKENS,
+            'temperature': cls.DEFAULT_TEMPERATURE,
+            'top_p': cls.DEFAULT_TOP_P,
+            'top_k': cls.DEFAULT_TOP_K,
+            'repetition_penalty': cls.DEFAULT_REPETITION_PENALTY,
+            'do_sample': cls.DEFAULT_DO_SAMPLE,
+            'num_beams': cls.DEFAULT_NUM_BEAMS,
+            'early_stopping': cls.DEFAULT_EARLY_STOPPING,
+            'length_penalty': cls.DEFAULT_LENGTH_PENALTY,
+            'no_repeat_ngram_size': cls.DEFAULT_NO_REPEAT_NGRAM_SIZE,
+            'pad_token_id': None,  # Will be set from tokenizer
+            'eos_token_id': None,  # Will be set from tokenizer
+            'skip_special_tokens': cls.DEFAULT_SKIP_SPECIAL_TOKENS,
+            'clean_up_tokenization_spaces': cls.DEFAULT_CLEAN_UP_TOKENIZATION_SPACES
+        }
+    
+    @classmethod
+    def get_default_model_loading_config(cls) -> Dict[str, Any]:
+        """
+        Get default model loading configuration.
+        
+        Returns:
+            dict: Default model loading parameters
+        """
+        return {
+            'load_in_4bit': cls.DEFAULT_LOAD_IN_4BIT,
+            'trust_remote_code': cls.DEFAULT_TRUST_REMOTE_CODE,
+            'local_files_only': cls.DEFAULT_LOCAL_FILES_ONLY,
+            'torch_dtype': cls.DEFAULT_TORCH_DTYPE,
+            'device_map': cls.DEFAULT_DEVICE_MAP,
+            'use_unsloth': cls.DEFAULT_USE_UNSLOTH,
+            'use_chat_template': cls.DEFAULT_USE_CHAT_TEMPLATE,
+            'is_reasoning_model': cls.DEFAULT_IS_REASONING_MODEL
+        }
+    
+    @classmethod
+    def get_default_reasoning_config(cls) -> Dict[str, Any]:
+        """
+        Get default reasoning model configuration.
+        
+        Returns:
+            dict: Default reasoning model parameters
+        """
+        return {
+            'thinking_budget': cls.DEFAULT_THINKING_BUDGET,
+            'tokenize_chat_template': cls.DEFAULT_TOKENIZE_CHAT_TEMPLATE,
+            'decode_full_output': cls.DEFAULT_DECODE_FULL_OUTPUT
+        }
     
     # =============================================================================
     # DIRECTORY MANAGEMENT METHODS
@@ -253,7 +387,7 @@ class Config:
             str: Standardized experiment name
         """
 
-        # Format temperature to avoid floatding point precision issues
+        # Format temperature to avoid floating point precision issues
         # 0.1 becomes "0p1", 1.0 becomes "1p0"
         temp_str = f"{temperature:.3f}".replace(".", "p")
         

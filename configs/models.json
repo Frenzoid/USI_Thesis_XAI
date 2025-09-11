@@ -2,85 +2,168 @@
   "llama3.2-1b": {
     "type": "local",
     "model_path": "unsloth/llama-3.2-1b-instruct-bnb-4bit",
+    "description": "Llama 3.2 1B parameter model (4-bit quantized with Unsloth)",
     "max_tokens": 256,
     "finetuned": false,
-    "description": "Llama 3.2 1B parameter model"
+    "load_in_4bit": true,
+    "use_unsloth": false,
+    "use_chat_template": true
+  },
+  "llama3.2-1b-fp16": {
+    "type": "local",
+    "model_path": "unsloth/llama-3.2-1b-instruct",
+    "description": "Llama 3.2 1B parameter model (full precision with Unsloth)",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": true,
+    "use_chat_template": true
   },
   "llama3.2-3b": {
     "type": "local",
     "model_path": "unsloth/llama-3.2-3b-instruct-bnb-4bit",
+    "description": "Llama 3.2 3B parameter model (4-bit quantized with Unsloth)",
     "max_tokens": 256,
     "finetuned": false,
-    "description": "Llama 3.2 3B parameter model"
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
   },
   "llama3-8b": {
     "type": "local",
     "model_path": "unsloth/llama-3-8b-instruct-bnb-4bit",
+    "description": "Llama 3 8B parameter model (4-bit quantized with Unsloth)",
     "max_tokens": 256,
     "finetuned": false,
-    "description": "Llama 3 8B parameter model"
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
+  },
+  "llama3.3-70B": {
+    "type": "local",
+    "model_path": "unsloth/llama-3.3-70b-instruct-bnb-4bit",
+    "description": "Llama 3.3 70B parameter model (4-bit quantized with Unsloth)",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": false
   },
   "mistral-7b": {
     "type": "local",
     "model_path": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+    "description": "Mistral 7B parameter model (4-bit quantized with Unsloth)",
     "max_tokens": 256,
     "finetuned": false,
-    "description": "Mistral 7B parameter model"
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
   },
-  "gpt-4o": {
+  "Qwen3-Coder-30B": {
+    "type": "local",
+    "model_path": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+    "description": "Qwen3 Coder 30B parameter instruction-tuned model"
+  },
+  "qwen3-235b": {
+    "type": "local",
+    "model_path": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+    "description": "Qwen3 235B parameter instruction-tuned model",
+    "max_tokens": 1024,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "is_reasoning_model": false,
+    "generation_config": {
+      "temperature": 0.7,
+      "max_new_tokens": 1024,
+      "do_sample": true
+    }
+  },
+  "seed-oss-36b": {
+    "type": "local",
+    "model_path": "ByteDance-Seed/Seed-OSS-36B-Instruct",
+    "description": "ByteDance Seed reasoning model with thinking capabilities",
+    "is_reasoning_model": true,
+    "reasoning_config": {
+      "thinking_budget": 512,
+      "tokenize_chat_template": true,
+      "decode_full_output": true
+    },
+    "generation_config": {
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "max_new_tokens": 2048,
+      "do_sample": true
+    }
+  },
+
+
+
+
+  "gpt-3.5-turbo": {
     "type": "api",
     "provider": "openai",
-    "model_name": "gpt-4o",
-    "max_tokens": 256,
-    "description": "GPT-4 Omni model"
-  },
-  "gpt-4o-mini": {
-    "type": "api",
-    "provider": "openai",
-    "model_name": "gpt-4o-mini",
-    "max_tokens": 256,
-    "description": "GPT-4 Omni Mini model"
+    "model_name": "gpt-3.5-turbo",
+    "description": "GPT-3.5 Turbo model",
+    "max_tokens": 256
   },
   "gpt-4-turbo": {
     "type": "api",
     "provider": "openai",
     "model_name": "gpt-4-turbo",
-    "max_tokens": 256,
-    "description": "GPT-4 Turbo model"
+    "description": "GPT-4 Turbo model",
+    "max_tokens": 256
   },
-  "gpt-3.5-turbo": {
+  "gpt-4o": {
     "type": "api",
     "provider": "openai",
-    "model_name": "gpt-3.5-turbo",
-    "max_tokens": 256,
-    "description": "GPT-3.5 Turbo model"
+    "model_name": "gpt-4o",
+    "description": "GPT-4 Omni model",
+    "max_tokens": 256
   },
-  "gemini-1.5-pro": {
+  "gpt-4o-mini": {
     "type": "api",
-    "provider": "google",
-    "model_name": "gemini-1.5-pro",
-    "max_tokens": 256,
-    "description": "Google Gemini 1.5 Pro model"
+    "provider": "openai",
+    "model_name": "gpt-4o-mini",
+    "description": "GPT-4 Omni Mini model",
+    "max_tokens": 256
   },
+
+
+
   "gemini-1.5-flash": {
     "type": "api",
     "provider": "google",
     "model_name": "gemini-1.5-flash",
-    "max_tokens": 256,
-    "description": "Google Gemini 1.5 Flash model"
+    "description": "Google Gemini 1.5 Flash model",
+    "max_tokens": 256
   },
-  "claude-3.5-sonnet": {
+
+
+  "gemini-1.5-pro": {
     "type": "api",
-    "provider": "anthropic",
-    "model_name": "claude-3-5-sonnet-20241022",
-    "max_tokens": 256,
-    "description": "Claude 3.5 Sonnet model"
+    "provider": "google",
+    "model_name": "gemini-1.5-pro",
+    "description": "Google Gemini 1.5 Pro model",
+    "max_tokens": 256
   },
   "claude-3-opus": {
     "type": "api",
     "provider": "anthropic",
     "model_name": "claude-3-opus-20240229",
-    "max_tokens": 256,
-    "description": "Claude 3 Opus model"
+    "description": "Claude 3 Opus model",
+    "max_tokens": 256
+  },
+  "claude-3.5-sonnet": {
+    "type": "api",
+    "provider": "anthropic",
+    "model_name": "claude-3-5-sonnet-20241022",
+    "description": "Claude 3.5 Sonnet model",
+    "max_tokens": 256
   }
 }
