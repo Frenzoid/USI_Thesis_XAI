@@ -434,16 +434,75 @@ class ArgumentResolver:
             
             if len(combinations) > sample_count:
                 self.logger.info(f"  ... and {len(combinations) - sample_count} more")
+
+# =============================================================================
+# OPTIMIZED EXECUTION ORDER FUNCTIONS
+# =============================================================================
+
+def group_combinations_for_efficiency(combinations: List[ExperimentCombination]) -> Dict[str, Dict[str, List[ExperimentCombination]]]:
+    """
+    Group combinations by model first, then dataset for optimal execution order.
     
-    def _build_all_compatible_combinations(self) -> List[ExperimentCombination]:
-        """Build all possible valid combinations"""
-        combinations = []
-        for model in self.all_models:
-            for dataset in self.all_datasets:
-                for prompt in self.dataset_to_prompts.get(dataset, []):
-                    mode = self.prompt_to_mode[prompt]
-                    combinations.append(ExperimentCombination(model, dataset, prompt, mode))
-        return combinations
+    This minimizes expensive model loading/unloading operations by:
+    1. Loading each model only once
+    2. Processing all datasets for that model
+    3. Cleaning up model once before moving to next
+    
+    Args:
+        combinations: List of experiment combinations
+        
+    Returns:
+        dict: Nested structure {model_name: {dataset_name: [combinations]}}
+    """
+    grouped = {}
+    
+    for combo in combinations:
+        if combo.model not in grouped:
+            grouped[combo.model] = {}
+        if combo.dataset not in grouped[combo.model]:
+            grouped[combo.model][combo.dataset] = []
+        grouped[combo.model][combo.dataset].append(combo)
+    
+    return grouped
+
+def log_execution_plan(grouped_combinations: Dict[str, Dict[str, List[ExperimentCombination]]], models_config: dict):
+    """Log the optimized execution plan for user visibility"""
+    total_experiments = sum(
+        len(combos) 
+        for model_groups in grouped_combinations.values() 
+        for combos in model_groups.values()
+    )
+    
+    logger.info("=" * 60)
+    logger.info("OPTIMIZED EXECUTION PLAN")
+    logger.info("=" * 60)
+    logger.info(f"Total experiments: {total_experiments}")
+    logger.info(f"Models to load: {len(grouped_combinations)}")
+    
+    for model_name, datasets in grouped_combinations.items():
+        model_type = models_config.get(model_name, {}).get('type', 'unknown')
+        dataset_count = len(datasets)
+        experiment_count = sum(len(combos) for combos in datasets.values())
+        
+        logger.info(f"Model {model_name} ({model_type}): {experiment_count} experiments across {dataset_count} datasets")
+        
+        for dataset_name, combos in datasets.items():
+            modes = list(set(combo.mode for combo in combos))
+            prompts = list(set(combo.prompt for combo in combos))
+            logger.info(f"   Dataset {dataset_name}: {len(combos)} experiments ({', '.join(modes)}) using {len(prompts)} prompts")
+    
+    # Calculate efficiency gain
+    local_models = [model for model, config in models_config.items() 
+                   if model in grouped_combinations and config.get('type') == 'local']
+    
+    if local_models:
+        old_loads = total_experiments  # One load per experiment (old way)
+        new_loads = len(local_models)  # One load per unique local model (new way)
+        efficiency_gain = ((old_loads - new_loads) / old_loads) * 100 if old_loads > 0 else 0
+        
+        logger.info(f"Efficiency gain: {old_loads} → {new_loads} model loads ({efficiency_gain:.1f}% reduction)")
+    
+    logger.info("=" * 60)
 
 # =============================================================================
 # MAIN CLI FUNCTIONS
@@ -519,13 +578,13 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
     
     elif not gpu_status['can_run_local_models']:
         logger.warning(f"GPU memory may be insufficient for local models ({gpu_status['total_memory']:.1f} GB available)")
-        logger.warning("   Consider using smaller models or API-based models for better reliability")
+        logger.warning("   Consider using smaller models or API-based alternatives for better reliability")
     
     return True
 
 def run_baseline_experiment_command(args):
-    """Run baseline experiments with intelligent argument resolution"""
-    logger.info("Starting baseline experiment execution with intelligent argument resolution...")
+    """Run baseline experiments with optimized execution order"""
+    logger.info("Starting baseline experiment execution with optimized model loading...")
     
     # Load configurations
     try:
@@ -552,36 +611,46 @@ def run_baseline_experiment_command(args):
         logger.info("Use 'python main.py list-options' to see available options")
         return False
     
-    # Group combinations by mode for organized execution
-    combinations_by_mode = {}
-    for combo in combinations:
-        mode = combo.mode
-        if mode not in combinations_by_mode:
-            combinations_by_mode[mode] = []
-        combinations_by_mode[mode].append(combo)
+    # Group combinations for optimal execution order
+    grouped_combinations = group_combinations_for_efficiency(combinations)
     
     # Validate few-shot row parameter
     if args.few_shot_row is not None:
         if args.few_shot_row < 0:
             logger.error(f"Few-shot row index must be non-negative, got: {args.few_shot_row}")
             return False
-        if 'few-shot' not in combinations_by_mode:
+        
+        # Check if any few-shot experiments will be run
+        has_few_shot = any(
+            combo.mode == 'few-shot'
+            for model_groups in grouped_combinations.values()
+            for combos in model_groups.values()
+            for combo in combos
+        )
+        if not has_few_shot:
             logger.error("Cannot specify --few-shot-row when no few-shot experiments will be run")
             return False
     
     # Validate model capability
-    unique_models = list(set(combo.model for combo in combinations))
+    unique_models = list(grouped_combinations.keys())
     if not validate_local_model_capability(unique_models, models_config, args.force):
         return False
     
+    # Show execution plan
+    log_execution_plan(grouped_combinations, models_config)
+    
     # Ask for confirmation if many experiments
-    if len(combinations) > 10 and not args.force:
-        print(f"\n⚠️  About to run {len(combinations)} experiments. This may take a long time.⚠️")
-        print("📊 Breakdown:")
-        for mode, mode_combos in combinations_by_mode.items():
-            print(f"  {mode}: {len(mode_combos)} experiments")
+    total_experiments = sum(
+        len(combos) 
+        for model_groups in grouped_combinations.values() 
+        for combos in model_groups.values()
+    )
+    
+    if total_experiments > 10 and not args.force:
+        print(f"\nAbout to run {total_experiments} experiments. This may take a long time.")
+        print("Execution will be optimized by grouping experiments by model to minimize loading overhead.")
         
-        response = input("\nProceed? (y/N): ")
+        response = input("\nProceed with optimized execution? (y/N): ")
         if response.lower() != 'y':
             print("Cancelled by user")
             return False
@@ -589,49 +658,96 @@ def run_baseline_experiment_command(args):
     # Initialize experiment runner
     runner = ExperimentRunner()
     
-    # Execute all combinations
+    # Execute experiments in optimized order
     results = []
     success_count = 0
     failure_count = 0
+    current_experiment = 0
     
-    total_experiments = len(combinations)
-    
-    for i, combo in enumerate(combinations, 1):
-        try:
-            logger.info(f"Running experiment {i}/{total_experiments}: {combo}")
-            
-            experiment_config = {
-                'experiment_type': 'baseline',
-                'model': combo.model,
-                'dataset': combo.dataset,
-                'prompt': combo.prompt,
-                'mode': combo.mode,
-                'few_shot_row': args.few_shot_row,
-                'size': args.size,
-                'temperature': args.temperature
-            }
-            
-            result = runner.run_baseline_experiment(experiment_config)
-            
-            if result:
-                results.append(result)
-                success_count += 1
-                logger.info(f"Completed ({i}/{total_experiments}): {result['experiment_name']}")
-            else:
-                failure_count += 1
-                logger.error(f"Failed ({i}/{total_experiments}): {combo}")
+    for model_name, model_datasets in grouped_combinations.items():
+        model_config = models_config[model_name]
+        model_experiments = sum(len(combos) for combos in model_datasets.values())
         
-        except Exception as e:
-            failure_count += 1
-            logger.error(f"Error in experiment {i}/{total_experiments} ({combo}): {e}")
-            continue
+        logger.info(f"Loading model: {model_name} ({model_experiments} experiments)")
+        
+        # Pre-load model if it's a local model
+        model_loaded = False
+        if model_config['type'] == 'local':
+            try:
+                if model_config.get('finetuned', False):
+                    model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
+                                            model_config['model_path'].split('/')[-1] + '_finetuned')
+                    runner.model_manager.load_finetuned_model(model_path)
+                else:
+                    runner.model_manager.load_open_source_model(model_name, model_config['model_path'])
+                model_loaded = True
+                logger.info(f"Model {model_name} loaded successfully")
+            except Exception as e:
+                logger.error(f"Failed to load model {model_name}: {e}")
+                # Skip all experiments for this model
+                failure_count += model_experiments
+                continue
+        
+        # Process all datasets for this model
+        for dataset_name, dataset_combinations in model_datasets.items():
+            logger.info(f"Processing dataset: {dataset_name} with model: {model_name} ({len(dataset_combinations)} experiments)")
+            
+            # Pre-load and cache dataset for efficiency
+            dataset_loaded = False
+            try:
+                # This will cache the dataset in the dataset manager
+                runner.dataset_manager.load_dataset(dataset_name)
+                dataset_loaded = True
+                logger.debug(f"Dataset {dataset_name} loaded and cached")
+            except Exception as e:
+                logger.warning(f"Could not pre-load dataset {dataset_name}: {e}")
+            
+            # Run all experiments for this model+dataset combination
+            for combo in dataset_combinations:
+                current_experiment += 1
+                
+                try:
+                    logger.info(f"Running experiment {current_experiment}/{total_experiments}: {combo}")
+                    
+                    experiment_config = {
+                        'experiment_type': 'baseline',
+                        'model': combo.model,
+                        'dataset': combo.dataset,
+                        'prompt': combo.prompt,
+                        'mode': combo.mode,
+                        'few_shot_row': args.few_shot_row,
+                        'size': args.size,
+                        'temperature': args.temperature
+                    }
+                    
+                    # Since model is already loaded for local models, the experiment runner
+                    # will use the existing loaded model instead of reloading
+                    result = runner.run_baseline_experiment(experiment_config)
+                    
+                    if result:
+                        results.append(result)
+                        success_count += 1
+                        logger.info(f"Completed ({current_experiment}/{total_experiments}): {result['experiment_name']}")
+                    else:
+                        failure_count += 1
+                        logger.error(f"Failed ({current_experiment}/{total_experiments}): {combo}")
+                
+                except Exception as e:
+                    failure_count += 1
+                    logger.error(f"Error in experiment {current_experiment}/{total_experiments} ({combo}): {e}")
+                    continue
+        
+        # Clean up model after processing all its datasets
+        if model_loaded:
+            logger.info(f"Cleaning up model: {model_name}")
+            runner.model_manager.cleanup_current_model()
     
     # Final summary
     logger.info("=" * 60)
-    logger.info("EXPERIMENT EXECUTION COMPLETE")
+    logger.info("OPTIMIZED EXPERIMENT EXECUTION COMPLETE")
     logger.info(f"Success: {success_count}")
     logger.info(f"Failed: {failure_count}")
-    logger.info(f"Total: {total_experiments} combinations processed")
+    logger.info(f"Total: {total_experiments} experiments processed")
     
     if results:
         logger.info("Generated experiment files:")
@@ -639,6 +755,14 @@ def run_baseline_experiment_command(args):
             logger.info(f"  - {result['output_file']}")
         if len(results) > 10:
             logger.info(f"  ... and {len(results) - 10} more files")
+    
+    # Show efficiency summary for local models
+    local_model_count = sum(1 for model in unique_models 
+                           if models_config.get(model, {}).get('type') == 'local')
+    if local_model_count > 0:
+        logger.info(f"Efficiency: Loaded {local_model_count} local models instead of {total_experiments} (saved {total_experiments - local_model_count} loading operations)")
+    
+    logger.info("=" * 60)
     
     return success_count > 0
 
@@ -784,11 +908,6 @@ def show_prompt_command(args):
             logger.error(f"Failed to load dataset: {compatible_dataset}")
             return False
         
-        # Validate dataset has required fields
-        if not dataset_manager.validate_dataset_fields(compatible_dataset):
-            logger.error(f"Dataset validation failed for {compatible_dataset}")
-            return False
-        
         # Determine which row to use
         if args.row is not None:
             if args.row < 0 or args.row >= len(dataset):
@@ -810,7 +929,7 @@ def show_prompt_command(args):
             row=row,
             dataset_name=compatible_dataset,
             mode=prompt_mode,
-            dataset=dataset,  # Full dataset for few-shot
+            dataset=dataset,
             few_shot_row=args.row if prompt_mode == 'few-shot' and args.row is not None else None
         )
         

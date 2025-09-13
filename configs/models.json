@@ -1,15 +1,15 @@
 {
-  "llama3.2-1b": {
+  "u4b-llama3.2-1b": {
     "type": "local",
     "model_path": "unsloth/llama-3.2-1b-instruct-bnb-4bit",
     "description": "Llama 3.2 1B parameter model (4-bit quantized with Unsloth)",
     "max_tokens": 256,
     "finetuned": false,
     "load_in_4bit": true,
-    "use_unsloth": false,
+    "use_unsloth": true,
     "use_chat_template": true
   },
-  "llama3.2-1b-fp16": {
+  "u-llama3.2-1b-fp16": {
     "type": "local",
     "model_path": "unsloth/llama-3.2-1b-instruct",
     "description": "Llama 3.2 1B parameter model (full precision with Unsloth)",
@@ -19,7 +19,7 @@
     "use_unsloth": true,
     "use_chat_template": true
   },
-  "llama3.2-3b": {
+  "u4b-llama3.2-3b": {
     "type": "local",
     "model_path": "unsloth/llama-3.2-3b-instruct-bnb-4bit",
     "description": "Llama 3.2 3B parameter model (4-bit quantized with Unsloth)",
@@ -29,7 +29,7 @@
     "use_unsloth": true,
     "use_chat_template": true
   },
-  "llama3-8b": {
+  "u4b-llama3-8b": {
     "type": "local",
     "model_path": "unsloth/llama-3-8b-instruct-bnb-4bit",
     "description": "Llama 3 8B parameter model (4-bit quantized with Unsloth)",
@@ -39,7 +39,7 @@
     "use_unsloth": true,
     "use_chat_template": true
   },
-  "llama3.3-70B": {
+  "u4b-llama3.3-70B": {
     "type": "local",
     "model_path": "unsloth/llama-3.3-70b-instruct-bnb-4bit",
     "description": "Llama 3.3 70B parameter model (4-bit quantized with Unsloth)",
@@ -49,7 +49,9 @@
     "use_unsloth": true,
     "use_chat_template": false
   },
-  "mistral-7b": {
+
+
+  "u4b-mistral-7b": {
     "type": "local",
     "model_path": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
     "description": "Mistral 7B parameter model (4-bit quantized with Unsloth)",
@@ -59,12 +61,54 @@
     "use_unsloth": true,
     "use_chat_template": true
   },
-  "Qwen3-Coder-30B": {
+  "hf-Ministral-8B-Instruct-2410": {
+    "type": "local",
+    "model_path": "mistralai/Ministral-8B-Instruct-2410",
+    "description": "Ministral 8B parameter instruction-tuned model ",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "generation_config": {
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "hf-Mistral-Small-24B-Instruct-2501": {
+    "type": "local",
+    "model_path": "mistralai/Mistral-Small-24B-Instruct-2501",
+    "description": "Mistral Small 24B parameter instruction-tuned model ",
+    "max_tokens": 512,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "generation_config": {
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+
+
+  "hf-Qwen3-Coder-30B": {
     "type": "local",
     "model_path": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
     "description": "Qwen3 Coder 30B parameter instruction-tuned model"
   },
-  "qwen3-235b": {
+  "hf-Qwen3-235b": {
     "type": "local",
     "model_path": "Qwen/Qwen3-235B-A22B-Instruct-2507",
     "description": "Qwen3 235B parameter instruction-tuned model",
@@ -84,7 +128,23 @@
       "do_sample": true
     }
   },
-  "seed-oss-36b": {
+  "hf-Qwen3-30B-A3B-Thinking-2507":{
+    "type": "local",
+    "model_path": "Qwen/Qwen3-30B-A3B-Thinking-2507",
+    "description": "Qwen3 30B parameter reasoning model with thinking capabilities",
+    "is_reasoning_model": true,
+    "reasoning_config": {
+      "thinking_budget": 512,
+      "tokenize_chat_template": true,
+      "decode_full_output": true
+    },
+    "generation_config": {
+      "temperature": 0.7,
+      "max_new_tokens": 1024,
+      "do_sample": true
+    }
+  },
+  "hf-seed-oss-36b": {
     "type": "local",
     "model_path": "ByteDance-Seed/Seed-OSS-36B-Instruct",
     "description": "ByteDance Seed reasoning model with thinking capabilities",
@@ -101,7 +161,6 @@
       "do_sample": true
     }
   },
-
 
 
 
@@ -134,8 +193,6 @@
     "max_tokens": 256
   },
 
-
-
   "gemini-1.5-flash": {
     "type": "api",
     "provider": "google",
@@ -143,8 +200,6 @@
     "description": "Google Gemini 1.5 Flash model",
     "max_tokens": 256
   },
-
-
   "gemini-1.5-pro": {
     "type": "api",
     "provider": "google",
@@ -152,6 +207,7 @@
     "description": "Google Gemini 1.5 Pro model",
     "max_tokens": 256
   },
+
   "claude-3-opus": {
     "type": "api",
     "provider": "anthropic",
