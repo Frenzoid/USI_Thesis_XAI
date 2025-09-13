@@ -177,6 +177,18 @@ class ModelManager:
         # Load tokenizer with authentication error handling
         try:
             tokenizer = AutoTokenizer.from_pretrained(model_path, **common_args)
+            
+            # Fix missing pad_token issue (common with Mistral and other models)
+            if tokenizer.pad_token is None:
+                if tokenizer.eos_token is not None:
+                    tokenizer.pad_token = tokenizer.eos_token
+                    logger.info(f"Set pad_token to eos_token for {model_path}")
+                else:
+                    # Fallback: add a pad token
+                    tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+                    logger.info(f"Added [PAD] token as pad_token for {model_path}")
+                    logger.warning(f"Tokenizer for {model_path} had no pad_token or eos_token; added [PAD]")
+                    
         except Exception as e:
             error_msg = str(e).lower()
             if any(keyword in error_msg for keyword in ['gated', 'restricted', 'private', 'authentication', 'unauthorized', '401', '403']):
