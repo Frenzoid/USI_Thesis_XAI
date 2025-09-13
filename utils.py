@@ -323,6 +323,53 @@ def get_system_info():
 # CONFIGURATION AND API KEY VALIDATION
 # =============================================================================
 
+def validate_hf_token():
+    """
+    Validate Hugging Face token and check accessibility.
+    
+    Returns:
+        dict: HF token status information
+    """
+    hf_status = {
+        'token_available': bool(Config.HF_ACCESS_TOKEN),
+        'token_valid': False,
+        'user_info': None,
+        'error': None
+    }
+    
+    if not Config.HF_ACCESS_TOKEN:
+        hf_status['error'] = "No HF_ACCESS_TOKEN found in environment"
+        logger.info("No Hugging Face token found - restricted models will be unavailable")
+        return hf_status
+    
+    try:
+        from huggingface_hub import HfApi, whoami
+        
+        # Test token validity by getting user info
+        api = HfApi(token=Config.HF_ACCESS_TOKEN)
+        user_info = whoami(token=Config.HF_ACCESS_TOKEN)
+        
+        hf_status['token_valid'] = True
+        hf_status['user_info'] = {
+            'name': user_info.get('name', 'Unknown'),
+            'type': user_info.get('type', 'Unknown')
+        }
+        
+        logger.info(f"Hugging Face token valid for user: {hf_status['user_info']['name']}")
+        
+    except ImportError:
+        hf_status['error'] = "huggingface_hub library not available"
+        logger.warning("huggingface_hub not available - cannot validate HF token")
+    except Exception as e:
+        hf_status['error'] = str(e)
+        error_msg = str(e).lower()
+        if 'invalid' in error_msg or 'unauthorized' in error_msg or '401' in error_msg:
+            logger.error("Hugging Face token is invalid")
+        else:
+            logger.error(f"Error validating Hugging Face token: {e}")
+    
+    return hf_status
+
 def validate_api_keys():
     """
     Check which API keys are available and log their status.
@@ -352,6 +399,11 @@ def validate_api_keys():
     else:
         api_status['anthropic'] = False
         logger.warning("Anthropic API key not found - Claude models will be unavailable")
+    
+    # Validate HF token
+    hf_status = validate_hf_token()
+    api_status['huggingface'] = hf_status['token_valid']
+    api_status['hf_details'] = hf_status
     
     return api_status
 
@@ -551,7 +603,8 @@ def check_system_requirements():
         'cuda_available': cuda_available,
         'directories_created': False,
         'config_files_valid': False,
-        'api_keys_present': False
+        'api_keys_present': False,
+        'hf_token_valid': False
     }
 
     # Check directories
@@ -569,9 +622,10 @@ def check_system_requirements():
     except Exception as e:
         logger.error(f"Configuration validation failed: {e}")
 
-    # Check API keys
+    # Check API keys including HF token
     api_status = validate_api_keys()
-    requirements['api_keys_present'] = any(api_status.values())
+    requirements['api_keys_present'] = any(api_status[key] for key in ['openai', 'genai', 'anthropic'])
+    requirements['hf_token_valid'] = api_status['huggingface']
 
     return requirements
 
@@ -621,6 +675,11 @@ def initialize_system():
         logger.info("✅ API keys configured")
     else:
         logger.warning("⚠️  No API keys configured (API models will be unavailable)")
+    
+    if requirements['hf_token_valid']:
+        logger.info("✅ Hugging Face token valid")
+    else:
+        logger.info("ℹ️  No valid Hugging Face token (restricted models will be unavailable)")
     
     logger.info("System initialization complete")
     

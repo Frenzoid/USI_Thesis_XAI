@@ -17,6 +17,7 @@ class ModelManager:
     - Reasoning models with thinking budget
     - API models (OpenAI, Google, Anthropic)
     - Embedding models for similarity calculations
+    - Hugging Face authentication for restricted repositories
     """
     
     def __init__(self):
@@ -31,8 +32,73 @@ class ModelManager:
         self.genai_client = None
         self.anthropic_client = None
         
+        # Hugging Face authentication setup
+        self._setup_hf_authentication()
+        
         self.models_config = Config.load_models_config()
         logger.info("ModelManager initialized")
+    
+    def _setup_hf_authentication(self):
+        """Setup Hugging Face authentication if token is available"""
+        if Config.HF_ACCESS_TOKEN:
+            try:
+                from huggingface_hub import login
+                login(token=Config.HF_ACCESS_TOKEN, add_to_git_credential=True)
+                logger.info("Hugging Face authentication configured successfully")
+            except ImportError:
+                logger.warning("huggingface_hub not available - some models may be inaccessible")
+            except Exception as e:
+                logger.error(f"Failed to setup Hugging Face authentication: {e}")
+        else:
+            logger.info("No Hugging Face token found - restricted models will be unavailable")
+    
+    def _check_model_accessibility(self, model_path: str, model_name: str) -> bool:
+        """
+        Check if a model is accessible, handling authentication errors gracefully.
+        
+        Args:
+            model_path: Path/name of the model to check
+            model_name: Human-readable model name for logging
+            
+        Returns:
+            bool: True if model is accessible, False otherwise
+        """
+        try:
+            from huggingface_hub import model_info, HfApi
+            
+            # Try to get model info to verify accessibility
+            api = HfApi(token=Config.HF_ACCESS_TOKEN if Config.HF_ACCESS_TOKEN else None)
+            model_info_result = api.model_info(model_path)
+            
+            # Check if model requires authentication and we don't have a token
+            if hasattr(model_info_result, 'gated') and model_info_result.gated and not Config.HF_ACCESS_TOKEN:
+                logger.warning(f"Model '{model_name}' ({model_path}) is gated and requires authentication")
+                logger.info(f"Add HF_ACCESS_TOKEN to .env file to access gated models")
+                return False
+            
+            logger.debug(f"Model '{model_name}' is accessible")
+            return True
+            
+        except Exception as e:
+            error_msg = str(e).lower()
+            
+            # Handle different types of access errors
+            if any(keyword in error_msg for keyword in ['gated', 'restricted', 'private', 'authentication', 'unauthorized', '401', '403']):
+                logger.warning(f"Model '{model_name}' ({model_path}) requires authentication or is restricted")
+                if not Config.HF_ACCESS_TOKEN:
+                    logger.info("Add HF_ACCESS_TOKEN to .env file to access restricted models")
+                else:
+                    logger.info("Your HF_ACCESS_TOKEN may not have access to this model")
+                return False
+                
+            elif 'not found' in error_msg or '404' in error_msg:
+                logger.error(f"Model '{model_name}' ({model_path}) not found")
+                return False
+                
+            else:
+                # For other errors, log warning but don't skip (might be network issues)
+                logger.warning(f"Could not verify accessibility for model '{model_name}': {e}")
+                return True  # Assume accessible and let the actual loading fail if needed
     
     def cleanup_current_model(self):
         """Clean up currently loaded model to free memory"""
@@ -58,6 +124,10 @@ class ModelManager:
                 'cache_dir': Config.CACHED_MODELS_DIR
             }
             
+            # Add HF token if available
+            if Config.HF_ACCESS_TOKEN:
+                load_args['token'] = Config.HF_ACCESS_TOKEN
+            
             # Handle dtype parameter (Unsloth prefers 'dtype' over 'torch_dtype')
             torch_dtype = config.get('torch_dtype', 'auto')
             if torch_dtype != 'auto':
@@ -71,6 +141,14 @@ class ModelManager:
             return model, tokenizer
             
         except Exception as e:
+            # Handle authentication errors specifically
+            error_msg = str(e).lower()
+            if any(keyword in error_msg for keyword in ['gated', 'restricted', 'private', 'authentication', 'unauthorized', '401', '403']):
+                logger.error(f"Authentication failed for model {model_path}: {e}")
+                if not Config.HF_ACCESS_TOKEN:
+                    logger.info("Consider adding HF_ACCESS_TOKEN to .env file for restricted models")
+                raise ValueError(f"Model requires authentication: {model_path}")
+            
             if 'dtype' in str(e):
                 # Retry without dtype
                 load_args.pop('dtype', None)
@@ -89,11 +167,24 @@ class ModelManager:
             'cache_dir': Config.CACHED_MODELS_DIR
         }
         
+        # Add HF token if available
+        if Config.HF_ACCESS_TOKEN:
+            common_args['token'] = Config.HF_ACCESS_TOKEN
+        
         if config.get('local_files_only', False):
             common_args['local_files_only'] = True
         
-        # Load tokenizer
-        tokenizer = AutoTokenizer.from_pretrained(model_path, **common_args)
+        # Load tokenizer with authentication error handling
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(model_path, **common_args)
+        except Exception as e:
+            error_msg = str(e).lower()
+            if any(keyword in error_msg for keyword in ['gated', 'restricted', 'private', 'authentication', 'unauthorized', '401', '403']):
+                logger.error(f"Authentication failed for tokenizer {model_path}: {e}")
+                if not Config.HF_ACCESS_TOKEN:
+                    logger.info("Consider adding HF_ACCESS_TOKEN to .env file for restricted models")
+                raise ValueError(f"Tokenizer requires authentication: {model_path}")
+            raise
         
         # Load model with additional args
         model_args = {
@@ -115,15 +206,30 @@ class ModelManager:
             except ImportError:
                 logger.warning("BitsAndBytes not available, loading without quantization")
         
-        model = AutoModelForCausalLM.from_pretrained(model_path, **model_args)
+        # Load model with authentication error handling
+        try:
+            model = AutoModelForCausalLM.from_pretrained(model_path, **model_args)
+        except Exception as e:
+            error_msg = str(e).lower()
+            if any(keyword in error_msg for keyword in ['gated', 'restricted', 'private', 'authentication', 'unauthorized', '401', '403']):
+                logger.error(f"Authentication failed for model {model_path}: {e}")
+                if not Config.HF_ACCESS_TOKEN:
+                    logger.info("Consider adding HF_ACCESS_TOKEN to .env file for restricted models")
+                raise ValueError(f"Model requires authentication: {model_path}")
+            raise
+        
         return model, tokenizer
     
     def load_open_source_model(self, model_name: str, model_path: str):
-        """Load a local model using the appropriate method"""
+        """Load a local model using the appropriate method with authentication handling"""
         if model_name not in self.models_config:
             raise ValueError(f"Unknown model: {model_name}")
         
         config = self.models_config[model_name]
+        
+        # Check model accessibility first
+        if not self._check_model_accessibility(model_path, model_name):
+            raise ValueError(f"Model '{model_name}' is not accessible - check authentication or permissions")
         
         # Apply defaults
         config = {
@@ -158,6 +264,13 @@ class ModelManager:
                 except ImportError:
                     logger.warning("Unsloth not available, using transformers")
                     model, tokenizer = self._load_with_transformers(model_path, config)
+                except ValueError as e:
+                    # Re-raise authentication errors
+                    if "authentication" in str(e).lower():
+                        raise
+                    # For other ValueError, try transformers
+                    logger.warning(f"Unsloth failed ({e}), trying transformers")
+                    model, tokenizer = self._load_with_transformers(model_path, config)
             else:
                 model, tokenizer = self._load_with_transformers(model_path, config)
                 logger.info("Loaded with transformers")
@@ -169,6 +282,16 @@ class ModelManager:
             
             logger.info(f"Successfully loaded model: {model_name}")
             
+        except ValueError as e:
+            # Authentication errors should be propagated
+            if "authentication" in str(e).lower() or "not accessible" in str(e).lower():
+                logger.error(f"Failed to load model {model_name}: {e}")
+                self.cleanup_current_model()
+                raise
+            # Other ValueError should also be propagated
+            logger.error(f"Failed to load model {model_name}: {e}")
+            self.cleanup_current_model()
+            raise
         except Exception as e:
             logger.error(f"Failed to load model {model_name}: {e}")
             self.cleanup_current_model()
@@ -373,18 +496,57 @@ class ModelManager:
             raise ValueError(f"Unknown provider: {provider}")
     
     def load_embedding_model(self):
-        """Load embedding model for semantic similarity"""
+        """Load embedding model for semantic similarity with authentication"""
         if self.embedding_model is None:
             logger.info(f"Loading embedding model: {Config.EMBEDDING_MODEL}")
             
             try:
+                # Check if embedding model needs authentication
+                if not self._check_model_accessibility(Config.EMBEDDING_MODEL, "embedding_model"):
+                    logger.warning(f"Embedding model {Config.EMBEDDING_MODEL} may not be accessible")
+                    # Try to continue anyway, transformers might handle it
+                
+                model_kwargs = {'cache_folder': Config.CACHED_MODELS_DIR}
+                
+                # Add HF token if available
+                if Config.HF_ACCESS_TOKEN:
+                    model_kwargs['model_kwargs'] = {'token': Config.HF_ACCESS_TOKEN}
+                
                 self.embedding_model = HuggingFaceEmbeddings(
                     model_name=Config.EMBEDDING_MODEL,
-                    cache_folder=Config.CACHED_MODELS_DIR
+                    **model_kwargs
                 )
                 logger.info("Embedding model loaded successfully")
+                
             except Exception as e:
-                logger.error(f"Failed to load embedding model: {e}")
-                raise
+                error_msg = str(e).lower()
+                if any(keyword in error_msg for keyword in ['gated', 'restricted', 'private', 'authentication', 'unauthorized', '401', '403']):
+                    logger.error(f"Embedding model requires authentication: {e}")
+                    if not Config.HF_ACCESS_TOKEN:
+                        logger.info("Consider adding HF_ACCESS_TOKEN to .env file")
+                    raise ValueError(f"Embedding model requires authentication: {Config.EMBEDDING_MODEL}")
+                else:
+                    logger.error(f"Failed to load embedding model: {e}")
+                    raise
         
         return self.embedding_model
+    
+    def get_inaccessible_models(self) -> List[str]:
+        """
+        Get list of models from config that are not accessible due to authentication issues.
+        
+        Returns:
+            List[str]: List of model names that are not accessible
+        """
+        inaccessible_models = []
+        
+        for model_name, model_config in self.models_config.items():
+            # Only check local models
+            if model_config.get('type') != 'local':
+                continue
+                
+            model_path = model_config.get('model_path', '')
+            if model_path and not self._check_model_accessibility(model_path, model_name):
+                inaccessible_models.append(model_name)
+        
+        return inaccessible_models

@@ -20,7 +20,7 @@ class ExperimentRunner:
     
     Orchestrates the complete experiment pipeline:
     1. Prepares datasets and prompts with row pruning
-    2. Loads and queries models (local or API)
+    2. Loads and queries models (local or API) with authentication handling
     3. Saves results with comprehensive metadata
     """
     
@@ -93,12 +93,67 @@ class ExperimentRunner:
         
         return True
     
+    def check_model_accessibility(self, model_name: str) -> Tuple[bool, str]:
+        """
+        Check if a model is accessible before trying to load it.
+        
+        Args:
+            model_name: Name of the model to check
+            
+        Returns:
+            Tuple[bool, str]: (is_accessible, reason_if_not)
+        """
+        if model_name not in self.models_config:
+            return False, f"Model '{model_name}' not found in configuration"
+        
+        model_config = self.models_config[model_name]
+        
+        # API models are generally accessible if we have API keys
+        if model_config['type'] == 'api':
+            provider = model_config.get('provider', '')
+            if provider == 'openai' and not Config.OPENAI_API_KEY:
+                return False, "OpenAI API key not configured"
+            elif provider == 'google' and not Config.GENAI_API_KEY:
+                return False, "Google GenAI API key not configured"
+            elif provider == 'anthropic' and not Config.ANTHROPIC_API_KEY:
+                return False, "Anthropic API key not configured"
+            return True, ""
+        
+        # For local models, check accessibility
+        elif model_config['type'] == 'local':
+            model_path = model_config.get('model_path', '')
+            if not model_path:
+                return False, "No model_path specified for local model"
+            
+            # Use the model manager's accessibility check
+            try:
+                is_accessible = self.model_manager._check_model_accessibility(model_path, model_name)
+                if not is_accessible:
+                    if not Config.HF_ACCESS_TOKEN:
+                        return False, "Model may be gated/restricted - HF_ACCESS_TOKEN required"
+                    else:
+                        return False, "Model not accessible with current HF_ACCESS_TOKEN"
+                return True, ""
+            except Exception as e:
+                return False, f"Error checking accessibility: {e}"
+        
+        return False, f"Unknown model type: {model_config.get('type', 'unknown')}"
+    
     def prepare_dataset(self, dataset_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int, List[str]]:
         """Load and prepare dataset with row pruning"""
         logger.info(f"Preparing dataset: {dataset_name}")
         
         dataset_config = self.datasets_config[dataset_name]
-        dataset_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'], dataset_config['csv_file'])
+        
+        # Check for either csv_file or parquet_file
+        if 'csv_file' in dataset_config:
+            file_path = dataset_config['csv_file']
+        elif 'parquet_file' in dataset_config:
+            file_path = dataset_config['parquet_file']
+        else:
+            raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
+        
+        dataset_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'], file_path)
         
         # Download if not exists
         if not os.path.exists(dataset_path):
@@ -107,9 +162,15 @@ class ExperimentRunner:
                 raise ValueError(f"Failed to download dataset: {dataset_name}")
         
         try:
-            # Load original dataset
-            original_df = pd.read_csv(dataset_path)
-            logger.info(f"Loaded original dataset with {len(original_df)} rows")
+            # Load original dataset - detect file type and use appropriate loader
+            if 'csv_file' in dataset_config:
+                original_df = pd.read_csv(dataset_path)
+                logger.info(f"Loaded CSV dataset with {len(original_df)} rows")
+            elif 'parquet_file' in dataset_config:
+                original_df = pd.read_parquet(dataset_path)
+                logger.info(f"Loaded Parquet dataset with {len(original_df)} rows")
+            else:
+                raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
             
             # Apply row pruning
             filtered_df, pruned_count, prune_reasons = self.dataset_manager.filter_dataset_rows(
@@ -134,9 +195,75 @@ class ExperimentRunner:
             logger.error(f"Error preparing dataset {dataset_name}: {e}")
             raise
     
+    def load_model_with_error_handling(self, model_name: str) -> Tuple[bool, str]:
+        """
+        Load a model with comprehensive error handling for authentication issues.
+        
+        Args:
+            model_name: Name of the model to load
+            
+        Returns:
+            Tuple[bool, str]: (success, error_message_if_failed)
+        """
+        if model_name not in self.models_config:
+            return False, f"Unknown model: {model_name}"
+        
+        model_config = self.models_config[model_name]
+        
+        # Check accessibility first
+        is_accessible, reason = self.check_model_accessibility(model_name)
+        if not is_accessible:
+            logger.warning(f"Model {model_name} not accessible: {reason}")
+            return False, reason
+        
+        try:
+            if model_config['type'] == 'local':
+                if model_config.get('finetuned', False):
+                    model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
+                                            model_config['model_path'].split('/')[-1] + '_finetuned')
+                    self.model_manager.load_finetuned_model(model_path)
+                else:
+                    self.model_manager.load_open_source_model(model_name, model_config['model_path'])
+                
+                logger.info(f"Successfully loaded local model: {model_name}")
+                return True, ""
+                
+            elif model_config['type'] == 'api':
+                # API models don't need explicit loading, just verify client setup
+                provider = model_config.get('provider', '')
+                if provider == 'openai' and not self.model_manager.openai_client:
+                    return False, "OpenAI client not initialized"
+                elif provider == 'google' and not self.model_manager.genai_client:
+                    return False, "Google GenAI client not initialized"
+                elif provider == 'anthropic' and not self.model_manager.anthropic_client:
+                    return False, "Anthropic client not initialized"
+                
+                logger.info(f"API model {model_name} ready")
+                return True, ""
+            
+            else:
+                return False, f"Unknown model type: {model_config.get('type', 'unknown')}"
+                
+        except ValueError as e:
+            # Handle authentication and accessibility errors
+            error_msg = str(e)
+            if any(keyword in error_msg.lower() for keyword in ['authentication', 'not accessible', 'gated', 'restricted']):
+                logger.error(f"Authentication/access error for model {model_name}: {error_msg}")
+                if not Config.HF_ACCESS_TOKEN:
+                    return False, f"Model requires authentication - add HF_ACCESS_TOKEN to .env file"
+                else:
+                    return False, f"Model not accessible with current credentials: {error_msg}"
+            else:
+                logger.error(f"Model loading error for {model_name}: {error_msg}")
+                return False, f"Model loading failed: {error_msg}"
+                
+        except Exception as e:
+            logger.error(f"Unexpected error loading model {model_name}: {e}")
+            return False, f"Unexpected error: {e}"
+    
     def generate_responses(self, prompts: List[str], expected_outputs: List[str], 
                           model_name: str, temperature: float, question_values_list: List[List[str]]) -> List[Dict[str, Any]]:
-        """Generate responses using the loaded model"""
+        """Generate responses using the loaded model with enhanced error handling"""
         logger.info(f"Generating {len(prompts)} responses using {model_name}")
         
         model_config = self.models_config[model_name]
@@ -189,7 +316,12 @@ class ExperimentRunner:
                 processing_time = time.time() - start_time
                 error_msg = str(e)
                 
-                logger.error(f"Error generating response {i+1}/{len(prompts)}: {error_msg}")
+                # Check for authentication-related errors
+                if any(keyword in error_msg.lower() for keyword in ['authentication', 'unauthorized', 'forbidden', 'gated', 'restricted']):
+                    logger.error(f"Authentication error for response {i+1}/{len(prompts)}: {error_msg}")
+                    error_msg = f"Authentication/Access Error: {error_msg}"
+                else:
+                    logger.error(f"Error generating response {i+1}/{len(prompts)}: {error_msg}")
                 
                 responses.append({
                     'prompt': prompt,
@@ -206,7 +338,11 @@ class ExperimentRunner:
         if processing_times:
             avg_time = sum(processing_times) / len(processing_times)
             success_rate = sum(1 for r in responses if r['success']) / len(responses) * 100
+            failed_auth = sum(1 for r in responses if not r['success'] and 'Authentication' in r.get('error', ''))
+            
             logger.info(f"Processing complete - Avg: {avg_time:.2f}s, Success: {success_rate:.1f}%")
+            if failed_auth > 0:
+                logger.warning(f"Authentication failures: {failed_auth} responses")
         
         return responses
     
@@ -255,8 +391,23 @@ class ExperimentRunner:
             'prompt_info': self.prompts_config[experiment_config['prompt']],
             'responses': responses,
             'expected_outputs': [],
-            'processing_stats': {}
+            'processing_stats': {},
+            'system_info': {
+                'hf_token_configured': bool(Config.HF_ACCESS_TOKEN),
+                'gpu_available': False,
+                'model_accessibility_checked': True
+            }
         }
+        
+        # Add GPU info if available
+        try:
+            import torch
+            results['system_info']['gpu_available'] = torch.cuda.is_available()
+            if torch.cuda.is_available():
+                results['system_info']['gpu_count'] = torch.cuda.device_count()
+                results['system_info']['gpu_name'] = torch.cuda.get_device_properties(0).name
+        except:
+            pass
         
         # Add expected outputs
         for idx, row in df.iterrows():
@@ -266,13 +417,15 @@ class ExperimentRunner:
         # Calculate processing statistics
         processing_times = [r['processing_time'] for r in responses]
         if processing_times:
+            auth_failures = sum(1 for r in responses if not r['success'] and 'Authentication' in r.get('error', ''))
             results['processing_stats'] = {
                 'total_time': sum(processing_times),
                 'avg_time': sum(processing_times) / len(processing_times),
                 'min_time': min(processing_times),
                 'max_time': max(processing_times),
                 'success_count': sum(1 for r in responses if r['success']),
-                'error_count': sum(1 for r in responses if not r['success'])
+                'error_count': sum(1 for r in responses if not r['success']),
+                'authentication_failures': auth_failures
             }
         
         # Save to file
@@ -288,13 +441,25 @@ class ExperimentRunner:
             raise
     
     def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Run a complete baseline experiment with mode-based prompting"""
+        """Run a complete baseline experiment with mode-based prompting and authentication handling"""
         logger.info(f"Starting {config['mode']} baseline experiment: {config}")
         
         # Validate configuration
         if not self.validate_experiment_config(config):
             logger.error("Experiment configuration validation failed")
             return None
+        
+        # Check model accessibility before proceeding
+        model_accessible, access_reason = self.check_model_accessibility(config['model'])
+        if not model_accessible:
+            logger.error(f"Cannot run experiment: {access_reason}")
+            return {
+                'experiment_name': 'failed_accessibility_check',
+                'config': config,
+                'success': False,
+                'error': access_reason,
+                'accessibility_issue': True
+            }
         
         try:
             # Step 1: Prepare dataset with pruning
@@ -327,16 +492,17 @@ class ExperimentRunner:
                 config['few_shot_row'] = actual_few_shot_row
                 logger.info(f"Using few-shot row {actual_few_shot_row}")
             
-            # Step 3: Load model
-            model_config = self.models_config[config['model']]
-            
-            if model_config['type'] == 'local':
-                if model_config.get('finetuned', False):
-                    model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
-                                            model_config['model_path'].split('/')[-1] + '_finetuned')
-                    self.model_manager.load_finetuned_model(model_path)
-                else:
-                    self.model_manager.load_open_source_model(config['model'], model_config['model_path'])
+            # Step 3: Load model with enhanced error handling
+            model_loaded, load_error = self.load_model_with_error_handling(config['model'])
+            if not model_loaded:
+                logger.error(f"Failed to load model: {load_error}")
+                return {
+                    'experiment_name': 'failed_model_loading',
+                    'config': config,
+                    'success': False,
+                    'error': load_error,
+                    'model_loading_failed': True
+                }
             
             # Step 4: Prepare prompts
             prompts = []
@@ -382,7 +548,7 @@ class ExperimentRunner:
             
             logger.info(f"Prepared {len(prompts)} {config['mode']} prompts")
             
-            # Step 5: Generate responses
+            # Step 5: Generate responses with enhanced error handling
             responses = self.generate_responses(prompts, expected_outputs, config['model'], config['temperature'], question_values_list)
             
             # Step 6: Save results
@@ -403,13 +569,17 @@ class ExperimentRunner:
                 few_shot_row=actual_few_shot_row
             )
             
-            return {
+            # Check for authentication failures in responses
+            auth_failures = sum(1 for r in responses if not r['success'] and 'Authentication' in r.get('error', ''))
+            
+            result = {
                 'experiment_name': experiment_name,
                 'config': config,
                 'output_file': output_file,
                 'success': True,
                 'num_responses': len(responses),
                 'success_rate': sum(1 for r in responses if r['success']) / len(responses) if responses else 0,
+                'authentication_failures': auth_failures,
                 'pruning_summary': {
                     'rows_pruned': pruned_count,
                     'rows_kept': len(filtered_df),
@@ -417,8 +587,26 @@ class ExperimentRunner:
                 }
             }
             
+            if auth_failures > 0:
+                logger.warning(f"Experiment completed with {auth_failures} authentication failures")
+                result['partial_failure_reason'] = f"{auth_failures} authentication failures"
+            
+            return result
+            
         except Exception as e:
             logger.error(f"{config['mode']} baseline experiment failed: {e}")
             import traceback
             logger.error(traceback.format_exc())
+            
+            # Check if it's an authentication-related error
+            error_msg = str(e)
+            if any(keyword in error_msg.lower() for keyword in ['authentication', 'gated', 'restricted', 'unauthorized']):
+                return {
+                    'experiment_name': 'failed_authentication',
+                    'config': config,
+                    'success': False,
+                    'error': f"Authentication error: {error_msg}",
+                    'authentication_error': True
+                }
+            
             return None

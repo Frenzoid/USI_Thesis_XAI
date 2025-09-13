@@ -138,6 +138,9 @@ class Config:
     ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
     GENAI_API_KEY = os.getenv("GENAI_API_KEY", "")
     
+    # Hugging Face Access Token for restricted repositories
+    HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN", "")
+    
     # =============================================================================
     # EXPERIMENT PARAMETERS
     # =============================================================================

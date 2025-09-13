@@ -466,7 +466,7 @@ def group_combinations_for_efficiency(combinations: List[ExperimentCombination])
     return grouped
 
 def log_execution_plan(grouped_combinations: Dict[str, Dict[str, List[ExperimentCombination]]], models_config: dict):
-    """Log the optimized execution plan for user visibility"""
+    """Log the execution plan for user visibility"""
     total_experiments = sum(
         len(combos) 
         for model_groups in grouped_combinations.values() 
@@ -474,7 +474,7 @@ def log_execution_plan(grouped_combinations: Dict[str, Dict[str, List[Experiment
     )
     
     logger.info("=" * 60)
-    logger.info("OPTIMIZED EXECUTION PLAN")
+    logger.info("EXECUTION PLAN")
     logger.info("=" * 60)
     logger.info(f"Total experiments: {total_experiments}")
     logger.info(f"Models to load: {len(grouped_combinations)}")
@@ -580,11 +580,37 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
         logger.warning(f"GPU memory may be insufficient for local models ({gpu_status['total_memory']:.1f} GB available)")
         logger.warning("   Consider using smaller models or API-based alternatives for better reliability")
     
+    # Check for model accessibility
+    try:
+        from models import ModelManager
+        model_manager = ModelManager()
+        inaccessible_models = model_manager.get_inaccessible_models()
+        
+        # Filter for requested local models that are inaccessible
+        requested_inaccessible = [model for model in local_models_requested if model in inaccessible_models]
+        
+        if requested_inaccessible:
+            logger.warning(f"Some requested models may not be accessible: {requested_inaccessible}")
+            logger.info("These models may be gated/restricted and require HF_ACCESS_TOKEN")
+            
+            if not force:
+                accessible_models = [model for model in local_models_requested if model not in inaccessible_models]
+                if accessible_models:
+                    logger.info(f"Accessible models: {accessible_models}")
+                    response = input("Continue with accessible models only? (y/N): ")
+                    if response.lower() != 'y':
+                        return False
+                else:
+                    logger.error("No accessible local models found")
+                    return False
+    except Exception as e:
+        logger.warning(f"Could not check model accessibility: {e}")
+    
     return True
 
 def run_baseline_experiment_command(args):
-    """Run baseline experiments with optimized execution order"""
-    logger.info("Starting baseline experiment execution with optimized model loading...")
+    """Run baseline experiments with execution order"""
+    logger.info("Starting baseline experiment execution with model loading...")
     
     # Load configurations
     try:
@@ -648,9 +674,8 @@ def run_baseline_experiment_command(args):
     
     if total_experiments > 10 and not args.force:
         print(f"\nAbout to run {total_experiments} experiments. This may take a long time.")
-        print("Execution will be optimized by grouping experiments by model to minimize loading overhead.")
         
-        response = input("\nProceed with optimized execution? (y/N): ")
+        response = input("\nProceed with execution? (y/N): ")
         if response.lower() != 'y':
             print("Cancelled by user")
             return False
@@ -658,11 +683,12 @@ def run_baseline_experiment_command(args):
     # Initialize experiment runner
     runner = ExperimentRunner()
     
-    # Execute experiments in optimized order
+    # Execute experiments in order
     results = []
     success_count = 0
     failure_count = 0
     current_experiment = 0
+    skipped_models = []
     
     for model_name, model_datasets in grouped_combinations.items():
         model_config = models_config[model_name]
@@ -682,6 +708,18 @@ def run_baseline_experiment_command(args):
                     runner.model_manager.load_open_source_model(model_name, model_config['model_path'])
                 model_loaded = True
                 logger.info(f"Model {model_name} loaded successfully")
+            except ValueError as e:
+                # Handle authentication/accessibility errors
+                if "authentication" in str(e).lower() or "not accessible" in str(e).lower():
+                    logger.warning(f"Skipping model {model_name}: {e}")
+                    skipped_models.append(model_name)
+                    # Skip all experiments for this model
+                    failure_count += model_experiments
+                    continue
+                else:
+                    logger.error(f"Failed to load model {model_name}: {e}")
+                    failure_count += model_experiments
+                    continue
             except Exception as e:
                 logger.error(f"Failed to load model {model_name}: {e}")
                 # Skip all experiments for this model
@@ -744,10 +782,14 @@ def run_baseline_experiment_command(args):
     
     # Final summary
     logger.info("=" * 60)
-    logger.info("OPTIMIZED EXPERIMENT EXECUTION COMPLETE")
+    logger.info("EXPERIMENT EXECUTION COMPLETE")
     logger.info(f"Success: {success_count}")
     logger.info(f"Failed: {failure_count}")
     logger.info(f"Total: {total_experiments} experiments processed")
+    
+    if skipped_models:
+        logger.info(f"Skipped models due to accessibility issues: {', '.join(skipped_models)}")
+        logger.info("Consider adding HF_ACCESS_TOKEN to .env file for restricted models")
     
     if results:
         logger.info("Generated experiment files:")
@@ -1222,11 +1264,40 @@ def check_system_command(args):
     except Exception as e:
         print(f"   Error creating directories: {e}")
     
-    # Check API keys
+    # Check API keys including HF token
     print("\nAPI Keys:")
     print(f"   OpenAI: {'✅' if Config.OPENAI_API_KEY else '❌'}")
     print(f"   Google GenAI: {'✅' if Config.GENAI_API_KEY else '❌'}")
     print(f"   Anthropic: {'✅' if Config.ANTHROPIC_API_KEY else '❌'}")
+    
+    # Show detailed HF token status
+    from utils import validate_hf_token
+    hf_status = validate_hf_token()
+    if hf_status['token_valid']:
+        user_name = hf_status['user_info'].get('name', 'Unknown')
+        print(f"   Hugging Face: ✅ (user: {user_name})")
+    elif hf_status['token_available']:
+        print(f"   Hugging Face: ❌ (invalid token)")
+    else:
+        print(f"   Hugging Face: ❌ (no token)")
+    
+    # Check for model accessibility issues
+    print("\nModel Accessibility:")
+    try:
+        from models import ModelManager
+        model_manager = ModelManager()
+        inaccessible_models = model_manager.get_inaccessible_models()
+        
+        if inaccessible_models:
+            print(f"   ⚠️  Some models may not be accessible: {len(inaccessible_models)}")
+            print(f"   Potentially restricted: {', '.join(inaccessible_models[:3])}")
+            if len(inaccessible_models) > 3:
+                print(f"   ... and {len(inaccessible_models) - 3} more")
+            print("   Consider adding HF_ACCESS_TOKEN to .env file")
+        else:
+            print("   ✅ All configured models appear accessible")
+    except Exception as e:
+        print(f"   ⚠️  Could not check model accessibility: {e}")
     
     # Recommendations based on system status
     print("\nRecommendations:")
@@ -1242,6 +1313,11 @@ def check_system_command(args):
         print("   - Consider smaller models or API-based alternatives")
     else:
         print("   - System ready for both local and API-based models")
+    
+    if not hf_status['token_valid'] and Config.HF_ACCESS_TOKEN:
+        print("   - Check HF_ACCESS_TOKEN validity")
+    elif not hf_status['token_available']:
+        print("   - Add HF_ACCESS_TOKEN to .env file for gated/restricted models")
     
     return all(config_status.values())
 

@@ -17,11 +17,12 @@ class DatasetManager:
     
     This class handles:
     1. Loading dataset configurations from JSON
-    2. Downloading datasets from configured sources
+    2. Downloading datasets from configured sources (CSV and Parquet)
     3. Loading and caching datasets in memory
     4. Validating dataset structure and fields
     5. Preparing data samples for experiments with row pruning
     6. Generic field mapping without hardcoded dataset structures
+    7. Support for both ZIP archives and direct file downloads
     """
     
     def __init__(self):
@@ -32,31 +33,65 @@ class DatasetManager:
         logger.info(f"DatasetManager initialized with {len(self.datasets_config)} dataset configurations")
     
     # =============================================================================
-    # PATH AND FILE MANAGEMENT
+    # PATH AND FILE MANAGEMENT WITH PARQUET SUPPORT
     # =============================================================================
     
     def get_dataset_path(self, dataset_name: str) -> str:
         """
-        Get the full filesystem path to a dataset CSV file.
+        Get the full filesystem path to a dataset file (CSV or Parquet).
         
         Args:
             dataset_name: Name of dataset from configuration
             
         Returns:
-            str: Full path to the CSV file
+            str: Full path to the dataset file
             
         Raises:
-            ValueError: If dataset name is unknown
+            ValueError: If dataset name is unknown or file configuration is invalid
         """
         if dataset_name not in self.datasets_config:
             raise ValueError(f"Unknown dataset: {dataset_name}")
         
         dataset_config = self.datasets_config[dataset_name]
-        return os.path.join(Config.DATA_DIR, dataset_config['download_path'], dataset_config['csv_file'])
+        
+        # Check for either csv_file or parquet_file
+        if 'csv_file' in dataset_config:
+            file_path = dataset_config['csv_file']
+        elif 'parquet_file' in dataset_config:
+            file_path = dataset_config['parquet_file']
+        else:
+            raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
+        
+        return os.path.join(Config.DATA_DIR, dataset_config['download_path'], file_path)
+    
+    def get_dataset_file_type(self, dataset_name: str) -> str:
+        """
+        Determine the file type of a dataset (csv or parquet).
+        
+        Args:
+            dataset_name: Name of dataset from configuration
+            
+        Returns:
+            str: File type ('csv' or 'parquet')
+            
+        Raises:
+            ValueError: If dataset name is unknown or file type cannot be determined
+        """
+        if dataset_name not in self.datasets_config:
+            raise ValueError(f"Unknown dataset: {dataset_name}")
+        
+        dataset_config = self.datasets_config[dataset_name]
+        
+        if 'csv_file' in dataset_config:
+            return 'csv'
+        elif 'parquet_file' in dataset_config:
+            return 'parquet'
+        else:
+            raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
     
     def is_dataset_downloaded(self, dataset_name: str) -> bool:
         """
-        Check if a dataset has been downloaded and the CSV file exists.
+        Check if a dataset has been downloaded and the file exists.
         
         Args:
             dataset_name: Name of dataset to check
@@ -64,11 +99,14 @@ class DatasetManager:
         Returns:
             bool: True if dataset file exists, False otherwise
         """
-        dataset_path = self.get_dataset_path(dataset_name)
-        return os.path.exists(dataset_path)
+        try:
+            dataset_path = self.get_dataset_path(dataset_name)
+            return os.path.exists(dataset_path)
+        except ValueError:
+            return False
     
     # =============================================================================
-    # ROW PRUNING LOGIC
+    # ROW PRUNING LOGIC (unchanged)
     # =============================================================================
     
     def _compile_pattern(self, pattern: str) -> Tuple[bool, Any]:
@@ -293,12 +331,73 @@ class DatasetManager:
         return filtered_df, skipped_count, skip_reasons
     
     # =============================================================================
-    # DATASET DOWNLOADING
+    # DATASET DOWNLOADING WITH ZIP AND DIRECT FILE SUPPORT
     # =============================================================================
+    
+    def _is_zip_file(self, url: str, filename: str = None) -> bool:
+        """
+        Determine if a file is a ZIP archive based on URL or filename.
+        
+        Args:
+            url: Download URL
+            filename: Optional filename to check
+            
+        Returns:
+            bool: True if file appears to be a ZIP archive
+        """
+        # Check URL path
+        parsed_url = urlparse(url)
+        url_path = parsed_url.path.lower()
+        
+        if url_path.endswith('.zip'):
+            return True
+        
+        # Check filename if provided
+        if filename and filename.lower().endswith('.zip'):
+            return True
+        
+        # Check for common ZIP download patterns
+        if 'archive' in url_path and ('zip' in url_path or 'main.zip' in url_path):
+            return True
+        
+        return False
+    
+    def _get_target_filename(self, url: str, dataset_name: str, dataset_config: Dict[str, Any]) -> str:
+        """
+        Determine the target filename for download.
+        
+        Args:
+            url: Download URL
+            dataset_name: Name of dataset
+            dataset_config: Dataset configuration
+            
+        Returns:
+            str: Target filename for download
+        """
+        # For ZIP files, use dataset name
+        if self._is_zip_file(url):
+            return f"{dataset_name}.zip"
+        
+        # For direct files, try to get filename from config or URL
+        if 'parquet_file' in dataset_config:
+            return dataset_config['parquet_file']
+        elif 'csv_file' in dataset_config:
+            # If CSV is specified but we're doing direct download, use the filename part
+            return os.path.basename(dataset_config['csv_file'])
+        
+        # Fallback: extract from URL
+        parsed_url = urlparse(url)
+        url_filename = os.path.basename(parsed_url.path)
+        
+        # Handle query parameters (like ?download=true)
+        if '?' in url_filename:
+            url_filename = url_filename.split('?')[0]
+        
+        return url_filename if url_filename else f"{dataset_name}_data"
     
     def download_dataset(self, dataset_name: str) -> bool:
         """
-        Download dataset from configured URL if not already present.
+        Download dataset from configured URL with support for both ZIP and direct downloads.
         
         Handles both direct file downloads and ZIP archives that need extraction.
         Uses wget and unzip commands with Python fallbacks.
@@ -330,33 +429,33 @@ class DatasetManager:
             # Check if required tools are available
             self._check_system_dependencies()
             
-            # Determine file type from URL
-            parsed_url = urlparse(download_url)
-            url_path = parsed_url.path
+            # Determine target filename and whether it's a ZIP
+            target_filename = self._get_target_filename(download_url, dataset_name, dataset_config)
+            is_zip = self._is_zip_file(download_url, target_filename)
             
-            if url_path.endswith('.zip'):
+            if is_zip:
                 # Download and extract ZIP file
-                zip_filename = os.path.join(download_path, f"{dataset_name}.zip")
+                zip_filepath = os.path.join(download_path, target_filename)
+                logger.info(f"Downloading ZIP archive: {target_filename}")
                 
                 # Download with wget or urllib fallback
-                self._download_file(download_url, zip_filename)
+                self._download_file(download_url, zip_filepath)
                 
                 # Extract with unzip or Python zipfile as fallback
-                self._extract_zip(zip_filename, download_path)
+                self._extract_zip(zip_filepath, download_path)
                 
                 # Clean up zip file
-                os.remove(zip_filename)
-                
+                os.remove(zip_filepath)
                 logger.info(f"Successfully downloaded and extracted: {dataset_name}")
                 
             else:
                 # Direct file download
-                output_filename = os.path.join(download_path, dataset_config['csv_file'])
-                output_dir = os.path.dirname(output_filename)
+                output_filepath = os.path.join(download_path, target_filename)
+                output_dir = os.path.dirname(output_filepath)
                 os.makedirs(output_dir, exist_ok=True)
                 
-                self._download_file(download_url, output_filename)
-                
+                logger.info(f"Downloading file directly: {target_filename}")
+                self._download_file(download_url, output_filepath)
                 logger.info(f"Successfully downloaded: {dataset_name}")
             
             # Verify download succeeded
@@ -422,12 +521,13 @@ class DatasetManager:
             logger.debug(f"Extracted using zipfile: {zip_path}")
     
     # =============================================================================
-    # DATASET LOADING AND CACHING
+    # DATASET LOADING WITH CSV AND PARQUET SUPPORT
     # =============================================================================
     
     def load_dataset(self, dataset_name: str, ensure_download: bool = True) -> Optional[pd.DataFrame]:
         """
         Load a dataset by name, with automatic downloading if needed.
+        Supports both CSV and Parquet file formats.
         
         Datasets are cached in memory after loading for efficiency.
         
@@ -450,18 +550,33 @@ class DatasetManager:
                 logger.error(f"Could not download dataset: {dataset_name}")
                 return None
         
-        # Load dataset from file
+        # Get dataset path and file type
         dataset_path = self.get_dataset_path(dataset_name)
+        file_type = self.get_dataset_file_type(dataset_name)
         
         try:
-            df = pd.read_csv(dataset_path)
-            logger.info(f"Loaded {dataset_name} dataset with {len(df)} rows and {len(df.columns)} columns")
+            # Load dataset based on file type
+            if file_type == 'csv':
+                df = pd.read_csv(dataset_path)
+                logger.info(f"Loaded CSV dataset {dataset_name} with {len(df)} rows and {len(df.columns)} columns")
+            elif file_type == 'parquet':
+                df = pd.read_parquet(dataset_path)
+                logger.info(f"Loaded Parquet dataset {dataset_name} with {len(df)} rows and {len(df.columns)} columns")
+            else:
+                raise ValueError(f"Unsupported file type: {file_type}")
             
             # Cache in memory for reuse
             self.datasets[dataset_name] = df
             
             return df
             
+        except ImportError as e:
+            if 'parquet' in str(e).lower():
+                logger.error(f"Parquet support not available. Install pyarrow: pip install pyarrow")
+                logger.error(f"Error: {e}")
+            else:
+                logger.error(f"Import error loading dataset {dataset_name}: {e}")
+            return None
         except Exception as e:
             logger.error(f"Error loading dataset {dataset_name} from {dataset_path}: {e}")
             return None
@@ -486,9 +601,14 @@ class DatasetManager:
             return {"error": f"Unknown dataset: {dataset_name}"}
         
         config = self.datasets_config[dataset_name]
-        dataset_path = self.get_dataset_path(dataset_name)
         is_downloaded = self.is_dataset_downloaded(dataset_name)
         is_loaded = dataset_name in self.datasets
+        
+        try:
+            dataset_path = self.get_dataset_path(dataset_name)
+            file_type = self.get_dataset_file_type(dataset_name)
+        except ValueError as e:
+            return {"error": str(e)}
         
         # Basic information
         info = {
@@ -496,7 +616,8 @@ class DatasetManager:
             'description': config['description'],
             'download_link': config['download_link'],
             'download_path': config['download_path'],
-            'csv_file': config['csv_file'],
+            'file_type': file_type,
+            'file_path': config.get('csv_file') or config.get('parquet_file'),
             'full_path': dataset_path,
             'question_fields': config['question_fields'],
             'answer_field': config['answer_field'],
@@ -530,11 +651,20 @@ class DatasetManager:
         elif is_downloaded:
             # Try to get basic info without fully loading (for large datasets)
             try:
-                df_sample = pd.read_csv(dataset_path, nrows=5)
-                info.update({
-                    'columns': list(df_sample.columns),
-                    'sample_row': df_sample.iloc[0].to_dict() if len(df_sample) > 0 else None
-                })
+                if file_type == 'csv':
+                    df_sample = pd.read_csv(dataset_path, nrows=5)
+                elif file_type == 'parquet':
+                    # For parquet, read with limit - note: nrows doesn't work the same way
+                    df_full = pd.read_parquet(dataset_path)
+                    df_sample = df_full.head(5)
+                else:
+                    df_sample = None
+                
+                if df_sample is not None:
+                    info.update({
+                        'columns': list(df_sample.columns),
+                        'sample_row': df_sample.iloc[0].to_dict() if len(df_sample) > 0 else None
+                    })
             except Exception as e:
                 logger.warning(f"Could not read sample from {dataset_name}: {e}")
         

@@ -78,5 +78,19 @@
       "compatible_dataset": "RHAI_2",
       "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}\n\nSelect the single best choice and return only that choice.",
       "description": "LLM must select exactly one choice from the provided options"
+  },
+  "ecqa1_choice_selection": {
+      "type": "evaluation",
+      "mode": "zero-shot",
+      "compatible_dataset": "ecqa_1",
+      "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice and return only that choice.",
+      "description": "LLM must select exactly one choice from the provided options"
+  },
+  "ecqa2_explanation": {
+      "type": "evaluation",
+      "mode": "zero-shot",
+      "compatible_dataset": "ecqa_2",
+      "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}, {}, {}, {}, {}\n\nAnswer:\n{}\n\nProvide a short explanation on why this answer is the correct one.",
+      "description": "LLM must justify the given answer with a short explanation"
   }
 }
