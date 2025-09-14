@@ -50,7 +50,7 @@ class PlottingRunner:
         extracted = {
             'mode': metadata.get('mode', 'zero-shot'),
             'model': metadata.get('model', 'unknown'),
-            'dataset': metadata.get('dataset', 'unknown'),
+            'setup': metadata.get('dataset', 'unknown'),  # Note: dataset in experiment_config refers to setup
             'prompt': metadata.get('prompt', 'unknown'),
             'size': metadata.get('size', 0),
             'temperature': metadata.get('temperature', 0.1),
@@ -131,7 +131,7 @@ class PlottingRunner:
             'prompt_key': metadata['prompt'],
             'mode': metadata['mode'],
             'dataset_type': 'general',
-            'dataset_name': metadata['dataset'],
+            'setup_name': metadata['setup'],
             'sample_size': metadata['size'],
             'temperature': metadata['temperature'],
             'few_shot_row': metadata['few_shot_row'],
@@ -400,6 +400,7 @@ class PlottingRunner:
                         'experiment_name': experiment_name,
                         'mode': metadata['mode'],
                         'model': metadata['model'],
+                        'setup': metadata['setup'],
                         'plot_file': plot_file
                     })
                 

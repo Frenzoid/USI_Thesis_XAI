@@ -199,7 +199,7 @@ def validate_gpu_requirements_for_command(command: str, gpu_status: dict = None)
     
     # Commands that require local model capability (GPU or sufficient CPU)
     gpu_dependent_commands = {
-        'run-baseline-exp': 'Running experiments with local models requires GPU/sufficient resources'
+        'run-experiment': 'Running experiments with local models requires GPU/sufficient resources'
     }
     
     # Commands that are always allowed regardless of GPU
@@ -212,7 +212,7 @@ def validate_gpu_requirements_for_command(command: str, gpu_status: dict = None)
         return True
     
     if command in gpu_dependent_commands:
-        # For run-baseline-exp, we need to be more specific about what's allowed
+        # For run-experiment, we need to be more specific about what's allowed
         return True  # We'll check this more specifically when model is being loaded
     
     return True  # Default: allow command
@@ -431,12 +431,12 @@ def validate_configuration_files():
         logger.error(f"Prompts config invalid: {e}")
     
     try:
-        datasets_config = Config.load_datasets_config()
-        validation_results['configs_valid']['datasets'] = True
-        logger.info(f"Datasets config valid: {len(datasets_config)} datasets loaded")
+        setups_config = Config.load_setups_config()
+        validation_results['configs_valid']['setups'] = True
+        logger.info(f"Setups config valid: {len(setups_config)} setups loaded")
     except Exception as e:
-        validation_results['configs_valid']['datasets'] = False
-        logger.error(f"Datasets config invalid: {e}")
+        validation_results['configs_valid']['setups'] = False
+        logger.error(f"Setups config invalid: {e}")
     
     try:
         models_config = Config.load_models_config()
@@ -562,8 +562,8 @@ def create_directory_structure():
             for config_name in missing_configs:
                 if config_name == 'prompts':
                     logger.info(f"  - {Config.PROMPTS_JSON}")
-                elif config_name == 'datasets':
-                    logger.info(f"  - {Config.DATASETS_JSON}")
+                elif config_name == 'setups':
+                    logger.info(f"  - {Config.SETUPS_JSON}")
                 elif config_name == 'models':
                     logger.info(f"  - {Config.MODELS_JSON}")
         

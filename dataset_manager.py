@@ -16,7 +16,7 @@ class DatasetManager:
     Centralized dataset management with JSON configuration support and generic field handling.
     
     This class handles:
-    1. Loading dataset configurations from JSON
+    1. Loading setup configurations from JSON
     2. Downloading datasets from configured sources (CSV and Parquet)
     3. Loading and caching datasets in memory
     4. Validating dataset structure and fields
@@ -28,31 +28,35 @@ class DatasetManager:
     def __init__(self):
         """Initialize dataset manager with configuration from JSON"""
         self.datasets = {}  # Cache for loaded datasets
-        self.datasets_config = Config.load_datasets_config()
+        self.setups_config = Config.load_setups_config()
         
-        logger.info(f"DatasetManager initialized with {len(self.datasets_config)} dataset configurations")
+        logger.info(f"DatasetManager initialized with {len(self.setups_config)} setup configurations")
     
     # =============================================================================
     # PATH AND FILE MANAGEMENT WITH PARQUET SUPPORT
     # =============================================================================
     
-    def get_dataset_path(self, dataset_name: str) -> str:
+    def get_dataset_path(self, setup_name: str) -> str:
         """
         Get the full filesystem path to a dataset file (CSV or Parquet).
         
         Args:
-            dataset_name: Name of dataset from configuration
+            setup_name: Name of setup from configuration
             
         Returns:
             str: Full path to the dataset file
             
         Raises:
-            ValueError: If dataset name is unknown or file configuration is invalid
+            ValueError: If setup name is unknown or file configuration is invalid
         """
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Unknown setup: {setup_name}")
         
-        dataset_config = self.datasets_config[dataset_name]
+        setup_config = self.setups_config[setup_name]
+        dataset_config = setup_config.get('dataset', {})
+        
+        if not dataset_config:
+            raise ValueError(f"Setup '{setup_name}' missing 'dataset' configuration")
         
         # Check for either csv_file or parquet_file
         if 'csv_file' in dataset_config:
@@ -60,47 +64,51 @@ class DatasetManager:
         elif 'parquet_file' in dataset_config:
             file_path = dataset_config['parquet_file']
         else:
-            raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
+            raise ValueError(f"Setup '{setup_name}' dataset config must specify either 'csv_file' or 'parquet_file'")
         
         return os.path.join(Config.DATA_DIR, dataset_config['download_path'], file_path)
     
-    def get_dataset_file_type(self, dataset_name: str) -> str:
+    def get_dataset_file_type(self, setup_name: str) -> str:
         """
         Determine the file type of a dataset (csv or parquet).
         
         Args:
-            dataset_name: Name of dataset from configuration
+            setup_name: Name of setup from configuration
             
         Returns:
             str: File type ('csv' or 'parquet')
             
         Raises:
-            ValueError: If dataset name is unknown or file type cannot be determined
+            ValueError: If setup name is unknown or file type cannot be determined
         """
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Unknown setup: {setup_name}")
         
-        dataset_config = self.datasets_config[dataset_name]
+        setup_config = self.setups_config[setup_name]
+        dataset_config = setup_config.get('dataset', {})
+        
+        if not dataset_config:
+            raise ValueError(f"Setup '{setup_name}' missing 'dataset' configuration")
         
         if 'csv_file' in dataset_config:
             return 'csv'
         elif 'parquet_file' in dataset_config:
             return 'parquet'
         else:
-            raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
+            raise ValueError(f"Setup '{setup_name}' dataset config must specify either 'csv_file' or 'parquet_file'")
     
-    def is_dataset_downloaded(self, dataset_name: str) -> bool:
+    def is_dataset_downloaded(self, setup_name: str) -> bool:
         """
         Check if a dataset has been downloaded and the file exists.
         
         Args:
-            dataset_name: Name of dataset to check
+            setup_name: Name of setup to check
             
         Returns:
             bool: True if dataset file exists, False otherwise
         """
         try:
-            dataset_path = self.get_dataset_path(dataset_name)
+            dataset_path = self.get_dataset_path(setup_name)
             return os.path.exists(dataset_path)
         except ValueError:
             return False
@@ -158,19 +166,19 @@ class DatasetManager:
             logger.warning(f"Error matching pattern {pattern} against value '{str_value}': {e}")
             return False
     
-    def _validate_prune_columns(self, dataset_name: str, dataset_columns: List[str]) -> None:
+    def _validate_prune_columns(self, setup_name: str, dataset_columns: List[str]) -> None:
         """
         Validate that prune_row columns exist in the actual dataset.
         
         Args:
-            dataset_name: Name of dataset
+            setup_name: Name of setup
             dataset_columns: List of actual column names in the dataset
             
         Raises:
             ValueError: If unknown columns are specified in prune_row config
         """
-        dataset_config = self.datasets_config[dataset_name]
-        prune_config = dataset_config.get('prune_row', {})
+        setup_config = self.setups_config[setup_name]
+        prune_config = setup_config.get('prune_row', {})
         
         if not prune_config:
             return
@@ -182,51 +190,51 @@ class DatasetManager:
         unknown_columns = [col for col in specified_columns if col not in dataset_columns]
         
         if unknown_columns:
-            logger.warning(f"Dataset '{dataset_name}' prune_row config references unknown columns: {unknown_columns}")
+            logger.warning(f"Setup '{setup_name}' prune_row config references unknown columns: {unknown_columns}")
             logger.info(f"Available columns in dataset: {dataset_columns}")
             logger.info("Unknown columns will be ignored during pruning")
             
             # Optionally make this a hard error instead of warning:
-            # raise ValueError(f"Dataset '{dataset_name}' prune_row config contains unknown columns: {unknown_columns}")
+            # raise ValueError(f"Setup '{setup_name}' prune_row config contains unknown columns: {unknown_columns}")
     
-    def has_pruning_config(self, dataset_name: str) -> bool:
+    def has_pruning_config(self, setup_name: str) -> bool:
         """
-        Check if a dataset has pruning configuration.
+        Check if a setup has pruning configuration.
         
         Args:
-            dataset_name: Name of dataset to check
+            setup_name: Name of setup to check
             
         Returns:
-            bool: True if dataset has prune_row configuration
+            bool: True if setup has prune_row configuration
         """
-        if dataset_name not in self.datasets_config:
+        if setup_name not in self.setups_config:
             return False
         
-        dataset_config = self.datasets_config[dataset_name]
-        prune_config = dataset_config.get('prune_row', {})
+        setup_config = self.setups_config[setup_name]
+        prune_config = setup_config.get('prune_row', {})
         
         # Check if prune_row exists and is not empty
         return bool(prune_config)
     
-    def should_prune_row(self, row: pd.Series, dataset_name: str) -> Tuple[bool, str]:
+    def should_prune_row(self, row: pd.Series, setup_name: str) -> Tuple[bool, str]:
         """
-        Check if a row should be pruned based on dataset pruning configuration.
+        Check if a row should be pruned based on setup pruning configuration.
         
         Args:
             row: Dataset row to check
-            dataset_name: Name of dataset (for pruning config)
+            setup_name: Name of setup (for pruning config)
             
         Returns:
             Tuple[bool, str]: (should_prune, reason)
             
         Raises:
-            ValueError: If dataset unknown or regex pattern invalid
+            ValueError: If setup unknown or regex pattern invalid
         """
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Unknown setup: {setup_name}")
         
-        dataset_config = self.datasets_config[dataset_name]
-        prune_config = dataset_config.get('prune_row', {})
+        setup_config = self.setups_config[setup_name]
+        prune_config = setup_config.get('prune_row', {})
         
         if not prune_config:
             return False, ""
@@ -237,7 +245,7 @@ class DatasetManager:
             for column, patterns in prune_config.items():
                 compiled_patterns[column] = [self._compile_pattern(p) for p in patterns]
         except ValueError as e:
-            raise ValueError(f"Dataset '{dataset_name}' pruning config error: {e}")
+            raise ValueError(f"Setup '{setup_name}' pruning config error: {e}")
         
         # Check * rules first (priority)
         if "*" in compiled_patterns:
@@ -273,38 +281,38 @@ class DatasetManager:
         
         return False, ""
     
-    def filter_dataset_rows(self, df: pd.DataFrame, dataset_name: str) -> Tuple[pd.DataFrame, int, List[str]]:
+    def filter_dataset_rows(self, df: pd.DataFrame, setup_name: str) -> Tuple[pd.DataFrame, int, List[str]]:
         """
         Filter dataset rows based on pruning configuration.
         
         Args:
             df: Dataset DataFrame
-            dataset_name: Name of dataset (for pruning config)
+            setup_name: Name of setup (for pruning config)
             
         Returns:
             Tuple[pd.DataFrame, int, List[str]]: (filtered_df, skipped_count, skip_reasons)
             
         Raises:
-            ValueError: If dataset unknown or regex pattern invalid
+            ValueError: If setup unknown or regex pattern invalid
         """
-        logger.info(f"Filtering dataset '{dataset_name}' with {len(df)} total rows")
+        logger.info(f"Filtering dataset for setup '{setup_name}' with {len(df)} total rows")
         
-        # Check if pruning is configured for this dataset
-        if not self.has_pruning_config(dataset_name):
-            logger.info(f"No pruning configuration found for dataset '{dataset_name}', keeping all rows")
+        # Check if pruning is configured for this setup
+        if not self.has_pruning_config(setup_name):
+            logger.info(f"No pruning configuration found for setup '{setup_name}', keeping all rows")
             return df.copy(), 0, []
         
-        logger.info(f"Applying pruning rules for dataset '{dataset_name}'")
+        logger.info(f"Applying pruning rules for setup '{setup_name}'")
         
         # Validate that specified columns exist in the dataset
-        self._validate_prune_columns(dataset_name, list(df.columns))
+        self._validate_prune_columns(setup_name, list(df.columns))
         
         filtered_rows = []
         skip_reasons = []
         skipped_count = 0
         
         for idx, row in df.iterrows():
-            should_skip, reason = self.should_prune_row(row, dataset_name)
+            should_skip, reason = self.should_prune_row(row, setup_name)
             
             if should_skip:
                 skipped_count += 1
@@ -362,21 +370,21 @@ class DatasetManager:
         
         return False
     
-    def _get_target_filename(self, url: str, dataset_name: str, dataset_config: Dict[str, Any]) -> str:
+    def _get_target_filename(self, url: str, setup_name: str, dataset_config: Dict[str, Any]) -> str:
         """
         Determine the target filename for download.
         
         Args:
             url: Download URL
-            dataset_name: Name of dataset
+            setup_name: Name of setup
             dataset_config: Dataset configuration
             
         Returns:
             str: Target filename for download
         """
-        # For ZIP files, use dataset name
+        # For ZIP files, use setup name
         if self._is_zip_file(url):
-            return f"{dataset_name}.zip"
+            return f"{setup_name}.zip"
         
         # For direct files, try to get filename from config or URL
         if 'parquet_file' in dataset_config:
@@ -393,9 +401,9 @@ class DatasetManager:
         if '?' in url_filename:
             url_filename = url_filename.split('?')[0]
         
-        return url_filename if url_filename else f"{dataset_name}_data"
+        return url_filename if url_filename else f"{setup_name}_data"
     
-    def download_dataset(self, dataset_name: str) -> bool:
+    def download_dataset(self, setup_name: str) -> bool:
         """
         Download dataset from configured URL with support for both ZIP and direct downloads.
         
@@ -403,24 +411,34 @@ class DatasetManager:
         Uses wget and unzip commands with Python fallbacks.
         
         Args:
-            dataset_name: Name of dataset to download
+            setup_name: Name of setup to download
             
         Returns:
             bool: True if download successful, False otherwise
         """
-        if dataset_name not in self.datasets_config:
-            logger.error(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            logger.error(f"Unknown setup: {setup_name}")
             return False
         
-        if self.is_dataset_downloaded(dataset_name):
-            logger.info(f"Dataset {dataset_name} already downloaded")
+        if self.is_dataset_downloaded(setup_name):
+            logger.info(f"Dataset for setup {setup_name} already downloaded")
             return True
         
-        dataset_config = self.datasets_config[dataset_name]
-        download_url = dataset_config['download_link']
+        setup_config = self.setups_config[setup_name]
+        dataset_config = setup_config.get('dataset', {})
+        
+        if not dataset_config:
+            logger.error(f"Setup '{setup_name}' missing 'dataset' configuration")
+            return False
+        
+        download_url = dataset_config.get('download_link')
+        if not download_url:
+            logger.error(f"Setup '{setup_name}' missing download_link in dataset config")
+            return False
+        
         download_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'])
         
-        logger.info(f"Downloading dataset {dataset_name} from {download_url}")
+        logger.info(f"Downloading dataset for setup {setup_name} from {download_url}")
         
         # Create download directory
         os.makedirs(download_path, exist_ok=True)
@@ -430,7 +448,7 @@ class DatasetManager:
             self._check_system_dependencies()
             
             # Determine target filename and whether it's a ZIP
-            target_filename = self._get_target_filename(download_url, dataset_name, dataset_config)
+            target_filename = self._get_target_filename(download_url, setup_name, dataset_config)
             is_zip = self._is_zip_file(download_url, target_filename)
             
             if is_zip:
@@ -446,7 +464,7 @@ class DatasetManager:
                 
                 # Clean up zip file
                 os.remove(zip_filepath)
-                logger.info(f"Successfully downloaded and extracted: {dataset_name}")
+                logger.info(f"Successfully downloaded and extracted dataset for setup: {setup_name}")
                 
             else:
                 # Direct file download
@@ -456,23 +474,23 @@ class DatasetManager:
                 
                 logger.info(f"Downloading file directly: {target_filename}")
                 self._download_file(download_url, output_filepath)
-                logger.info(f"Successfully downloaded: {dataset_name}")
+                logger.info(f"Successfully downloaded dataset for setup: {setup_name}")
             
             # Verify download succeeded
-            if self.is_dataset_downloaded(dataset_name):
+            if self.is_dataset_downloaded(setup_name):
                 return True
             else:
-                logger.error(f"Download completed but dataset file not found: {dataset_name}")
+                logger.error(f"Download completed but dataset file not found for setup: {setup_name}")
                 return False
                 
         except subprocess.TimeoutExpired:
-            logger.error(f"Download timeout for dataset: {dataset_name}")
+            logger.error(f"Download timeout for setup: {setup_name}")
             return False
         except subprocess.CalledProcessError as e:
-            logger.error(f"Download failed for dataset {dataset_name}: {e}")
+            logger.error(f"Download failed for setup {setup_name}: {e}")
             return False
         except Exception as e:
-            logger.error(f"Unexpected error downloading dataset {dataset_name}: {e}")
+            logger.error(f"Unexpected error downloading dataset for setup {setup_name}: {e}")
             return False
     
     def _check_system_dependencies(self):
@@ -524,49 +542,49 @@ class DatasetManager:
     # DATASET LOADING WITH CSV AND PARQUET SUPPORT
     # =============================================================================
     
-    def load_dataset(self, dataset_name: str, ensure_download: bool = True) -> Optional[pd.DataFrame]:
+    def load_dataset(self, setup_name: str, ensure_download: bool = True) -> Optional[pd.DataFrame]:
         """
-        Load a dataset by name, with automatic downloading if needed.
+        Load a dataset by setup name, with automatic downloading if needed.
         Supports both CSV and Parquet file formats.
         
         Datasets are cached in memory after loading for efficiency.
         
         Args:
-            dataset_name: Name of dataset to load
+            setup_name: Name of setup to load
             ensure_download: Whether to download dataset if not found locally
             
         Returns:
             pandas.DataFrame: Loaded dataset, or None if failed
         """
-        logger.info(f"Loading dataset: {dataset_name}")
+        logger.info(f"Loading dataset for setup: {setup_name}")
         
-        if dataset_name not in self.datasets_config:
-            logger.error(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            logger.error(f"Unknown setup: {setup_name}")
             return None
         
         # Download if needed and requested
-        if ensure_download and not self.is_dataset_downloaded(dataset_name):
-            if not self.download_dataset(dataset_name):
-                logger.error(f"Could not download dataset: {dataset_name}")
+        if ensure_download and not self.is_dataset_downloaded(setup_name):
+            if not self.download_dataset(setup_name):
+                logger.error(f"Could not download dataset for setup: {setup_name}")
                 return None
         
         # Get dataset path and file type
-        dataset_path = self.get_dataset_path(dataset_name)
-        file_type = self.get_dataset_file_type(dataset_name)
+        dataset_path = self.get_dataset_path(setup_name)
+        file_type = self.get_dataset_file_type(setup_name)
         
         try:
             # Load dataset based on file type
             if file_type == 'csv':
                 df = pd.read_csv(dataset_path)
-                logger.info(f"Loaded CSV dataset {dataset_name} with {len(df)} rows and {len(df.columns)} columns")
+                logger.info(f"Loaded CSV dataset for setup {setup_name} with {len(df)} rows and {len(df.columns)} columns")
             elif file_type == 'parquet':
                 df = pd.read_parquet(dataset_path)
-                logger.info(f"Loaded Parquet dataset {dataset_name} with {len(df)} rows and {len(df.columns)} columns")
+                logger.info(f"Loaded Parquet dataset for setup {setup_name} with {len(df)} rows and {len(df.columns)} columns")
             else:
                 raise ValueError(f"Unsupported file type: {file_type}")
             
             # Cache in memory for reuse
-            self.datasets[dataset_name] = df
+            self.datasets[setup_name] = df
             
             return df
             
@@ -575,52 +593,55 @@ class DatasetManager:
                 logger.error(f"Parquet support not available. Install pyarrow: pip install pyarrow")
                 logger.error(f"Error: {e}")
             else:
-                logger.error(f"Import error loading dataset {dataset_name}: {e}")
+                logger.error(f"Import error loading dataset for setup {setup_name}: {e}")
             return None
         except Exception as e:
-            logger.error(f"Error loading dataset {dataset_name} from {dataset_path}: {e}")
+            logger.error(f"Error loading dataset for setup {setup_name} from {dataset_path}: {e}")
             return None
     
     # =============================================================================
     # DATASET INFORMATION AND ANALYSIS
     # =============================================================================
     
-    def get_dataset_info(self, dataset_name: str) -> Dict:
+    def get_dataset_info(self, setup_name: str) -> Dict:
         """
         Get comprehensive information about a dataset.
         
         Includes configuration, download status, statistics, and field analysis.
         
         Args:
-            dataset_name: Name of dataset to analyze
+            setup_name: Name of setup to analyze
             
         Returns:
             dict: Comprehensive dataset information
         """
-        if dataset_name not in self.datasets_config:
-            return {"error": f"Unknown dataset: {dataset_name}"}
+        if setup_name not in self.setups_config:
+            return {"error": f"Unknown setup: {setup_name}"}
         
-        config = self.datasets_config[dataset_name]
-        is_downloaded = self.is_dataset_downloaded(dataset_name)
-        is_loaded = dataset_name in self.datasets
+        config = self.setups_config[setup_name]
+        dataset_config = config.get('dataset', {})
+        prompt_fields_config = config.get('prompt_fields', {})
+        
+        is_downloaded = self.is_dataset_downloaded(setup_name)
+        is_loaded = setup_name in self.datasets
         
         try:
-            dataset_path = self.get_dataset_path(dataset_name)
-            file_type = self.get_dataset_file_type(dataset_name)
+            dataset_path = self.get_dataset_path(setup_name)
+            file_type = self.get_dataset_file_type(setup_name)
         except ValueError as e:
             return {"error": str(e)}
         
         # Basic information
         info = {
-            'name': dataset_name,
-            'description': config['description'],
-            'download_link': config['download_link'],
-            'download_path': config['download_path'],
+            'name': setup_name,
+            'description': config.get('description', 'No description'),
+            'download_link': dataset_config.get('download_link', ''),
+            'download_path': dataset_config.get('download_path', ''),
             'file_type': file_type,
-            'file_path': config.get('csv_file') or config.get('parquet_file'),
+            'file_path': dataset_config.get('csv_file') or dataset_config.get('parquet_file'),
             'full_path': dataset_path,
-            'question_fields': config['question_fields'],
-            'answer_field': config['answer_field'],
+            'question_fields': prompt_fields_config.get('question_fields', []),
+            'answer_field': prompt_fields_config.get('answer_field', ''),
             'is_downloaded': is_downloaded,
             'is_loaded': is_loaded,
             'prune_config': config.get('prune_row', {})
@@ -628,7 +649,7 @@ class DatasetManager:
         
         # Add detailed statistics if dataset is loaded
         if is_loaded:
-            df = self.datasets[dataset_name]
+            df = self.datasets[setup_name]
             info.update({
                 'num_rows': len(df),
                 'num_columns': len(df.columns),
@@ -638,7 +659,7 @@ class DatasetManager:
             })
             
             # Analyze answer field for quality assessment
-            answer_field = config['answer_field']
+            answer_field = prompt_fields_config.get('answer_field', '')
             if answer_field in df.columns:
                 answer_series = df[answer_field]
                 
@@ -666,7 +687,7 @@ class DatasetManager:
                         'sample_row': df_sample.iloc[0].to_dict() if len(df_sample) > 0 else None
                     })
             except Exception as e:
-                logger.warning(f"Could not read sample from {dataset_name}: {e}")
+                logger.warning(f"Could not read sample from setup {setup_name}: {e}")
         
         return info
     
@@ -674,7 +695,7 @@ class DatasetManager:
     # DATASET VALIDATION
     # =============================================================================
     
-    def validate_dataset_fields(self, dataset_name: str) -> bool:
+    def validate_dataset_fields(self, setup_name: str) -> bool:
         """
         Validate that dataset has all required fields for processing.
         
@@ -682,63 +703,74 @@ class DatasetManager:
         Provides helpful error messages for troubleshooting.
         
         Args:
-            dataset_name: Name of dataset to validate
+            setup_name: Name of setup to validate
             
         Returns:
             bool: True if all required fields are present, False otherwise
         """
-        if dataset_name not in self.datasets_config:
-            logger.error(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            logger.error(f"Unknown setup: {setup_name}")
             return False
         
         # Load dataset if not already loaded
-        if dataset_name not in self.datasets:
-            df = self.load_dataset(dataset_name)
+        if setup_name not in self.datasets:
+            df = self.load_dataset(setup_name)
             if df is None:
                 return False
         else:
-            df = self.datasets[dataset_name]
+            df = self.datasets[setup_name]
         
-        config = self.datasets_config[dataset_name]
-        required_fields = config['question_fields'] + [config['answer_field']]
+        config = self.setups_config[setup_name]
+        
+        if 'prompt_fields' not in config:
+            logger.error(f"Setup '{setup_name}' missing required 'prompt_fields' configuration")
+            return False
+        
+        prompt_fields_config = config['prompt_fields']
+        
+        question_fields = prompt_fields_config['question_fields']
+        answer_field = prompt_fields_config['answer_field']
+        
+        required_fields = question_fields + ([answer_field] if answer_field else [])
         
         missing_fields = [field for field in required_fields if field not in df.columns]
         
         if missing_fields:
-            logger.error(f"Dataset {dataset_name} missing required fields: {missing_fields}")
+            logger.error(f"Dataset for setup {setup_name} missing required fields: {missing_fields}")
             logger.info(f"Available columns: {list(df.columns)}")
-            logger.info(f"Expected question fields: {config['question_fields']}")
-            logger.info(f"Expected answer field: {config['answer_field']}")
+            logger.info(f"Expected question fields: {question_fields}")
+            logger.info(f"Expected answer field: {answer_field}")
             return False
         
-        logger.info(f"Dataset {dataset_name} validation passed")
+        logger.info(f"Dataset for setup {setup_name} validation passed")
         return True
     
     # =============================================================================
     # GENERIC DATA PROCESSING - REMOVED HARDCODED LOGIC
     # =============================================================================
     
-    def get_expected_answer(self, row: pd.Series, dataset_name: str) -> str:
+    def get_expected_answer(self, row: pd.Series, setup_name: str) -> str:
         """
         Extract expected answer from a dataset row.
         
         Args:
             row: Single row from dataset
-            dataset_name: Name of dataset (for field mapping)
+            setup_name: Name of setup (for field mapping)
             
         Returns:
             str: Expected answer text, or empty string if missing
             
         Raises:
-            ValueError: If dataset name is unknown
+            ValueError: If setup name is unknown
         """
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Unknown setup: {setup_name}")
         
-        config = self.datasets_config[dataset_name]
-        answer_field = config['answer_field']
+        config = self.setups_config[setup_name]
+        prompt_fields_config = config.get('prompt_fields', {})
+        answer_field = prompt_fields_config.get('answer_field', '')
         
-        if answer_field in row and not pd.isna(row[answer_field]):
+        if answer_field and answer_field in row and not pd.isna(row[answer_field]):
             return str(row[answer_field])
         else:
             return ""
@@ -747,31 +779,31 @@ class DatasetManager:
     # DATASET CATALOG AND MANAGEMENT
     # =============================================================================
     
-    def get_available_datasets(self) -> Dict[str, Dict]:
+    def get_available_setups(self) -> Dict[str, Dict]:
         """
-        Get information about all configured datasets.
+        Get information about all configured setups.
         
         Returns:
-            dict: Information for each configured dataset
+            dict: Information for each configured setup
         """
         available = {}
         
-        for dataset_name in self.datasets_config.keys():
-            available[dataset_name] = self.get_dataset_info(dataset_name)
+        for setup_name in self.setups_config.keys():
+            available[setup_name] = self.get_dataset_info(setup_name)
         
         return available
     
     def list_downloaded_datasets(self) -> List[str]:
         """
-        List names of datasets that have been downloaded locally.
+        List names of setups that have their datasets downloaded locally.
         
         Returns:
-            list: Names of downloaded datasets
+            list: Names of setups with downloaded datasets
         """
         downloaded = []
         
-        for dataset_name in self.datasets_config.keys():
-            if self.is_dataset_downloaded(dataset_name):
-                downloaded.append(dataset_name)
+        for setup_name in self.setups_config.keys():
+            if self.is_dataset_downloaded(setup_name):
+                downloaded.append(setup_name)
         
         return downloaded

@@ -19,11 +19,11 @@ class EvaluationFramework:
     This framework provides:
     1. Token-based metrics (F1, precision, recall, exact match)
     2. Semantic similarity using embeddings
-    3. Dynamic custom metrics loaded from dataset-specific modules
+    3. Dynamic custom metrics loaded from setup-specific modules
     4. Custom metric registration system
     5. Batch processing with aggregation
     6. Evaluation history and comparison tools
-    7. Dataset-specific configuration support
+    7. Setup-specific configuration support
     
     Note: Row pruning/filtering is now handled during inference in experiment_runner.py,
     so this class focuses purely on metric computation for provided responses.
@@ -34,7 +34,7 @@ class EvaluationFramework:
         self.metrics_cache = {}         # Cache for expensive computations
         self.evaluation_history = []    # History of all evaluations performed
         self.custom_metrics = {}        # Registry for custom evaluation metrics
-        self.dataset_custom_metrics = {}  # Cache for loaded dataset-specific metrics
+        self.setup_custom_metrics = {}  # Cache for loaded setup-specific metrics
         
         logger.info("🚀 EvaluationFramework initialized")
     
@@ -42,38 +42,38 @@ class EvaluationFramework:
     # CUSTOM METRICS LOADING AND MANAGEMENT
     # =============================================================================
     
-    def load_custom_metrics_for_dataset(self, dataset_name: str) -> Dict[str, Callable]:
+    def load_custom_metrics_for_setup(self, setup_name: str) -> Dict[str, Callable]:
         """
-        Load custom metrics for a specific dataset from configured module.
+        Load custom metrics for a specific setup from configured module.
         
         Args:
-            dataset_name: Name of the dataset to load metrics for
+            setup_name: Name of the setup to load metrics for
             
         Returns:
             dict: Dictionary of metric_name -> metric_function
         """
         # Check cache first
-        if dataset_name in self.dataset_custom_metrics:
-            return self.dataset_custom_metrics[dataset_name]
+        if setup_name in self.setup_custom_metrics:
+            return self.setup_custom_metrics[setup_name]
         
-        # Load datasets configuration
+        # Load setups configuration
         try:
-            datasets_config = Config.load_datasets_config()
+            setups_config = Config.load_setups_config()
         except Exception as e:
-            logger.error(f"❌ Failed to load datasets config: {e}")
+            logger.error(f"❌ Failed to load setups config: {e}")
             return {}
         
-        if dataset_name not in datasets_config:
-            logger.warning(f"⚠️ Dataset {dataset_name} not found in configuration")
-            self.dataset_custom_metrics[dataset_name] = {}
+        if setup_name not in setups_config:
+            logger.warning(f"⚠️ Setup {setup_name} not found in configuration")
+            self.setup_custom_metrics[setup_name] = {}
             return {}
         
-        dataset_config = datasets_config[dataset_name]
-        custom_metrics_config = dataset_config.get('custom_metrics', {})
+        setup_config = setups_config[setup_name]
+        custom_metrics_config = setup_config.get('custom_metrics', {})
         
         if not custom_metrics_config:
-            logger.info(f"📄 No custom metrics configured for dataset: {dataset_name}")
-            self.dataset_custom_metrics[dataset_name] = {}
+            logger.info(f"📄 No custom metrics configured for setup: {setup_name}")
+            self.setup_custom_metrics[setup_name] = {}
             return {}
         
         # Load the custom metrics module
@@ -81,12 +81,12 @@ class EvaluationFramework:
         metrics_registry = custom_metrics_config.get('metrics_registry')
         
         if not module_path or not metrics_registry:
-            logger.warning(f"⚠️ Incomplete custom metrics configuration for {dataset_name}")
-            self.dataset_custom_metrics[dataset_name] = {}
+            logger.warning(f"⚠️ Incomplete custom metrics configuration for setup {setup_name}")
+            self.setup_custom_metrics[setup_name] = {}
             return {}
         
         try:
-            logger.info(f"📦 Loading custom metrics for {dataset_name} from {module_path}")
+            logger.info(f"📦 Loading custom metrics for setup {setup_name} from {module_path}")
             
             # Import the module
             module = importlib.import_module(module_path)
@@ -104,8 +104,8 @@ class EvaluationFramework:
                         else:
                             logger.warning(f"⚠️ Metric {metric_name} is not callable, skipping")
                     
-                    logger.info(f"✅ Loaded {len(valid_metrics)} custom metrics for {dataset_name}: {list(valid_metrics.keys())}")
-                    self.dataset_custom_metrics[dataset_name] = valid_metrics
+                    logger.info(f"✅ Loaded {len(valid_metrics)} custom metrics for setup {setup_name}: {list(valid_metrics.keys())}")
+                    self.setup_custom_metrics[setup_name] = valid_metrics
                     return valid_metrics
                 else:
                     logger.error(f"❌ Metrics registry {metrics_registry} is not a dictionary")
@@ -116,10 +116,10 @@ class EvaluationFramework:
             logger.error(f"❌ Failed to import custom metrics module {module_path}: {e}")
             logger.info("💡 Make sure the custom_metrics directory exists and contains __init__.py")
         except Exception as e:
-            logger.error(f"❌ Error loading custom metrics for {dataset_name}: {e}")
+            logger.error(f"❌ Error loading custom metrics for setup {setup_name}: {e}")
         
         # Cache empty result on failure
-        self.dataset_custom_metrics[dataset_name] = {}
+        self.setup_custom_metrics[setup_name] = {}
         return {}
     
     def register_custom_metric(self, name: str, metric_func: Callable):
@@ -231,7 +231,7 @@ class EvaluationFramework:
     # SINGLE RESPONSE EVALUATION
     # =============================================================================
     
-    def evaluate_single_response(self, response_data: Dict[str, Any], embedding_model, dataset_name: str = 'general') -> Dict[str, float]:
+    def evaluate_single_response(self, response_data: Dict[str, Any], embedding_model, setup_name: str = 'general') -> Dict[str, float]:
         """
         Evaluate a single generated response against expected output.
         
@@ -242,7 +242,7 @@ class EvaluationFramework:
         Args:
             response_data: Dictionary containing response fields (prompt, response, expected_output, etc.)
             embedding_model: Loaded embedding model for similarity
-            dataset_name: Name of dataset for loading custom metrics
+            setup_name: Name of setup for loading custom metrics
             
         Returns:
             dict: All computed metrics for this response
@@ -280,9 +280,9 @@ class EvaluationFramework:
         # Add semantic similarity using embeddings
         metrics['semantic_similarity'] = self.compute_text_similarity(generated, expected, embedding_model)
         
-        # Load and apply dataset-specific custom metrics
-        if dataset_name != 'general':
-            custom_metrics = self.load_custom_metrics_for_dataset(dataset_name)
+        # Load and apply setup-specific custom metrics
+        if setup_name != 'general':
+            custom_metrics = self.load_custom_metrics_for_setup(setup_name)
             for metric_name, metric_func in custom_metrics.items():
                 try:
                     metric_value = metric_func(response_data)
@@ -320,7 +320,7 @@ class EvaluationFramework:
     # =============================================================================
     
     def evaluate_batch(self, generated_responses: List[str], expected_responses: List[str],
-                             embedding_model, batch_name: str = "batch", dataset_name: str = 'general',
+                             embedding_model, batch_name: str = "batch", setup_name: str = 'general',
                              response_data_list: Optional[List[Dict[str, Any]]] = None,
                              inference_pruning_stats: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
@@ -334,7 +334,7 @@ class EvaluationFramework:
             expected_responses: List of expected responses from dataset
             embedding_model: Loaded embedding model for similarity computation
             batch_name: Name for this batch (for logging and identification)
-            dataset_name: Name of dataset for loading custom metrics
+            setup_name: Name of setup for loading custom metrics
             response_data_list: List of full response data dictionaries (with all fields)
             inference_pruning_stats: Statistics about row pruning from inference stage
             
@@ -372,7 +372,7 @@ class EvaluationFramework:
                     'question_values': []
                 }
             
-            scores = self.evaluate_single_response(response_data, embedding_model, dataset_name=dataset_name)
+            scores = self.evaluate_single_response(response_data, embedding_model, setup_name=setup_name)
             individual_scores.append(scores)
             
             # Count items that failed generation
@@ -394,7 +394,7 @@ class EvaluationFramework:
         # Compile complete results including pruning stats from inference
         result = {
             'batch_name': batch_name,
-            'dataset_name': dataset_name,
+            'setup_name': setup_name,
             'num_samples': len(generated_responses),
             'num_valid_evaluations': len(valid_scores),
             'num_failed_generation': failed_count,
@@ -483,10 +483,10 @@ class EvaluationFramework:
             'total_evaluations': len(self.evaluation_history),
             'total_samples_evaluated': sum(e['num_samples'] for e in self.evaluation_history),
             'total_valid_evaluations': sum(e['num_valid_evaluations'] for e in self.evaluation_history),
-            'dataset_names': list(set(e['dataset_name'] for e in self.evaluation_history)),
+            'setup_names': list(set(e['setup_name'] for e in self.evaluation_history)),
             'batch_names': [e['batch_name'] for e in self.evaluation_history],
             'custom_metrics_registered': list(self.custom_metrics.keys()),
-            'dataset_custom_metrics_loaded': list(self.dataset_custom_metrics.keys())
+            'setup_custom_metrics_loaded': list(self.setup_custom_metrics.keys())
         }
         
         # Find best performing evaluation based on F1 score

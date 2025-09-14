@@ -19,7 +19,7 @@ class ExperimentRunner:
     Handles running inference experiments with different models and configurations.
     
     Orchestrates the complete experiment pipeline:
-    1. Prepares datasets and prompts with row pruning
+    1. Prepares datasets and prompts with row pruning using nested configuration structure
     2. Loads and queries models (local or API) with authentication handling
     3. Saves results with comprehensive metadata
     """
@@ -32,7 +32,7 @@ class ExperimentRunner:
         
         # Load configurations
         self.prompts_config = Config.load_prompts_config()
-        self.datasets_config = Config.load_datasets_config()
+        self.setups_config = Config.load_setups_config()
         self.models_config = Config.load_models_config()
         
         # Initialize API clients
@@ -41,8 +41,16 @@ class ExperimentRunner:
         logger.info("ExperimentRunner initialized")
     
     def validate_experiment_config(self, config: Dict[str, Any]) -> bool:
-        """Validate experiment configuration for required fields"""
-        required_fields = ['model', 'dataset', 'prompt', 'mode', 'size', 'temperature']
+        """
+        Validate experiment configuration for required fields and compatibility.
+        
+        Args:
+            config: Experiment configuration dictionary
+            
+        Returns:
+            bool: True if valid, False otherwise
+        """
+        required_fields = ['model', 'setup', 'prompt', 'mode', 'size', 'temperature']
         
         # Check required fields
         for field in required_fields:
@@ -55,8 +63,8 @@ class ExperimentRunner:
             logger.error(f"Unknown model: {config['model']}")
             return False
         
-        if config['dataset'] not in self.datasets_config:
-            logger.error(f"Unknown dataset: {config['dataset']}")
+        if config['setup'] not in self.setups_config:
+            logger.error(f"Unknown setup: {config['setup']}")
             return False
         
         if config['prompt'] not in self.prompts_config:
@@ -64,18 +72,22 @@ class ExperimentRunner:
             return False
         
         if config['mode'] not in ['zero-shot', 'few-shot']:
-            logger.error(f"Invalid mode: {config['mode']}")
+            logger.error(f"Invalid mode: {config['mode']}. Must be 'zero-shot' or 'few-shot'")
             return False
         
-        # Validate prompt-dataset-mode compatibility
+        # Validate prompt-setup-mode compatibility
         prompt_config = self.prompts_config[config['prompt']]
         
-        if prompt_config.get('compatible_dataset') != config['dataset']:
-            logger.error(f"Prompt '{config['prompt']}' not compatible with dataset '{config['dataset']}'")
+        if 'compatible_setup' not in prompt_config:
+            logger.error(f"Prompt '{config['prompt']}' missing required 'compatible_setup' field")
+            return False
+        
+        if prompt_config['compatible_setup'] != config['setup']:
+            logger.error(f"Prompt '{config['prompt']}' is compatible with setup '{prompt_config['compatible_setup']}', not '{config['setup']}'")
             return False
         
         if prompt_config.get('mode', 'zero-shot') != config['mode']:
-            logger.error(f"Prompt '{config['prompt']}' is {prompt_config.get('mode', 'zero-shot')} but {config['mode']} requested")
+            logger.error(f"Prompt '{config['prompt']}' is configured for '{prompt_config.get('mode', 'zero-shot')}' mode, but '{config['mode']}' was requested")
             return False
         
         # Validate few-shot row if specified
@@ -135,11 +147,33 @@ class ExperimentRunner:
         
         return False, f"Unknown model type: {model_config.get('type', 'unknown')}"
     
-    def prepare_dataset(self, dataset_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int, List[str]]:
-        """Load and prepare dataset with row pruning"""
-        logger.info(f"Preparing dataset: {dataset_name}")
+    def prepare_dataset(self, setup_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int, List[str]]:
+        """
+        Load and prepare dataset with row pruning using nested configuration structure.
         
-        dataset_config = self.datasets_config[dataset_name]
+        Args:
+            setup_name: Name of setup to prepare
+            size: Number of samples to extract
+            
+        Returns:
+            Tuple of (original_df, filtered_df, sampled_df, pruned_count, prune_reasons)
+        """
+        logger.info(f"Preparing dataset for setup: {setup_name}")
+        
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Unknown setup: {setup_name}")
+        
+        setup_config = self.setups_config[setup_name]
+        
+        # Validate nested structure
+        if 'dataset' not in setup_config:
+            raise ValueError(f"Setup '{setup_name}' missing required 'dataset' configuration")
+        
+        dataset_config = setup_config['dataset']
+        
+        # Validate dataset config fields
+        if 'download_path' not in dataset_config:
+            raise ValueError(f"Setup '{setup_name}' dataset config missing 'download_path'")
         
         # Check for either csv_file or parquet_file
         if 'csv_file' in dataset_config:
@@ -147,15 +181,15 @@ class ExperimentRunner:
         elif 'parquet_file' in dataset_config:
             file_path = dataset_config['parquet_file']
         else:
-            raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
+            raise ValueError(f"Setup '{setup_name}' dataset config must specify either 'csv_file' or 'parquet_file'")
         
         dataset_path = os.path.join(Config.DATA_DIR, dataset_config['download_path'], file_path)
         
         # Download if not exists
         if not os.path.exists(dataset_path):
-            logger.info(f"Dataset not found, downloading: {dataset_name}")
-            if not self.dataset_manager.download_dataset(dataset_name):
-                raise ValueError(f"Failed to download dataset: {dataset_name}")
+            logger.info(f"Dataset not found, downloading for setup: {setup_name}")
+            if not self.dataset_manager.download_dataset(setup_name):
+                raise ValueError(f"Failed to download dataset for setup: {setup_name}")
         
         try:
             # Load original dataset - detect file type and use appropriate loader
@@ -165,17 +199,15 @@ class ExperimentRunner:
             elif 'parquet_file' in dataset_config:
                 original_df = pd.read_parquet(dataset_path)
                 logger.info(f"Loaded Parquet dataset with {len(original_df)} rows")
-            else:
-                raise ValueError(f"Dataset '{dataset_name}' must specify either 'csv_file' or 'parquet_file'")
             
             # Apply row pruning
             filtered_df, pruned_count, prune_reasons = self.dataset_manager.filter_dataset_rows(
-                original_df, dataset_name
+                original_df, setup_name
             )
             logger.info(f"After pruning: {len(filtered_df)} rows remaining, {pruned_count} rows pruned")
             
             if len(filtered_df) == 0:
-                raise ValueError(f"All rows in dataset {dataset_name} were pruned")
+                raise ValueError(f"All rows in setup {setup_name} were pruned")
             
             # Sample data
             if size < len(filtered_df):
@@ -188,7 +220,7 @@ class ExperimentRunner:
             return original_df, filtered_df, sampled_df, pruned_count, prune_reasons
             
         except Exception as e:
-            logger.error(f"Error preparing dataset {dataset_name}: {e}")
+            logger.error(f"Error preparing dataset for setup {setup_name}: {e}")
             raise
     
     def load_model_with_error_handling(self, model_name: str) -> Tuple[bool, str]:
@@ -348,7 +380,7 @@ class ExperimentRunner:
         """Save experiment results to JSON file with comprehensive metadata"""
         
         experiment_name = Config.generate_experiment_name(
-            experiment_config['dataset'],
+            experiment_config['setup'],
             experiment_config['model'],
             experiment_config['mode'],
             experiment_config['prompt'],
@@ -369,7 +401,7 @@ class ExperimentRunner:
             'experiment_config': experiment_config,
             'timestamp': datetime.now().isoformat(),
             'dataset_info': {
-                'name': experiment_config['dataset'],
+                'name': experiment_config['setup'],
                 'original_size': pruning_stats.get('original_size', 0),
                 'pruned_rows': pruning_stats.get('pruned_count', 0),
                 'final_size_before_sampling': pruning_stats.get('filtered_size', len(df)),
@@ -406,7 +438,7 @@ class ExperimentRunner:
         
         # Add expected outputs
         for idx, row in df.iterrows():
-            expected = self.dataset_manager.get_expected_answer(row, experiment_config['dataset'])
+            expected = self.dataset_manager.get_expected_answer(row, experiment_config['setup'])
             results['expected_outputs'].append(expected)
         
         # Calculate processing statistics
@@ -459,7 +491,7 @@ class ExperimentRunner:
         try:
             # Step 1: Prepare dataset with pruning
             original_df, filtered_df, sampled_df, pruned_count, prune_reasons = self.prepare_dataset(
-                config['dataset'], config['size']
+                config['setup'], config['size']
             )
 
             pruning_stats = {
@@ -499,13 +531,22 @@ class ExperimentRunner:
                     'model_loading_failed': True
                 }
             
-            # Step 4: Prepare prompts
+            # Step 4: Prepare prompts using nested configuration
             prompts = []
             expected_outputs = []
             question_values_list = []
             
-            dataset_config = self.datasets_config[config['dataset']]
-            question_fields = dataset_config.get('question_fields', [])
+            setup_config = self.setups_config[config['setup']]
+            
+            if 'prompt_fields' not in setup_config:
+                raise ValueError(f"Setup '{config['setup']}' missing required 'prompt_fields' configuration")
+            
+            prompt_fields_config = setup_config['prompt_fields']
+            
+            if 'question_fields' not in prompt_fields_config:
+                raise ValueError(f"Setup '{config['setup']}' missing 'question_fields' in prompt_fields configuration")
+            
+            question_fields = prompt_fields_config['question_fields']
             
             for idx, row in df_slice.iterrows():
                 # Extract question field values
@@ -524,7 +565,7 @@ class ExperimentRunner:
                     prompt = self.prompt_manager.prepare_prompt_for_row(
                         prompt_name=config['prompt'],
                         row=row,
-                        dataset_name=config['dataset'],
+                        setup_name=config['setup'],
                         mode=config['mode'],
                         dataset=original_df,  # Use original for few-shot
                         few_shot_row=actual_few_shot_row
@@ -532,7 +573,7 @@ class ExperimentRunner:
                     prompts.append(prompt)
                     
                     # Get expected answer
-                    expected_output = self.dataset_manager.get_expected_answer(row, config['dataset'])
+                    expected_output = self.dataset_manager.get_expected_answer(row, config['setup'])
                     expected_outputs.append(expected_output)
                     
                 except Exception as e:
@@ -554,7 +595,7 @@ class ExperimentRunner:
                 clear_gpu_memory()
             
             experiment_name = Config.generate_experiment_name(
-                config['dataset'],
+                config['setup'],
                 config['model'],
                 config['mode'],
                 config['prompt'],

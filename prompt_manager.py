@@ -13,7 +13,7 @@ class PromptManager:
     
     Handles:
     - Loading prompt templates with mode support (zero-shot/few-shot)
-    - Generic dataset field mapping
+    - Generic dataset field mapping using nested configuration structure
     - Few-shot example generation
     - Template formatting and concatenation
     """
@@ -21,7 +21,7 @@ class PromptManager:
     def __init__(self):
         """Initialize prompt manager with configuration from JSON"""
         self.prompts_config = Config.load_prompts_config()
-        self.datasets_config = Config.load_datasets_config()
+        self.setups_config = Config.load_setups_config()
         logger.info(f"PromptManager initialized with {len(self.prompts_config)} prompt templates")
     
     def get_prompts_by_mode(self, mode: str) -> List[str]:
@@ -33,13 +33,13 @@ class PromptManager:
                 matching_prompts.append(prompt_name)
         return matching_prompts
     
-    def get_compatible_prompts(self, dataset_name: str, mode: str = None) -> List[str]:
-        """Get prompts compatible with a dataset and optional mode"""
+    def get_compatible_prompts(self, setup_name: str, mode: str = None) -> List[str]:
+        """Get prompts compatible with a setup and optional mode"""
         compatible = []
         
         for prompt_name, config in self.prompts_config.items():
-            # Check dataset compatibility
-            if config.get('compatible_dataset') != dataset_name:
+            # Check setup compatibility
+            if config.get('compatible_setup') != setup_name:
                 continue
             
             # Check mode compatibility if specified
@@ -52,18 +52,30 @@ class PromptManager:
         
         return compatible
     
-    def generate_few_shot_example(self, dataset: pd.DataFrame, dataset_name: str, 
+    def generate_few_shot_example(self, dataset: pd.DataFrame, setup_name: str, 
                                  row_index: Optional[int] = None) -> Dict[str, Any]:
         """Generate a few-shot example from dataset row"""
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Dataset '{dataset_name}' not supported")
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Setup '{setup_name}' not found in configuration")
         
-        dataset_config = self.datasets_config[dataset_name]
-        question_fields = dataset_config.get('question_fields', [])
-        answer_field = dataset_config.get('answer_field', '')
+        setup_config = self.setups_config[setup_name]
+        
+        if 'prompt_fields' not in setup_config:
+            raise ValueError(f"Setup '{setup_name}' missing required 'prompt_fields' configuration")
+        
+        prompt_fields_config = setup_config['prompt_fields']
+        
+        if 'question_fields' not in prompt_fields_config:
+            raise ValueError(f"Setup '{setup_name}' missing 'question_fields' in prompt_fields configuration")
+        
+        if 'answer_field' not in prompt_fields_config:
+            raise ValueError(f"Setup '{setup_name}' missing 'answer_field' in prompt_fields configuration")
+        
+        question_fields = prompt_fields_config['question_fields']
+        answer_field = prompt_fields_config['answer_field']
         
         if not answer_field:
-            raise ValueError(f"Dataset '{dataset_name}' has no answer field for few-shot examples")
+            raise ValueError(f"Setup '{setup_name}' has empty answer_field - required for few-shot examples")
         
         # Select row
         if row_index is not None:
@@ -105,12 +117,16 @@ class PromptManager:
             raise ValueError(f"Unknown prompt: {prompt_name}")
         
         prompt_config = self.prompts_config[prompt_name]
+        
+        if 'template' not in prompt_config:
+            raise ValueError(f"Prompt '{prompt_name}' missing required 'template' field")
+        
         template = prompt_config['template']
         
         # Check field count
         placeholder_count = template.count('{}')
         if len(field_values) != placeholder_count:
-            raise ValueError(f"Expected {placeholder_count} field values, got {len(field_values)}")
+            raise ValueError(f"Expected {placeholder_count} field values for prompt '{prompt_name}', got {len(field_values)}")
         
         try:
             formatted_prompt = template.format(*field_values)
@@ -131,7 +147,7 @@ class PromptManager:
             raise ValueError(f"Prompt '{prompt_name}' is not a few-shot prompt")
         
         if 'few_shot_example' not in prompt_config:
-            raise ValueError(f"Few-shot prompt '{prompt_name}' missing 'few_shot_example' field")
+            raise ValueError(f"Few-shot prompt '{prompt_name}' missing required 'few_shot_example' field")
         
         few_shot_template = prompt_config['few_shot_example']
         all_values = question_values + [answer_value]
@@ -139,17 +155,17 @@ class PromptManager:
         # Check field count
         placeholder_count = few_shot_template.count('{}')
         if len(all_values) != placeholder_count:
-            raise ValueError(f"Expected {placeholder_count} field values for few-shot example, got {len(all_values)}")
+            raise ValueError(f"Expected {placeholder_count} field values for few-shot example in prompt '{prompt_name}', got {len(all_values)}")
         
         try:
             formatted_example = few_shot_template.format(*all_values)
             logger.debug(f"Formatted few-shot example for prompt '{prompt_name}'")
             return formatted_example
         except Exception as e:
-            logger.error(f"Few-shot example formatting error: {e}")
+            logger.error(f"Few-shot example formatting error for prompt '{prompt_name}': {e}")
             raise
     
-    def prepare_prompt_for_row(self, prompt_name: str, row: pd.Series, dataset_name: str, 
+    def prepare_prompt_for_row(self, prompt_name: str, row: pd.Series, setup_name: str, 
                               mode: str, dataset: pd.DataFrame = None, 
                               few_shot_row: Optional[int] = None) -> str:
         """Prepare a complete formatted prompt for a dataset row"""
@@ -158,22 +174,38 @@ class PromptManager:
         if prompt_name not in self.prompts_config:
             raise ValueError(f"Unknown prompt: {prompt_name}")
         
-        if dataset_name not in self.datasets_config:
-            raise ValueError(f"Unknown dataset: {dataset_name}")
+        if setup_name not in self.setups_config:
+            raise ValueError(f"Unknown setup: {setup_name}")
         
         # Get configurations
         prompt_config = self.prompts_config[prompt_name]
-        dataset_config = self.datasets_config[dataset_name]
+        setup_config = self.setups_config[setup_name]
+        
+        # Validate prompt has required fields
+        if 'compatible_setup' not in prompt_config:
+            raise ValueError(f"Prompt '{prompt_name}' missing required 'compatible_setup' field")
+        
+        if 'mode' not in prompt_config:
+            raise ValueError(f"Prompt '{prompt_name}' missing required 'mode' field")
+        
+        # Validate setup has required nested structure
+        if 'prompt_fields' not in setup_config:
+            raise ValueError(f"Setup '{setup_name}' missing required 'prompt_fields' configuration")
+        
+        prompt_fields_config = setup_config['prompt_fields']
+        
+        if 'question_fields' not in prompt_fields_config:
+            raise ValueError(f"Setup '{setup_name}' missing 'question_fields' in prompt_fields configuration")
         
         # Validate compatibility
-        if prompt_config.get('compatible_dataset') != dataset_name:
-            raise ValueError(f"Prompt '{prompt_name}' not compatible with dataset '{dataset_name}'")
+        if prompt_config['compatible_setup'] != setup_name:
+            raise ValueError(f"Prompt '{prompt_name}' is compatible with setup '{prompt_config['compatible_setup']}', not '{setup_name}'")
         
-        if prompt_config.get('mode', 'zero-shot') != mode:
-            raise ValueError(f"Prompt '{prompt_name}' is {prompt_config.get('mode', 'zero-shot')} but {mode} requested")
+        if prompt_config['mode'] != mode:
+            raise ValueError(f"Prompt '{prompt_name}' is configured for '{prompt_config['mode']}' mode, but '{mode}' mode was requested")
         
         # Extract current row values
-        question_fields = dataset_config.get('question_fields', [])
+        question_fields = prompt_fields_config['question_fields']
         current_question_values = []
         
         for field in question_fields:
@@ -193,7 +225,7 @@ class PromptManager:
                 raise ValueError("Dataset is required for few-shot prompting")
             
             # Generate few-shot example
-            example_data = self.generate_few_shot_example(dataset, dataset_name, few_shot_row)
+            example_data = self.generate_few_shot_example(dataset, setup_name, few_shot_row)
             
             # Format few-shot example
             few_shot_example = self.format_few_shot_example(
@@ -212,15 +244,16 @@ class PromptManager:
             return final_prompt
         
         else:
-            raise ValueError(f"Unknown mode: {mode}")
+            raise ValueError(f"Unknown mode: {mode}. Supported modes are 'zero-shot' and 'few-shot'")
     
     def list_prompts(self, mode: str = None) -> Dict[str, str]:
         """List available prompts with descriptions, optionally filtered by mode"""
         prompts = {}
         for name, config in self.prompts_config.items():
-            if mode is None or config.get('mode', 'zero-shot') == mode:
+            prompt_mode = config.get('mode', 'zero-shot')
+            if mode is None or prompt_mode == mode:
                 description = config.get('description', 'No description')
-                prompt_mode = config.get('mode', 'zero-shot')
-                prompts[name] = f"{description} [{prompt_mode}]"
+                compatible_setup = config.get('compatible_setup', 'Unknown setup')
+                prompts[name] = f"{description} [mode: {prompt_mode}, setup: {compatible_setup}]"
         
         return prompts

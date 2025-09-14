@@ -21,7 +21,7 @@ class Config:
     # Configuration directories - where JSON config files are stored
     CONFIGS_DIR = "./configs"
     PROMPTS_JSON = os.path.join(CONFIGS_DIR, "prompts.json")
-    DATASETS_JSON = os.path.join(CONFIGS_DIR, "datasets.json")
+    SETUPS_JSON = os.path.join(CONFIGS_DIR, "setups.json")
     MODELS_JSON = os.path.join(CONFIGS_DIR, "models.json")
     
     # Data and output directories - main storage locations
@@ -253,6 +253,16 @@ class Config:
         """
         Load prompts configuration from JSON file.
         
+        Expected structure:
+        {
+          "prompt_name": {
+            "compatible_setup": "setup_name",
+            "mode": "zero-shot",
+            "template": "...",
+            "description": "..."
+          }
+        }
+        
         Returns:
             dict: Prompt templates and metadata
             
@@ -269,24 +279,42 @@ class Config:
             raise ValueError(f"Invalid JSON in prompts configuration: {e}")
     
     @classmethod
-    def load_datasets_config(cls) -> Dict[str, Any]:
+    def load_setups_config(cls) -> Dict[str, Any]:
         """
-        Load datasets configuration from JSON file.
+        Load setups configuration from JSON file.
+        
+        Expected structure:
+        {
+          "setup_name": {
+            "description": "...",
+            "dataset": {
+              "download_link": "...",
+              "download_path": "...",
+              "csv_file": "..." OR "parquet_file": "..."
+            },
+            "prompt_fields": {
+              "question_fields": [...],
+              "answer_field": "..."
+            },
+            "prune_row": { ... },  // Optional
+            "custom_metrics": { ... }  // Optional
+          }
+        }
         
         Returns:
-            dict: Dataset sources, paths, and metadata
+            dict: Setup configurations including dataset sources, paths, custom metrics, and row pruning rules
             
         Raises:
-            FileNotFoundError: If datasets.json doesn't exist
+            FileNotFoundError: If setups.json doesn't exist
             ValueError: If JSON is malformed
         """
         try:
-            with open(cls.DATASETS_JSON, 'r') as f:
+            with open(cls.SETUPS_JSON, 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            raise FileNotFoundError(f"Datasets configuration file not found: {cls.DATASETS_JSON}")
+            raise FileNotFoundError(f"Setups configuration file not found: {cls.SETUPS_JSON}")
         except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON in datasets configuration: {e}")
+            raise ValueError(f"Invalid JSON in setups configuration: {e}")
     
     @classmethod
     def load_models_config(cls) -> Dict[str, Any]:
@@ -313,18 +341,18 @@ class Config:
     # =============================================================================
     
     @classmethod
-    def generate_experiment_name(cls, dataset: str, model: str, 
+    def generate_experiment_name(cls, setup: str, model: str, 
                                 mode: str, prompt: str, size: int, temperature: float,
                                 few_shot_row: Optional[int] = None) -> str:
         """
         Generate a standardized experiment name.
         
         Creates descriptive names that uniquely identify experiments:
-        Format for zero-shot: {dataset}_{model}_{mode}_{prompt}_{size}_{temperature}
-        Format for few-shot: {dataset}_{model}_{mode}-{few_shot_row}_{prompt}_{size}_{temperature}
+        Format for zero-shot: {setup}_{model}_{mode}_{prompt}_{size}_{temperature}
+        Format for few-shot: {setup}_{model}_{mode}-{few_shot_row}_{prompt}_{size}_{temperature}
         
         Args:
-            dataset: Dataset name (e.g., 'gmeg')
+            setup: Setup name (e.g., 'gmeg')
             model: Model name (e.g., 'gpt-4o-mini')
             mode: Prompting mode ('zero-shot' or 'few-shot')
             prompt: Prompt name (e.g., 'gmeg_v1_basic')
@@ -346,7 +374,7 @@ class Config:
         else:
             mode_with_row = mode
 
-        return f"{dataset}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}"
+        return f"{setup}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}"
     
     @classmethod
     def generate_file_paths(cls, experiment_name: str) -> Dict[str, str]:
@@ -401,7 +429,7 @@ class Config:
         """
         files = {
             'prompts': os.path.exists(cls.PROMPTS_JSON),
-            'datasets': os.path.exists(cls.DATASETS_JSON),
+            'setups': os.path.exists(cls.SETUPS_JSON),
             'models': os.path.exists(cls.MODELS_JSON)
         }
         return files

@@ -44,12 +44,12 @@ from prompt_manager import PromptManager
 class ExperimentCombination:
     """A valid experiment combination"""
     model: str
-    dataset: str
+    setup: str
     prompt: str
     mode: str
     
     def __str__(self):
-        return f"{self.model}+{self.dataset}+{self.prompt}+{self.mode}"
+        return f"{self.model}+{self.setup}+{self.prompt}+{self.mode}"
 
 class ArgumentResolver:
     """
@@ -57,40 +57,40 @@ class ArgumentResolver:
     with compatibility checking and smart expansion of missing arguments.
     """
     
-    def __init__(self, prompts_config: dict, datasets_config: dict, models_config: dict):
+    def __init__(self, prompts_config: dict, setups_config: dict, models_config: dict):
         self.prompts_config = prompts_config
-        self.datasets_config = datasets_config
+        self.setups_config = setups_config
         self.models_config = models_config
         
         # Precompute all available options
         self.all_models = list(models_config.keys())
-        self.all_datasets = list(datasets_config.keys())
+        self.all_setups = list(setups_config.keys())
         self.all_prompts = list(prompts_config.keys())
         self.all_modes = ['zero-shot', 'few-shot']
         
         # Build compatibility maps for efficient filtering
-        self.dataset_to_prompts = self._build_dataset_to_prompts_map()
-        self.prompt_to_dataset = self._build_prompt_to_dataset_map()
+        self.setup_to_prompts = self._build_setup_to_prompts_map()
+        self.prompt_to_setup = self._build_prompt_to_setup_map()
         self.mode_to_prompts = self._build_mode_to_prompts_map()
         self.prompt_to_mode = self._build_prompt_to_mode_map()
         
         self.logger = setup_logging("argument_resolver")
     
-    def _build_dataset_to_prompts_map(self) -> Dict[str, List[str]]:
-        """Build mapping from datasets to compatible prompts"""
+    def _build_setup_to_prompts_map(self) -> Dict[str, List[str]]:
+        """Build mapping from setups to compatible prompts"""
         mapping = {}
-        for dataset in self.all_datasets:
-            mapping[dataset] = []
+        for setup in self.all_setups:
+            mapping[setup] = []
             for prompt_name, prompt_config in self.prompts_config.items():
-                if prompt_config.get('compatible_dataset') == dataset:
-                    mapping[dataset].append(prompt_name)
+                if prompt_config.get('compatible_setup') == setup:
+                    mapping[setup].append(prompt_name)
         return mapping
     
-    def _build_prompt_to_dataset_map(self) -> Dict[str, str]:
-        """Build mapping from prompts to their compatible dataset"""
+    def _build_prompt_to_setup_map(self) -> Dict[str, str]:
+        """Build mapping from prompts to their compatible setup"""
         mapping = {}
         for prompt_name, prompt_config in self.prompts_config.items():
-            mapping[prompt_name] = prompt_config.get('compatible_dataset', '')
+            mapping[prompt_name] = prompt_config.get('compatible_setup', '')
         return mapping
     
     def _build_mode_to_prompts_map(self) -> Dict[str, List[str]]:
@@ -176,8 +176,8 @@ class ArgumentResolver:
             specified_models = self._parse_and_validate_list_arg(
                 args.model, self.all_models, "model"
             )
-            specified_datasets = self._parse_and_validate_list_arg(
-                args.dataset, self.all_datasets, "dataset"
+            specified_setups = self._parse_and_validate_list_arg(
+                args.setup, self.all_setups, "setup"
             )
             specified_prompts = self._parse_and_validate_list_arg(
                 args.prompt, self.all_prompts, "prompt"
@@ -191,23 +191,23 @@ class ArgumentResolver:
         # Log what was specified
         self.logger.info("=== ARGUMENT RESOLUTION ===")
         self.logger.info(f"Models: {specified_models or 'None (will use all)'}")
-        self.logger.info(f"Datasets: {specified_datasets or 'None (will infer/use all)'}")
+        self.logger.info(f"Setups: {specified_setups or 'None (will infer/use all)'}")
         self.logger.info(f"Prompts: {specified_prompts or 'None (will use compatible)'}")
         self.logger.info(f"Mode: {specified_mode or 'None (will infer from prompts)'}")
         
         # Apply intelligent expansion and compatibility filtering
         return self._resolve_with_intelligent_expansion(
-            specified_models, specified_datasets, specified_prompts, specified_mode, force
+            specified_models, specified_setups, specified_prompts, specified_mode, force
         )
     
-    def _resolve_with_intelligent_expansion(self, models: List[str], datasets: List[str], 
+    def _resolve_with_intelligent_expansion(self, models: List[str], setups: List[str], 
                                           prompts: List[str], mode: Optional[str], 
                                           force: bool) -> List[ExperimentCombination]:
         """
         Systematically resolve all 16 possible argument combinations with proper constraint handling.
         
         Constraints:
-        - Each prompt is compatible with exactly one dataset
+        - Each prompt is compatible with exactly one setup
         - Each prompt supports exactly one mode (zero-shot or few-shot)
         """
         final_combinations = []
@@ -217,72 +217,72 @@ class ArgumentResolver:
             models = self.all_models
             self.logger.info(f"No models specified - using all {len(models)} models")
         
-        # Determine the universe of valid (dataset, prompt, mode) triplets based on constraints
-        valid_triplets = self._get_valid_triplets(datasets, prompts, mode, force)
+        # Determine the universe of valid (setup, prompt, mode) triplets based on constraints
+        valid_triplets = self._get_valid_triplets(setups, prompts, mode, force)
         
         if not valid_triplets:
-            self.logger.error("No valid (dataset, prompt, mode) combinations found")
+            self.logger.error("No valid (setup, prompt, mode) combinations found")
             return []
         
         # Create cartesian product of models × valid triplets
         for model in models:
-            for dataset, prompt, prompt_mode in valid_triplets:
-                final_combinations.append(ExperimentCombination(model, dataset, prompt, prompt_mode))
+            for setup, prompt, prompt_mode in valid_triplets:
+                final_combinations.append(ExperimentCombination(model, setup, prompt, prompt_mode))
         
         # Log final summary
         self._log_combination_summary(final_combinations)
         
         return final_combinations
     
-    def _get_valid_triplets(self, datasets: List[str], prompts: List[str], 
+    def _get_valid_triplets(self, setups: List[str], prompts: List[str], 
                            mode: Optional[str], force: bool) -> List[Tuple[str, str, str]]:
         """
-        Get all valid (dataset, prompt, mode) triplets based on the specified constraints.
+        Get all valid (setup, prompt, mode) triplets based on the specified constraints.
         
         Handles all 16 possible input combinations systematically.
         """
         valid_triplets = []
         
         # Determine which triplets to consider based on input combination
-        has_datasets = bool(datasets)
+        has_setups = bool(setups)
         has_prompts = bool(prompts)  
         has_mode = bool(mode)
         
-        self.logger.info(f"Resolving triplets - Datasets: {has_datasets}, Prompts: {has_prompts}, Mode: {has_mode}")
+        self.logger.info(f"Resolving triplets - Setups: {has_setups}, Prompts: {has_prompts}, Mode: {has_mode}")
         
-        if not has_datasets and not has_prompts and not has_mode:
+        if not has_setups and not has_prompts and not has_mode:
             # Case 1: No constraints - all valid combinations
             self.logger.info("No constraints specified - using all compatible combinations")
             valid_triplets = self._build_all_valid_triplets()
             
-        elif not has_datasets and not has_prompts and has_mode:
+        elif not has_setups and not has_prompts and has_mode:
             # Case 2: Only mode specified - all prompts with that mode
             self.logger.info(f"Only mode '{mode}' specified - finding compatible prompts")
             compatible_prompts = self.mode_to_prompts.get(mode, [])
             for prompt in compatible_prompts:
-                dataset = self.prompt_to_dataset[prompt]
-                valid_triplets.append((dataset, prompt, mode))
+                setup = self.prompt_to_setup[prompt]
+                valid_triplets.append((setup, prompt, mode))
                 
-        elif not has_datasets and has_prompts and not has_mode:
-            # Case 3: Only prompts specified - infer datasets and modes
-            self.logger.info("Only prompts specified - inferring datasets and modes")
+        elif not has_setups and has_prompts and not has_mode:
+            # Case 3: Only prompts specified - infer setups and modes
+            self.logger.info("Only prompts specified - inferring setups and modes")
             for prompt in prompts:
-                dataset = self.prompt_to_dataset.get(prompt, '')
+                setup = self.prompt_to_setup.get(prompt, '')
                 prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
-                if dataset:
-                    valid_triplets.append((dataset, prompt, prompt_mode))
+                if setup:
+                    valid_triplets.append((setup, prompt, prompt_mode))
                 else:
-                    self.logger.warning(f"Prompt '{prompt}' has no associated dataset")
+                    self.logger.warning(f"Prompt '{prompt}' has no associated setup")
                     
-        elif not has_datasets and has_prompts and has_mode:
+        elif not has_setups and has_prompts and has_mode:
             # Case 4: Prompts + mode specified - validate compatibility
             self.logger.info(f"Prompts + mode '{mode}' specified - validating compatibility")
             for prompt in prompts:
-                dataset = self.prompt_to_dataset.get(prompt, '')
+                setup = self.prompt_to_setup.get(prompt, '')
                 prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
                 
-                if not dataset:
-                    self.logger.warning(f"Prompt '{prompt}' has no associated dataset")
+                if not setup:
+                    self.logger.warning(f"Prompt '{prompt}' has no associated setup")
                     continue
                     
                 if prompt_mode != mode:
@@ -292,83 +292,83 @@ class ArgumentResolver:
                     else:
                         self.logger.warning(f"Force mode: using {prompt_mode} prompt '{prompt}' despite {mode} request")
                         # Use the prompt's actual mode, not the requested mode
-                        valid_triplets.append((dataset, prompt, prompt_mode))
+                        valid_triplets.append((setup, prompt, prompt_mode))
                         continue
                 
-                valid_triplets.append((dataset, prompt, mode))
+                valid_triplets.append((setup, prompt, mode))
                 
-        elif has_datasets and not has_prompts and not has_mode:
-            # Case 5: Only datasets specified - all prompts for those datasets
-            self.logger.info("Only datasets specified - finding all compatible prompts")
-            for dataset in datasets:
-                compatible_prompts = self.dataset_to_prompts.get(dataset, [])
+        elif has_setups and not has_prompts and not has_mode:
+            # Case 5: Only setups specified - all prompts for those setups
+            self.logger.info("Only setups specified - finding all compatible prompts")
+            for setup in setups:
+                compatible_prompts = self.setup_to_prompts.get(setup, [])
                 for prompt in compatible_prompts:
                     prompt_mode = self.prompt_to_mode[prompt]
-                    valid_triplets.append((dataset, prompt, prompt_mode))
+                    valid_triplets.append((setup, prompt, prompt_mode))
                     
-        elif has_datasets and not has_prompts and has_mode:
-            # Case 6: Datasets + mode specified - prompts for datasets with that mode
-            self.logger.info(f"Datasets + mode '{mode}' specified - finding compatible prompts")
-            for dataset in datasets:
-                compatible_prompts = self.dataset_to_prompts.get(dataset, [])
+        elif has_setups and not has_prompts and has_mode:
+            # Case 6: Setups + mode specified - prompts for setups with that mode
+            self.logger.info(f"Setups + mode '{mode}' specified - finding compatible prompts")
+            for setup in setups:
+                compatible_prompts = self.setup_to_prompts.get(setup, [])
                 mode_filtered_prompts = [p for p in compatible_prompts 
                                        if self.prompt_to_mode.get(p, 'zero-shot') == mode]
                 for prompt in mode_filtered_prompts:
-                    valid_triplets.append((dataset, prompt, mode))
+                    valid_triplets.append((setup, prompt, mode))
                     
-        elif has_datasets and has_prompts and not has_mode:
-            # Case 7: Datasets + prompts specified - validate compatibility
-            self.logger.info("Datasets + prompts specified - validating compatibility") 
+        elif has_setups and has_prompts and not has_mode:
+            # Case 7: Setups + prompts specified - validate compatibility
+            self.logger.info("Setups + prompts specified - validating compatibility") 
             for prompt in prompts:
-                expected_dataset = self.prompt_to_dataset.get(prompt, '')
+                expected_setup = self.prompt_to_setup.get(prompt, '')
                 prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
                 
-                if not expected_dataset:
-                    self.logger.warning(f"Prompt '{prompt}' has no associated dataset")
+                if not expected_setup:
+                    self.logger.warning(f"Prompt '{prompt}' has no associated setup")
                     continue
                     
-                if expected_dataset not in datasets:
+                if expected_setup not in setups:
                     if not force:
-                        self.logger.error(f"Prompt '{prompt}' expects dataset '{expected_dataset}' but only {datasets} specified")
+                        self.logger.error(f"Prompt '{prompt}' expects setup '{expected_setup}' but only {setups} specified")
                         continue
                     else:
-                        self.logger.warning(f"Force mode: using prompt '{prompt}' despite dataset mismatch")
-                        # Use the prompt's expected dataset
-                        valid_triplets.append((expected_dataset, prompt, prompt_mode))
+                        self.logger.warning(f"Force mode: using prompt '{prompt}' despite setup mismatch")
+                        # Use the prompt's expected setup
+                        valid_triplets.append((expected_setup, prompt, prompt_mode))
                         continue
                 
-                valid_triplets.append((expected_dataset, prompt, prompt_mode))
+                valid_triplets.append((expected_setup, prompt, prompt_mode))
                 
-        elif has_datasets and has_prompts and has_mode:
+        elif has_setups and has_prompts and has_mode:
             # Case 8: All specified - validate all constraints
             self.logger.info("All constraints specified - validating complete compatibility")
             for prompt in prompts:
-                expected_dataset = self.prompt_to_dataset.get(prompt, '')
+                expected_setup = self.prompt_to_setup.get(prompt, '')
                 prompt_mode = self.prompt_to_mode.get(prompt, 'zero-shot')
                 
-                dataset_valid = not expected_dataset or expected_dataset in datasets
+                setup_valid = not expected_setup or expected_setup in setups
                 mode_valid = prompt_mode == mode
                 
-                if not expected_dataset:
-                    self.logger.warning(f"Prompt '{prompt}' has no associated dataset")
+                if not expected_setup:
+                    self.logger.warning(f"Prompt '{prompt}' has no associated setup")
                     continue
                 
-                if not dataset_valid and not mode_valid:
+                if not setup_valid and not mode_valid:
                     if not force:
-                        self.logger.error(f"Prompt '{prompt}' incompatible: expects '{expected_dataset}' (got {datasets}) and is {prompt_mode} (requested {mode})")
+                        self.logger.error(f"Prompt '{prompt}' incompatible: expects '{expected_setup}' (got {setups}) and is {prompt_mode} (requested {mode})")
                         continue
                     else:
                         self.logger.warning(f"Force mode: using prompt '{prompt}' despite all mismatches")
-                        valid_triplets.append((expected_dataset, prompt, prompt_mode))
+                        valid_triplets.append((expected_setup, prompt, prompt_mode))
                         continue
                         
-                elif not dataset_valid:
+                elif not setup_valid:
                     if not force:
-                        self.logger.error(f"Prompt '{prompt}' expects dataset '{expected_dataset}' but only {datasets} specified")
+                        self.logger.error(f"Prompt '{prompt}' expects setup '{expected_setup}' but only {setups} specified")
                         continue
                     else:
-                        self.logger.warning(f"Force mode: using prompt '{prompt}' despite dataset mismatch")
-                        valid_triplets.append((expected_dataset, prompt, prompt_mode))
+                        self.logger.warning(f"Force mode: using prompt '{prompt}' despite setup mismatch")
+                        valid_triplets.append((expected_setup, prompt, prompt_mode))
                         continue
                         
                 elif not mode_valid:
@@ -377,11 +377,11 @@ class ArgumentResolver:
                         continue
                     else:
                         self.logger.warning(f"Force mode: using {prompt_mode} prompt '{prompt}' despite {mode} request")
-                        valid_triplets.append((expected_dataset, prompt, prompt_mode))
+                        valid_triplets.append((expected_setup, prompt, prompt_mode))
                         continue
                 
                 # All constraints satisfied
-                valid_triplets.append((expected_dataset, prompt, mode))
+                valid_triplets.append((expected_setup, prompt, mode))
         
         # Remove duplicates while preserving order
         seen = set()
@@ -391,16 +391,16 @@ class ArgumentResolver:
                 seen.add(triplet)
                 unique_triplets.append(triplet)
         
-        self.logger.info(f"Found {len(unique_triplets)} valid (dataset, prompt, mode) combinations")
+        self.logger.info(f"Found {len(unique_triplets)} valid (setup, prompt, mode) combinations")
         return unique_triplets
     
     def _build_all_valid_triplets(self) -> List[Tuple[str, str, str]]:
-        """Build all possible valid (dataset, prompt, mode) triplets"""
+        """Build all possible valid (setup, prompt, mode) triplets"""
         triplets = []
-        for dataset in self.all_datasets:
-            for prompt in self.dataset_to_prompts.get(dataset, []):
+        for setup in self.all_setups:
+            for prompt in self.setup_to_prompts.get(setup, []):
                 mode = self.prompt_to_mode[prompt]
-                triplets.append((dataset, prompt, mode))
+                triplets.append((setup, prompt, mode))
         return triplets
     
     def _log_combination_summary(self, combinations: List[ExperimentCombination]):
@@ -412,16 +412,16 @@ class ArgumentResolver:
             
         # Group by mode for summary
         mode_counts = {}
-        dataset_counts = {}
+        setup_counts = {}
         model_counts = {}
         
         for combo in combinations:
             mode_counts[combo.mode] = mode_counts.get(combo.mode, 0) + 1
-            dataset_counts[combo.dataset] = dataset_counts.get(combo.dataset, 0) + 1
+            setup_counts[combo.setup] = setup_counts.get(combo.setup, 0) + 1
             model_counts[combo.model] = model_counts.get(combo.model, 0) + 1
         
         self.logger.info(f"Breakdown by mode: {dict(mode_counts)}")
-        self.logger.info(f"Breakdown by dataset: {dict(dataset_counts)}")  
+        self.logger.info(f"Breakdown by setup: {dict(setup_counts)}")  
         self.logger.info(f"Breakdown by model: {dict(model_counts)}")
         
         # Show sample combinations
@@ -441,27 +441,27 @@ class ArgumentResolver:
 
 def group_combinations_for_efficiency(combinations: List[ExperimentCombination]) -> Dict[str, Dict[str, List[ExperimentCombination]]]:
     """
-    Group combinations by model first, then dataset for optimal execution order.
+    Group combinations by model first, then setup for optimal execution order.
     
     This minimizes expensive model loading/unloading operations by:
     1. Loading each model only once
-    2. Processing all datasets for that model
+    2. Processing all setups for that model
     3. Cleaning up model once before moving to next
     
     Args:
         combinations: List of experiment combinations
         
     Returns:
-        dict: Nested structure {model_name: {dataset_name: [combinations]}}
+        dict: Nested structure {model_name: {setup_name: [combinations]}}
     """
     grouped = {}
     
     for combo in combinations:
         if combo.model not in grouped:
             grouped[combo.model] = {}
-        if combo.dataset not in grouped[combo.model]:
-            grouped[combo.model][combo.dataset] = []
-        grouped[combo.model][combo.dataset].append(combo)
+        if combo.setup not in grouped[combo.model]:
+            grouped[combo.model][combo.setup] = []
+        grouped[combo.model][combo.setup].append(combo)
     
     return grouped
 
@@ -479,17 +479,17 @@ def log_execution_plan(grouped_combinations: Dict[str, Dict[str, List[Experiment
     logger.info(f"Total experiments: {total_experiments}")
     logger.info(f"Models to load: {len(grouped_combinations)}")
     
-    for model_name, datasets in grouped_combinations.items():
+    for model_name, setups in grouped_combinations.items():
         model_type = models_config.get(model_name, {}).get('type', 'unknown')
-        dataset_count = len(datasets)
-        experiment_count = sum(len(combos) for combos in datasets.values())
+        setup_count = len(setups)
+        experiment_count = sum(len(combos) for combos in setups.values())
         
-        logger.info(f"Model {model_name} ({model_type}): {experiment_count} experiments across {dataset_count} datasets")
+        logger.info(f"Model {model_name} ({model_type}): {experiment_count} experiments across {setup_count} setups")
         
-        for dataset_name, combos in datasets.items():
+        for setup_name, combos in setups.items():
             modes = list(set(combo.mode for combo in combos))
             prompts = list(set(combo.prompt for combo in combos))
-            logger.info(f"   Dataset {dataset_name}: {len(combos)} experiments ({', '.join(modes)}) using {len(prompts)} prompts")
+            logger.info(f"   Setup {setup_name}: {len(combos)} experiments ({', '.join(modes)}) using {len(prompts)} prompts")
     
     # Calculate efficiency gain
     local_models = [model for model, config in models_config.items() 
@@ -610,14 +610,14 @@ def run_experiment_command(args):
     # Load configurations
     try:
         prompts_config = Config.load_prompts_config()
-        datasets_config = Config.load_datasets_config()
+        setups_config = Config.load_setups_config()
         models_config = Config.load_models_config()
     except Exception as e:
         logger.error(f"Failed to load configurations: {e}")
         return False
     
     # Initialize the argument resolver
-    resolver = ArgumentResolver(prompts_config, datasets_config, models_config)
+    resolver = ArgumentResolver(prompts_config, setups_config, models_config)
     
     # Resolve all argument combinations
     try:
@@ -685,9 +685,9 @@ def run_experiment_command(args):
     current_experiment = 0
     skipped_models = []
     
-    for model_name, model_datasets in grouped_combinations.items():
+    for model_name, model_setups in grouped_combinations.items():
         model_config = models_config[model_name]
-        model_experiments = sum(len(combos) for combos in model_datasets.values())
+        model_experiments = sum(len(combos) for combos in model_setups.values())
         
         logger.info(f"Loading model: {model_name} ({model_experiments} experiments)")
         
@@ -721,22 +721,22 @@ def run_experiment_command(args):
                 failure_count += model_experiments
                 continue
         
-        # Process all datasets for this model
-        for dataset_name, dataset_combinations in model_datasets.items():
-            logger.info(f"Processing dataset: {dataset_name} with model: {model_name} ({len(dataset_combinations)} experiments)")
+        # Process all setups for this model
+        for setup_name, setup_combinations in model_setups.items():
+            logger.info(f"Processing setup: {setup_name} with model: {model_name} ({len(setup_combinations)} experiments)")
             
             # Pre-load and cache dataset for efficiency
             dataset_loaded = False
             try:
                 # This will cache the dataset in the dataset manager
-                runner.dataset_manager.load_dataset(dataset_name)
+                runner.dataset_manager.load_dataset(setup_name)
                 dataset_loaded = True
-                logger.debug(f"Dataset {dataset_name} loaded and cached")
+                logger.debug(f"Setup {setup_name} dataset loaded and cached")
             except Exception as e:
-                logger.warning(f"Could not pre-load dataset {dataset_name}: {e}")
+                logger.warning(f"Could not pre-load dataset for setup {setup_name}: {e}")
             
-            # Run all experiments for this model+dataset combination
-            for combo in dataset_combinations:
+            # Run all experiments for this model+setup combination
+            for combo in setup_combinations:
                 current_experiment += 1
                 
                 try:
@@ -744,7 +744,7 @@ def run_experiment_command(args):
                     
                     experiment_config = {
                         'model': combo.model,
-                        'dataset': combo.dataset,
+                        'setup': combo.setup,
                         'prompt': combo.prompt,
                         'mode': combo.mode,
                         'few_shot_row': args.few_shot_row,
@@ -769,7 +769,7 @@ def run_experiment_command(args):
                     logger.error(f"Error in experiment {current_experiment}/{total_experiments} ({combo}): {e}")
                     continue
         
-        # Clean up model after processing all its datasets
+        # Clean up model after processing all its setups
         if model_loaded:
             logger.info(f"Cleaning up model: {model_name}")
             runner.model_manager.cleanup_current_model()
@@ -803,7 +803,7 @@ def run_experiment_command(args):
     return success_count > 0
 
 # =============================================================================
-# OTHER COMMAND HANDLERS (unchanged)
+# OTHER COMMAND HANDLERS
 # =============================================================================
 
 def evaluate_command(args):
@@ -904,7 +904,7 @@ def show_prompt_command(args):
     # Load configurations
     try:
         prompts_config = Config.load_prompts_config()
-        datasets_config = Config.load_datasets_config()
+        setups_config = Config.load_setups_config()
     except Exception as e:
         logger.error(f"Failed to load configurations: {e}")
         return False
@@ -922,18 +922,23 @@ def show_prompt_command(args):
     try:
         # Get prompt configuration
         prompt_config = prompts_config[args.prompt]
-        compatible_dataset = prompt_config.get('compatible_dataset', '')
+        
+        if 'compatible_setup' not in prompt_config:
+            logger.error(f"Prompt '{args.prompt}' missing 'compatible_setup' field")
+            return False
+        
+        compatible_setup = prompt_config['compatible_setup']
         prompt_mode = prompt_config.get('mode', 'zero-shot')
         
-        if not compatible_dataset:
-            logger.error(f"Prompt '{args.prompt}' has no compatible dataset specified")
+        if not compatible_setup:
+            logger.error(f"Prompt '{args.prompt}' has empty compatible_setup")
             return False
         
         # Load the compatible dataset
-        logger.info(f"Loading dataset: {compatible_dataset}")
-        dataset = dataset_manager.load_dataset(compatible_dataset)
+        logger.info(f"Loading dataset for setup: {compatible_setup}")
+        dataset = dataset_manager.load_dataset(compatible_setup)
         if dataset is None:
-            logger.error(f"Failed to load dataset: {compatible_dataset}")
+            logger.error(f"Failed to load dataset for setup: {compatible_setup}")
             return False
         
         # Determine which row to use
@@ -955,7 +960,7 @@ def show_prompt_command(args):
         populated_prompt = prompt_manager.prepare_prompt_for_row(
             prompt_name=args.prompt,
             row=row,
-            dataset_name=compatible_dataset,
+            setup_name=compatible_setup,
             mode=prompt_mode,
             dataset=dataset,
             few_shot_row=args.row if prompt_mode == 'few-shot' and args.row is not None else None
@@ -967,7 +972,7 @@ def show_prompt_command(args):
         print("=" * 80)
         print(f"Prompt: {args.prompt}")
         print(f"Mode: {prompt_mode}")
-        print(f"Compatible Dataset: {compatible_dataset}")
+        print(f"Compatible Setup: {compatible_setup}")
         print(f"Row Used: {args.row if args.row is not None else row_index}")
         print(f"Dataset Size: {len(dataset)} rows")
         print("=" * 80)
@@ -977,9 +982,15 @@ def show_prompt_command(args):
         print("-" * 40)
         
         # Show the original data used
-        dataset_config = datasets_config[compatible_dataset]
-        question_fields = dataset_config.get('question_fields', [])
-        answer_field = dataset_config.get('answer_field', '')
+        setup_config = setups_config[compatible_setup]
+        
+        if 'prompt_fields' not in setup_config:
+            logger.error(f"Setup '{compatible_setup}' missing 'prompt_fields' configuration")
+            return False
+        
+        prompt_fields_config = setup_config['prompt_fields']
+        question_fields = prompt_fields_config.get('question_fields', [])
+        answer_field = prompt_fields_config.get('answer_field', '')
         
         print(f"\nORIGINAL DATA USED:")
         print("-" * 40)
@@ -1006,37 +1017,37 @@ def download_datasets_command(args):
     logger.info("Starting dataset download...")
     
     manager = DatasetManager()
-    all_datasets = list(manager.datasets_config.keys())
+    all_setups = list(manager.setups_config.keys())
     
-    # Parse dataset arguments properly
-    if not args.dataset or args.dataset.lower() == 'all':
-        datasets_to_download = all_datasets
+    # Parse setup arguments properly
+    if not args.setup or args.setup.lower() == 'all':
+        setups_to_download = all_setups
     else:
-        if ',' in args.dataset:
-            datasets_to_download = [item.strip() for item in args.dataset.split(',')]
+        if ',' in args.setup:
+            setups_to_download = [item.strip() for item in args.setup.split(',')]
         else:
-            datasets_to_download = args.dataset.split()
+            setups_to_download = args.setup.split()
     
     success_count = 0
     failure_count = 0
     
-    if not datasets_to_download:
-        logger.warning("No datasets specified for download.")
+    if not setups_to_download:
+        logger.warning("No setups specified for download.")
         return False
         
-    for dataset_name in datasets_to_download:
-        if dataset_name not in manager.datasets_config:
-            logger.error(f"Unknown dataset: {dataset_name}")
+    for setup_name in setups_to_download:
+        if setup_name not in manager.setups_config:
+            logger.error(f"Unknown setup: {setup_name}")
             failure_count += 1
             continue
             
         try:
-            if manager.download_dataset(dataset_name):
+            if manager.download_dataset(setup_name):
                 success_count += 1
             else:
                 failure_count += 1
         except Exception as e:
-            logger.error(f"Error downloading dataset {dataset_name}: {e}")
+            logger.error(f"Error downloading dataset for setup {setup_name}: {e}")
             failure_count += 1
             
     logger.info(f"Dataset download completed: {success_count} successful, {failure_count} failed")
@@ -1108,10 +1119,10 @@ def cleanup_command(args):
     return len(errors) == 0
 
 def list_available_options():
-    """List available models, datasets, and prompts"""
+    """List available models, setups, and prompts"""
     try:
         prompts_config = Config.load_prompts_config()
-        datasets_config = Config.load_datasets_config()
+        setups_config = Config.load_setups_config()
         models_config = Config.load_models_config()
         
         print("\n=== AVAILABLE OPTIONS ===")
@@ -1122,13 +1133,13 @@ def list_available_options():
             finetuned = " (finetuned)" if config.get('finetuned', False) else ""
             print(f"  - {model_name}: {config['description']}{finetuned} [{model_type}]")
         
-        print(f"\nDatasets ({len(datasets_config)}):")
-        for dataset_name, config in datasets_config.items():
-            print(f"  - {dataset_name}: {config['description']}")
+        print(f"\nSetups ({len(setups_config)}):")
+        for setup_name, config in setups_config.items():
+            print(f"  - {setup_name}: {config['description']}")
         
         print(f"\nPrompts ({len(prompts_config)}):")
         for prompt_name, config in prompts_config.items():
-            compatible = config['compatible_dataset']
+            compatible = config.get('compatible_setup', 'Unknown setup')
             mode = config.get('mode', 'zero-shot')
             print(f"  - {prompt_name}: {config['description']} [for {compatible}, {mode}]")
         
@@ -1139,11 +1150,11 @@ def list_commands_command():
     """List all available commands and their arguments with proper formatting"""
     print("\n=== AVAILABLE COMMANDS ===")
     
-    print("\n1. run-exp")
+    print("\n1. run-experiment")
     print("   Description: Run inference experiments with intelligent argument resolution")
     print("   Arguments:")
     print("     --model MODELS           Model(s) to use (space-separated: 'gpt-4o-mini claude-3.5-sonnet' or 'all')")
-    print("     --dataset DATASETS       Dataset(s) to use (space-separated: 'gmeg qald' or 'all')")
+    print("     --setup SETUPS           Setup(s) to use (space-separated: 'gmeg qald' or 'all')")
     print("     --prompt PROMPTS         Prompt(s) to use (space-separated: 'gmeg_v1 qald_v1' or 'all')")
     print("     --mode MODE              Prompting mode: zero-shot or few-shot")
     print("     --few-shot-row ROW       Specific row number for few-shot example (0-based, defaults to random)")
@@ -1154,7 +1165,7 @@ def list_commands_command():
     print("\n   Intelligent Argument Resolution:")
     print("     • Specify any combination of arguments - system handles compatibility automatically")
     print("     • Unspecified arguments default to all compatible options")
-    print("     • Dataset+prompt combinations are validated for compatibility")
+    print("     • Setup+prompt combinations are validated for compatibility")
     print("     • Mode filtering only uses prompts that support the specified mode")
     print("     • Multiple values supported: space-separated or comma-separated")
     
@@ -1179,7 +1190,7 @@ def list_commands_command():
     print("\n5. download-datasets")
     print("   Description: Download specified datasets from configured sources")
     print("   Arguments:")
-    print("     --dataset DATASETS       Dataset(s) to download (space-separated or 'all')")
+    print("     --setup SETUPS           Setup(s) to download (space-separated or 'all')")
     
     print("\n6. cleanup")
     print("   Description: Clean up system files and directories")
@@ -1188,7 +1199,7 @@ def list_commands_command():
     print("     --dry-run               Show what would be cleaned without actually cleaning")
     
     print("\n7. list-options")
-    print("   Description: List available models, datasets, prompts")
+    print("   Description: List available models, setups, prompts")
     print("   Arguments: None")
     
     print("\n8. list-commands / help / show-commands")
@@ -1201,13 +1212,13 @@ def list_commands_command():
     
     print("\n=== EXAMPLE USAGE ===")
     print("# Multiple models with space separation")
-    print("python main.py run-exp --model 'gpt-4o-mini claude-3.5-sonnet'")
+    print("python main.py run-experiment --model 'gpt-4o-mini claude-3.5-sonnet'")
     print("")
-    print("# Multiple datasets and automatic prompt selection")
-    print("python main.py run-exp --dataset 'gmeg qald' --mode few-shot")
+    print("# Multiple setups and automatic prompt selection")
+    print("python main.py run-experiment --setup 'gmeg qald' --mode few-shot")
     print("")
-    print("# Specific prompts with automatic dataset inference")
-    print("python main.py run-exp --prompt 'gmeg_v1_basic qald_v1_basic'")
+    print("# Specific prompts with automatic setup inference")
+    print("python main.py run-experiment --prompt 'gmeg_v1_basic qald_v1_basic'")
     print("")
     print("# Show populated prompt template with specific data")
     print("python main.py show-prompt --prompt gmeg_v1_basic --row 42")
@@ -1216,10 +1227,10 @@ def list_commands_command():
     print("python main.py show-prompt --prompt gmeg_v2_enhanced")
     print("")
     print("# Mixed arguments with compatibility validation")
-    print("python main.py run-exp --model 'gpt-4o-mini' --dataset gmeg --mode zero-shot")
+    print("python main.py run-experiment --model 'gpt-4o-mini' --setup gmeg --mode zero-shot")
     print("")
     print("# Force incompatible combinations")
-    print("python main.py run-exp --prompt 'gmeg_v1_basic qald_v1_basic' --force")
+    print("python main.py run-experiment --prompt 'gmeg_v1_basic qald_v1_basic' --force")
 
 def check_system_command(args):
     """Check system status"""
@@ -1323,12 +1334,12 @@ def main():
     # Add subcommands
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
-    # Experiment command (renamed from baseline experiment)
-    exp_parser = subparsers.add_parser('run-exp', help='Run inference experiments')
+    # Experiment command (renamed from run-exp)
+    exp_parser = subparsers.add_parser('run-experiment', help='Run inference experiments')
     exp_parser.add_argument('--model', type=str,
                                 help='Model(s) to use (space-separated: "gpt-4o-mini claude-3.5-sonnet" or "all")')
-    exp_parser.add_argument('--dataset', type=str,
-                                help='Dataset(s) to use (space-separated: "gmeg qald" or "all")')
+    exp_parser.add_argument('--setup', type=str,
+                                help='Setup(s) to use (space-separated: "gmeg qald" or "all")')
     exp_parser.add_argument('--prompt', type=str,
                                 help='Prompt(s) to use (space-separated: "gmeg_v1 qald_v1" or "all")')
     exp_parser.add_argument('--mode', type=str, choices=['zero-shot', 'few-shot'],
@@ -1363,8 +1374,8 @@ def main():
     
     # Download datasets command
     download_parser = subparsers.add_parser('download-datasets', help='Download specified datasets')
-    download_parser.add_argument('--dataset', type=str, default='all',
-                                 help='Dataset(s) to download (space-separated, or "all" for all datasets)')
+    download_parser.add_argument('--setup', type=str, default='all',
+                                 help='Setup(s) to download (space-separated, or "all" for all setups)')
     
     # Cleanup command
     cleanup_parser = subparsers.add_parser('cleanup', help='Clean up system files and directories')
@@ -1375,7 +1386,7 @@ def main():
                                help='Show what would be cleaned without actually cleaning')
     
     # Utility commands
-    list_parser = subparsers.add_parser('list-options', help='List available models, datasets, and prompts')
+    list_parser = subparsers.add_parser('list-options', help='List available models, setups, and prompts')
     list_commands_parser = subparsers.add_parser('list-commands', help='List all available commands and their arguments')
     help_parser = subparsers.add_parser('help', help='Show all available commands and their arguments')
     show_commands_parser = subparsers.add_parser('show-commands', help='Show all available commands and their arguments')
@@ -1390,7 +1401,7 @@ def main():
     
     # Execute command
     try:
-        if args.command == 'run-exp':
+        if args.command == 'run-experiment':
             success = run_experiment_command(args)
         elif args.command == 'evaluate':
             success = evaluate_command(args)

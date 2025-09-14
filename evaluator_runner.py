@@ -62,7 +62,7 @@ class EvaluationRunner:
         extracted = {
             'mode': metadata.get('mode', 'zero-shot'),
             'model': metadata.get('model', 'unknown'),
-            'dataset': metadata.get('dataset', 'unknown'),
+            'setup': metadata.get('setup', 'unknown'),
             'prompt': metadata.get('prompt', 'unknown'),
             'size': metadata.get('size', 0),
             'temperature': metadata.get('temperature', 0.1),
@@ -215,14 +215,14 @@ class EvaluationRunner:
             
             # Extract metadata from file content
             metadata = self.extract_metadata_from_file_data(experiment_data)
-            dataset_name = metadata['dataset']
+            setup_name = metadata['setup']
             
             # Extract pruning statistics from inference stage
             inference_pruning_stats = self.extract_pruning_stats_from_file_data(experiment_data)
             
             # Run comprehensive evaluation with custom metrics and pruning stats
             experiment_name = experiment_data.get('experiment_name', 'unknown')
-            logger.info(f"Evaluating experiment: {experiment_name} (mode: {metadata['mode']}, dataset: {dataset_name})")
+            logger.info(f"Evaluating experiment: {experiment_name} (mode: {metadata['mode']}, setup: {setup_name})")
             
             # Log pruning summary from inference stage
             if inference_pruning_stats.get('rows_pruned', 0) > 0:
@@ -234,7 +234,7 @@ class EvaluationRunner:
                 expected_responses=expected_outputs,
                 embedding_model=self.model_manager.embedding_model,
                 batch_name=experiment_name,
-                dataset_name=dataset_name,
+                setup_name=setup_name,
                 response_data_list=response_data_list,  # Pass full response data for custom metrics
                 inference_pruning_stats=inference_pruning_stats  # Pass pruning stats from inference
             )
@@ -244,7 +244,7 @@ class EvaluationRunner:
                 'original_experiment_config': experiment_data.get('experiment_config', {}),
                 'original_experiment_name': experiment_name,
                 'evaluation_timestamp': datetime.now().isoformat(),
-                'dataset_name': dataset_name,
+                'setup_name': setup_name,
                 'extracted_metadata': metadata
             })
             
@@ -337,7 +337,7 @@ class EvaluationRunner:
             'experiment_name': experiment_name,
             'mode': metadata['mode'],
             'model': metadata['model'],
-            'dataset': metadata['dataset'],
+            'setup': metadata['setup'],
             'evaluation_file': output_file,
             'metrics': evaluation_result.get('aggregated_scores', {}),
             'num_samples': evaluation_result.get('num_samples', 0),
@@ -392,7 +392,7 @@ class EvaluationRunner:
                     'experiment_name': experiment_name,
                     'mode': metadata['mode'],
                     'model': metadata['model'],
-                    'dataset': metadata['dataset'],
+                    'setup': metadata['setup'],
                     'evaluation_file': output_file,
                     'metrics': evaluation_result.get('aggregated_scores', {}),
                     'num_samples': evaluation_result.get('num_samples', 0),

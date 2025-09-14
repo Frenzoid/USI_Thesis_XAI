@@ -1,11 +1,15 @@
 {
   "gmeg": {
-    "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
-    "download_path": "DS_GMEG_EXP",
-    "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv",
-    "question_fields": ["original", "revised"],
-    "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable",
-    "description": "A Dataset of Human and LLM-Generated Explanations of Grammatical and Fluency Edits",
+    "description": "LLM explanation generation benchmark based on Grammarly's My Edit Graph (GMEG) dataset, which includes human-annotated explanations for text revisions.",
+    "dataset": {
+      "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
+      "download_path": "DS_GMEG_EXP",
+      "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv"
+    },
+    "prompt_fields": {
+      "question_fields": ["original", "revised"],
+      "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable"
+    },
     "prune_row": {
       "please_explain_the_revisions_write_na_if_not_annotatable": [""]
     },
@@ -15,38 +19,53 @@
     }
   },
   "RHAI_1": {
-    "download_link": "https://github.com/allenai/few_shot_explanations/archive/refs/heads/main.zip",
-    "download_path": "DS_ReframingHumanAI",
-    "csv_file": "few_shot_explanations-main/data/handwritten_cose_v1.11_examples.csv",
-    "question_fields": ["question","choices", "answer"],
-    "answer_field": "our_explanation",
-    "description": "A dataset that includes human and AI-generated explanations for various tasks, focusing on how explanations can be reframed to improve understanding and usability."
+    "description": "Evaluates the ability of models to generate human-like explanations for various tasks, focusing on the reframing of explanations to enhance clarity and understanding.",
+    "dataset": {
+      "download_link": "https://github.com/allenai/few_shot_explanations/archive/refs/heads/main.zip",
+      "download_path": "DS_ReframingHumanAI",
+      "csv_file": "few_shot_explanations-main/data/handwritten_cose_v1.11_examples.csv"
+    },
+    "prompt_fields": {
+      "question_fields": ["question", "choices", "answer"],
+      "answer_field": "our_explanation"
+    }
   },
   "RHAI_2": {
-    "download_link": "https://github.com/allenai/few_shot_explanations/archive/refs/heads/main.zip",
-    "download_path": "DS_ReframingHumanAI",
-    "csv_file": "few_shot_explanations-main/data/handwritten_cose_v1.11_examples.csv",
-    "question_fields": ["question", "choices"],
-    "answer_field": "answer",
-    "description": "A dataset that includes human and AI-generated explanations for various tasks, focusing on how explanations can be reframed to improve understanding and usability."
+    "description": "Evaluates the ability of models to select the correct answer from multiple choices for various tasks, focusing on understanding and reasoning.",
+    "dataset": {
+      "download_link": "https://github.com/allenai/few_shot_explanations/archive/refs/heads/main.zip",
+      "download_path": "DS_ReframingHumanAI", 
+      "csv_file": "few_shot_explanations-main/data/handwritten_cose_v1.11_examples.csv"
+    },
+    "prompt_fields": {
+      "question_fields": ["question", "choices"],
+      "answer_field": "answer"
+    }
   },
   "ecqa_1": {
-    "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
-    "download_path": "DS_ECQA",
-    "parquet_file": "train-00000-of-00001.parquet",
-    "question_fields": ["q_concept", "q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5"],
-    "answer_field": "q_ans",
-    "description": "A dataset for commonsense explanation generation, containing questions, multiple-choice answers, and corresponding explanations to enhance understanding of everyday situations."
+    "description": "Evaluates the ability of models to generate commonsense explanations for multiple-choice questions, enhancing understanding of everyday situations.",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_ECQA",
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["q_concept", "q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5"],
+      "answer_field": "q_ans"
+    }
   },
   "ecqa_2": {
-    "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
-    "download_path": "DS_ECQA",
-    "parquet_file": "train-00000-of-00001.parquet",
-    "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
-    "answer_field": "taskA_pos",
-    "description": "A dataset for commonsense explanation generation, containing questions, multiple-choice answers, and corresponding explanations to enhance understanding of everyday situations."
+    "description": "Evaluates the ability of models to identify the correct answer from multiple choices for commonsense questions, focusing on practical reasoning skills.",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_ECQA",
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
+      "answer_field": "taskA_pos"
+    }
   },
-
 
 
   "hatebrxplain": {
