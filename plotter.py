@@ -12,12 +12,12 @@ logger = setup_logging("plotting_runner")
 
 class PlottingRunner:
     """
-    Handles generating plots and visualizations from evaluation results using metadata-based detection.
+    Handles generating plots and visualizations from evaluation results.
     
     This class serves as the interface between the CLI and the visualization
     framework, providing methods to:
     1. Find and load evaluation result files
-    2. Extract metadata from file content (not filename parsing)
+    2. Extract metadata from file content
     3. Create individual experiment plots
     4. Generate comparison plots across multiple experiments
     5. Create comprehensive visualization reports
@@ -41,14 +41,13 @@ class PlottingRunner:
             evaluation_data: Loaded evaluation result data
             
         Returns:
-            dict: Extracted metadata including experiment_type, mode, model, etc.
+            dict: Extracted metadata including mode, model, etc.
         """
         # For evaluation files, metadata is in 'original_experiment_config'
         metadata = evaluation_data.get('original_experiment_config', {})
         
         # Extract key fields with defaults
         extracted = {
-            'experiment_type': metadata.get('experiment_type', 'baseline'),
             'mode': metadata.get('mode', 'zero-shot'),
             'model': metadata.get('model', 'unknown'),
             'dataset': metadata.get('dataset', 'unknown'),
@@ -62,29 +61,20 @@ class PlottingRunner:
         return extracted
     
     # =============================================================================
-    # FILE DISCOVERY AND LOADING WITH METADATA-BASED DETECTION
+    # FILE DISCOVERY AND LOADING
     # =============================================================================
     
-    def find_evaluation_files(self, experiment_type: Optional[str] = None) -> List[str]:
+    def find_evaluation_files(self) -> List[str]:
         """
         Find all evaluation result files for plotting.
         
-        Args:
-            experiment_type: Type filter for evaluation files (will be applied via metadata)
-            
         Returns:
             list: Paths to evaluation files
         """
-        # Search across all experiment types since we'll filter by metadata
-        all_files = []
-        for exp_type in Config.EXPERIMENT_TYPES:
-            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
-            pattern = os.path.join(search_dir, "evaluation_*.json")
-            files = glob.glob(pattern)
-            all_files.extend(files)
-        
-        logger.info(f"Found {len(all_files)} evaluation files")
-        return all_files
+        pattern = os.path.join(Config.EVALUATIONS_DIR, "evaluation_*.json")
+        files = glob.glob(pattern)
+        logger.info(f"Found {len(files)} evaluation files")
+        return files
     
     def load_evaluation_results(self, file_path: str) -> Optional[Dict[str, Any]]:
         """
@@ -107,23 +97,15 @@ class PlottingRunner:
             logger.error(f"Error loading evaluation results from {file_path}: {e}")
             return None
     
-    def load_evaluation_by_name(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    def load_evaluation_by_name(self, experiment_name: str) -> Optional[Dict[str, Any]]:
         """
-        Load evaluation results for a specific experiment by name with metadata-based detection.
+        Load evaluation results for a specific experiment by name.
         """
         logger.info(f"Loading evaluation for: {experiment_name}")
         
-        # Search across all experiment types since we'll determine the actual type from metadata
-        evaluation_file = None
+        evaluation_file = os.path.join(Config.EVALUATIONS_DIR, f"evaluation_{experiment_name}.json")
         
-        for exp_type in Config.EXPERIMENT_TYPES:
-            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
-            potential_file = os.path.join(search_dir, f"evaluation_{experiment_name}.json")
-            if os.path.exists(potential_file):
-                evaluation_file = potential_file
-                break
-        
-        if not evaluation_file:
+        if not os.path.exists(evaluation_file):
             logger.error(f"Evaluation file not found: {experiment_name}")
             return None
         
@@ -135,7 +117,7 @@ class PlottingRunner:
     
     def format_evaluation_for_visualization(self, evaluation_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Format evaluation data for compatibility with visualization framework using metadata-based detection.
+        Format evaluation data for compatibility with visualization framework.
         """
         # Extract metadata from file content
         metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
@@ -148,8 +130,7 @@ class PlottingRunner:
             'model_type': self._determine_model_type(metadata['model']),
             'prompt_key': metadata['prompt'],
             'mode': metadata['mode'],
-            'experiment_type': metadata['experiment_type'],
-            'dataset_type': evaluation_data.get('dataset_type', 'general'),
+            'dataset_type': 'general',
             'dataset_name': metadata['dataset'],
             'sample_size': metadata['size'],
             'temperature': metadata['temperature'],
@@ -186,30 +167,26 @@ class PlottingRunner:
             return 'local'
     
     # =============================================================================
-    # INDIVIDUAL EXPERIMENT PLOTTING WITH METADATA-BASED DETECTION
+    # INDIVIDUAL EXPERIMENT PLOTTING
     # =============================================================================
     
-    def create_individual_plot(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[str]:
+    def create_individual_plot(self, experiment_name: str) -> Optional[str]:
         """
-        Create individual plot for a single experiment with metadata-based detection.
+        Create individual plot for a single experiment.
         """
         logger.info(f"Creating individual plot for: {experiment_name}")
         
         # Load evaluation data
-        evaluation_data = self.load_evaluation_by_name(experiment_name, experiment_type)
+        evaluation_data = self.load_evaluation_by_name(experiment_name)
         if not evaluation_data:
             logger.error(f"Could not load evaluation data for: {experiment_name}")
             return None
         
-        # Format for visualization using metadata-based approach
+        # Format for visualization
         formatted_data = self.format_evaluation_for_visualization(evaluation_data)
         
-        # Extract actual experiment type from metadata
-        metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
-        final_experiment_type = metadata['experiment_type']
-        
-        # Generate plot file path using the correct type from metadata
-        file_paths = Config.generate_file_paths(final_experiment_type, experiment_name)
+        # Generate plot file path
+        file_paths = Config.generate_file_paths(experiment_name)
         plot_file = file_paths['plot']
         
         # Ensure output directory exists
@@ -230,37 +207,23 @@ class PlottingRunner:
             return None
     
     # =============================================================================
-    # COMPARISON PLOTTING WITH METADATA-BASED DETECTION
+    # COMPARISON PLOTTING
     # =============================================================================
     
-    def create_comparison_plots(self, experiment_names: List[str], 
-                              experiment_type: Optional[str] = None) -> Optional[List[str]]:
+    def create_comparison_plots(self, experiment_names: List[str]) -> Optional[List[str]]:
         """
-        Create comparison plots for multiple experiments with metadata-based detection.
+        Create comparison plots for multiple experiments.
         """
         logger.info(f"Creating comparison plots for {len(experiment_names)} experiments")
         
-        # Load all evaluation data using metadata-based detection
+        # Load all evaluation data
         evaluation_data_list = []
-        detected_types = set()
         
         for experiment_name in experiment_names:
-            evaluation_data = self.load_evaluation_by_name(experiment_name, experiment_type)
+            evaluation_data = self.load_evaluation_by_name(experiment_name)
             if evaluation_data:
-                # Apply experiment type filter if specified
-                if experiment_type:
-                    metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
-                    file_experiment_type = metadata['experiment_type']
-                    if file_experiment_type != experiment_type:
-                        logger.info(f"Skipping {experiment_name}: type {file_experiment_type} doesn't match filter {experiment_type}")
-                        continue
-                
                 formatted_data = self.format_evaluation_for_visualization(evaluation_data)
                 evaluation_data_list.append(formatted_data)
-                
-                # Track detected types for output directory decision
-                metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
-                detected_types.add(metadata['experiment_type'])
             else:
                 logger.warning(f"Could not load data for: {experiment_name}")
         
@@ -268,28 +231,11 @@ class PlottingRunner:
             logger.error("No valid evaluation data found for comparison")
             return None
         
-        # Determine output directory based on detected types or filter
-        if experiment_type:
-            final_experiment_type = experiment_type
-        elif len(detected_types) == 1:
-            final_experiment_type = detected_types.pop()
-            logger.info(f"All experiments are of type: {final_experiment_type}")
-        else:
-            # Mixed types - use the most common
-            type_counts = {}
-            for data in evaluation_data_list:
-                exp_type = data['experiment_type']
-                type_counts[exp_type] = type_counts.get(exp_type, 0) + 1
-            
-            final_experiment_type = max(type_counts, key=lambda k: type_counts[k])
-            logger.info(f"Mixed experiment types detected, using most common: {final_experiment_type}")
-        
         # Generate output directory and comparison name
-        output_dir = Config.get_output_dirs_for_experiment_type(final_experiment_type)['plots']
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         comparison_name = f"comparison_{len(evaluation_data_list)}exps_{timestamp}"
         
-        os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(Config.PLOTS_DIR, exist_ok=True)
         
         plot_files = []
         
@@ -297,14 +243,14 @@ class PlottingRunner:
             # Create different types of comparison plots
             
             # 1. F1 Score comparison
-            f1_plot_file = os.path.join(output_dir, f"{comparison_name}_f1_comparison.html")
+            f1_plot_file = os.path.join(Config.PLOTS_DIR, f"{comparison_name}_f1_comparison.html")
             f1_fig = self.visualization_framework.plot_metric_comparison(
                 evaluation_data_list, metric='f1_score', save_path=f1_plot_file
             )
             plot_files.append(f1_plot_file)
             
             # 2. Semantic similarity comparison
-            similarity_plot_file = os.path.join(output_dir, f"{comparison_name}_similarity_comparison.html")
+            similarity_plot_file = os.path.join(Config.PLOTS_DIR, f"{comparison_name}_similarity_comparison.html")
             similarity_fig = self.visualization_framework.plot_metric_comparison(
                 evaluation_data_list, metric='semantic_similarity', save_path=similarity_plot_file
             )
@@ -312,14 +258,14 @@ class PlottingRunner:
             
             # 3. Radar chart comparison (if multiple experiments)
             if len(evaluation_data_list) > 1:
-                radar_plot_file = os.path.join(output_dir, f"{comparison_name}_radar_comparison.html")
+                radar_plot_file = os.path.join(Config.PLOTS_DIR, f"{comparison_name}_radar_comparison.html")
                 radar_fig = self.visualization_framework.plot_model_comparison_radar(
                     evaluation_data_list, save_path=radar_plot_file
                 )
                 plot_files.append(radar_plot_file)
             
             # 4. Create index file for easy navigation
-            index_file = os.path.join(output_dir, f"{comparison_name}_index.html")
+            index_file = os.path.join(Config.PLOTS_DIR, f"{comparison_name}_index.html")
             self._create_comparison_index(index_file, plot_files, experiment_names, comparison_name)
             plot_files.append(index_file)
             
@@ -412,22 +358,17 @@ class PlottingRunner:
         logger.info(f"Comparison index created: {index_file}")
     
     # =============================================================================
-    # BATCH PLOTTING WITH METADATA-BASED DETECTION
+    # BATCH PLOTTING
     # =============================================================================
     
-    def create_all_plots(self, experiment_type: Optional[str] = None) -> Optional[List[Dict[str, str]]]:
+    def create_all_plots(self) -> Optional[List[Dict[str, str]]]:
         """
-        Create plots for all evaluations with metadata-based filtering.
+        Create plots for all evaluations.
         """
-        logger.info(f"Creating plots for all evaluations (type filter: {experiment_type or 'none'})")
+        logger.info("Creating plots for all evaluations")
         
-        # Find evaluation files across all types since we'll filter by metadata
-        all_evaluation_files = []
-        for exp_type in Config.EXPERIMENT_TYPES:
-            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
-            pattern = os.path.join(search_dir, "evaluation_*.json")
-            files = glob.glob(pattern)
-            all_evaluation_files.extend(files)
+        # Find evaluation files
+        all_evaluation_files = self.find_evaluation_files()
         
         if not all_evaluation_files:
             logger.warning("No evaluation files found")
@@ -450,20 +391,13 @@ class PlottingRunner:
                 
                 # Extract metadata from file content
                 metadata = self.extract_metadata_from_evaluation_data(evaluation_data)
-                file_experiment_type = metadata['experiment_type']
-                
-                # Apply experiment type filter if specified
-                if experiment_type and file_experiment_type != experiment_type:
-                    logger.debug(f"Skipping {experiment_name}: type {file_experiment_type} doesn't match filter {experiment_type}")
-                    continue
                 
                 # Create individual plot
-                plot_file = self.create_individual_plot(experiment_name, file_experiment_type)
+                plot_file = self.create_individual_plot(experiment_name)
                 
                 if plot_file:
                     results.append({
                         'experiment_name': experiment_name,
-                        'experiment_type': file_experiment_type,
                         'mode': metadata['mode'],
                         'model': metadata['model'],
                         'plot_file': plot_file
@@ -479,18 +413,7 @@ class PlottingRunner:
         if len(results) > 1:
             try:
                 experiment_names = [r['experiment_name'] for r in results]
-                
-                # Determine the most common experiment type for comparison
-                if experiment_type:
-                    comparison_type = experiment_type
-                else:
-                    type_counts = {}
-                    for result in results:
-                        result_type = result['experiment_type']
-                        type_counts[result_type] = type_counts.get(result_type, 0) + 1
-                    comparison_type = max(type_counts, key=lambda k: type_counts[k]) if type_counts else 'baseline'
-                
-                comparison_plots = self.create_comparison_plots(experiment_names, comparison_type)
+                comparison_plots = self.create_comparison_plots(experiment_names)
                 if comparison_plots:
                     logger.info(f"Also created comprehensive comparison with {len(comparison_plots)} files")
             except Exception as e:

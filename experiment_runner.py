@@ -42,7 +42,7 @@ class ExperimentRunner:
     
     def validate_experiment_config(self, config: Dict[str, Any]) -> bool:
         """Validate experiment configuration for required fields"""
-        required_fields = ['experiment_type', 'model', 'dataset', 'prompt', 'mode', 'size', 'temperature']
+        required_fields = ['model', 'dataset', 'prompt', 'mode', 'size', 'temperature']
         
         # Check required fields
         for field in required_fields:
@@ -51,10 +51,6 @@ class ExperimentRunner:
                 return False
         
         # Validate values exist in configs
-        if config['experiment_type'] not in Config.EXPERIMENT_TYPES:
-            logger.error(f"Invalid experiment type: {config['experiment_type']}")
-            return False
-        
         if config['model'] not in self.models_config:
             logger.error(f"Unknown model: {config['model']}")
             return False
@@ -352,7 +348,6 @@ class ExperimentRunner:
         """Save experiment results to JSON file with comprehensive metadata"""
         
         experiment_name = Config.generate_experiment_name(
-            experiment_config['experiment_type'],
             experiment_config['dataset'],
             experiment_config['model'],
             experiment_config['mode'],
@@ -362,7 +357,7 @@ class ExperimentRunner:
             few_shot_row=experiment_config.get('few_shot_row')
         )
         
-        file_paths = Config.generate_file_paths(experiment_config['experiment_type'], experiment_name)
+        file_paths = Config.generate_file_paths(experiment_name)
         output_file = file_paths['inference']
         
         # Ensure output directory exists
@@ -440,9 +435,9 @@ class ExperimentRunner:
             logger.error(f"Error saving experiment results: {e}")
             raise
     
-    def run_baseline_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Run a complete baseline experiment with mode-based prompting and authentication handling"""
-        logger.info(f"Starting {config['mode']} baseline experiment: {config}")
+    def run_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Run a complete experiment with mode-based prompting and authentication handling"""
+        logger.info(f"Starting {config['mode']} experiment: {config}")
         
         # Validate configuration
         if not self.validate_experiment_config(config):
@@ -559,7 +554,6 @@ class ExperimentRunner:
                 clear_gpu_memory()
             
             experiment_name = Config.generate_experiment_name(
-                config['experiment_type'], 
                 config['dataset'],
                 config['model'],
                 config['mode'],
@@ -594,7 +588,7 @@ class ExperimentRunner:
             return result
             
         except Exception as e:
-            logger.error(f"{config['mode']} baseline experiment failed: {e}")
+            logger.error(f"{config['mode']} experiment failed: {e}")
             import traceback
             logger.error(traceback.format_exc())
             

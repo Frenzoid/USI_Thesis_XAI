@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-XAI Explanation Evaluation System - Comprehensive CLI
+XAI Explanation Evaluation System CLI
 
 This script provides a command-line interface for running experiments to evaluate
 Large Language Models' alignment with user study results in XAI explanation evaluation.
@@ -513,11 +513,6 @@ def setup_cli_logging():
     logger = setup_logging("main", "INFO")
     return logger
 
-def validate_experiment_type(experiment_type: str):
-    """Validate experiment type"""
-    if not Config.validate_experiment_type(experiment_type):
-        raise ValueError(f"Unsupported experiment type: {experiment_type}. Supported: {Config.EXPERIMENT_TYPES}")
-
 def validate_local_model_capability(models_to_run: List[str], models_config: dict, force: bool = False) -> bool:
     """
     Validate that the system can run local models if they are requested.
@@ -608,9 +603,9 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
     
     return True
 
-def run_baseline_experiment_command(args):
-    """Run baseline experiments with execution order"""
-    logger.info("Starting baseline experiment execution with model loading...")
+def run_experiment_command(args):
+    """Run experiments with execution order"""
+    logger.info("Starting experiment execution with model loading...")
     
     # Load configurations
     try:
@@ -748,7 +743,6 @@ def run_baseline_experiment_command(args):
                     logger.info(f"Running experiment {current_experiment}/{total_experiments}: {combo}")
                     
                     experiment_config = {
-                        'experiment_type': 'baseline',
                         'model': combo.model,
                         'dataset': combo.dataset,
                         'prompt': combo.prompt,
@@ -760,7 +754,7 @@ def run_baseline_experiment_command(args):
                     
                     # Since model is already loaded for local models, the experiment runner
                     # will use the existing loaded model instead of reloading
-                    result = runner.run_baseline_experiment(experiment_config)
+                    result = runner.run_experiment(experiment_config)
                     
                     if result:
                         results.append(result)
@@ -816,10 +810,6 @@ def evaluate_command(args):
     """Evaluate experiment results"""
     logger.info("Starting evaluation...")
     
-    # Validate experiment type
-    if args.experiment_type:
-        validate_experiment_type(args.experiment_type)
-    
     # Initialize evaluation runner
     evaluator = EvaluationRunner()
     
@@ -830,7 +820,7 @@ def evaluate_command(args):
             results = []
             
             for experiment_name in experiments_to_evaluate:
-                result = evaluator.evaluate_experiment(experiment_name.strip(), args.experiment_type)
+                result = evaluator.evaluate_experiment(experiment_name.strip())
                 if result:
                     results.append(result)
                     logger.info(f"Evaluated: {experiment_name}")
@@ -839,7 +829,7 @@ def evaluate_command(args):
             
         else:
             # Evaluate all experiments
-            results = evaluator.evaluate_all_experiments(args.experiment_type)
+            results = evaluator.evaluate_all_experiments()
         
         if results:
             logger.info(f"Successfully evaluated {len(results)} experiments")
@@ -866,10 +856,6 @@ def plot_command(args):
     """Generate plots from evaluation results"""
     logger.info("Starting plot generation...")
     
-    # Validate experiment type
-    if args.experiment_type:
-        validate_experiment_type(args.experiment_type)
-    
     # Initialize plotting runner
     plotter = PlottingRunner()
     
@@ -880,7 +866,7 @@ def plot_command(args):
             
             if args.compare:
                 # Generate comparison plots
-                results = plotter.create_comparison_plots(experiments_to_plot, args.experiment_type)
+                results = plotter.create_comparison_plots(experiments_to_plot)
                 if results:
                     logger.info(f"Generated comparison plots: {results}")
                 else:
@@ -889,7 +875,7 @@ def plot_command(args):
                 # Generate individual plots
                 success_count = 0
                 for experiment_name in experiments_to_plot:
-                    result = plotter.create_individual_plot(experiment_name.strip(), args.experiment_type)
+                    result = plotter.create_individual_plot(experiment_name.strip())
                     if result:
                         success_count += 1
                         logger.info(f"Generated plot for: {experiment_name}")
@@ -899,7 +885,7 @@ def plot_command(args):
                 return success_count > 0
         else:
             # Plot all experiments
-            results = plotter.create_all_plots(args.experiment_type)
+            results = plotter.create_all_plots()
             if results:
                 logger.info(f"Generated plots for {len(results)} experiments")
                 return True
@@ -1146,10 +1132,6 @@ def list_available_options():
             mode = config.get('mode', 'zero-shot')
             print(f"  - {prompt_name}: {config['description']} [for {compatible}, {mode}]")
         
-        print(f"\nExperiment Types ({len(Config.EXPERIMENT_TYPES)}):")
-        for exp_type in Config.EXPERIMENT_TYPES:
-            print(f"  - {exp_type}")
-        
     except Exception as e:
         print(f"Error loading configurations: {e}")
 
@@ -1157,8 +1139,8 @@ def list_commands_command():
     """List all available commands and their arguments with proper formatting"""
     print("\n=== AVAILABLE COMMANDS ===")
     
-    print("\n1. run-baseline-exp")
-    print("   Description: Run baseline inference experiments with intelligent argument resolution")
+    print("\n1. run-exp")
+    print("   Description: Run inference experiments with intelligent argument resolution")
     print("   Arguments:")
     print("     --model MODELS           Model(s) to use (space-separated: 'gpt-4o-mini claude-3.5-sonnet' or 'all')")
     print("     --dataset DATASETS       Dataset(s) to use (space-separated: 'gmeg qald' or 'all')")
@@ -1180,13 +1162,11 @@ def list_commands_command():
     print("   Description: Evaluate experiment results using various metrics")
     print("   Arguments:")
     print("     --experiment NAMES       Specific experiment(s) to evaluate (comma-separated)")
-    print("     --experiment-type TYPE   Filter by experiment type")
     
     print("\n3. plot")
     print("   Description: Generate plots and visualizations from evaluation results")
     print("   Arguments:")
     print("     --experiment NAMES       Specific experiment(s) to plot (comma-separated)")
-    print("     --experiment-type TYPE   Filter by experiment type")
     print("     --compare               Generate comparison plots instead of individual")
     
     print("\n4. show-prompt")
@@ -1208,7 +1188,7 @@ def list_commands_command():
     print("     --dry-run               Show what would be cleaned without actually cleaning")
     
     print("\n7. list-options")
-    print("   Description: List available models, datasets, prompts, and experiment types")
+    print("   Description: List available models, datasets, prompts")
     print("   Arguments: None")
     
     print("\n8. list-commands / help / show-commands")
@@ -1221,13 +1201,13 @@ def list_commands_command():
     
     print("\n=== EXAMPLE USAGE ===")
     print("# Multiple models with space separation")
-    print("python main.py run-baseline-exp --model 'gpt-4o-mini claude-3.5-sonnet'")
+    print("python main.py run-exp --model 'gpt-4o-mini claude-3.5-sonnet'")
     print("")
     print("# Multiple datasets and automatic prompt selection")
-    print("python main.py run-baseline-exp --dataset 'gmeg qald' --mode few-shot")
+    print("python main.py run-exp --dataset 'gmeg qald' --mode few-shot")
     print("")
     print("# Specific prompts with automatic dataset inference")
-    print("python main.py run-baseline-exp --prompt 'gmeg_v1_basic qald_v1_basic'")
+    print("python main.py run-exp --prompt 'gmeg_v1_basic qald_v1_basic'")
     print("")
     print("# Show populated prompt template with specific data")
     print("python main.py show-prompt --prompt gmeg_v1_basic --row 42")
@@ -1236,10 +1216,10 @@ def list_commands_command():
     print("python main.py show-prompt --prompt gmeg_v2_enhanced")
     print("")
     print("# Mixed arguments with compatibility validation")
-    print("python main.py run-baseline-exp --model 'gpt-4o-mini' --dataset gmeg --mode zero-shot")
+    print("python main.py run-exp --model 'gpt-4o-mini' --dataset gmeg --mode zero-shot")
     print("")
     print("# Force incompatible combinations")
-    print("python main.py run-baseline-exp --prompt 'gmeg_v1_basic qald_v1_basic' --force")
+    print("python main.py run-exp --prompt 'gmeg_v1_basic qald_v1_basic' --force")
 
 def check_system_command(args):
     """Check system status"""
@@ -1343,38 +1323,34 @@ def main():
     # Add subcommands
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
-    # Baseline experiment command
-    baseline_parser = subparsers.add_parser('run-baseline-exp', help='Run baseline inference experiments')
-    baseline_parser.add_argument('--model', type=str,
+    # Experiment command (renamed from baseline experiment)
+    exp_parser = subparsers.add_parser('run-exp', help='Run inference experiments')
+    exp_parser.add_argument('--model', type=str,
                                 help='Model(s) to use (space-separated: "gpt-4o-mini claude-3.5-sonnet" or "all")')
-    baseline_parser.add_argument('--dataset', type=str,
+    exp_parser.add_argument('--dataset', type=str,
                                 help='Dataset(s) to use (space-separated: "gmeg qald" or "all")')
-    baseline_parser.add_argument('--prompt', type=str,
+    exp_parser.add_argument('--prompt', type=str,
                                 help='Prompt(s) to use (space-separated: "gmeg_v1 qald_v1" or "all")')
-    baseline_parser.add_argument('--mode', type=str, choices=['zero-shot', 'few-shot'],
+    exp_parser.add_argument('--mode', type=str, choices=['zero-shot', 'few-shot'],
                                 help='Prompting mode: zero-shot or few-shot')
-    baseline_parser.add_argument('--few-shot-row', type=int,
+    exp_parser.add_argument('--few-shot-row', type=int,
                                 help='Specific row number to use for few-shot example (0-based indexing, defaults to random)')
-    baseline_parser.add_argument('--size', type=int, default=Config.DEFAULT_SAMPLE_SIZE,
+    exp_parser.add_argument('--size', type=int, default=Config.DEFAULT_SAMPLE_SIZE,
                                 help=f'Sample size (default: {Config.DEFAULT_SAMPLE_SIZE})')
-    baseline_parser.add_argument('--temperature', type=float, default=Config.DEFAULT_TEMPERATURE,
+    exp_parser.add_argument('--temperature', type=float, default=Config.DEFAULT_TEMPERATURE,
                                 help=f'Temperature for generation (default: {Config.DEFAULT_TEMPERATURE})')
-    baseline_parser.add_argument('--force', action='store_true',
+    exp_parser.add_argument('--force', action='store_true',
                                 help='Force run even with validation errors')
     
     # Evaluate command
     eval_parser = subparsers.add_parser('evaluate', help='Evaluate experiment results')
     eval_parser.add_argument('--experiment', type=str,
                            help='Specific experiment(s) to evaluate (comma-separated)')
-    eval_parser.add_argument('--experiment-type', type=str,
-                           help='Filter by experiment type (baseline, masked, impersonation)')
     
     # Plot command
     plot_parser = subparsers.add_parser('plot', help='Generate plots from evaluations')
     plot_parser.add_argument('--experiment', type=str,
                            help='Specific experiment(s) to plot (comma-separated)')
-    plot_parser.add_argument('--experiment-type', type=str,
-                           help='Filter by experiment type (baseline, masked, impersonation)')
     plot_parser.add_argument('--compare', action='store_true',
                            help='Generate comparison plots instead of individual plots')
     
@@ -1414,8 +1390,8 @@ def main():
     
     # Execute command
     try:
-        if args.command == 'run-baseline-exp':
-            success = run_baseline_experiment_command(args)
+        if args.command == 'run-exp':
+            success = run_experiment_command(args)
         elif args.command == 'evaluate':
             success = evaluate_command(args)
         elif args.command == 'plot':

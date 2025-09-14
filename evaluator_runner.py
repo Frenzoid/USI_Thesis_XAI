@@ -15,11 +15,11 @@ logger = setup_logging("evaluation_runner")
 
 class EvaluationRunner:
     """
-    Handles evaluating experiment results using comprehensive metrics with metadata-based detection.
+    Handles evaluating experiment results using comprehensive metrics.
     
     This class orchestrates the evaluation pipeline:
     1. Finds and loads experiment result files
-    2. Extracts metadata from file content (not filename parsing)
+    2. Extracts metadata from file content
     3. Extracts model responses and expected outputs
     4. Runs evaluation using the EvaluationFramework with custom metrics
     5. Includes pruning statistics from inference stage
@@ -43,13 +43,13 @@ class EvaluationRunner:
     
     def extract_metadata_from_file_data(self, experiment_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Extract experiment metadata from loaded file data instead of filename parsing.
+        Extract experiment metadata from loaded file data.
         
         Args:
             experiment_data: Loaded experiment result data
             
         Returns:
-            dict: Extracted metadata including experiment_type, mode, model, etc.
+            dict: Extracted metadata including mode, model, etc.
         """
         # For inference result files, metadata is in 'experiment_config'
         metadata = experiment_data.get('experiment_config', {})
@@ -60,7 +60,6 @@ class EvaluationRunner:
         
         # Extract key fields with defaults
         extracted = {
-            'experiment_type': metadata.get('experiment_type', 'baseline'),
             'mode': metadata.get('mode', 'zero-shot'),
             'model': metadata.get('model', 'unknown'),
             'dataset': metadata.get('dataset', 'unknown'),
@@ -105,30 +104,14 @@ class EvaluationRunner:
     # EXPERIMENT FILE DISCOVERY AND LOADING
     # =============================================================================
     
-    def find_experiment_files(self, experiment_type: Optional[str] = None) -> List[str]:
+    def find_experiment_files(self) -> List[str]:
         """
-        Find all experiment result files matching the specified type.
+        Find all experiment result files.
         
-        Args:
-            experiment_type: Type of experiments to find (e.g., 'baseline')
-                           If None, searches all experiment types
-            
         Returns:
             list: Paths to found experiment files
-            
-        Raises:
-            ValueError: If experiment type is invalid
         """
-        if experiment_type:
-            if not Config.validate_experiment_type(experiment_type):
-                raise ValueError(f"Invalid experiment type: {experiment_type}")
-            
-            search_dir = Config.get_output_dirs_for_experiment_type(experiment_type)['responses']
-            pattern = os.path.join(search_dir, "inference_*.json")
-        else:
-            # Search all experiment types
-            pattern = os.path.join(Config.RESPONSES_DIR, "**", "inference_*.json")
-        
+        pattern = os.path.join(Config.RESPONSES_DIR, "inference_*.json")
         files = glob.glob(pattern, recursive=True)
         logger.info(f"Found {len(files)} experiment files")
         return files
@@ -220,7 +203,7 @@ class EvaluationRunner:
     
     def evaluate_experiment_from_data(self, experiment_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Evaluate experiment results from loaded data using metadata-based detection and custom metrics.
+        Evaluate experiment results from loaded data using custom metrics.
         """
         try:
             # Extract responses and expected outputs with full response data
@@ -232,7 +215,6 @@ class EvaluationRunner:
             
             # Extract metadata from file content
             metadata = self.extract_metadata_from_file_data(experiment_data)
-            experiment_type = metadata['experiment_type']
             dataset_name = metadata['dataset']
             
             # Extract pruning statistics from inference stage
@@ -240,7 +222,7 @@ class EvaluationRunner:
             
             # Run comprehensive evaluation with custom metrics and pruning stats
             experiment_name = experiment_data.get('experiment_name', 'unknown')
-            logger.info(f"Evaluating experiment: {experiment_name} (type: {experiment_type}, mode: {metadata['mode']}, dataset: {dataset_name})")
+            logger.info(f"Evaluating experiment: {experiment_name} (mode: {metadata['mode']}, dataset: {dataset_name})")
             
             # Log pruning summary from inference stage
             if inference_pruning_stats.get('rows_pruned', 0) > 0:
@@ -291,20 +273,18 @@ class EvaluationRunner:
             logger.error(traceback.format_exc())
             return None
     
-    def save_evaluation_results(self, evaluation_data: Dict[str, Any], experiment_name: str, 
-                              experiment_type: str) -> str:
+    def save_evaluation_results(self, evaluation_data: Dict[str, Any], experiment_name: str) -> str:
         """
-        Save evaluation results to JSON file with organized structure.
+        Save evaluation results to JSON file.
         
         Args:
             evaluation_data: Complete evaluation results
             experiment_name: Name of the original experiment
-            experiment_type: Type of experiment (for directory organization)
             
         Returns:
             str: Path to saved evaluation file
         """
-        file_paths = Config.generate_file_paths(experiment_type, experiment_name)
+        file_paths = Config.generate_file_paths(experiment_name)
         output_file = file_paths['evaluation']
         
         # Ensure output directory exists
@@ -322,26 +302,19 @@ class EvaluationRunner:
             raise
     
     # =============================================================================
-    # SINGLE EXPERIMENT EVALUATION WITH METADATA-BASED DETECTION
+    # SINGLE EXPERIMENT EVALUATION
     # =============================================================================
     
-    def evaluate_experiment(self, experiment_name: str, experiment_type: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    def evaluate_experiment(self, experiment_name: str) -> Optional[Dict[str, Any]]:
         """
-        Evaluate a specific experiment by name with metadata-based detection.
+        Evaluate a specific experiment by name.
         """
         logger.info(f"Evaluating experiment: {experiment_name}")
         
-        # Search across all experiment types since we'll get the actual type from metadata
-        experiment_file = None
+        # Find experiment file
+        experiment_file = os.path.join(Config.RESPONSES_DIR, f"inference_{experiment_name}.json")
         
-        for exp_type in Config.EXPERIMENT_TYPES:
-            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['responses']
-            potential_file = os.path.join(search_dir, f"inference_{experiment_name}.json")
-            if os.path.exists(potential_file):
-                experiment_file = potential_file
-                break
-        
-        if not experiment_file:
+        if not os.path.exists(experiment_file):
             logger.error(f"Experiment file not found: {experiment_name}")
             return None
         
@@ -354,16 +327,14 @@ class EvaluationRunner:
         if not evaluation_result:
             return None
         
-        # Extract actual metadata from the file content
-        metadata = self.extract_metadata_from_file_data(experiment_data)
-        final_experiment_type = metadata['experiment_type']
+        # Save evaluation results
+        output_file = self.save_evaluation_results(evaluation_result, experiment_name)
         
-        # Save evaluation results using the correct type from metadata
-        output_file = self.save_evaluation_results(evaluation_result, experiment_name, final_experiment_type)
+        # Extract metadata for return
+        metadata = self.extract_metadata_from_file_data(experiment_data)
         
         return {
             'experiment_name': experiment_name,
-            'experiment_type': final_experiment_type,
             'mode': metadata['mode'],
             'model': metadata['model'],
             'dataset': metadata['dataset'],
@@ -375,22 +346,17 @@ class EvaluationRunner:
         }
     
     # =============================================================================
-    # BATCH EVALUATION WITH METADATA-BASED DETECTION
+    # BATCH EVALUATION
     # =============================================================================
     
-    def evaluate_all_experiments(self, experiment_type: Optional[str] = None) -> List[Dict[str, Any]]:
+    def evaluate_all_experiments(self) -> List[Dict[str, Any]]:
         """
-        Evaluate all experiments with metadata-based filtering.
+        Evaluate all experiments.
         """
-        logger.info(f"Evaluating all experiments (type filter: {experiment_type or 'none'})")
+        logger.info("Evaluating all experiments")
         
-        # Find all experiment files across all types since we'll filter by metadata
-        all_experiment_files = []
-        for exp_type in Config.EXPERIMENT_TYPES:
-            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['responses']
-            pattern = os.path.join(search_dir, "inference_*.json")
-            files = glob.glob(pattern)
-            all_experiment_files.extend(files)
+        # Find all experiment files
+        all_experiment_files = self.find_experiment_files()
         
         if not all_experiment_files:
             logger.warning("No experiment files found")
@@ -411,28 +377,19 @@ class EvaluationRunner:
                 if not experiment_data:
                     continue
                 
-                # Extract metadata from file content
-                metadata = self.extract_metadata_from_file_data(experiment_data)
-                file_experiment_type = metadata['experiment_type']
-                
-                # Apply experiment type filter if specified
-                if experiment_type and file_experiment_type != experiment_type:
-                    logger.debug(f"Skipping {experiment_name}: type {file_experiment_type} doesn't match filter {experiment_type}")
-                    continue
-                
                 evaluation_result = self.evaluate_experiment_from_data(experiment_data)
                 if not evaluation_result:
                     continue
                 
                 # Save evaluation results
-                output_file = self.save_evaluation_results(evaluation_result, experiment_name, file_experiment_type)
+                output_file = self.save_evaluation_results(evaluation_result, experiment_name)
                 
-                # Extract pruning stats for summary
+                # Extract metadata and pruning stats for summary
+                metadata = self.extract_metadata_from_file_data(experiment_data)
                 pruning_stats = evaluation_result.get('inference_pruning_stats', {})
                 
                 results.append({
                     'experiment_name': experiment_name,
-                    'experiment_type': file_experiment_type,
                     'mode': metadata['mode'],
                     'model': metadata['model'],
                     'dataset': metadata['dataset'],
@@ -468,22 +425,17 @@ class EvaluationRunner:
     # EVALUATION SUMMARY AND ANALYTICS
     # =============================================================================
     
-    def get_evaluation_summary(self, experiment_type: Optional[str] = None) -> Dict[str, Any]:
+    def get_evaluation_summary(self) -> Dict[str, Any]:
         """
         Get comprehensive summary of evaluation results across experiments.
         """
-        # Find evaluation files across all types since we'll filter by metadata if needed
-        all_evaluation_files = []
-        for exp_type in Config.EXPERIMENT_TYPES:
-            search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
-            pattern = os.path.join(search_dir, "evaluation_*.json")
-            files = glob.glob(pattern)
-            all_evaluation_files.extend(files)
+        # Find evaluation files
+        all_evaluation_files = glob.glob(os.path.join(Config.EVALUATIONS_DIR, "evaluation_*.json"))
         
         if not all_evaluation_files:
             return {"message": "No evaluation results found"}
         
-        # Load and filter evaluations by metadata
+        # Load evaluations
         valid_evaluations = []
         total_pruned_across_all = 0
         total_original_across_all = 0
@@ -492,13 +444,6 @@ class EvaluationRunner:
             try:
                 with open(file_path, 'r') as f:
                     eval_data = json.load(f)
-                
-                # Extract metadata and filter if experiment_type specified
-                metadata = eval_data.get('original_experiment_config', {})
-                file_experiment_type = metadata.get('experiment_type', 'baseline')
-                
-                if experiment_type and file_experiment_type != experiment_type:
-                    continue
                 
                 valid_evaluations.append(eval_data)
                 
@@ -512,7 +457,7 @@ class EvaluationRunner:
                 continue
         
         if not valid_evaluations:
-            return {"message": f"No evaluation results found for type: {experiment_type}"}
+            return {"message": "No valid evaluation results found"}
         
         # Compute summary statistics
         all_f1_scores = []
@@ -534,7 +479,6 @@ class EvaluationRunner:
         summary = {
             'total_evaluations': len(valid_evaluations),
             'total_samples_evaluated': total_samples,
-            'experiment_type_filter': experiment_type,
             'overall_pruning_stats': {
                 'total_rows_pruned': total_pruned_across_all,
                 'total_original_rows': total_original_across_all,
@@ -575,37 +519,21 @@ class EvaluationRunner:
     # EVALUATION COMPARISON AND ANALYSIS
     # =============================================================================
     
-    def compare_experiments(self, experiment_names: List[str], experiment_type: Optional[str] = None) -> Dict[str, Any]:
+    def compare_experiments(self, experiment_names: List[str]) -> Dict[str, Any]:
         """
-        Compare multiple experiments side by side with metadata-based detection.
+        Compare multiple experiments side by side.
         """
         logger.info(f"Comparing {len(experiment_names)} experiments")
         
         # Load evaluation results for all experiments
         evaluations = []
         for exp_name in experiment_names:
-            # Search across all experiment types
-            eval_file = None
-            for exp_type in Config.EXPERIMENT_TYPES:
-                search_dir = Config.get_output_dirs_for_experiment_type(exp_type)['evaluations']
-                potential_file = os.path.join(search_dir, f"evaluation_{exp_name}.json")
-                if os.path.exists(potential_file):
-                    eval_file = potential_file
-                    break
+            eval_file = os.path.join(Config.EVALUATIONS_DIR, f"evaluation_{exp_name}.json")
             
-            if eval_file:
+            if os.path.exists(eval_file):
                 try:
                     with open(eval_file, 'r') as f:
                         eval_data = json.load(f)
-                    
-                    # Apply experiment type filter if specified
-                    if experiment_type:
-                        metadata = eval_data.get('original_experiment_config', {})
-                        file_experiment_type = metadata.get('experiment_type', 'baseline')
-                        if file_experiment_type != experiment_type:
-                            logger.info(f"Skipping {exp_name}: type {file_experiment_type} doesn't match filter {experiment_type}")
-                            continue
-                    
                     evaluations.append(eval_data)
                 except Exception as e:
                     logger.error(f"Error loading evaluation for {exp_name}: {e}")

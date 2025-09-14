@@ -33,14 +33,8 @@ class Config:
     EVALUATIONS_DIR = os.path.join(OUTPUTS_DIR, "evaluations") # Evaluation metrics
     PLOTS_DIR = os.path.join(OUTPUTS_DIR, "plots")            # Visualizations
     
-    # Experiment type specific subdirectories
-    # Each experiment type gets its own organized structure
-    BASELINE_RESPONSES_DIR = os.path.join(RESPONSES_DIR, "baseline")
-    BASELINE_EVALUATIONS_DIR = os.path.join(EVALUATIONS_DIR, "baseline")
-    BASELINE_PLOTS_DIR = os.path.join(PLOTS_DIR, "baseline")
-    
-    # Cache and temporary directories - homogenous naming
-    CACHED_MODELS_DIR = "./cached_models"      # Downloaded/cached model files (renamed for consistency)
+    # Cache and temporary directories
+    CACHED_MODELS_DIR = "./cached_models"      # Downloaded/cached model files
     FINETUNED_MODELS_DIR = "./finetuned_models" # Custom finetuned models
     LOGS_DIR = "./logs"                        # System logs
     
@@ -149,10 +143,6 @@ class Config:
     RANDOM_SEED = 42               # Fixed seed for reproducible experiments
     DEFAULT_SAMPLE_SIZE = 50       # Default number of samples per experiment
     
-    # Supported experiment types
-    # Currently only baseline is implemented, but structure allows for extension
-    EXPERIMENT_TYPES = ["baseline"]  # Future: "masked", "impersonation"
-    
     # =============================================================================
     # LOGGING CONFIGURATION
     # =============================================================================
@@ -244,9 +234,6 @@ class Config:
             cls.RESPONSES_DIR,
             cls.EVALUATIONS_DIR,
             cls.PLOTS_DIR,
-            cls.BASELINE_RESPONSES_DIR,
-            cls.BASELINE_EVALUATIONS_DIR,
-            cls.BASELINE_PLOTS_DIR,
             cls.CACHED_MODELS_DIR,
             cls.FINETUNED_MODELS_DIR,
             cls.LOGS_DIR
@@ -322,62 +309,21 @@ class Config:
             raise ValueError(f"Invalid JSON in models configuration: {e}")
     
     # =============================================================================
-    # EXPERIMENT TYPE VALIDATION
-    # =============================================================================
-    
-    @classmethod
-    def validate_experiment_type(cls, experiment_type: str) -> bool:
-        """
-        Validate that an experiment type is supported.
-        
-        Args:
-            experiment_type: Type to validate
-            
-        Returns:
-            bool: True if supported, False otherwise
-        """
-        return experiment_type in cls.EXPERIMENT_TYPES
-    
-    @classmethod
-    def get_output_dirs_for_experiment_type(cls, experiment_type: str) -> Dict[str, str]:
-        """
-        Get output directory paths for a specific experiment type.
-        
-        Args:
-            experiment_type: Type of experiment
-            
-        Returns:
-            dict: Directory paths for responses, evaluations, and plots
-            
-        Raises:
-            ValueError: If experiment type is not supported
-        """
-        if not cls.validate_experiment_type(experiment_type):
-            raise ValueError(f"Unsupported experiment type: {experiment_type}. Supported: {cls.EXPERIMENT_TYPES}")
-        
-        return {
-            'responses': os.path.join(cls.RESPONSES_DIR, experiment_type),
-            'evaluations': os.path.join(cls.EVALUATIONS_DIR, experiment_type),
-            'plots': os.path.join(cls.PLOTS_DIR, experiment_type)
-        }
-    
-    # =============================================================================
     # EXPERIMENT NAMING AND FILE PATH GENERATION
     # =============================================================================
     
     @classmethod
-    def generate_experiment_name(cls, experiment_type: str, dataset: str, model: str, 
+    def generate_experiment_name(cls, dataset: str, model: str, 
                                 mode: str, prompt: str, size: int, temperature: float,
                                 few_shot_row: Optional[int] = None) -> str:
         """
         Generate a standardized experiment name.
         
         Creates descriptive names that uniquely identify experiments:
-        Format for zero-shot: {experiment_type}_{dataset}_{model}_{mode}_{prompt}_{size}_{temperature}
-        Format for few-shot: {experiment_type}_{dataset}_{model}_{mode}-{few_shot_row}_{prompt}_{size}_{temperature}
+        Format for zero-shot: {dataset}_{model}_{mode}_{prompt}_{size}_{temperature}
+        Format for few-shot: {dataset}_{model}_{mode}-{few_shot_row}_{prompt}_{size}_{temperature}
         
         Args:
-            experiment_type: Type of experiment (e.g., 'baseline')
             dataset: Dataset name (e.g., 'gmeg')
             model: Model name (e.g., 'gpt-4o-mini')
             mode: Prompting mode ('zero-shot' or 'few-shot')
@@ -400,56 +346,26 @@ class Config:
         else:
             mode_with_row = mode
 
-        print(f"{experiment_type}__{dataset}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}")
-        return f"{experiment_type}__{dataset}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}"
+        return f"{dataset}__{model}__{mode_with_row}__{prompt}__{size}__{temp_str}"
     
     @classmethod
-    def generate_file_paths(cls, experiment_type: str, experiment_name: str) -> Dict[str, str]:
+    def generate_file_paths(cls, experiment_name: str) -> Dict[str, str]:
         """
         Generate complete file paths for all experiment outputs.
         
         Creates organized file paths for inference results, evaluations, and plots.
         
         Args:
-            experiment_type: Type of experiment
-            experiment_name: Generated experiment name (with or without mode)
+            experiment_name: Generated experiment name
             
         Returns:
             dict: File paths for inference, evaluation, and plot outputs
         """
-        dirs = cls.get_output_dirs_for_experiment_type(experiment_type)
-        
         return {
-            'inference': os.path.join(dirs['responses'], f"inference_{experiment_name}.json"),
-            'evaluation': os.path.join(dirs['evaluations'], f"evaluation_{experiment_name}.json"),
-            'plot': os.path.join(dirs['plots'], f"plot_{experiment_name}.html")
+            'inference': os.path.join(cls.RESPONSES_DIR, f"inference_{experiment_name}.json"),
+            'evaluation': os.path.join(cls.EVALUATIONS_DIR, f"evaluation_{experiment_name}.json"),
+            'plot': os.path.join(cls.PLOTS_DIR, f"plot_{experiment_name}.html")
         }
-    
-    @classmethod
-    def extract_experiment_type_from_name(cls, experiment_name: str) -> str:
-        """
-        Extract experiment type from experiment name.
-        
-        Args:
-            experiment_name: Full experiment name
-            
-        Returns:
-            str: Experiment type (e.g., 'baseline')
-        """
-        if not experiment_name:
-            raise ValueError("Experiment name cannot be empty")
-        
-        name_parts = experiment_name.split('_')
-        if not name_parts:
-            raise ValueError("Invalid experiment name format")
-        
-        # First part should be the experiment type
-        potential_type = name_parts[0]
-        
-        if potential_type in cls.EXPERIMENT_TYPES:
-            return potential_type
-        
-        raise ValueError(f"Experiment type '{potential_type}' not recognized. Supported types: {cls.EXPERIMENT_TYPES}")
     
     # =============================================================================
     # LOGGING UTILITIES
