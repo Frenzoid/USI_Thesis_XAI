@@ -604,7 +604,7 @@ def validate_local_model_capability(models_to_run: List[str], models_config: dic
     return True
 
 def run_experiment_command(args):
-    """Run experiments with execution order"""
+    """Run experiments with execution order and skip existing functionality"""
     logger.info("Starting experiment execution with model loading...")
     
     # Load configurations
@@ -657,18 +657,79 @@ def run_experiment_command(args):
     if not validate_local_model_capability(unique_models, models_config, args.force):
         return False
     
+    # Check for existing files if --skip is enabled
+    skipped_combinations = []
+    remaining_combinations = {}
+    
+    if args.skip:
+        logger.info("Checking for existing experiment files...")
+        total_combinations = 0
+        skipped_count = 0
+        
+        for model_name, model_setups in grouped_combinations.items():
+            remaining_combinations[model_name] = {}
+            
+            for setup_name, setup_combinations in model_setups.items():
+                remaining_combinations[model_name][setup_name] = []
+                
+                for combo in setup_combinations:
+                    total_combinations += 1
+                    
+                    # Generate experiment name and check if file exists
+                    experiment_name = Config.generate_experiment_name(
+                        combo.setup, combo.model, combo.mode, combo.prompt, 
+                        args.size, args.temperature, few_shot_row=args.few_shot_row
+                    )
+                    file_paths = Config.generate_file_paths(experiment_name)
+                    inference_file = file_paths['inference']
+                    
+                    if os.path.exists(inference_file):
+                        skipped_combinations.append((combo, experiment_name))
+                        skipped_count += 1
+                        logger.debug(f"Skipping existing experiment: {experiment_name}")
+                    else:
+                        remaining_combinations[model_name][setup_name].append(combo)
+                
+                # Remove empty setup groups
+                if not remaining_combinations[model_name][setup_name]:
+                    del remaining_combinations[model_name][setup_name]
+            
+            # Remove empty model groups
+            if not remaining_combinations[model_name]:
+                del remaining_combinations[model_name]
+        
+        logger.info(f"Skip analysis: {skipped_count} existing experiments found, {total_combinations - skipped_count} remaining to run")
+        
+        if skipped_count > 0:
+            logger.info(f"Skipped experiments:")
+            for i, (combo, exp_name) in enumerate(skipped_combinations[:5]):  # Show first 5
+                logger.info(f"  - {exp_name}")
+            if len(skipped_combinations) > 5:
+                logger.info(f"  ... and {len(skipped_combinations) - 5} more")
+        
+        # Update grouped_combinations to only include remaining experiments
+        grouped_combinations = remaining_combinations
+    
     # Show execution plan
     log_execution_plan(grouped_combinations, models_config)
     
-    # Ask for confirmation if many experiments
+    # Calculate total experiments to run
     total_experiments = sum(
         len(combos) 
         for model_groups in grouped_combinations.values() 
         for combos in model_groups.values()
     )
     
+    if total_experiments == 0:
+        logger.info("No experiments to run (all already exist or no valid combinations)")
+        if args.skip and skipped_combinations:
+            logger.info(f"All {len(skipped_combinations)} experiments already exist and were skipped")
+        return True  # Success - nothing to do
+    
+    # Ask for confirmation if many experiments
     if total_experiments > 10 and not args.force:
-        print(f"\nAbout to run {total_experiments} experiments. This may take a long time.")
+        skip_info = f" ({len(skipped_combinations)} skipped)" if args.skip else ""
+        print(f"\nAbout to run {total_experiments} experiments{skip_info}. This may take a long time.")
         
         response = input("\nProceed with execution? (y/N): ")
         if response.lower() != 'y':
@@ -779,6 +840,8 @@ def run_experiment_command(args):
     logger.info("EXPERIMENT EXECUTION COMPLETE")
     logger.info(f"Success: {success_count}")
     logger.info(f"Failed: {failure_count}")
+    if args.skip and skipped_combinations:
+        logger.info(f"Skipped (already exist): {len(skipped_combinations)}")
     logger.info(f"Total: {total_experiments} experiments processed")
     
     if skipped_models:
@@ -800,7 +863,7 @@ def run_experiment_command(args):
     
     logger.info("=" * 60)
     
-    return success_count > 0
+    return success_count > 0 or (args.skip and len(skipped_combinations) > 0)
 
 # =============================================================================
 # OTHER COMMAND HANDLERS
@@ -1160,6 +1223,7 @@ def list_commands_command():
     print("     --few-shot-row ROW       Specific row number for few-shot example (0-based, defaults to random)")
     print("     --size SIZE              Sample size (default: 50)")
     print("     --temperature TEMP       Temperature for generation (default: 0.1)")
+    print("     --skip                   Skip experiments where response files already exist")
     print("     --force                  Force run even with validation errors")
     
     print("\n   Intelligent Argument Resolution:")
@@ -1211,6 +1275,12 @@ def list_commands_command():
     print("   Arguments: None")
     
     print("\n=== EXAMPLE USAGE ===")
+    print("# Skip existing experiments when adding new ones")
+    print("python main.py run-experiment --model 'gpt-4o-mini claude-3.5-sonnet' --skip")
+    print("")
+    print("# Resume interrupted experiment run")
+    print("python main.py run-experiment --setup 'gmeg qald' --mode few-shot --skip")
+    print("")
     print("# Multiple models with space separation")
     print("python main.py run-experiment --model 'gpt-4o-mini claude-3.5-sonnet'")
     print("")
@@ -1352,6 +1422,8 @@ def main():
                                 help=f'Temperature for generation (default: {Config.DEFAULT_TEMPERATURE})')
     exp_parser.add_argument('--force', action='store_true',
                                 help='Force run even with validation errors')
+    exp_parser.add_argument('--skip', action='store_true',
+                                help='Skip experiments where response files already exist')
     
     # Evaluate command
     eval_parser = subparsers.add_parser('evaluate', help='Evaluate experiment results')

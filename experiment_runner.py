@@ -22,6 +22,7 @@ class ExperimentRunner:
     1. Prepares datasets and prompts with row pruning using nested configuration structure
     2. Loads and queries models (local or API) with authentication handling
     3. Saves results with comprehensive metadata
+    4. Supports skipping experiments where response files already exist
     """
     
     def __init__(self):
@@ -100,6 +101,33 @@ class ExperimentRunner:
                 return False
         
         return True
+    
+    def check_experiment_exists(self, config: Dict[str, Any]) -> Tuple[bool, str]:
+        """
+        Check if an experiment result file already exists.
+        
+        Args:
+            config: Experiment configuration dictionary
+            
+        Returns:
+            Tuple[bool, str]: (exists, file_path)
+        """
+        # Generate experiment name and file path
+        experiment_name = Config.generate_experiment_name(
+            config['setup'],
+            config['model'],
+            config['mode'],
+            config['prompt'],
+            config['size'],
+            config['temperature'],
+            few_shot_row=config.get('few_shot_row')
+        )
+        
+        file_paths = Config.generate_file_paths(experiment_name)
+        output_file = file_paths['inference']
+        
+        exists = os.path.exists(output_file)
+        return exists, output_file
     
     def check_model_accessibility(self, model_name: str) -> Tuple[bool, str]:
         """
@@ -467,14 +495,46 @@ class ExperimentRunner:
             logger.error(f"Error saving experiment results: {e}")
             raise
     
-    def run_experiment(self, config: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Run a complete experiment with mode-based prompting and authentication handling"""
+    def run_experiment(self, config: Dict[str, Any], skip_existing: bool = False) -> Optional[Dict[str, Any]]:
+        """
+        Run a complete experiment with mode-based prompting, authentication handling, and optional skipping.
+        
+        Args:
+            config: Experiment configuration dictionary
+            skip_existing: Whether to skip if experiment file already exists (backup mechanism)
+            
+        Returns:
+            dict: Experiment result information, or None if failed
+        """
         logger.info(f"Starting {config['mode']} experiment: {config}")
         
         # Validate configuration
         if not self.validate_experiment_config(config):
             logger.error("Experiment configuration validation failed")
             return None
+        
+        # Backup mechanism: Check if experiment already exists (in case main.py filtering missed it)
+        if skip_existing:
+            exists, output_file = self.check_experiment_exists(config)
+            if exists:
+                experiment_name = Config.generate_experiment_name(
+                    config['setup'],
+                    config['model'],
+                    config['mode'],
+                    config['prompt'],
+                    config['size'],
+                    config['temperature'],
+                    few_shot_row=config.get('few_shot_row')
+                )
+                logger.info(f"Experiment file already exists, skipping: {experiment_name}")
+                return {
+                    'experiment_name': experiment_name,
+                    'config': config,
+                    'success': True,
+                    'skipped': True,
+                    'output_file': output_file,
+                    'skip_reason': 'File already exists'
+                }
         
         # Check model accessibility before proceeding
         model_accessible, access_reason = self.check_model_accessibility(config['model'])
@@ -612,6 +672,7 @@ class ExperimentRunner:
                 'config': config,
                 'output_file': output_file,
                 'success': True,
+                'skipped': False,
                 'num_responses': len(responses),
                 'success_rate': sum(1 for r in responses if r['success']) / len(responses) if responses else 0,
                 'authentication_failures': auth_failures,
