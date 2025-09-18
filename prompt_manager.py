@@ -4,6 +4,7 @@ import random
 
 from config import Config
 from utils import setup_logging
+from field_resolver import FieldPathResolver
 
 logger = setup_logging("prompt_manager")
 
@@ -14,7 +15,7 @@ class PromptManager:
     Handles:
     - Loading prompt templates with mode support (zero-shot/few-shot)
     - Generic dataset field mapping using nested configuration structure
-    - JSON field path resolution (e.g., "context.questions[0]")
+    - JSON field path resolution via FieldPathResolver utility
     - Few-shot example generation with field paths
     - Template formatting and concatenation
     """
@@ -26,13 +27,12 @@ class PromptManager:
         logger.info(f"PromptManager initialized with {len(self.prompts_config)} prompt templates")
     
     # =============================================================================
-    # FIELD PATH RESOLUTION (delegated to DatasetManager)
+    # FIELD PATH RESOLUTION (delegated to FieldPathResolver)
     # =============================================================================
     
     def resolve_field_path(self, data: Union[Dict, pd.Series, Any], path: str) -> Any:
         """
         Resolve a nested JSON path like 'context.questions[0].text' against data structure.
-        This method delegates to DatasetManager's implementation for consistency.
         
         Args:
             data: The data structure to navigate (dict, pd.Series, or primitive)
@@ -41,19 +41,7 @@ class PromptManager:
         Returns:
             The value at the specified path, or None if path doesn't exist
         """
-        # Import here to avoid circular imports
-        from dataset_manager import DatasetManager
-        
-        # Create temporary DatasetManager instance for field resolution
-        temp_manager = DatasetManager()
-        
-        # Convert pandas Series to dict if needed
-        if isinstance(data, pd.Series):
-            data_dict = data.to_dict()
-        else:
-            data_dict = data
-        
-        return temp_manager.resolve_field_path(data_dict, path)
+        return FieldPathResolver.resolve_field_path(data, path)
     
     def extract_field_values(self, row: Union[Dict, pd.Series], field_paths: List[str]) -> List[str]:
         """
@@ -66,20 +54,7 @@ class PromptManager:
         Returns:
             List of string values extracted from the specified paths
         """
-        values = []
-        
-        for path in field_paths:
-            try:
-                value = self.resolve_field_path(row, path)
-                if value is None or (isinstance(value, float) and pd.isna(value)):
-                    values.append("")
-                else:
-                    values.append(str(value))
-            except Exception as e:
-                logger.warning(f"Error extracting field path '{path}': {e}")
-                values.append("")
-        
-        return values
+        return FieldPathResolver.extract_field_values(row, field_paths)
     
     # =============================================================================
     # PROMPT MANAGEMENT
@@ -99,11 +74,9 @@ class PromptManager:
         compatible = []
         
         for prompt_name, config in self.prompts_config.items():
-            # Check setup compatibility
             if config.get('compatible_setup') != setup_name:
                 continue
             
-            # Check mode compatibility if specified
             if mode is not None:
                 prompt_mode = config.get('mode', 'zero-shot')
                 if prompt_mode != mode:
@@ -114,7 +87,7 @@ class PromptManager:
         return compatible
     
     # =============================================================================
-    # FEW-SHOT EXAMPLE GENERATION (updated for JSON field paths)
+    # ENHANCED FEW-SHOT EXAMPLE GENERATION
     # =============================================================================
     
     def generate_few_shot_example(self, dataset: pd.DataFrame, setup_name: str, 
@@ -152,7 +125,6 @@ class PromptManager:
         if not answer_field_path:
             raise ValueError(f"Setup '{setup_name}' has empty answer_field - required for few-shot examples")
         
-        # Select row
         if row_index is not None:
             if row_index < 0 or row_index >= len(dataset):
                 raise ValueError(f"Row index {row_index} out of bounds for dataset with {len(dataset)} rows")
@@ -162,17 +134,14 @@ class PromptManager:
             row = dataset.sample(n=1, random_state=Config.RANDOM_SEED).iloc[0]
             logger.debug("Using random row for few-shot example")
         
-        # Extract question values using field paths
         question_values = self.extract_field_values(row, question_field_paths)
         
-        # Extract answer value using field path
         answer_value = self.resolve_field_path(row, answer_field_path)
         if answer_value is None or (isinstance(answer_value, float) and pd.isna(answer_value)):
             answer_value = 'N/A'
         else:
             answer_value = str(answer_value)
         
-        # Warn about NA answers
         if answer_value.lower().strip() in ['na', 'n/a', 'not applicable', 'not annotatable', '', 'none']:
             logger.warning("Selected few-shot example has NA answer, may affect prompt quality")
         
@@ -183,11 +152,11 @@ class PromptManager:
         }
     
     # =============================================================================
-    # TEMPLATE FORMATTING
+    # ENHANCED TEMPLATE FORMATTING
     # =============================================================================
     
     def format_prompt(self, prompt_name: str, field_values: List[str]) -> str:
-        """Format a prompt template with field values"""
+        """Format a prompt template with field values and enhanced error handling"""
         if prompt_name not in self.prompts_config:
             raise ValueError(f"Unknown prompt: {prompt_name}")
         
@@ -198,21 +167,26 @@ class PromptManager:
         
         template = prompt_config['template']
         
-        # Check field count
         placeholder_count = template.count('{}')
         if len(field_values) != placeholder_count:
-            raise ValueError(f"Expected {placeholder_count} field values for prompt '{prompt_name}', got {len(field_values)}")
+            raise ValueError(
+                f"Template mismatch for prompt '{prompt_name}': "
+                f"expected {placeholder_count} values, got {len(field_values)}. "
+                f"Template: {template[:100]}..."
+            )
         
         try:
             formatted_prompt = template.format(*field_values)
-            logger.debug(f"Formatted template for prompt '{prompt_name}'")
+            logger.debug(f"Formatted template for prompt '{prompt_name}' with {len(field_values)} values")
             return formatted_prompt
         except Exception as e:
             logger.error(f"Template formatting error for prompt '{prompt_name}': {e}")
+            logger.error(f"Template: {template}")
+            logger.error(f"Values: {field_values}")
             raise
     
     def format_few_shot_example(self, prompt_name: str, question_values: List[str], answer_value: str) -> str:
-        """Format a few-shot example template"""
+        """Format a few-shot example template with enhanced validation"""
         if prompt_name not in self.prompts_config:
             raise ValueError(f"Unknown prompt: {prompt_name}")
         
@@ -227,10 +201,13 @@ class PromptManager:
         few_shot_template = prompt_config['few_shot_example']
         all_values = question_values + [answer_value]
         
-        # Check field count
         placeholder_count = few_shot_template.count('{}')
         if len(all_values) != placeholder_count:
-            raise ValueError(f"Expected {placeholder_count} field values for few-shot example in prompt '{prompt_name}', got {len(all_values)}")
+            raise ValueError(
+                f"Few-shot template mismatch for prompt '{prompt_name}': "
+                f"expected {placeholder_count} values, got {len(all_values)}. "
+                f"Template: {few_shot_template[:100]}..."
+            )
         
         try:
             formatted_example = few_shot_template.format(*all_values)
@@ -238,17 +215,19 @@ class PromptManager:
             return formatted_example
         except Exception as e:
             logger.error(f"Few-shot example formatting error for prompt '{prompt_name}': {e}")
+            logger.error(f"Template: {few_shot_template}")
+            logger.error(f"Values: {all_values}")
             raise
     
     # =============================================================================
-    # COMPLETE PROMPT PREPARATION (updated for JSON field paths)
+    # ENHANCED COMPLETE PROMPT PREPARATION
     # =============================================================================
     
     def prepare_prompt_for_row(self, prompt_name: str, row: Union[pd.Series, Dict], setup_name: str, 
                               mode: str, dataset: pd.DataFrame = None, 
                               few_shot_row: Optional[int] = None) -> str:
         """
-        Prepare a complete formatted prompt for a dataset row using field path resolution.
+        Prepare a complete formatted prompt for a dataset row with enhanced validation.
         
         Args:
             prompt_name: Name of prompt template to use
@@ -262,25 +241,21 @@ class PromptManager:
             str: Complete formatted prompt ready for model inference
         """
         
-        # Basic validation
         if prompt_name not in self.prompts_config:
             raise ValueError(f"Unknown prompt: {prompt_name}")
         
         if setup_name not in self.setups_config:
             raise ValueError(f"Unknown setup: {setup_name}")
         
-        # Get configurations
         prompt_config = self.prompts_config[prompt_name]
         setup_config = self.setups_config[setup_name]
         
-        # Validate prompt has required fields
         if 'compatible_setup' not in prompt_config:
             raise ValueError(f"Prompt '{prompt_name}' missing required 'compatible_setup' field")
         
         if 'mode' not in prompt_config:
             raise ValueError(f"Prompt '{prompt_name}' missing required 'mode' field")
         
-        # Validate setup has required nested structure
         if 'prompt_fields' not in setup_config:
             raise ValueError(f"Setup '{setup_name}' missing required 'prompt_fields' configuration")
         
@@ -289,45 +264,42 @@ class PromptManager:
         if 'question_fields' not in prompt_fields_config:
             raise ValueError(f"Setup '{setup_name}' missing 'question_fields' in prompt_fields configuration")
         
-        # Validate compatibility
         if prompt_config['compatible_setup'] != setup_name:
-            raise ValueError(f"Prompt '{prompt_name}' is compatible with setup '{prompt_config['compatible_setup']}', not '{setup_name}'")
+            raise ValueError(
+                f"Prompt '{prompt_name}' is compatible with setup '{prompt_config['compatible_setup']}', "
+                f"not '{setup_name}'"
+            )
         
         if prompt_config['mode'] != mode:
-            raise ValueError(f"Prompt '{prompt_name}' is configured for '{prompt_config['mode']}' mode, but '{mode}' mode was requested")
+            raise ValueError(
+                f"Prompt '{prompt_name}' is configured for '{prompt_config['mode']}' mode, "
+                f"but '{mode}' mode was requested"
+            )
         
-        # Extract current row values using field path resolution
         question_field_paths = prompt_fields_config['question_fields']
         current_question_values = self.extract_field_values(row, question_field_paths)
         
-        # Log missing fields for debugging
         for i, (path, value) in enumerate(zip(question_field_paths, current_question_values)):
             if not value:
-                logger.warning(f"Empty value for field path '{path}' in row")
+                logger.warning(f"Empty value for field path '{path}' in current row")
         
         if mode == 'zero-shot':
-            # Simple template formatting
             return self.format_prompt(prompt_name, current_question_values)
         
         elif mode == 'few-shot':
-            # Require dataset for example generation
             if dataset is None:
                 raise ValueError("Dataset is required for few-shot prompting")
             
-            # Generate few-shot example
             example_data = self.generate_few_shot_example(dataset, setup_name, few_shot_row)
             
-            # Format few-shot example
             few_shot_example = self.format_few_shot_example(
                 prompt_name, 
                 example_data['question_values'], 
                 example_data['answer_value']
             )
             
-            # Format current prompt
             current_template = self.format_prompt(prompt_name, current_question_values)
             
-            # Concatenate: example + current prompt
             final_prompt = few_shot_example + current_template
             
             logger.debug(f"Created few-shot prompt with example from row {example_data['row_index']}")
@@ -337,10 +309,11 @@ class PromptManager:
             raise ValueError(f"Unknown mode: {mode}. Supported modes are 'zero-shot' and 'few-shot'")
     
     # =============================================================================
-    # VALIDATION AND DEBUGGING UTILITIES
+    # ENHANCED VALIDATION AND DEBUGGING UTILITIES
     # =============================================================================
     
-    def validate_prompt_field_paths(self, prompt_name: str, setup_name: str, sample_row: Union[pd.Series, Dict]) -> Dict[str, Any]:
+    def validate_prompt_field_paths(self, prompt_name: str, setup_name: str, 
+                                   sample_row: Union[pd.Series, Dict]) -> Dict[str, Any]:
         """
         Validate that field paths in prompt configuration can be resolved against sample data.
         
@@ -364,51 +337,88 @@ class PromptManager:
         question_field_paths = prompt_fields_config.get('question_fields', [])
         answer_field_path = prompt_fields_config.get('answer_field', '')
         
+        all_field_paths = question_field_paths + ([answer_field_path] if answer_field_path else [])
+        
+        return FieldPathResolver.validate_field_paths(sample_row, all_field_paths)
+    
+    def validate_prompt_template_compatibility(self, prompt_name: str, setup_name: str) -> Dict[str, Any]:
+        """
+        Validate that a prompt template is compatible with a setup configuration.
+        
+        Args:
+            prompt_name: Name of prompt to validate
+            setup_name: Name of setup to validate against
+            
+        Returns:
+            Dict containing compatibility validation results
+        """
         validation_result = {
-            'valid': True,
+            'compatible': True,
             'errors': [],
             'warnings': [],
-            'field_values': {},
-            'field_path_results': {}
+            'details': {}
         }
         
-        # Test question field paths
-        for field_path in question_field_paths:
-            try:
-                value = self.resolve_field_path(sample_row, field_path)
-                validation_result['field_values'][field_path] = str(value) if value is not None else None
-                validation_result['field_path_results'][field_path] = {
-                    'resolved': value is not None,
-                    'value_type': type(value).__name__ if value is not None else None,
-                    'value_preview': str(value)[:100] if value is not None else None
-                }
-                
-                if value is None:
-                    validation_result['warnings'].append(f"Field path '{field_path}' resolved to None")
-            except Exception as e:
-                validation_result['valid'] = False
-                error_msg = f"Error resolving field path '{field_path}': {e}"
-                validation_result['errors'].append(error_msg)
-                validation_result['field_path_results'][field_path] = {'error': str(e)}
+        if prompt_name not in self.prompts_config:
+            validation_result['compatible'] = False
+            validation_result['errors'].append(f"Unknown prompt: {prompt_name}")
+            return validation_result
         
-        # Test answer field path if specified
-        if answer_field_path:
-            try:
-                value = self.resolve_field_path(sample_row, answer_field_path)
-                validation_result['field_values'][answer_field_path] = str(value) if value is not None else None
-                validation_result['field_path_results'][answer_field_path] = {
-                    'resolved': value is not None,
-                    'value_type': type(value).__name__ if value is not None else None,
-                    'value_preview': str(value)[:100] if value is not None else None
-                }
+        if setup_name not in self.setups_config:
+            validation_result['compatible'] = False
+            validation_result['errors'].append(f"Unknown setup: {setup_name}")
+            return validation_result
+        
+        prompt_config = self.prompts_config[prompt_name]
+        setup_config = self.setups_config[setup_name]
+        
+        prompt_setup = prompt_config.get('compatible_setup')
+        if prompt_setup != setup_name:
+            validation_result['compatible'] = False
+            validation_result['errors'].append(
+                f"Prompt '{prompt_name}' is compatible with setup '{prompt_setup}', not '{setup_name}'"
+            )
+        
+        prompt_fields_config = setup_config.get('prompt_fields', {})
+        question_fields = prompt_fields_config.get('question_fields', [])
+        
+        template = prompt_config.get('template', '')
+        expected_placeholders = template.count('{}')
+        available_fields = len(question_fields)
+        
+        if expected_placeholders != available_fields:
+            validation_result['compatible'] = False
+            validation_result['errors'].append(
+                f"Template placeholder mismatch: template expects {expected_placeholders} values, "
+                f"but setup provides {available_fields} question fields"
+            )
+        
+        prompt_mode = prompt_config.get('mode', 'zero-shot')
+        if prompt_mode == 'few-shot':
+            if 'few_shot_example' not in prompt_config:
+                validation_result['compatible'] = False
+                validation_result['errors'].append(f"Few-shot prompt missing 'few_shot_example' template")
+            else:
+                few_shot_template = prompt_config['few_shot_example']
+                few_shot_placeholders = few_shot_template.count('{}')
+                answer_field = prompt_fields_config.get('answer_field', '')
                 
-                if value is None:
-                    validation_result['warnings'].append(f"Answer field path '{answer_field_path}' resolved to None")
-            except Exception as e:
-                validation_result['valid'] = False
-                error_msg = f"Error resolving answer field path '{answer_field_path}': {e}"
-                validation_result['errors'].append(error_msg)
-                validation_result['field_path_results'][answer_field_path] = {'error': str(e)}
+                expected_few_shot = available_fields + (1 if answer_field else 0)
+                if few_shot_placeholders != expected_few_shot:
+                    validation_result['compatible'] = False
+                    validation_result['errors'].append(
+                        f"Few-shot template mismatch: expects {few_shot_placeholders} values, "
+                        f"but setup provides {expected_few_shot} fields (questions + answer)"
+                    )
+        
+        validation_result['details'] = {
+            'prompt_mode': prompt_mode,
+            'compatible_setup': prompt_setup,
+            'template_placeholders': expected_placeholders,
+            'available_question_fields': available_fields,
+            'question_field_paths': question_fields,
+            'answer_field_path': prompt_fields_config.get('answer_field', '')
+        }
         
         return validation_result
     
@@ -430,7 +440,7 @@ class PromptManager:
     
     def get_prompt_field_requirements(self, prompt_name: str) -> Dict[str, Any]:
         """
-        Get field requirements for a specific prompt.
+        Get field requirements for a specific prompt with enhanced error handling.
         
         Args:
             prompt_name: Name of prompt to analyze
@@ -453,7 +463,7 @@ class PromptManager:
         template = prompt_config.get('template', '')
         placeholder_count = template.count('{}')
         
-        return {
+        result = {
             'prompt_name': prompt_name,
             'setup_name': setup_name,
             'mode': prompt_config.get('mode', 'zero-shot'),
@@ -463,3 +473,77 @@ class PromptManager:
             'answer_field_path': prompt_fields_config.get('answer_field', ''),
             'few_shot_template': prompt_config.get('few_shot_example', '') if prompt_config.get('mode') == 'few-shot' else None
         }
+        
+        compatibility_check = self.validate_prompt_template_compatibility(prompt_name, setup_name)
+        result['compatibility'] = compatibility_check
+        
+        return result
+    
+    # =============================================================================
+    # BATCH PROCESSING AND UTILITIES
+    # =============================================================================
+    
+    def prepare_batch_prompts(self, dataset: pd.DataFrame, prompt_name: str, 
+                             setup_name: str, mode: str, max_rows: Optional[int] = None,
+                             few_shot_row: Optional[int] = None) -> List[Dict[str, Any]]:
+        """
+        Prepare prompts for multiple rows efficiently with batch processing.
+        
+        Args:
+            dataset: Dataset to process
+            prompt_name: Name of prompt template
+            setup_name: Name of setup
+            mode: Prompting mode
+            max_rows: Maximum number of rows to process
+            few_shot_row: Specific few-shot row index
+            
+        Returns:
+            List of prompt preparation results
+        """
+        logger.info(f"Preparing batch prompts: {len(dataset)} rows, mode: {mode}")
+        
+        if max_rows:
+            dataset = dataset.head(max_rows)
+        
+        results = []
+        few_shot_example_data = None
+        
+        if mode == 'few-shot':
+            try:
+                few_shot_example_data = self.generate_few_shot_example(dataset, setup_name, few_shot_row)
+                logger.info(f"Generated few-shot example from row {few_shot_example_data['row_index']}")
+            except Exception as e:
+                logger.error(f"Failed to generate few-shot example: {e}")
+                return []
+        
+        for idx, row in dataset.iterrows():
+            try:
+                prompt = self.prepare_prompt_for_row(
+                    prompt_name=prompt_name,
+                    row=row,
+                    setup_name=setup_name,
+                    mode=mode,
+                    dataset=dataset,
+                    few_shot_row=few_shot_row
+                )
+                
+                results.append({
+                    'row_index': idx,
+                    'prompt': prompt,
+                    'success': True,
+                    'error': None
+                })
+                
+            except Exception as e:
+                logger.error(f"Error preparing prompt for row {idx}: {e}")
+                results.append({
+                    'row_index': idx,
+                    'prompt': '',
+                    'success': False,
+                    'error': str(e)
+                })
+        
+        success_count = sum(1 for r in results if r['success'])
+        logger.info(f"Batch prompt preparation: {success_count}/{len(results)} successful")
+        
+        return results

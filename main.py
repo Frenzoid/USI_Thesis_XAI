@@ -1059,7 +1059,7 @@ def inspect_prompt_command(args):
             print(f"\nTesting field path resolution...")
             
             dataset = dataset_manager.load_dataset(setup_name)
-            if dataset and len(dataset) > 0:
+            if dataset is not None and not dataset.empty:
                 sample_row = dataset.iloc[0]
                 validation_result = prompt_manager.validate_prompt_field_paths(
                     args.prompt, setup_name, sample_row
