@@ -1187,9 +1187,17 @@ def list_available_options():
         prompts_config = Config.load_prompts_config()
         setups_config = Config.load_setups_config()
         models_config = Config.load_models_config()
-        
+        dataset_manager = DatasetManager()
+        available_setups = dataset_manager.get_available_setups()
+
         print("\n=== AVAILABLE OPTIONS ===")
-        
+
+        print(f"\nSetups ({len(setups_config)}):")
+        for setup_name, config in setups_config.items():
+            setup_info = available_setups.get(setup_name, {})
+            downloaded_status = "✅ Downloaded" if setup_info.get('is_downloaded') else "❌ Not Downloaded"
+            print(f"  - {setup_name}: {config['description']} [{downloaded_status}]")
+            
         print(f"\nModels ({len(models_config)}):")
         for model_name, config in models_config.items():
             model_type = config['type']
@@ -1306,11 +1314,15 @@ def check_system_command(args):
     """Check system status"""
     logger.info("Checking system status...")
     
-    # Use the enhanced system status display
     gpu_status, memory_status = print_system_status()
-    
-    # Check configuration files
+    dataset_manager = DatasetManager()
+    available_setups = dataset_manager.get_available_setups()
     config_status = Config.validate_configuration_files()
+
+    print("\nDataset Status:")
+    for setup_name, info in available_setups.items():
+        status = "✅" if info['is_downloaded'] else "❌"
+        print(f"   {setup_name}: {status} ({'Downloaded' if info['is_downloaded'] else 'Not Downloaded'})")
     
     print("Configuration Files:")
     for config_type, exists in config_status.items():

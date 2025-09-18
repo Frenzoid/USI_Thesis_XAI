@@ -228,6 +228,9 @@ class ExperimentRunner:
                 original_df = pd.read_parquet(dataset_path)
                 logger.info(f"Loaded Parquet dataset with {len(original_df)} rows")
             
+            if not self.dataset_manager.validate_dataset_fields(setup_name):
+                raise ValueError(f"Dataset validation failed for setup {setup_name}")
+
             # Apply row pruning
             filtered_df, pruned_count, prune_reasons = self.dataset_manager.filter_dataset_rows(
                 original_df, setup_name
