@@ -1082,6 +1082,11 @@ def download_datasets_command(args):
     manager = DatasetManager()
     all_setups = list(manager.setups_config.keys())
     
+    # Check what's already downloaded
+    already_downloaded = manager.list_downloaded_datasets()
+    if already_downloaded:
+        logger.info(f"Already downloaded: {', '.join(already_downloaded)}")
+    
     # Parse setup arguments properly
     if not args.setup or args.setup.lower() == 'all':
         setups_to_download = all_setups
@@ -1102,6 +1107,11 @@ def download_datasets_command(args):
         if setup_name not in manager.setups_config:
             logger.error(f"Unknown setup: {setup_name}")
             failure_count += 1
+            continue
+        
+        # Skip if already downloaded
+        if setup_name in already_downloaded:
+            logger.info(f"Setup '{setup_name}' already downloaded, skipping")
             continue
             
         try:
@@ -1181,23 +1191,147 @@ def cleanup_command(args):
     
     return len(errors) == 0
 
+# =============================================================================
+# DATASET MANAGEMENT COMMANDS
+# =============================================================================
+
+def dataset_command(args):
+    """Handle dataset management subcommands"""
+    if args.dataset_command == 'list':
+        return dataset_list_command(args)
+    elif args.dataset_command == 'status':
+        return dataset_status_command(args)
+    elif args.dataset_command == 'validate':
+        return dataset_validate_command(args)
+    else:
+        print("Unknown dataset subcommand. Use 'python main.py dataset -h' for help.")
+        return False
+
+def dataset_list_command(args):
+    """List all configured datasets with detailed information"""
+    logger.info("Listing all configured datasets...")
+    
+    try:
+        manager = DatasetManager()
+        available_setups = manager.get_available_setups()
+        
+        print(f"\n=== CONFIGURED DATASETS ({len(available_setups)}) ===")
+        
+        for setup_name, info in available_setups.items():
+            print(f"\nDataset: {setup_name}")
+            print(f"   Description: {info.get('description', 'No description')}")
+            print(f"   File Type: {info.get('file_type', 'Unknown')}")
+            print(f"   Downloaded: {'Yes' if info.get('is_downloaded') else 'No'}")
+            
+            if info.get('is_downloaded'):
+                if info.get('is_loaded'):
+                    print(f"   Rows: {info.get('num_rows', 'Unknown')}")
+                    print(f"   Columns: {info.get('num_columns', 'Unknown')}")
+                    print(f"   Question Fields: {info.get('question_fields', [])}")
+                    print(f"   Answer Field: {info.get('answer_field', 'None')}")
+                
+                # Show pruning configuration if present
+                prune_config = info.get('prune_config', {})
+                if prune_config:
+                    print(f"   Pruning Rules: {len(prune_config)} configured")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error listing datasets: {e}")
+        return False
+
+def dataset_status_command(args):
+    """Show dataset download and validation status"""
+    logger.info("Checking dataset status...")
+    
+    try:
+        manager = DatasetManager()
+        downloaded = manager.list_downloaded_datasets()
+        all_setups = list(manager.setups_config.keys())
+        
+        print(f"\n=== DATASET STATUS ===")
+        print(f"Total Configured: {len(all_setups)}")
+        print(f"Downloaded: {len(downloaded)}")
+        print(f"Missing: {len(all_setups) - len(downloaded)}")
+        
+        if downloaded:
+            print(f"\nDownloaded Datasets:")
+            for setup_name in downloaded:
+                print(f"   ✓ {setup_name}")
+        
+        missing = set(all_setups) - set(downloaded)
+        if missing:
+            print(f"\nMissing Datasets:")
+            for setup_name in missing:
+                print(f"   ✗ {setup_name}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error checking dataset status: {e}")
+        return False
+
+def dataset_validate_command(args):
+    """Validate dataset fields for all downloaded datasets"""
+    logger.info("Validating dataset fields...")
+    
+    try:
+        manager = DatasetManager()
+        downloaded = manager.list_downloaded_datasets()
+        
+        if not downloaded:
+            print("No datasets downloaded. Use 'python main.py download-datasets --setup all' to download.")
+            return True
+        
+        print(f"\n=== DATASET FIELD VALIDATION ===")
+        
+        valid_count = 0
+        invalid_count = 0
+        
+        for setup_name in downloaded:
+            try:
+                is_valid = manager.validate_dataset_fields(setup_name)
+                status = "✓ Valid" if is_valid else "✗ Invalid"
+                print(f"   {setup_name}: {status}")
+                
+                if is_valid:
+                    valid_count += 1
+                else:
+                    invalid_count += 1
+                    
+            except Exception as e:
+                print(f"   {setup_name}: ✗ Error - {e}")
+                invalid_count += 1
+        
+        print(f"\nValidation Summary:")
+        print(f"   Valid: {valid_count}")
+        print(f"   Invalid: {invalid_count}")
+        print(f"   Total Checked: {len(downloaded)}")
+        
+        return invalid_count == 0
+        
+    except Exception as e:
+        logger.error(f"Error validating datasets: {e}")
+        return False
+
+# =============================================================================
+# ENHANCED SYSTEM INFORMATION COMMANDS
+# =============================================================================
+
 def list_available_options():
-    """List available models, setups, and prompts"""
+    """List available models, setups, and prompts with enhanced dataset information"""
     try:
         prompts_config = Config.load_prompts_config()
         setups_config = Config.load_setups_config()
         models_config = Config.load_models_config()
+        
+        # Initialize dataset manager for enhanced info
         dataset_manager = DatasetManager()
         available_setups = dataset_manager.get_available_setups()
-
+        
         print("\n=== AVAILABLE OPTIONS ===")
-
-        print(f"\nSetups ({len(setups_config)}):")
-        for setup_name, config in setups_config.items():
-            setup_info = available_setups.get(setup_name, {})
-            downloaded_status = "✅ Downloaded" if setup_info.get('is_downloaded') else "❌ Not Downloaded"
-            print(f"  - {setup_name}: {config['description']} [{downloaded_status}]")
-            
+        
         print(f"\nModels ({len(models_config)}):")
         for model_name, config in models_config.items():
             model_type = config['type']
@@ -1206,7 +1340,10 @@ def list_available_options():
         
         print(f"\nSetups ({len(setups_config)}):")
         for setup_name, config in setups_config.items():
-            print(f"  - {setup_name}: {config['description']}")
+            setup_info = available_setups.get(setup_name, {})
+            downloaded_status = "Downloaded" if setup_info.get('is_downloaded') else "Not Downloaded"
+            file_type = setup_info.get('file_type', 'Unknown')
+            print(f"  - {setup_name}: {config['description']} [{downloaded_status}, {file_type}]")
         
         print(f"\nPrompts ({len(prompts_config)}):")
         for prompt_name, config in prompts_config.items():
@@ -1216,6 +1353,124 @@ def list_available_options():
         
     except Exception as e:
         print(f"Error loading configurations: {e}")
+
+def check_system_command(args):
+    """Check system status with enhanced dataset validation"""
+    logger.info("Checking system status...")
+    
+    # Use the enhanced system status display
+    gpu_status, memory_status = print_system_status()
+    
+    # Check configuration files
+    config_status = Config.validate_configuration_files()
+    
+    print("Configuration Files:")
+    for config_type, exists in config_status.items():
+        status = "✓" if exists else "✗"
+        print(f"   {config_type}.json: {status}")
+    
+    # Check directories
+    print("\nDirectories:")
+    try:
+        created_dirs = Config.create_directories()
+        print(f"   Created/verified {len(created_dirs)} directories")
+    except Exception as e:
+        print(f"   Error creating directories: {e}")
+    
+    # Check API keys including HF token
+    print("\nAPI Keys:")
+    print(f"   OpenAI: {'✓' if Config.OPENAI_API_KEY else '✗'}")
+    print(f"   Google GenAI: {'✓' if Config.GENAI_API_KEY else '✗'}")
+    print(f"   Anthropic: {'✓' if Config.ANTHROPIC_API_KEY else '✗'}")
+    
+    # Show detailed HF token status
+    from utils import validate_hf_token
+    hf_status = validate_hf_token()
+    if hf_status['token_valid']:
+        user_name = hf_status['user_info'].get('name', 'Unknown')
+        print(f"   Hugging Face: ✓ (user: {user_name})")
+    elif hf_status['token_available']:
+        print(f"   Hugging Face: ✗ (invalid token)")
+    else:
+        print(f"   Hugging Face: ✗ (no token)")
+    
+    # Enhanced dataset status with field validation
+    print("\nDataset Status:")
+    try:
+        dataset_manager = DatasetManager()
+        available_setups = dataset_manager.get_available_setups()
+        downloaded_datasets = dataset_manager.list_downloaded_datasets()
+        
+        total_setups = len(available_setups)
+        downloaded_count = len(downloaded_datasets)
+        
+        print(f"   Total Configured: {total_setups}")
+        print(f"   Downloaded: {downloaded_count}")
+        print(f"   Missing: {total_setups - downloaded_count}")
+        
+        # Validate fields for downloaded datasets
+        if downloaded_datasets:
+            print("\nDataset Field Validation:")
+            valid_count = 0
+            for setup_name in downloaded_datasets:
+                try:
+                    is_valid = dataset_manager.validate_dataset_fields(setup_name)
+                    status = "✓" if is_valid else "✗"
+                    print(f"   {setup_name}: {status} {'Valid fields' if is_valid else 'Invalid fields'}")
+                    if is_valid:
+                        valid_count += 1
+                except Exception as e:
+                    print(f"   {setup_name}: ✗ Validation error - {str(e)[:50]}...")
+            
+            print(f"   Valid: {valid_count}/{len(downloaded_datasets)}")
+        else:
+            print("   No datasets downloaded for validation")
+        
+    except Exception as e:
+        print(f"   Error checking dataset status: {e}")
+    
+    # Check for model accessibility issues
+    print("\nModel Accessibility:")
+    try:
+        from models import ModelManager
+        model_manager = ModelManager()
+        inaccessible_models = model_manager.get_inaccessible_models()
+        
+        if inaccessible_models:
+            print(f"   ⚠️  Some models may not be accessible: {len(inaccessible_models)}")
+            print(f"   Potentially restricted: {', '.join(inaccessible_models[:3])}")
+            if len(inaccessible_models) > 3:
+                print(f"   ... and {len(inaccessible_models) - 3} more")
+            print("   Consider adding HF_ACCESS_TOKEN to .env file")
+        else:
+            print("   ✓ All configured models appear accessible")
+    except Exception as e:
+        print(f"   ⚠️  Could not check model accessibility: {e}")
+    
+    # Recommendations based on system status
+    print("\nRecommendations:")
+    if not gpu_status['cuda_available']:
+        if gpu_status['torch_available']:
+            print("   - Consider API-based models for better performance")
+            print("   - Local models will be very slow on CPU")
+        else:
+            print("   - Install PyTorch to enable local model support")
+            print("   - Use API-based models (GPT, Gemini, Claude)")
+    elif not gpu_status['can_run_local_models']:
+        print(f"   - GPU memory ({gpu_status['total_memory']:.1f} GB) may limit local model size")
+        print("   - Consider smaller models or API-based alternatives")
+    else:
+        print("   - System ready for both local and API-based models")
+    
+    if not hf_status['token_valid'] and Config.HF_ACCESS_TOKEN:
+        print("   - Check HF_ACCESS_TOKEN validity")
+    elif not hf_status['token_available']:
+        print("   - Add HF_ACCESS_TOKEN to .env file for gated/restricted models")
+    
+    if downloaded_count < total_setups:
+        print("   - Download missing datasets with: python main.py download-datasets --setup all")
+    
+    return all(config_status.values())
 
 def list_commands_command():
     """List all available commands and their arguments with proper formatting"""
@@ -1264,22 +1519,29 @@ def list_commands_command():
     print("   Arguments:")
     print("     --setup SETUPS           Setup(s) to download (space-separated or 'all')")
     
-    print("\n6. cleanup")
+    print("\n6. dataset")
+    print("   Description: Dataset management and information commands")
+    print("   Subcommands:")
+    print("     list                     List all configured datasets with details")
+    print("     status                   Show download status summary")
+    print("     validate                 Validate field structure of downloaded datasets")
+    
+    print("\n7. cleanup")
     print("   Description: Clean up system files and directories")
     print("   Arguments:")
     print("     --target TARGETS         What to clean: datasets, logs, results, cache, finetuned, all")
     print("     --dry-run               Show what would be cleaned without actually cleaning")
     
-    print("\n7. list-options")
-    print("   Description: List available models, setups, prompts")
+    print("\n8. list-options")
+    print("   Description: List available models, setups, prompts with download status")
     print("   Arguments: None")
     
-    print("\n8. list-commands / help / show-commands")
+    print("\n9. list-commands / help / show-commands")
     print("   Description: Show this help message with all commands and their arguments")
     print("   Arguments: None")
     
-    print("\n9. status")
-    print("   Description: Check system status including configuration files and API keys")
+    print("\n10. status")
+    print("   Description: Check system status including datasets, configurations, and API keys")
     print("   Arguments: None")
     
     print("\n=== EXAMPLE USAGE ===")
@@ -1289,14 +1551,21 @@ def list_commands_command():
     print("# Resume interrupted experiment run")
     print("python main.py run-experiment --setup 'gmeg qald' --mode few-shot --skip")
     print("")
+    print("# Check dataset status and download missing ones")
+    print("python main.py dataset status")
+    print("python main.py download-datasets --setup all")
+    print("")
+    print("# Validate dataset fields after download")
+    print("python main.py dataset validate")
+    print("")
+    print("# List all available datasets with detailed information")
+    print("python main.py dataset list")
+    print("")
     print("# Multiple models with space separation")
     print("python main.py run-experiment --model 'gpt-4o-mini claude-3.5-sonnet'")
     print("")
     print("# Multiple setups and automatic prompt selection")
     print("python main.py run-experiment --setup 'gmeg qald' --mode few-shot")
-    print("")
-    print("# Specific prompts with automatic setup inference")
-    print("python main.py run-experiment --prompt 'gmeg_v1_basic qald_v1_basic'")
     print("")
     print("# Show populated prompt template with specific data")
     print("python main.py show-prompt --prompt gmeg_v1_basic --row 42")
@@ -1309,90 +1578,6 @@ def list_commands_command():
     print("")
     print("# Force incompatible combinations")
     print("python main.py run-experiment --prompt 'gmeg_v1_basic qald_v1_basic' --force")
-
-def check_system_command(args):
-    """Check system status"""
-    logger.info("Checking system status...")
-    
-    gpu_status, memory_status = print_system_status()
-    dataset_manager = DatasetManager()
-    available_setups = dataset_manager.get_available_setups()
-    config_status = Config.validate_configuration_files()
-
-    print("\nDataset Status:")
-    for setup_name, info in available_setups.items():
-        status = "✅" if info['is_downloaded'] else "❌"
-        print(f"   {setup_name}: {status} ({'Downloaded' if info['is_downloaded'] else 'Not Downloaded'})")
-    
-    print("Configuration Files:")
-    for config_type, exists in config_status.items():
-        status = "✅" if exists else "❌"
-        print(f"   {config_type}.json: {status}")
-    
-    # Check directories
-    print("\nDirectories:")
-    try:
-        created_dirs = Config.create_directories()
-        print(f"   Created/verified {len(created_dirs)} directories")
-    except Exception as e:
-        print(f"   Error creating directories: {e}")
-    
-    # Check API keys including HF token
-    print("\nAPI Keys:")
-    print(f"   OpenAI: {'✅' if Config.OPENAI_API_KEY else '❌'}")
-    print(f"   Google GenAI: {'✅' if Config.GENAI_API_KEY else '❌'}")
-    print(f"   Anthropic: {'✅' if Config.ANTHROPIC_API_KEY else '❌'}")
-    
-    # Show detailed HF token status
-    from utils import validate_hf_token
-    hf_status = validate_hf_token()
-    if hf_status['token_valid']:
-        user_name = hf_status['user_info'].get('name', 'Unknown')
-        print(f"   Hugging Face: ✅ (user: {user_name})")
-    elif hf_status['token_available']:
-        print(f"   Hugging Face: ❌ (invalid token)")
-    else:
-        print(f"   Hugging Face: ❌ (no token)")
-    
-    # Check for model accessibility issues
-    print("\nModel Accessibility:")
-    try:
-        from models import ModelManager
-        model_manager = ModelManager()
-        inaccessible_models = model_manager.get_inaccessible_models()
-        
-        if inaccessible_models:
-            print(f"   ⚠️  Some models may not be accessible: {len(inaccessible_models)}")
-            print(f"   Potentially restricted: {', '.join(inaccessible_models[:3])}")
-            if len(inaccessible_models) > 3:
-                print(f"   ... and {len(inaccessible_models) - 3} more")
-            print("   Consider adding HF_ACCESS_TOKEN to .env file")
-        else:
-            print("   ✅ All configured models appear accessible")
-    except Exception as e:
-        print(f"   ⚠️  Could not check model accessibility: {e}")
-    
-    # Recommendations based on system status
-    print("\nRecommendations:")
-    if not gpu_status['cuda_available']:
-        if gpu_status['torch_available']:
-            print("   - Consider API-based models for better performance")
-            print("   - Local models will be very slow on CPU")
-        else:
-            print("   - Install PyTorch to enable local model support")
-            print("   - Use API-based models (GPT, Gemini, Claude)")
-    elif not gpu_status['can_run_local_models']:
-        print(f"   - GPU memory ({gpu_status['total_memory']:.1f} GB) may limit local model size")
-        print("   - Consider smaller models or API-based alternatives")
-    else:
-        print("   - System ready for both local and API-based models")
-    
-    if not hf_status['token_valid'] and Config.HF_ACCESS_TOKEN:
-        print("   - Check HF_ACCESS_TOKEN validity")
-    elif not hf_status['token_available']:
-        print("   - Add HF_ACCESS_TOKEN to .env file for gated/restricted models")
-    
-    return all(config_status.values())
 
 def main():
     """Main CLI entry point"""
@@ -1461,6 +1646,14 @@ def main():
     download_parser.add_argument('--setup', type=str, default='all',
                                  help='Setup(s) to download (space-separated, or "all" for all setups)')
     
+    # Dataset management commands
+    dataset_parser = subparsers.add_parser('dataset', help='Dataset management and information')
+    dataset_subparsers = dataset_parser.add_subparsers(dest='dataset_command', help='Dataset subcommands')
+    
+    dataset_subparsers.add_parser('list', help='List all configured datasets with detailed information')
+    dataset_subparsers.add_parser('status', help='Show dataset download status summary')
+    dataset_subparsers.add_parser('validate', help='Validate field structure of downloaded datasets')
+    
     # Cleanup command
     cleanup_parser = subparsers.add_parser('cleanup', help='Clean up system files and directories')
     cleanup_parser.add_argument('--target', type=str, default='all',
@@ -1495,6 +1688,8 @@ def main():
             success = show_prompt_command(args)
         elif args.command == 'download-datasets':
             success = download_datasets_command(args)
+        elif args.command == 'dataset':
+            success = dataset_command(args)
         elif args.command == 'cleanup':
             success = cleanup_command(args)
         elif args.command == 'list-options':
