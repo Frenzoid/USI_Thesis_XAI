@@ -1,96 +1,53 @@
 {
-  "gmeg_v1_basic": {
+  "gmeg_explaination": {
     "type": "baseline",
     "mode": "zero-shot",
     "compatible_setup": "gmeg",
-    "template": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\n{}\n\nRevised Text:\n{}\n\n",
-    "description": "Basic correction explanation prompt"
-  },
-  "gmeg_v2_enhanced": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "You are an expert in text correction analysis. You will be given an original text and a revised version.\n\nYour task:\n1. Identify each correction made between the original and revised text\n2. Categorize each correction (spelling, grammar, word choice, punctuation, etc.)\n3. Provide a clear explanation for each change\n4. Present all changes as bullet points\n\nFormat: \"- [Category] Change description\"\n\nExample:\nOriginal: \"The effect of the new policy will effect everyone.\"\nRevised: \"The effect of the new policy will affect everyone.\"\nOutput:\n- [Word Choice] \"effect\" changed to \"affect\" (correct verb form for influence)\n\nOriginal Text:\n{}\n\nRevised Text:\n{}",
-    "description": "Enhanced correction explanation with categorization"
-  },
-  "gmeg_v3_detailed": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "As a linguistics expert, analyze the corrections made between these two texts:\n\nOriginal Text: {}\nRevised Text: {}\n\nProvide a comprehensive analysis including:\n1. Type of error corrected (grammatical, lexical, syntactic, semantic)\n2. Linguistic rule or principle applied\n3. Impact on text clarity and correctness\n4. Alternative corrections that could have been made\n\nFormat each analysis as:\n- [Error Type] Original → Corrected: Explanation (Linguistic principle: X)\n\nBe thorough and educational in your explanations.",
-    "description": "Detailed linguistic analysis prompt"
-  },
-  "gmeg_v4_minimal": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "Compare these texts and list only the essential changes:\n\nOriginal: {}\nRevised: {}\n\nOutput format:\n- Changed X to Y\n- Added/Removed Z\n\nBe concise and direct.",
-    "description": "Minimal, concise correction explanation"
-  },
-  "gmeg_v5_pedagogical": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "You are a writing tutor explaining corrections to a student. Compare these texts:\n\nOriginal: {}\nRevised: {}\n\nExplain each correction in a way that helps the student learn:\n- What was wrong and why\n- The correct form and why it's better\n- How to avoid this mistake in the future\n\nUse encouraging, educational language suitable for language learners.",
-    "description": "Educational teaching-focused prompt"
-  },
-  "gmeg_v6_formal": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "Conduct a formal textual analysis of the revisions made:\n\nText A (Original): {}\nText B (Revised): {}\n\nAnalysis:\nExamine the modifications systematically, categorizing each change according to linguistic taxonomy and explaining the rationale behind each editorial decision. Consider morphological, syntactic, semantic, and pragmatic dimensions of the alterations.\n\nPresent findings in academic format with precise terminology.",
-    "description": "Formal academic analysis style"
-  },
-  "gmeg_v7_casual": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "Hey! I need to explain what changed between these two texts:\n\nOriginal: {}\nFixed: {}\n\nHere's what got corrected:\n\n(Explain in a friendly, casual way what was wrong and how it got fixed. Use everyday language that anyone can understand.)",
-    "description": "Casual, conversational explanation style"
-  },
-  "gmeg_v8_comparative": {
-    "type": "baseline",
-    "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "BEFORE vs AFTER Analysis:\n\nBEFORE: {}\nAFTER:  {}\n\nChanges Made:\n[Analyze each change by directly comparing the before and after states, highlighting what specifically changed and why each change improves the text]\n\nFocus on the transformation process and improvement achieved.",
-    "description": "Side-by-side comparative analysis"
-  },
-  "gmeg_few_shot": {
-    "type": "baseline",
-    "mode": "few-shot",
-    "compatible_setup": "gmeg",
-    "few_shot_example": "Given this example:\n\nOriginal: \"{}\"\nRevised: \"{}.\"\nExplanation:\n{}\n",
-    "template": "\nNow, analyze the following texts:\n\nOriginal: {}\nRevised: {}\n\nProvide explanations in the same format as above.",
-    "description": "Few-shot learning prompt with examples"
+    "template": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{}\n\nProvide an explanation for all the revisions in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+    "description": "Annotators were shown one aligned sentence at a time. For each sentence, we instructed annotators to provide an explanation for all the revisions in the sentence in a bulleted list."
   },
 
-
-  "exp1_explanation": {
+  "cose_explanation": {
     "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "RHAI_1",
-    "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}\n\nAnswer:\n{}\n\nProvide a short explanation on why this answer is correct.",
-    "description": "LLM must justify the given answer with a short explanation"
+    "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}\n\nAnswer:\n{}\n\nWhy is the predicted output the most appropriate answer?",
+    "description": "LLM must justify the given answer."
   },
-  "exp2_choice_selection": {
-      "type": "evaluation",
-      "mode": "zero-shot",
-      "compatible_setup": "RHAI_2",
-      "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}\n\nSelect the single best choice and return only that choice.",
-      "description": "LLM must select exactly one choice from the provided options"
+  "cose_choice_selection": {
+    "type": "evaluation", 
+    "mode": "zero-shot",
+    "compatible_setup": "RHAI_2",
+    "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}\n\nSelect the single best choice and return only that choice.",
+    "description": "LLM must select exactly one choice from the provided options"
   },
-  "ecqa1_choice_selection": {
-      "type": "evaluation",
-      "mode": "zero-shot",
-      "compatible_setup": "ecqa_1",
-      "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice and return only that choice.",
-      "description": "LLM must select exactly one choice from the provided options"
+    
+  "ecqa_choice_selection": {
+    "type": "evaluation",
+    "mode": "zero-shot", 
+    "compatible_setup": "ecqa_choice",
+    "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice and return only that choice.",
+    "description": "LLM must select exactly one choice from the provided options"
   },
-  "ecqa2_explanation": {
-      "type": "evaluation",
-      "mode": "zero-shot",
-      "compatible_setup": "ecqa_2",
-      "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}, {}, {}, {}, {}\n\nAnswer:\n{}\n\nProvide a short explanation on why this answer is the correct one.",
-      "description": "LLM must justify the given answer with a short explanation"
+  "ecqa_positive_explanation": {
+    "type": "evaluation",
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_positive", 
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite positive properties that justify why this answer choice is correct. Write simple sentences explaining the reasoning.",
+    "description": "LLM must generate positive properties supporting the correct answer"
+  },
+  "ecqa_negative_explanation": {
+    "type": "evaluation",
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_negative",
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite negative properties that explain why each of the other answer choices is incorrect or not the best choice. Write simple sentences for each incorrect option.",
+    "description": "LLM must generate negative properties refuting incorrect answers"  
+  },
+  "ecqa_freeflow_explanation": {
+    "type": "evaluation", 
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow",
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a complete explanation that includes both why the correct answer is right and why the other choices are wrong. Write this as a coherent paragraph.",
+    "description": "LLM must generate a comprehensive free-form explanation"
   }
 }

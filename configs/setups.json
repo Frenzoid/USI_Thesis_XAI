@@ -7,7 +7,7 @@
       "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv"
     },
     "prompt_fields": {
-      "question_fields": ["original", "revised"],
+      "question_fields": ["aligned"],
       "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable"
     },
     "prune_row": {
@@ -18,6 +18,7 @@
       "metrics_registry": "GMEG_METRICS"
     }
   },
+  
   "RHAI_1": {
     "description": "Evaluates the ability of models to generate human-like explanations for various tasks, focusing on the reframing of explanations to enhance clarity and understanding.",
     "dataset": {
@@ -42,11 +43,13 @@
       "answer_field": "answer"
     }
   },
-  "ecqa_1": {
-    "description": "Evaluates the ability of models to generate commonsense explanations for multiple-choice questions, enhancing understanding of everyday situations.",
+
+
+  "ecqa_choice": {
+    "description": "Choice selection for ECQA commonsense questions",
     "dataset": {
       "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
-      "download_path": "DS_ECQA",
+      "download_path": "DS_ECQA", 
       "parquet_file": "train-00000-of-00001.parquet"
     },
     "prompt_fields": {
@@ -54,16 +57,40 @@
       "answer_field": "q_ans"
     }
   },
-  "ecqa_2": {
-    "description": "Evaluates the ability of models to identify the correct answer from multiple choices for commonsense questions, focusing on practical reasoning skills.",
+  "ecqa_positive": {
+    "description": "Generate positive properties explaining correct answer",
     "dataset": {
-      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true", 
       "download_path": "DS_ECQA",
       "parquet_file": "train-00000-of-00001.parquet"
     },
     "prompt_fields": {
       "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
       "answer_field": "taskA_pos"
+    }
+  },
+  "ecqa_negative": {
+    "description": "Generate negative properties explaining why other choices are wrong",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_ECQA", 
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
+      "answer_field": "taskA_neg"
+    }
+  },
+  "ecqa_freeflow": {
+    "description": "Generate complete free-form explanation", 
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_ECQA",
+      "parquet_file": "train-00000-of-00001.parquet" 
+    },
+    "prompt_fields": {
+      "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
+      "answer_field": "taskB"
     }
   },
 
