@@ -5,6 +5,7 @@ XAI Explanation Evaluation System CLI
 This script provides a command-line interface for running experiments to evaluate
 Large Language Models' alignment with user study results in XAI explanation evaluation.
 Handles multiple space-separated inputs with intelligent compatibility checking.
+Supports JSON/JSONL datasets with nested field path resolution.
 """
 
 import argparse
@@ -866,6 +867,229 @@ def run_experiment_command(args):
     return success_count > 0 or (args.skip and len(skipped_combinations) > 0)
 
 # =============================================================================
+# PROMPT VALIDATION AND INSPECTION COMMANDS
+# =============================================================================
+
+def validate_prompt_command(args):
+    """Validate prompt field paths and configurations"""
+    logger.info("Starting prompt validation...")
+    
+    # Load configurations
+    try:
+        prompts_config = Config.load_prompts_config()
+        setups_config = Config.load_setups_config()
+    except Exception as e:
+        logger.error(f"Failed to load configurations: {e}")
+        return False
+    
+    # Initialize managers
+    prompt_manager = PromptManager()
+    dataset_manager = DatasetManager()
+    
+    if args.prompt:
+        # Validate specific prompt(s)
+        prompt_names = args.prompt.split(',')
+        
+        for prompt_name in prompt_names:
+            prompt_name = prompt_name.strip()
+            
+            if prompt_name not in prompts_config:
+                logger.error(f"Unknown prompt: {prompt_name}")
+                continue
+            
+            try:
+                # Get prompt requirements
+                requirements = prompt_manager.get_prompt_field_requirements(prompt_name)
+                setup_name = requirements['setup_name']
+                
+                print(f"\n=== VALIDATING PROMPT: {prompt_name} ===")
+                print(f"Setup: {setup_name}")
+                print(f"Mode: {requirements['mode']}")
+                print(f"Template placeholders: {requirements['placeholder_count']}")
+                print(f"Question field paths: {requirements['question_field_paths']}")
+                print(f"Answer field path: {requirements['answer_field_path']}")
+                
+                # Load sample data to test field paths
+                dataset = dataset_manager.load_dataset(setup_name)
+                if dataset is None:
+                    logger.error(f"Could not load dataset for setup: {setup_name}")
+                    continue
+                
+                if len(dataset) == 0:
+                    logger.error(f"Dataset is empty for setup: {setup_name}")
+                    continue
+                
+                # Test field path resolution on sample data
+                sample_row = dataset.iloc[0]
+                validation_result = prompt_manager.validate_prompt_field_paths(
+                    prompt_name, setup_name, sample_row
+                )
+                
+                print(f"\nField Path Validation:")
+                print(f"  Valid: {validation_result['valid']}")
+                
+                if validation_result['errors']:
+                    print(f"  Errors:")
+                    for error in validation_result['errors']:
+                        print(f"    - {error}")
+                
+                if validation_result['warnings']:
+                    print(f"  Warnings:")
+                    for warning in validation_result['warnings']:
+                        print(f"    - {warning}")
+                
+                print(f"  Sample Field Values:")
+                for field_path, value in validation_result['field_values'].items():
+                    print(f"    {field_path}: {repr(value)}")
+                
+            except Exception as e:
+                logger.error(f"Error validating prompt {prompt_name}: {e}")
+                continue
+    
+    else:
+        # Validate all prompts
+        print(f"\n=== VALIDATING ALL PROMPTS ({len(prompts_config)}) ===")
+        
+        valid_count = 0
+        invalid_count = 0
+        
+        for prompt_name in prompts_config.keys():
+            try:
+                requirements = prompt_manager.get_prompt_field_requirements(prompt_name)
+                setup_name = requirements['setup_name']
+                
+                # Quick validation without loading full dataset
+                if setup_name not in setups_config:
+                    print(f"❌ {prompt_name}: Invalid setup '{setup_name}'")
+                    invalid_count += 1
+                    continue
+                
+                # Check if dataset exists
+                if not dataset_manager.is_dataset_downloaded(setup_name):
+                    print(f"⚠️  {prompt_name}: Dataset not downloaded for setup '{setup_name}'")
+                    continue
+                
+                print(f"✅ {prompt_name}: Valid (setup: {setup_name}, mode: {requirements['mode']})")
+                valid_count += 1
+                
+            except Exception as e:
+                print(f"❌ {prompt_name}: Error - {str(e)[:100]}...")
+                invalid_count += 1
+        
+        print(f"\nValidation Summary:")
+        print(f"  Valid: {valid_count}")
+        print(f"  Invalid: {invalid_count}")
+        print(f"  Total: {len(prompts_config)}")
+    
+    return True
+
+def list_prompts_command(args):
+    """List available prompts with details"""
+    logger.info("Listing available prompts...")
+    
+    try:
+        prompt_manager = PromptManager()
+        
+        if args.mode:
+            prompts = prompt_manager.list_prompts(mode=args.mode)
+            print(f"\n=== PROMPTS FOR MODE: {args.mode.upper()} ===")
+        else:
+            prompts = prompt_manager.list_prompts()
+            print(f"\n=== ALL AVAILABLE PROMPTS ({len(prompts)}) ===")
+        
+        if not prompts:
+            print("No prompts found.")
+            return True
+        
+        for name, description in prompts.items():
+            print(f"\n{name}:")
+            print(f"  {description}")
+            
+            if args.details:
+                try:
+                    requirements = prompt_manager.get_prompt_field_requirements(name)
+                    print(f"  Field paths: {requirements['question_field_paths']}")
+                    print(f"  Answer path: {requirements['answer_field_path']}")
+                    print(f"  Template placeholders: {requirements['placeholder_count']}")
+                except Exception as e:
+                    print(f"  Error getting details: {e}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error listing prompts: {e}")
+        return False
+
+def inspect_prompt_command(args):
+    """Inspect a specific prompt's configuration and requirements"""
+    logger.info(f"Inspecting prompt: {args.prompt}")
+    
+    try:
+        prompt_manager = PromptManager()
+        
+        if args.prompt not in prompt_manager.prompts_config:
+            logger.error(f"Unknown prompt: {args.prompt}")
+            logger.info(f"Available prompts: {list(prompt_manager.prompts_config.keys())}")
+            return False
+        
+        # Get detailed requirements
+        requirements = prompt_manager.get_prompt_field_requirements(args.prompt)
+        
+        print(f"\n=== PROMPT INSPECTION: {args.prompt} ===")
+        print(f"Setup: {requirements['setup_name']}")
+        print(f"Mode: {requirements['mode']}")
+        print(f"Description: {prompt_manager.prompts_config[args.prompt].get('description', 'No description')}")
+        
+        print(f"\nTemplate:")
+        print(f"  Placeholders: {requirements['placeholder_count']}")
+        print(f"  Template: {requirements['template']}")
+        
+        if requirements['few_shot_template']:
+            print(f"  Few-shot template: {requirements['few_shot_template']}")
+        
+        print(f"\nField Requirements:")
+        print(f"  Question field paths: {requirements['question_field_paths']}")
+        print(f"  Answer field path: {requirements['answer_field_path']}")
+        
+        # Test field path resolution if dataset is available
+        dataset_manager = DatasetManager()
+        setup_name = requirements['setup_name']
+        
+        if dataset_manager.is_dataset_downloaded(setup_name):
+            print(f"\nTesting field path resolution...")
+            
+            dataset = dataset_manager.load_dataset(setup_name)
+            if dataset and len(dataset) > 0:
+                sample_row = dataset.iloc[0]
+                validation_result = prompt_manager.validate_prompt_field_paths(
+                    args.prompt, setup_name, sample_row
+                )
+                
+                print(f"  Validation: {'✅ Valid' if validation_result['valid'] else '❌ Invalid'}")
+                
+                if validation_result['errors']:
+                    print(f"  Errors:")
+                    for error in validation_result['errors']:
+                        print(f"    - {error}")
+                
+                print(f"  Sample values:")
+                for field_path, result in validation_result['field_path_results'].items():
+                    if 'error' in result:
+                        print(f"    {field_path}: ERROR - {result['error']}")
+                    else:
+                        status = "✅" if result['resolved'] else "❌"
+                        print(f"    {field_path}: {status} {result.get('value_type', 'None')} - {result.get('value_preview', 'None')}")
+        else:
+            print(f"  Dataset not downloaded - cannot test field paths")
+            print(f"  Run: python main.py download-datasets --setup {setup_name}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error inspecting prompt: {e}")
+        return False
+
+# =============================================================================
 # OTHER COMMAND HANDLERS
 # =============================================================================
 
@@ -961,8 +1185,8 @@ def plot_command(args):
         return False
 
 def show_prompt_command(args):
-    """Show a populated prompt template using dataset data"""
-    logger.info("Showing populated prompt template...")
+    """Show a populated prompt template with enhanced validation"""
+    logger.info("Showing populated prompt template with validation...")
     
     # Load configurations
     try:
@@ -983,19 +1207,15 @@ def show_prompt_command(args):
     dataset_manager = DatasetManager()
     
     try:
-        # Get prompt configuration
-        prompt_config = prompts_config[args.prompt]
+        # Get prompt configuration and validate
+        requirements = prompt_manager.get_prompt_field_requirements(args.prompt)
+        compatible_setup = requirements['setup_name']
+        prompt_mode = requirements['mode']
         
-        if 'compatible_setup' not in prompt_config:
-            logger.error(f"Prompt '{args.prompt}' missing 'compatible_setup' field")
-            return False
-        
-        compatible_setup = prompt_config['compatible_setup']
-        prompt_mode = prompt_config.get('mode', 'zero-shot')
-        
-        if not compatible_setup:
-            logger.error(f"Prompt '{args.prompt}' has empty compatible_setup")
-            return False
+        print(f"\n=== PROMPT VALIDATION ===")
+        print(f"Prompt: {args.prompt}")
+        print(f"Setup: {compatible_setup}")
+        print(f"Mode: {prompt_mode}")
         
         # Load the compatible dataset
         logger.info(f"Loading dataset for setup: {compatible_setup}")
@@ -1010,6 +1230,7 @@ def show_prompt_command(args):
                 logger.error(f"Row index {args.row} out of bounds for dataset with {len(dataset)} rows")
                 return False
             row = dataset.iloc[args.row]
+            row_index = args.row
             logger.info(f"Using specified row {args.row}")
         else:
             # Use random row
@@ -1018,6 +1239,32 @@ def show_prompt_command(args):
             row_index = random.randint(0, len(dataset) - 1)
             row = dataset.iloc[row_index]
             logger.info(f"Using random row {row_index}")
+        
+        # Validate field paths with actual data
+        validation_result = prompt_manager.validate_prompt_field_paths(
+            args.prompt, compatible_setup, row
+        )
+        
+        print(f"\nField Path Validation: {'✅ Valid' if validation_result['valid'] else '❌ Invalid'}")
+        
+        if validation_result['errors']:
+            print(f"Errors:")
+            for error in validation_result['errors']:
+                print(f"  - {error}")
+            print("\nCannot proceed with invalid field paths.")
+            return False
+        
+        if validation_result['warnings']:
+            print(f"Warnings:")
+            for warning in validation_result['warnings']:
+                print(f"  - {warning}")
+        
+        # Show field path resolution results
+        print(f"\nField Path Resolution:")
+        for field_path, result in validation_result['field_path_results'].items():
+            status = "✅" if result.get('resolved', False) else "❌"
+            value_preview = result.get('value_preview', 'None')
+            print(f"  {field_path}: {status} {value_preview}")
         
         # Prepare the populated prompt
         populated_prompt = prompt_manager.prepare_prompt_for_row(
@@ -1036,7 +1283,7 @@ def show_prompt_command(args):
         print(f"Prompt: {args.prompt}")
         print(f"Mode: {prompt_mode}")
         print(f"Compatible Setup: {compatible_setup}")
-        print(f"Row Used: {args.row if args.row is not None else row_index}")
+        print(f"Row Used: {row_index}")
         print(f"Dataset Size: {len(dataset)} rows")
         print("=" * 80)
         print(f"\nPOPULATED TEMPLATE:")
@@ -1044,26 +1291,11 @@ def show_prompt_command(args):
         print(populated_prompt)
         print("-" * 40)
         
-        # Show the original data used
-        setup_config = setups_config[compatible_setup]
-        
-        if 'prompt_fields' not in setup_config:
-            logger.error(f"Setup '{compatible_setup}' missing 'prompt_fields' configuration")
-            return False
-        
-        prompt_fields_config = setup_config['prompt_fields']
-        question_fields = prompt_fields_config.get('question_fields', [])
-        answer_field = prompt_fields_config.get('answer_field', '')
-        
-        print(f"\nORIGINAL DATA USED:")
+        # Show the original field values
+        print(f"\nORIGINAL FIELD VALUES:")
         print("-" * 40)
-        for field in question_fields:
-            value = str(row.get(field, 'N/A')) if field in row else 'N/A'
-            print(f"{field}: {value}")
-        
-        if answer_field and answer_field in row:
-            answer_value = str(row.get(answer_field, 'N/A'))
-            print(f"\nExpected Answer ({answer_field}): {answer_value}")
+        for field_path, value in validation_result['field_values'].items():
+            print(f"{field_path}: {repr(value)}")
         
         print("=" * 80)
         
@@ -1326,8 +1558,9 @@ def list_available_options():
         setups_config = Config.load_setups_config()
         models_config = Config.load_models_config()
         
-        # Initialize dataset manager for enhanced info
+        # Initialize managers for enhanced info
         dataset_manager = DatasetManager()
+        prompt_manager = PromptManager()
         available_setups = dataset_manager.get_available_setups()
         
         print("\n=== AVAILABLE OPTIONS ===")
@@ -1346,10 +1579,34 @@ def list_available_options():
             print(f"  - {setup_name}: {config['description']} [{downloaded_status}, {file_type}]")
         
         print(f"\nPrompts ({len(prompts_config)}):")
-        for prompt_name, config in prompts_config.items():
-            compatible = config.get('compatible_setup', 'Unknown setup')
-            mode = config.get('mode', 'zero-shot')
-            print(f"  - {prompt_name}: {config['description']} [for {compatible}, {mode}]")
+        
+        # Group prompts by mode for better organization
+        zero_shot_prompts = prompt_manager.list_prompts(mode='zero-shot')
+        few_shot_prompts = prompt_manager.list_prompts(mode='few-shot')
+        
+        if zero_shot_prompts:
+            print("  Zero-shot:")
+            for name, description in zero_shot_prompts.items():
+                try:
+                    requirements = prompt_manager.get_prompt_field_requirements(name)
+                    field_count = len(requirements['question_field_paths'])
+                    print(f"    - {name}: {prompts_config[name]['description']} [{field_count} fields]")
+                except:
+                    print(f"    - {name}: {prompts_config[name]['description']}")
+        
+        if few_shot_prompts:
+            print("  Few-shot:")
+            for name, description in few_shot_prompts.items():
+                try:
+                    requirements = prompt_manager.get_prompt_field_requirements(name)
+                    field_count = len(requirements['question_field_paths'])
+                    print(f"    - {name}: {prompts_config[name]['description']} [{field_count} fields]")
+                except:
+                    print(f"    - {name}: {prompts_config[name]['description']}")
+        
+        print(f"\nFor detailed prompt information, use:")
+        print(f"  python main.py list-prompts --details")
+        print(f"  python main.py inspect-prompt --prompt <prompt_name>")
         
     except Exception as e:
         print(f"Error loading configurations: {e}")
@@ -1428,6 +1685,34 @@ def check_system_command(args):
         
     except Exception as e:
         print(f"   Error checking dataset status: {e}")
+    
+    # Add prompt validation section
+    print("\nPrompt Configuration:")
+    try:
+        prompt_manager = PromptManager()
+        prompts_config = Config.load_prompts_config()
+        valid_prompts = 0
+        invalid_prompts = 0
+        
+        for prompt_name in prompts_config.keys():
+            try:
+                requirements = prompt_manager.get_prompt_field_requirements(prompt_name)
+                if requirements.get('error'):
+                    invalid_prompts += 1
+                else:
+                    valid_prompts += 1
+            except:
+                invalid_prompts += 1
+        
+        print(f"   Total Prompts: {len(prompts_config)}")
+        print(f"   Valid: {valid_prompts}")
+        print(f"   Invalid: {invalid_prompts}")
+        
+        if invalid_prompts > 0:
+            print(f"   Run 'python main.py validate-prompts' for details")
+        
+    except Exception as e:
+        print(f"   Error checking prompts: {e}")
     
     # Check for model accessibility issues
     print("\nModel Accessibility:")
@@ -1508,39 +1793,55 @@ def list_commands_command():
     print("     --compare               Generate comparison plots instead of individual")
     
     print("\n4. show-prompt")
-    print("   Description: Display a populated prompt template using real dataset data")
+    print("   Description: Display a populated prompt template with field path validation")
     print("   Arguments:")
     print("     --prompt PROMPT_NAME     Name of prompt template to show (required)")
     print("     --row ROW_NUMBER         Specific row number to use from dataset (0-based, optional)")
     print("                              If not specified, uses a random row")
     
-    print("\n5. download-datasets")
+    print("\n5. validate-prompts")
+    print("   Description: Validate prompt configurations and field path resolution")
+    print("   Arguments:")
+    print("     --prompt PROMPTS         Specific prompt(s) to validate (comma-separated, optional)")
+    
+    print("\n6. list-prompts")
+    print("   Description: List available prompts with detailed information")
+    print("   Arguments:")
+    print("     --mode MODE              Filter by prompting mode (zero-shot or few-shot)")
+    print("     --details                Show detailed field path and template information")
+    
+    print("\n7. inspect-prompt")
+    print("   Description: Inspect a specific prompt's configuration and test field paths")
+    print("   Arguments:")
+    print("     --prompt PROMPT_NAME     Name of prompt to inspect (required)")
+    
+    print("\n8. download-datasets")
     print("   Description: Download specified datasets from configured sources")
     print("   Arguments:")
     print("     --setup SETUPS           Setup(s) to download (space-separated or 'all')")
     
-    print("\n6. dataset")
+    print("\n9. dataset")
     print("   Description: Dataset management and information commands")
     print("   Subcommands:")
     print("     list                     List all configured datasets with details")
     print("     status                   Show download status summary")
     print("     validate                 Validate field structure of downloaded datasets")
     
-    print("\n7. cleanup")
+    print("\n10. cleanup")
     print("   Description: Clean up system files and directories")
     print("   Arguments:")
     print("     --target TARGETS         What to clean: datasets, logs, results, cache, finetuned, all")
     print("     --dry-run               Show what would be cleaned without actually cleaning")
     
-    print("\n8. list-options")
+    print("\n11. list-options")
     print("   Description: List available models, setups, prompts with download status")
     print("   Arguments: None")
     
-    print("\n9. list-commands / help / show-commands")
+    print("\n12. list-commands / help / show-commands")
     print("   Description: Show this help message with all commands and their arguments")
     print("   Arguments: None")
     
-    print("\n10. status")
+    print("\n13. status")
     print("   Description: Check system status including datasets, configurations, and API keys")
     print("   Arguments: None")
     
@@ -1550,6 +1851,21 @@ def list_commands_command():
     print("")
     print("# Resume interrupted experiment run")
     print("python main.py run-experiment --setup 'gmeg qald' --mode few-shot --skip")
+    print("")
+    print("# Validate all prompt configurations")
+    print("python main.py validate-prompts")
+    print("")
+    print("# Validate specific prompts")
+    print("python main.py validate-prompts --prompt 'gmeg_explaination,cose_explanation'")
+    print("")
+    print("# List all prompts with details")
+    print("python main.py list-prompts --details")
+    print("")
+    print("# List only few-shot prompts")
+    print("python main.py list-prompts --mode few-shot")
+    print("")
+    print("# Inspect a specific prompt configuration")
+    print("python main.py inspect-prompt --prompt gmeg_explaination")
     print("")
     print("# Check dataset status and download missing ones")
     print("python main.py dataset status")
@@ -1567,17 +1883,17 @@ def list_commands_command():
     print("# Multiple setups and automatic prompt selection")
     print("python main.py run-experiment --setup 'gmeg qald' --mode few-shot")
     print("")
-    print("# Show populated prompt template with specific data")
-    print("python main.py show-prompt --prompt gmeg_v1_basic --row 42")
+    print("# Show populated prompt template with validation")
+    print("python main.py show-prompt --prompt gmeg_explaination --row 42")
     print("")
     print("# Show populated prompt template with random data")
-    print("python main.py show-prompt --prompt gmeg_v2_enhanced")
+    print("python main.py show-prompt --prompt gmeg_explaination")
     print("")
     print("# Mixed arguments with compatibility validation")
     print("python main.py run-experiment --model 'gpt-4o-mini' --setup gmeg --mode zero-shot")
     print("")
     print("# Force incompatible combinations")
-    print("python main.py run-experiment --prompt 'gmeg_v1_basic qald_v1_basic' --force")
+    print("python main.py run-experiment --prompt 'gmeg_explaination qald_v1_basic' --force")
 
 def main():
     """Main CLI entry point"""
@@ -1586,14 +1902,14 @@ def main():
         initialize_system()
         global logger
         logger = setup_cli_logging()
-        logger.info("XAI Explanation Evaluation System - Comprehensive CLI")
+        logger.info("XAI Explanation Evaluation System - Comprehensive CLI with JSON/JSONL Support")
     except Exception as e:
         print(f"System initialization failed: {e}")
         return 1
     
     # Create main parser
     parser = argparse.ArgumentParser(
-        description="XAI Explanation Evaluation System - Multi-Input Argument Handling",
+        description="XAI Explanation Evaluation System - Multi-Input Argument Handling with JSON/JSONL Support",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="Use 'python main.py list-commands' to see all available commands and examples."
     )
@@ -1601,7 +1917,7 @@ def main():
     # Add subcommands
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
-    # Experiment command (renamed from run-exp)
+    # Experiment command
     exp_parser = subparsers.add_parser('run-experiment', help='Run inference experiments')
     exp_parser.add_argument('--model', type=str,
                                 help='Model(s) to use (space-separated: "gpt-4o-mini claude-3.5-sonnet" or "all")')
@@ -1640,6 +1956,24 @@ def main():
                                    help='Name of prompt template to show')
     show_prompt_parser.add_argument('--row', type=int,
                                    help='Specific row number to use from dataset (0-based, uses random if not specified)')
+    
+    # NEW: Prompt validation commands
+    validate_prompt_parser = subparsers.add_parser('validate-prompts', 
+                                                   help='Validate prompt configurations and field paths')
+    validate_prompt_parser.add_argument('--prompt', type=str,
+                                       help='Specific prompt(s) to validate (comma-separated)')
+    
+    list_prompts_parser = subparsers.add_parser('list-prompts',
+                                               help='List available prompts with details') 
+    list_prompts_parser.add_argument('--mode', type=str, choices=['zero-shot', 'few-shot'],
+                                    help='Filter by prompting mode')
+    list_prompts_parser.add_argument('--details', action='store_true',
+                                    help='Show detailed field path information')
+    
+    inspect_prompt_parser = subparsers.add_parser('inspect-prompt',
+                                                 help='Inspect a specific prompt configuration')
+    inspect_prompt_parser.add_argument('--prompt', type=str, required=True,
+                                      help='Name of prompt to inspect')
     
     # Download datasets command
     download_parser = subparsers.add_parser('download-datasets', help='Download specified datasets')
@@ -1686,6 +2020,12 @@ def main():
             success = plot_command(args)
         elif args.command == 'show-prompt':
             success = show_prompt_command(args)
+        elif args.command == 'validate-prompts':
+            success = validate_prompt_command(args)
+        elif args.command == 'list-prompts':
+            success = list_prompts_command(args)
+        elif args.command == 'inspect-prompt':
+            success = inspect_prompt_command(args)
         elif args.command == 'download-datasets':
             success = download_datasets_command(args)
         elif args.command == 'dataset':

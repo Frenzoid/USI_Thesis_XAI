@@ -3,7 +3,8 @@ import pandas as pd
 import subprocess
 import shutil
 import re
-from typing import Dict, Optional, List, Tuple, Any
+import json
+from typing import Dict, Optional, List, Tuple, Any, Union
 from urllib.parse import urlparse
 
 from config import Config
@@ -17,12 +18,13 @@ class DatasetManager:
     
     This class handles:
     1. Loading setup configurations from JSON
-    2. Downloading datasets from configured sources (CSV and Parquet)
+    2. Downloading datasets from configured sources (CSV, Parquet, JSON, JSONL)
     3. Loading and caching datasets in memory
-    4. Validating dataset structure and fields
+    4. Validating dataset structure and fields with nested path support
     5. Preparing data samples for experiments with row pruning
     6. Generic field mapping without hardcoded dataset structures
     7. Support for both ZIP archives and direct file downloads
+    8. Nested JSON field path resolution (e.g., "context.questions[0]")
     """
     
     def __init__(self):
@@ -33,12 +35,169 @@ class DatasetManager:
         logger.info(f"DatasetManager initialized with {len(self.setups_config)} setup configurations")
     
     # =============================================================================
-    # PATH AND FILE MANAGEMENT WITH PARQUET SUPPORT
+    # NESTED FIELD PATH RESOLUTION
+    # =============================================================================
+    
+    def resolve_field_path(self, data: Union[Dict, List, Any], path: str) -> Any:
+        """
+        Resolve a nested JSON path like 'context.questions[0].text' against data structure.
+        
+        Args:
+            data: The data structure to navigate (dict, list, or primitive)
+            path: The field path to resolve (e.g., "context.questions[0]", "user.profile.name")
+            
+        Returns:
+            The value at the specified path, or None if path doesn't exist
+            
+        Examples:
+            resolve_field_path({"context": {"questions": ["Q1", "Q2"]}}, "context.questions[0]") -> "Q1"
+            resolve_field_path({"user": {"profile": {"name": "John"}}}, "user.profile.name") -> "John"
+        """
+        if not path or path == "":
+            return data
+            
+        try:
+            # Parse the path into components
+            parts = self._parse_field_path(path)
+            
+            # Navigate through the data structure
+            current = data
+            for part in parts:
+                if isinstance(part, int):
+                    # Array index
+                    if not isinstance(current, (list, tuple)):
+                        logger.debug(f"Expected array at path component but got {type(current)}")
+                        return None
+                    if part < 0 or part >= len(current):
+                        logger.debug(f"Array index {part} out of bounds (length: {len(current)})")
+                        return None
+                    current = current[part]
+                else:
+                    # Object property
+                    if not isinstance(current, dict):
+                        logger.debug(f"Expected object at path component '{part}' but got {type(current)}")
+                        return None
+                    if part not in current:
+                        logger.debug(f"Property '{part}' not found in object")
+                        return None
+                    current = current[part]
+            
+            return current
+            
+        except Exception as e:
+            logger.debug(f"Error resolving field path '{path}': {e}")
+            return None
+    
+    def _parse_field_path(self, path: str) -> List[Union[str, int]]:
+        """
+        Parse a field path into components, handling both object properties and array indices.
+        
+        Args:
+            path: Field path like "context.questions[0].text"
+            
+        Returns:
+            List of path components (strings for properties, ints for array indices)
+            
+        Examples:
+            "context.questions[0]" -> ["context", "questions", 0]
+            "user.profile.name" -> ["user", "profile", "name"]
+            "items[2].details[1].value" -> ["items", 2, "details", 1, "value"]
+        """
+        parts = []
+        current_part = ""
+        i = 0
+        
+        while i < len(path):
+            char = path[i]
+            
+            if char == '.':
+                # End of property name
+                if current_part:
+                    parts.append(current_part)
+                    current_part = ""
+            elif char == '[':
+                # Start of array index
+                if current_part:
+                    parts.append(current_part)
+                    current_part = ""
+                
+                # Find matching closing bracket
+                j = i + 1
+                bracket_count = 1
+                index_str = ""
+                
+                while j < len(path) and bracket_count > 0:
+                    if path[j] == '[':
+                        bracket_count += 1
+                    elif path[j] == ']':
+                        bracket_count -= 1
+                    
+                    if bracket_count > 0:
+                        index_str += path[j]
+                    j += 1
+                
+                if bracket_count > 0:
+                    raise ValueError(f"Unclosed bracket in path: {path}")
+                
+                # Convert index to integer
+                try:
+                    index = int(index_str)
+                    parts.append(index)
+                except ValueError:
+                    raise ValueError(f"Invalid array index '{index_str}' in path: {path}")
+                
+                i = j - 1  # j-1 because we'll increment i at the end of loop
+            else:
+                # Regular character in property name
+                current_part += char
+            
+            i += 1
+        
+        # Add final part if exists
+        if current_part:
+            parts.append(current_part)
+        
+        return parts
+    
+    def extract_field_values(self, row: Union[Dict, pd.Series], field_paths: List[str]) -> List[str]:
+        """
+        Extract values from multiple field paths in a data row.
+        
+        Args:
+            row: Data row (dict for JSON data, pd.Series for CSV/Parquet data)
+            field_paths: List of field paths to extract
+            
+        Returns:
+            List of string values extracted from the specified paths
+        """
+        values = []
+        
+        # Convert pandas Series to dict if needed
+        if isinstance(row, pd.Series):
+            row_data = row.to_dict()
+        else:
+            row_data = row
+        
+        for path in field_paths:
+            try:
+                value = self.resolve_field_path(row_data, path)
+                if value is None or (isinstance(value, float) and pd.isna(value)):
+                    values.append("")
+                else:
+                    values.append(str(value))
+            except Exception as e:
+                logger.warning(f"Error extracting field path '{path}': {e}")
+                values.append("")
+        
+        return values
+    
+    # =============================================================================
+    # PATH AND FILE MANAGEMENT WITH JSON/JSONL SUPPORT
     # =============================================================================
     
     def get_dataset_path(self, setup_name: str) -> str:
         """
-        Get the full filesystem path to a dataset file (CSV or Parquet).
+        Get the full filesystem path to a dataset file (CSV, Parquet, JSON, or JSONL).
         
         Args:
             setup_name: Name of setup from configuration
@@ -58,25 +217,25 @@ class DatasetManager:
         if not dataset_config:
             raise ValueError(f"Setup '{setup_name}' missing 'dataset' configuration")
         
-        # Check for either csv_file or parquet_file
-        if 'csv_file' in dataset_config:
-            file_path = dataset_config['csv_file']
-        elif 'parquet_file' in dataset_config:
-            file_path = dataset_config['parquet_file']
-        else:
-            raise ValueError(f"Setup '{setup_name}' dataset config must specify either 'csv_file' or 'parquet_file'")
+        # Check for supported file types in priority order
+        file_type_keys = ['csv_file', 'parquet_file', 'json_file', 'jsonl_file']
         
-        return os.path.join(Config.DATA_DIR, dataset_config['download_path'], file_path)
+        for key in file_type_keys:
+            if key in dataset_config:
+                file_path = dataset_config[key]
+                return os.path.join(Config.DATA_DIR, dataset_config['download_path'], file_path)
+        
+        raise ValueError(f"Setup '{setup_name}' dataset config must specify one of: {file_type_keys}")
     
     def get_dataset_file_type(self, setup_name: str) -> str:
         """
-        Determine the file type of a dataset (csv or parquet).
+        Determine the file type of a dataset (csv, parquet, json, or jsonl).
         
         Args:
             setup_name: Name of setup from configuration
             
         Returns:
-            str: File type ('csv' or 'parquet')
+            str: File type ('csv', 'parquet', 'json', or 'jsonl')
             
         Raises:
             ValueError: If setup name is unknown or file type cannot be determined
@@ -90,12 +249,17 @@ class DatasetManager:
         if not dataset_config:
             raise ValueError(f"Setup '{setup_name}' missing 'dataset' configuration")
         
+        # Check file types in order
         if 'csv_file' in dataset_config:
             return 'csv'
         elif 'parquet_file' in dataset_config:
             return 'parquet'
+        elif 'json_file' in dataset_config:
+            return 'json'
+        elif 'jsonl_file' in dataset_config:
+            return 'jsonl'
         else:
-            raise ValueError(f"Setup '{setup_name}' dataset config must specify either 'csv_file' or 'parquet_file'")
+            raise ValueError(f"Setup '{setup_name}' dataset config must specify a supported file type")
     
     def is_dataset_downloaded(self, setup_name: str) -> bool:
         """
@@ -114,7 +278,7 @@ class DatasetManager:
             return False
     
     # =============================================================================
-    # ROW PRUNING LOGIC (unchanged)
+    # ROW PRUNING LOGIC (updated for JSON support)
     # =============================================================================
     
     def _compile_pattern(self, pattern: str) -> Tuple[bool, Any]:
@@ -166,62 +330,13 @@ class DatasetManager:
             logger.warning(f"Error matching pattern {pattern} against value '{str_value}': {e}")
             return False
     
-    def _validate_prune_columns(self, setup_name: str, dataset_columns: List[str]) -> None:
-        """
-        Validate that prune_row columns exist in the actual dataset.
-        
-        Args:
-            setup_name: Name of setup
-            dataset_columns: List of actual column names in the dataset
-            
-        Raises:
-            ValueError: If unknown columns are specified in prune_row config
-        """
-        setup_config = self.setups_config[setup_name]
-        prune_config = setup_config.get('prune_row', {})
-        
-        if not prune_config:
-            return
-        
-        # Get columns specified in prune config (excluding "*")
-        specified_columns = [col for col in prune_config.keys() if col != "*"]
-        
-        # Find columns that don't exist in the dataset
-        unknown_columns = [col for col in specified_columns if col not in dataset_columns]
-        
-        if unknown_columns:
-            logger.warning(f"Setup '{setup_name}' prune_row config references unknown columns: {unknown_columns}")
-            logger.info(f"Available columns in dataset: {dataset_columns}")
-            logger.info("Unknown columns will be ignored during pruning")
-            
-            # Optionally make this a hard error instead of warning:
-            # raise ValueError(f"Setup '{setup_name}' prune_row config contains unknown columns: {unknown_columns}")
-    
-    def has_pruning_config(self, setup_name: str) -> bool:
-        """
-        Check if a setup has pruning configuration.
-        
-        Args:
-            setup_name: Name of setup to check
-            
-        Returns:
-            bool: True if setup has prune_row configuration
-        """
-        if setup_name not in self.setups_config:
-            return False
-        
-        setup_config = self.setups_config[setup_name]
-        prune_config = setup_config.get('prune_row', {})
-        
-        # Check if prune_row exists and is not empty
-        return bool(prune_config)
-    
-    def should_prune_row(self, row: pd.Series, setup_name: str) -> Tuple[bool, str]:
+    def should_prune_row(self, row: Union[Dict, pd.Series], setup_name: str) -> Tuple[bool, str]:
         """
         Check if a row should be pruned based on setup pruning configuration.
+        Updated to support JSON field paths.
         
         Args:
-            row: Dataset row to check
+            row: Dataset row to check (dict for JSON, pd.Series for CSV/Parquet)
             setup_name: Name of setup (for pruning config)
             
         Returns:
@@ -239,51 +354,60 @@ class DatasetManager:
         if not prune_config:
             return False, ""
         
+        # Convert pandas Series to dict if needed
+        if isinstance(row, pd.Series):
+            row_data = row.to_dict()
+        else:
+            row_data = row
+        
         # Compile all patterns once for this row check
         compiled_patterns = {}
         try:
-            for column, patterns in prune_config.items():
-                compiled_patterns[column] = [self._compile_pattern(p) for p in patterns]
+            for field_path, patterns in prune_config.items():
+                compiled_patterns[field_path] = [self._compile_pattern(p) for p in patterns]
         except ValueError as e:
             raise ValueError(f"Setup '{setup_name}' pruning config error: {e}")
         
-        # Check * rules first (priority)
+        # Check * rules first (priority) - applies to all field paths
         if "*" in compiled_patterns:
             for pattern_info in compiled_patterns["*"]:
-                # Check this pattern against ALL columns in the row
-                for col_name, col_value in row.items():
-                    if pd.isna(col_value):
-                        col_value = ""
-                    
-                    if self._value_matches_pattern(str(col_value), pattern_info):
-                        is_regex, pattern = pattern_info
-                        pattern_str = pattern.pattern if is_regex else pattern
-                        return True, f"Global pattern '{pattern_str}' matched column '{col_name}' with value '{col_value}'"
+                # For wildcard, check against all possible field paths mentioned in prompt_fields
+                prompt_fields_config = setup_config.get('prompt_fields', {})
+                all_field_paths = prompt_fields_config.get('question_fields', [])
+                answer_field = prompt_fields_config.get('answer_field', '')
+                if answer_field:
+                    all_field_paths.append(answer_field)
+                
+                for field_path in all_field_paths:
+                    value = self.resolve_field_path(row_data, field_path)
+                    if value is not None:
+                        if self._value_matches_pattern(str(value), pattern_info):
+                            is_regex, pattern = pattern_info
+                            pattern_str = pattern.pattern if is_regex else pattern
+                            return True, f"Global pattern '{pattern_str}' matched field '{field_path}' with value '{value}'"
         
-        # Check specific column rules
-        for column, pattern_list in compiled_patterns.items():
-            if column == "*":  # Already checked above
+        # Check specific field path rules
+        for field_path, pattern_list in compiled_patterns.items():
+            if field_path == "*":  # Already checked above
                 continue
-                
-            if column not in row:
-                logger.debug(f"Column '{column}' specified in prune config but not found in dataset row")
-                continue  # Column doesn't exist in this row, skip
-                
-            col_value = row[column]
-            if pd.isna(col_value):
-                col_value = ""
+            
+            # Resolve the field path value
+            value = self.resolve_field_path(row_data, field_path)
+            if value is None:
+                continue
             
             for pattern_info in pattern_list:
-                if self._value_matches_pattern(str(col_value), pattern_info):
+                if self._value_matches_pattern(str(value), pattern_info):
                     is_regex, pattern = pattern_info
                     pattern_str = pattern.pattern if is_regex else pattern
-                    return True, f"Column '{column}' pattern '{pattern_str}' matched value '{col_value}'"
+                    return True, f"Field path '{field_path}' pattern '{pattern_str}' matched value '{value}'"
         
         return False, ""
     
     def filter_dataset_rows(self, df: pd.DataFrame, setup_name: str) -> Tuple[pd.DataFrame, int, List[str]]:
         """
         Filter dataset rows based on pruning configuration.
+        Updated to support JSON field paths.
         
         Args:
             df: Dataset DataFrame
@@ -303,9 +427,6 @@ class DatasetManager:
             return df.copy(), 0, []
         
         logger.info(f"Applying pruning rules for setup '{setup_name}'")
-        
-        # Validate that specified columns exist in the dataset
-        self._validate_prune_columns(setup_name, list(df.columns))
         
         filtered_rows = []
         skip_reasons = []
@@ -337,6 +458,25 @@ class DatasetManager:
                 logger.info(f"... and {len(skip_reasons) - 5} more")
         
         return filtered_df, skipped_count, skip_reasons
+    
+    def has_pruning_config(self, setup_name: str) -> bool:
+        """
+        Check if a setup has pruning configuration.
+        
+        Args:
+            setup_name: Name of setup to check
+            
+        Returns:
+            bool: True if setup has prune_row configuration
+        """
+        if setup_name not in self.setups_config:
+            return False
+        
+        setup_config = self.setups_config[setup_name]
+        prune_config = setup_config.get('prune_row', {})
+        
+        # Check if prune_row exists and is not empty
+        return bool(prune_config)
     
     # =============================================================================
     # DATASET DOWNLOADING WITH ZIP AND DIRECT FILE SUPPORT
@@ -387,11 +527,10 @@ class DatasetManager:
             return f"{setup_name}.zip"
         
         # For direct files, try to get filename from config or URL
-        if 'parquet_file' in dataset_config:
-            return dataset_config['parquet_file']
-        elif 'csv_file' in dataset_config:
-            # If CSV is specified but we're doing direct download, use the filename part
-            return os.path.basename(dataset_config['csv_file'])
+        file_type_keys = ['parquet_file', 'csv_file', 'json_file', 'jsonl_file']
+        for key in file_type_keys:
+            if key in dataset_config:
+                return dataset_config[key]
         
         # Fallback: extract from URL
         parsed_url = urlparse(url)
@@ -405,7 +544,7 @@ class DatasetManager:
     
     def download_dataset(self, setup_name: str) -> bool:
         """
-        Download dataset from configured URL with support for both ZIP and direct downloads.
+        Download dataset from configured URL with support for ZIP and direct downloads.
         
         Handles both direct file downloads and ZIP archives that need extraction.
         Uses wget and unzip commands with Python fallbacks.
@@ -539,13 +678,13 @@ class DatasetManager:
             logger.debug(f"Extracted using zipfile: {zip_path}")
     
     # =============================================================================
-    # DATASET LOADING WITH CSV AND PARQUET SUPPORT
+    # DATASET LOADING WITH JSON/JSONL SUPPORT
     # =============================================================================
     
     def load_dataset(self, setup_name: str, ensure_download: bool = True) -> Optional[pd.DataFrame]:
         """
         Load a dataset by setup name, with automatic downloading if needed.
-        Supports both CSV and Parquet file formats.
+        Supports CSV, Parquet, JSON, and JSONL file formats.
         
         Datasets are cached in memory after loading for efficiency.
         
@@ -580,6 +719,12 @@ class DatasetManager:
             elif file_type == 'parquet':
                 df = pd.read_parquet(dataset_path)
                 logger.info(f"Loaded Parquet dataset for setup {setup_name} with {len(df)} rows and {len(df.columns)} columns")
+            elif file_type == 'json':
+                df = self._load_json_dataset(dataset_path)
+                logger.info(f"Loaded JSON dataset for setup {setup_name} with {len(df)} rows")
+            elif file_type == 'jsonl':
+                df = self._load_jsonl_dataset(dataset_path)
+                logger.info(f"Loaded JSONL dataset for setup {setup_name} with {len(df)} rows")
             else:
                 raise ValueError(f"Unsupported file type: {file_type}")
             
@@ -599,8 +744,68 @@ class DatasetManager:
             logger.error(f"Error loading dataset for setup {setup_name} from {dataset_path}: {e}")
             return None
     
+    def _load_json_dataset(self, file_path: str) -> pd.DataFrame:
+        """
+        Load a JSON file as a DataFrame.
+        Handles both array of objects and single object formats.
+        
+        Args:
+            file_path: Path to JSON file
+            
+        Returns:
+            pd.DataFrame: Loaded data
+            
+        Raises:
+            Exception: If file cannot be loaded or parsed
+        """
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        if isinstance(data, list):
+            # Array of objects - each object becomes a row
+            return pd.DataFrame(data)
+        elif isinstance(data, dict):
+            # Single object - convert to single-row DataFrame
+            return pd.DataFrame([data])
+        else:
+            raise ValueError(f"Unsupported JSON structure: expected array or object, got {type(data)}")
+    
+    def _load_jsonl_dataset(self, file_path: str) -> pd.DataFrame:
+        """
+        Load a JSONL (JSON Lines) file as a DataFrame.
+        Each line should contain a valid JSON object.
+        
+        Args:
+            file_path: Path to JSONL file
+            
+        Returns:
+            pd.DataFrame: Loaded data
+            
+        Raises:
+            Exception: If file cannot be loaded or parsed
+        """
+        records = []
+        
+        with open(file_path, 'r', encoding='utf-8') as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if not line:  # Skip empty lines
+                    continue
+                
+                try:
+                    record = json.loads(line)
+                    records.append(record)
+                except json.JSONDecodeError as e:
+                    logger.warning(f"Skipping invalid JSON on line {line_num}: {e}")
+                    continue
+        
+        if not records:
+            raise ValueError(f"No valid JSON records found in {file_path}")
+        
+        return pd.DataFrame(records)
+    
     # =============================================================================
-    # DATASET INFORMATION AND ANALYSIS
+    # DATASET INFORMATION AND ANALYSIS (updated for JSON support)
     # =============================================================================
     
     def get_dataset_info(self, setup_name: str) -> Dict:
@@ -608,6 +813,7 @@ class DatasetManager:
         Get comprehensive information about a dataset.
         
         Includes configuration, download status, statistics, and field analysis.
+        Updated to support JSON/JSONL files.
         
         Args:
             setup_name: Name of setup to analyze
@@ -638,7 +844,8 @@ class DatasetManager:
             'download_link': dataset_config.get('download_link', ''),
             'download_path': dataset_config.get('download_path', ''),
             'file_type': file_type,
-            'file_path': dataset_config.get('csv_file') or dataset_config.get('parquet_file'),
+            'file_path': (dataset_config.get('csv_file') or dataset_config.get('parquet_file') 
+                         or dataset_config.get('json_file') or dataset_config.get('jsonl_file')),
             'full_path': dataset_path,
             'question_fields': prompt_fields_config.get('question_fields', []),
             'answer_field': prompt_fields_config.get('answer_field', ''),
@@ -658,33 +865,57 @@ class DatasetManager:
                 'missing_values': df.isnull().sum().to_dict()
             })
             
-            # Analyze answer field for quality assessment
-            answer_field = prompt_fields_config.get('answer_field', '')
-            if answer_field in df.columns:
-                answer_series = df[answer_field]
+            # For JSON/JSONL datasets, show sample field path values
+            if file_type in ['json', 'jsonl']:
+                question_fields = prompt_fields_config.get('question_fields', [])
+                answer_field = prompt_fields_config.get('answer_field', '')
                 
-                info['answer_field_stats'] = {
-                    'total_answers': len(answer_series),
-                    'null_answers': answer_series.isnull().sum(),
-                    'avg_answer_length': answer_series.fillna('').astype(str).str.len().mean(),
-                    'max_answer_length': answer_series.fillna('').astype(str).str.len().max()
-                }
+                if len(df) > 0:
+                    sample_row = df.iloc[0]
+                    info['sample_field_values'] = {}
+                    
+                    # Show sample values for question fields
+                    for field_path in question_fields[:3]:  # Limit to first 3 for brevity
+                        value = self.resolve_field_path(sample_row, field_path)
+                        info['sample_field_values'][field_path] = str(value)[:100] if value else None
+                    
+                    # Show sample value for answer field
+                    if answer_field:
+                        value = self.resolve_field_path(sample_row, answer_field)
+                        info['sample_field_values'][answer_field] = str(value)[:100] if value else None
+        
         elif is_downloaded:
             # Try to get basic info without fully loading (for large datasets)
             try:
                 if file_type == 'csv':
                     df_sample = pd.read_csv(dataset_path, nrows=5)
                 elif file_type == 'parquet':
-                    # For parquet, read with limit - note: nrows doesn't work the same way
                     df_full = pd.read_parquet(dataset_path)
                     df_sample = df_full.head(5)
+                elif file_type == 'json':
+                    # For JSON, just load it (usually small files)
+                    df_sample = self._load_json_dataset(dataset_path)
+                elif file_type == 'jsonl':
+                    # For JSONL, load first few lines manually
+                    records = []
+                    with open(dataset_path, 'r', encoding='utf-8') as f:
+                        for i, line in enumerate(f):
+                            if i >= 5:
+                                break
+                            line = line.strip()
+                            if line:
+                                try:
+                                    records.append(json.loads(line))
+                                except json.JSONDecodeError:
+                                    continue
+                    df_sample = pd.DataFrame(records) if records else None
                 else:
                     df_sample = None
                 
-                if df_sample is not None:
+                if df_sample is not None and len(df_sample) > 0:
                     info.update({
                         'columns': list(df_sample.columns),
-                        'sample_row': df_sample.iloc[0].to_dict() if len(df_sample) > 0 else None
+                        'sample_row': df_sample.iloc[0].to_dict()
                     })
             except Exception as e:
                 logger.warning(f"Could not read sample from setup {setup_name}: {e}")
@@ -692,21 +923,22 @@ class DatasetManager:
         return info
     
     # =============================================================================
-    # DATASET VALIDATION
+    # DATASET VALIDATION (updated for JSON field paths)
     # =============================================================================
     
     def validate_dataset_fields(self, setup_name: str) -> bool:
         """
         Validate that dataset has all required fields for processing.
+        Updated to support JSON field path validation.
         
-        Checks that question fields and answer field exist in the dataset.
+        Checks that question field paths and answer field path can be resolved in the dataset.
         Provides helpful error messages for troubleshooting.
         
         Args:
             setup_name: Name of setup to validate
             
         Returns:
-            bool: True if all required fields are present, False otherwise
+            bool: True if all required field paths are accessible, False otherwise
         """
         if setup_name not in self.setups_config:
             logger.error(f"Unknown setup: {setup_name}")
@@ -728,33 +960,58 @@ class DatasetManager:
         
         prompt_fields_config = config['prompt_fields']
         
-        question_fields = prompt_fields_config['question_fields']
-        answer_field = prompt_fields_config['answer_field']
+        question_field_paths = prompt_fields_config.get('question_fields', [])
+        answer_field_path = prompt_fields_config.get('answer_field', '')
         
-        required_fields = question_fields + ([answer_field] if answer_field else [])
+        required_field_paths = question_field_paths + ([answer_field_path] if answer_field_path else [])
         
-        missing_fields = [field for field in required_fields if field not in df.columns]
+        if len(df) == 0:
+            logger.error(f"Dataset for setup {setup_name} is empty")
+            return False
         
-        if missing_fields:
-            logger.error(f"Dataset for setup {setup_name} missing required fields: {missing_fields}")
-            logger.info(f"Available columns: {list(df.columns)}")
-            logger.info(f"Expected question fields: {question_fields}")
-            logger.info(f"Expected answer field: {answer_field}")
+        # Test field path resolution on first few rows
+        test_rows = min(3, len(df))
+        missing_field_paths = []
+        
+        for field_path in required_field_paths:
+            accessible_count = 0
+            for i in range(test_rows):
+                row = df.iloc[i]
+                value = self.resolve_field_path(row, field_path)
+                if value is not None:
+                    accessible_count += 1
+            
+            # Field path is considered valid if it resolves in at least one test row
+            if accessible_count == 0:
+                missing_field_paths.append(field_path)
+        
+        if missing_field_paths:
+            logger.error(f"Dataset for setup {setup_name} missing or inaccessible field paths: {missing_field_paths}")
+            logger.info(f"Expected question field paths: {question_field_paths}")
+            logger.info(f"Expected answer field path: {answer_field_path}")
+            
+            # For JSON/JSONL datasets, show sample structure
+            file_type = self.get_dataset_file_type(setup_name)
+            if file_type in ['json', 'jsonl'] and len(df) > 0:
+                logger.info("Sample row structure:")
+                sample_data = df.iloc[0].to_dict() if hasattr(df.iloc[0], 'to_dict') else df.iloc[0]
+                logger.info(f"  {json.dumps(sample_data, indent=2, default=str)[:500]}...")
+            
             return False
         
         logger.info(f"Dataset for setup {setup_name} validation passed")
         return True
     
     # =============================================================================
-    # GENERIC DATA PROCESSING - REMOVED HARDCODED LOGIC
+    # GENERIC DATA PROCESSING (updated for JSON field paths)
     # =============================================================================
     
-    def get_expected_answer(self, row: pd.Series, setup_name: str) -> str:
+    def get_expected_answer(self, row: Union[pd.Series, Dict], setup_name: str) -> str:
         """
-        Extract expected answer from a dataset row.
+        Extract expected answer from a dataset row using field path resolution.
         
         Args:
-            row: Single row from dataset
+            row: Single row from dataset (pd.Series or dict)
             setup_name: Name of setup (for field mapping)
             
         Returns:
@@ -768,12 +1025,14 @@ class DatasetManager:
         
         config = self.setups_config[setup_name]
         prompt_fields_config = config.get('prompt_fields', {})
-        answer_field = prompt_fields_config.get('answer_field', '')
+        answer_field_path = prompt_fields_config.get('answer_field', '')
         
-        if answer_field and answer_field in row and not pd.isna(row[answer_field]):
-            return str(row[answer_field])
-        else:
-            return ""
+        if answer_field_path:
+            answer_value = self.resolve_field_path(row, answer_field_path)
+            if answer_value is not None and not (isinstance(answer_value, float) and pd.isna(answer_value)):
+                return str(answer_value)
+        
+        return ""
     
     # =============================================================================
     # DATASET CATALOG AND MANAGEMENT
