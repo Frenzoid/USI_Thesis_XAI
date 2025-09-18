@@ -25,7 +25,8 @@ class DatasetManager:
     5. Preparing data samples for experiments with row pruning
     6. Generic field mapping without hardcoded dataset structures
     7. Support for both ZIP archives and direct file downloads
-    8. Nested JSON field path resolution via FieldPathResolver
+    8. JSON column parsing via FieldPathResolver utility
+    9. Memory-efficient chunked processing for large datasets
     """
     
     def __init__(self):
@@ -126,10 +127,11 @@ class DatasetManager:
     def resolve_field_path(self, data: Union[Dict, pd.Series, Any], path: str) -> Any:
         """
         Resolve a nested JSON path like 'context.questions[0].text' against data structure.
+        Supports JSON column parsing with 'json:column_name.field.path' syntax.
         
         Args:
             data: The data structure to navigate (dict, pd.Series, or primitive)
-            path: The field path to resolve
+            path: The field path to resolve (may include json: prefix)
             
         Returns:
             The value at the specified path, or None if path doesn't exist
@@ -139,10 +141,11 @@ class DatasetManager:
     def extract_field_values(self, row: Union[Dict, pd.Series], field_paths: List[str]) -> List[str]:
         """
         Extract values from multiple field paths in a data row.
+        Supports JSON column parsing with json: prefix.
         
         Args:
             row: Data row (dict for JSON data, pd.Series for CSV/Parquet data)
-            field_paths: List of field paths to extract
+            field_paths: List of field paths to extract (may include json: prefixes)
             
         Returns:
             List of string values extracted from the specified paths
@@ -202,6 +205,7 @@ class DatasetManager:
     def should_prune_row(self, row: Union[Dict, pd.Series], setup_name: str) -> Tuple[bool, str]:
         """
         Check if a row should be pruned based on setup pruning configuration.
+        Supports JSON column field paths for pruning rules.
         
         Args:
             row: Dataset row to check (dict for JSON, pd.Series for CSV/Parquet)
@@ -264,6 +268,7 @@ class DatasetManager:
     def filter_dataset_rows(self, df: pd.DataFrame, setup_name: str) -> Tuple[pd.DataFrame, int, List[str]]:
         """
         Filter dataset rows based on pruning configuration.
+        Supports JSON column field paths in pruning rules.
         
         Args:
             df: Dataset DataFrame
@@ -620,8 +625,11 @@ class DatasetManager:
             if file_type == 'csv':
                 return pd.read_csv(dataset_path, chunksize=chunk_size)
             elif file_type == 'parquet':
-                df = pd.read_parquet(dataset_path)
-                return (df[i:i+chunk_size] for i in range(0, len(df), chunk_size))
+                try:
+                    df = pd.read_parquet(dataset_path)
+                    return (df[i:i+chunk_size] for i in range(0, len(df), chunk_size))
+                except ImportError:
+                    raise ImportError("Parquet support requires pyarrow. Install with: pip install pyarrow")
             else:
                 logger.warning(f"Chunked loading not optimized for {file_type}, falling back to regular loading")
                 df = self.load_dataset(setup_name, ensure_download=False)
@@ -711,6 +719,7 @@ class DatasetManager:
     def validate_dataset_fields(self, setup_name: str) -> bool:
         """
         Validate that dataset has all required fields for processing.
+        Supports JSON column field paths validation.
         
         Checks that question field paths and answer field path can be resolved in the dataset.
         Provides helpful error messages for troubleshooting.
@@ -774,6 +783,17 @@ class DatasetManager:
                 sample_data = df.iloc[0].to_dict() if hasattr(df.iloc[0], 'to_dict') else df.iloc[0]
                 logger.info(f"  {json.dumps(sample_data, indent=2, default=str)[:500]}...")
             
+            # Show JSON column validation for json: field paths
+            for field_path in missing_field_paths:
+                if field_path.startswith("json:"):
+                    column_name = field_path[5:].split('.')[0]
+                    if column_name in df.columns:
+                        logger.info(f"JSON column '{column_name}' exists, but field path resolution failed")
+                        sample_json = df.iloc[0][column_name]
+                        logger.info(f"Sample JSON content: {str(sample_json)[:200]}...")
+                    else:
+                        logger.info(f"JSON column '{column_name}' not found in dataset columns")
+            
             return False
         
         logger.info(f"Dataset for setup {setup_name} validation passed")
@@ -786,6 +806,7 @@ class DatasetManager:
     def get_expected_answer(self, row: Union[pd.Series, Dict], setup_name: str) -> str:
         """
         Extract expected answer from a dataset row using field path resolution.
+        Supports JSON column field paths.
         
         Args:
             row: Single row from dataset (pd.Series or dict)
@@ -856,7 +877,8 @@ class DatasetManager:
             'answer_field': prompt_fields_config.get('answer_field', ''),
             'is_downloaded': is_downloaded,
             'is_loaded': is_loaded,
-            'prune_config': config.get('prune_row', {})
+            'prune_config': config.get('prune_row', {}),
+            'has_json_fields': any(field.startswith('json:') for field in prompt_fields_config.get('question_fields', []) + [prompt_fields_config.get('answer_field', '')])
         }
         
         if is_loaded:
@@ -869,7 +891,7 @@ class DatasetManager:
                 'missing_values': df.isnull().sum().to_dict()
             })
             
-            if file_type in ['json', 'jsonl']:
+            if file_type in ['json', 'jsonl'] or info['has_json_fields']:
                 question_fields = prompt_fields_config.get('question_fields', [])
                 answer_field = prompt_fields_config.get('answer_field', '')
                 

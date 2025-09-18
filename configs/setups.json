@@ -44,7 +44,6 @@
     }
   },
 
-
   "ecqa_choice": {
     "description": "Choice selection for ECQA commonsense questions",
     "dataset": {
@@ -93,6 +92,44 @@
       "answer_field": "taskB"
     }
   },
+
+  "pubmedqa_reasoning_required": {
+    "description": "Evaluates ability to answer biomedical research questions using yes/no/maybe based on context alone (reasoning-required setting)",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/qiaojin/PubMedQA/resolve/main/pqa_labeled/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_PubMedQA",
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["question", "json:context.contexts[*]"],
+      "answer_field": "final_decision"
+    }
+  },
+  "pubmedqa_reasoning_free": {
+    "description": "Evaluates ability to answer biomedical research questions using yes/no/maybe with access to conclusions (reasoning-free setting)",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/qiaojin/PubMedQA/resolve/main/pqa_labeled/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_PubMedQA", 
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["question", "json:context.contexts[*]", "long_answer"],
+      "answer_field": "final_decision"
+    }
+  },
+  "pubmedqa_long_answer_generation": {
+    "description": "Evaluates ability to generate conclusive long answers from biomedical research contexts",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/qiaojin/PubMedQA/resolve/main/pqa_labeled/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_PubMedQA",
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["question", "json:context.contexts[*]"],
+      "answer_field": "long_answer"
+    }
+  },
+
 
 
   "hatebrxplain": {

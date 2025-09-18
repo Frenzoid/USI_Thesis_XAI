@@ -1,6 +1,5 @@
 import pandas as pd
 from typing import Dict, List, Any, Optional, Union
-import random
 
 from config import Config
 from utils import setup_logging
@@ -15,9 +14,11 @@ class PromptManager:
     Handles:
     - Loading prompt templates with mode support (zero-shot/few-shot)
     - Generic dataset field mapping using nested configuration structure
-    - JSON field path resolution via FieldPathResolver utility
+    - JSON field path resolution via FieldPathResolver utility (including json: column parsing)
     - Few-shot example generation with field paths
     - Template formatting and concatenation
+    - Comprehensive validation and error handling
+    - Batch processing for improved performance
     """
     
     def __init__(self):
@@ -33,10 +34,11 @@ class PromptManager:
     def resolve_field_path(self, data: Union[Dict, pd.Series, Any], path: str) -> Any:
         """
         Resolve a nested JSON path like 'context.questions[0].text' against data structure.
+        Supports JSON column parsing with 'json:column_name.field.path' syntax.
         
         Args:
             data: The data structure to navigate (dict, pd.Series, or primitive)
-            path: The field path to resolve
+            path: The field path to resolve (may include json: prefix)
             
         Returns:
             The value at the specified path, or None if path doesn't exist
@@ -46,10 +48,11 @@ class PromptManager:
     def extract_field_values(self, row: Union[Dict, pd.Series], field_paths: List[str]) -> List[str]:
         """
         Extract values from multiple field paths in a data row.
+        Supports JSON column parsing with json: prefix.
         
         Args:
             row: Data row (dict for JSON data, pd.Series for CSV/Parquet data)
-            field_paths: List of field paths to extract
+            field_paths: List of field paths to extract (may include json: prefixes)
             
         Returns:
             List of string values extracted from the specified paths
@@ -94,6 +97,7 @@ class PromptManager:
                                  row_index: Optional[int] = None) -> Dict[str, Any]:
         """
         Generate a few-shot example from dataset row using field path resolution.
+        Supports JSON column parsing in field paths.
         
         Args:
             dataset: Dataset DataFrame
@@ -228,6 +232,7 @@ class PromptManager:
                               few_shot_row: Optional[int] = None) -> str:
         """
         Prepare a complete formatted prompt for a dataset row with enhanced validation.
+        Supports JSON column parsing in field paths.
         
         Args:
             prompt_name: Name of prompt template to use
@@ -281,7 +286,10 @@ class PromptManager:
         
         for i, (path, value) in enumerate(zip(question_field_paths, current_question_values)):
             if not value:
-                logger.warning(f"Empty value for field path '{path}' in current row")
+                if path.startswith('json:'):
+                    logger.warning(f"Empty value for JSON field path '{path}' in current row")
+                else:
+                    logger.warning(f"Empty value for field path '{path}' in current row")
         
         if mode == 'zero-shot':
             return self.format_prompt(prompt_name, current_question_values)
@@ -316,6 +324,7 @@ class PromptManager:
                                    sample_row: Union[pd.Series, Dict]) -> Dict[str, Any]:
         """
         Validate that field paths in prompt configuration can be resolved against sample data.
+        Includes enhanced validation for JSON column field paths.
         
         Args:
             prompt_name: Name of prompt to validate
@@ -344,6 +353,7 @@ class PromptManager:
     def validate_prompt_template_compatibility(self, prompt_name: str, setup_name: str) -> Dict[str, Any]:
         """
         Validate that a prompt template is compatible with a setup configuration.
+        Enhanced to detect JSON field paths and validate accordingly.
         
         Args:
             prompt_name: Name of prompt to validate
@@ -411,7 +421,21 @@ class PromptManager:
                         f"but setup provides {expected_few_shot} fields (questions + answer)"
                     )
         
+        # Check for JSON field paths
+        json_fields = [f for f in question_fields if f.startswith('json:')]
+        answer_field = prompt_fields_config.get('answer_field', '')
+        if answer_field and answer_field.startswith('json:'):
+            json_fields.append(answer_field)
+        
+        if json_fields:
+            validation_result['warnings'].append(f"Setup uses JSON column parsing: {json_fields}")
+            validation_result['details']['uses_json_parsing'] = True
+            validation_result['details']['json_fields'] = json_fields
+        else:
+            validation_result['details']['uses_json_parsing'] = False
+        
         validation_result['details'] = {
+            **validation_result['details'],
             'prompt_mode': prompt_mode,
             'compatible_setup': prompt_setup,
             'template_placeholders': expected_placeholders,
@@ -488,6 +512,7 @@ class PromptManager:
                              few_shot_row: Optional[int] = None) -> List[Dict[str, Any]]:
         """
         Prepare prompts for multiple rows efficiently with batch processing.
+        Supports JSON column parsing in field paths.
         
         Args:
             dataset: Dataset to process
@@ -547,3 +572,103 @@ class PromptManager:
         logger.info(f"Batch prompt preparation: {success_count}/{len(results)} successful")
         
         return results
+    
+    # =============================================================================
+    # JSON FIELD UTILITIES
+    # =============================================================================
+    
+    def get_json_field_info(self, setup_name: str) -> Dict[str, Any]:
+        """
+        Get information about JSON fields used in a setup.
+        
+        Args:
+            setup_name: Name of setup to analyze
+            
+        Returns:
+            Dict containing JSON field usage information
+        """
+        if setup_name not in self.setups_config:
+            return {'error': f"Unknown setup: {setup_name}"}
+        
+        setup_config = self.setups_config[setup_name]
+        prompt_fields_config = setup_config.get('prompt_fields', {})
+        
+        question_fields = prompt_fields_config.get('question_fields', [])
+        answer_field = prompt_fields_config.get('answer_field', '')
+        
+        all_fields = question_fields + ([answer_field] if answer_field else [])
+        
+        json_fields = [f for f in all_fields if f.startswith('json:')]
+        regular_fields = [f for f in all_fields if not f.startswith('json:')]
+        
+        json_columns = set()
+        json_field_details = []
+        
+        for field in json_fields:
+            field_parts = field[5:]  # Remove 'json:' prefix
+            if '.' in field_parts:
+                column_name = field_parts.split('.')[0]
+                json_path = field_parts.split('.', 1)[1]
+            else:
+                column_name = field_parts
+                json_path = None
+            
+            json_columns.add(column_name)
+            json_field_details.append({
+                'field_path': field,
+                'column_name': column_name,
+                'json_path': json_path
+            })
+        
+        return {
+            'setup_name': setup_name,
+            'uses_json_parsing': len(json_fields) > 0,
+            'json_fields': json_fields,
+            'regular_fields': regular_fields,
+            'json_columns_used': list(json_columns),
+            'json_field_details': json_field_details,
+            'total_fields': len(all_fields),
+            'json_field_count': len(json_fields),
+            'regular_field_count': len(regular_fields)
+        }
+    
+    def validate_json_fields_against_dataset(self, setup_name: str, sample_data: Union[pd.DataFrame, pd.Series, Dict]) -> Dict[str, Any]:
+        """
+        Validate JSON field paths against actual dataset structure.
+        
+        Args:
+            setup_name: Name of setup to validate
+            sample_data: Sample data to validate against
+            
+        Returns:
+            Dict containing validation results for JSON fields
+        """
+        json_info = self.get_json_field_info(setup_name)
+        
+        if 'error' in json_info:
+            return json_info
+        
+        if not json_info['uses_json_parsing']:
+            return {
+                'setup_name': setup_name,
+                'uses_json_parsing': False,
+                'validation_message': 'Setup does not use JSON field parsing'
+            }
+        
+        # Get sample row
+        if isinstance(sample_data, pd.DataFrame):
+            if len(sample_data) == 0:
+                return {'error': 'Dataset is empty, cannot validate JSON fields'}
+            sample_row = sample_data.iloc[0]
+        else:
+            sample_row = sample_data
+        
+        validation_results = FieldPathResolver.validate_field_paths(sample_row, json_info['json_fields'])
+        
+        return {
+            'setup_name': setup_name,
+            'uses_json_parsing': True,
+            'json_columns_used': json_info['json_columns_used'],
+            'validation_results': validation_results,
+            'json_field_details': json_info['json_field_details']
+        }
