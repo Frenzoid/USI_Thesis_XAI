@@ -55,8 +55,15 @@
     "type": "evaluation",
     "mode": "zero-shot", 
     "compatible_setup": "pubmedqa_reasoning_required",
-    "template": "Based on the provided biomedical research context, answer the research question with 'yes', 'no', or 'maybe'.\n\nQuestion:\n{}\n\nContext:\n{}\n\nProvide only your answer (yes/no/maybe) and briefly explain your reasoning based on the evidence presented in the context.",
+    "template": "Based on the provided biomedical research context, answer the research question only with 'yes', 'no', or 'maybe'.\n\nQuestion:\n{}\n\nContext:\n{}\n\nProvide only your answer (yes/no/maybe) and briefly explain your reasoning based on the evidence presented in the context.",
     "description": "LLM must answer biomedical research questions using only context without seeing conclusions (mirrors annotator 2's task)"
+  },
+  "pubmedqa_annotation_task": {
+    "type": "evaluation", 
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_required",
+    "template": "You are a medical expert annotating biomedical research questions. Read the research question and structured abstract context carefully.\n\nQuestion:\n{}\n\nContext:\n{}\n\nBased on the experimental results, statistical evidence, and findings described in the context:\n- Answer 'yes' if the evidence supports the statement/question\n- Answer 'no' if the evidence contradicts or does not support the statement/question  \n- Answer 'maybe' if the evidence is mixed, inconclusive, or shows conditional results\n\nYour answer:",
+    "description": "Mirrors the exact annotation task given to medical experts in the original study"
   },
   "pubmedqa_reasoning_free_evaluation": {
     "type": "evaluation",
@@ -71,12 +78,5 @@
     "compatible_setup": "pubmedqa_long_answer_generation",
     "template": "Based on the provided biomedical research question and context, generate a conclusive answer that summarizes the key findings.\n\nQuestion:\n{}\n\nContext:\n{}\n\nProvide a conclusion that directly addresses the research question based on the evidence presented in the context. Your conclusion should be similar to what would appear in the 'Conclusions' section of a research abstract.",
     "description": "LLM must generate conclusive long answers from biomedical research contexts"
-  },
-  "pubmedqa_annotation_task": {
-    "type": "evaluation", 
-    "mode": "zero-shot",
-    "compatible_setup": "pubmedqa_reasoning_required",
-    "template": "You are a medical expert annotating biomedical research questions. Read the research question and structured abstract context carefully.\n\nQuestion:\n{}\n\nContext:\n{}\n\nBased on the experimental results, statistical evidence, and findings described in the context:\n- Answer 'yes' if the evidence supports the statement/question\n- Answer 'no' if the evidence contradicts or does not support the statement/question  \n- Answer 'maybe' if the evidence is mixed, inconclusive, or shows conditional results\n\nYour answer:",
-    "description": "Mirrors the exact annotation task given to medical experts in the original study"
   }
 }
