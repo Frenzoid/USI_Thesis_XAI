@@ -2,27 +2,9 @@
   "u4b-llama3.2-1b": {
     "type": "local",
     "model_path": "unsloth/llama-3.2-1b-instruct-bnb-4bit",
-    "description": "Llama 3.2 1B parameter model (4-bit quantized with Unsloth)",
-    "max_tokens": 256,
-    "finetuned": false,
-    "load_in_4bit": true,
-    "use_unsloth": true,
-    "use_chat_template": true
-  },
-  "u-llama3.2-1b-fp16": {
-    "type": "local",
-    "model_path": "unsloth/llama-3.2-1b-instruct",
-    "description": "Llama 3.2 1B parameter model (full precision with Unsloth)",
-    "max_tokens": 256,
-    "finetuned": false,
-    "load_in_4bit": false,
-    "use_unsloth": true,
-    "use_chat_template": true
-  },
-  "u4b-llama3.2-3b": {
-    "type": "local",
-    "model_path": "unsloth/llama-3.2-3b-instruct-bnb-4bit",
-    "description": "Llama 3.2 3B parameter model (4-bit quantized with Unsloth)",
+    "description": "Llama 3.2 1B parameter model (4-bit quantized with Unsloth) - Small",
+    "parameters": "1B",
+    "size_category": "small",
     "max_tokens": 256,
     "finetuned": false,
     "load_in_4bit": true,
@@ -32,17 +14,21 @@
   "u4b-llama3-8b": {
     "type": "local",
     "model_path": "unsloth/llama-3-8b-instruct-bnb-4bit",
-    "description": "Llama 3 8B parameter model (4-bit quantized with Unsloth)",
+    "description": "Llama 3 8B parameter model (4-bit quantized with Unsloth) - Medium",
+    "parameters": "8B",
+    "size_category": "medium",
     "max_tokens": 256,
     "finetuned": false,
     "load_in_4bit": true,
     "use_unsloth": true,
     "use_chat_template": true
   },
-  "u4b-llama3.3-70B": {
+  "u4b-llama3.3-70b": {
     "type": "local",
     "model_path": "unsloth/llama-3.3-70b-instruct-bnb-4bit",
-    "description": "Llama 3.3 70B parameter model (4-bit quantized with Unsloth)",
+    "description": "Llama 3.3 70B parameter model (4-bit quantized with Unsloth) - Large",
+    "parameters": "70B",
+    "size_category": "large",
     "max_tokens": 256,
     "finetuned": false,
     "load_in_4bit": true,
@@ -50,22 +36,26 @@
     "use_chat_template": false
   },
 
-
   "u4b-mistral-7b": {
     "type": "local",
     "model_path": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
-    "description": "Mistral 7B parameter model (4-bit quantized with Unsloth)",
+    "description": "Mistral 7B parameter model (4-bit quantized with Unsloth) - Small",
+    "parameters": "7B",
+    "size_category": "small",
     "max_tokens": 256,
     "finetuned": false,
     "load_in_4bit": true,
     "use_unsloth": true,
     "use_chat_template": true
   },
-  "hf-Ministral-8B-Instruct-2410": {
+  "hf-mistral-nemo-12b": {
     "type": "local",
-    "model_path": "mistralai/Ministral-8B-Instruct-2410",
-    "description": "Ministral 8B parameter instruction-tuned model ",
-    "max_tokens": 256,
+    "model_path": "mistralai/Mistral-Nemo-Instruct-2407",
+    "description": "Mistral Nemo 12B parameter model with 128k context - Medium",
+    "parameters": "12B",
+    "size_category": "medium",
+    "max_tokens": 512,
+    "context_length": "128k",
     "finetuned": false,
     "load_in_4bit": false,
     "use_unsloth": false,
@@ -75,16 +65,18 @@
     "torch_dtype": "auto",
     "device_map": "auto",
     "generation_config": {
-      "temperature": 0.7,
+      "temperature": 0.3,
       "top_p": 0.8,
       "max_new_tokens": 512,
       "do_sample": true
     }
   },
-  "hf-Mistral-Small-24B-Instruct-2501": {
+  "hf-mistral-small-24b": {
     "type": "local",
     "model_path": "mistralai/Mistral-Small-24B-Instruct-2501",
-    "description": "Mistral Small 24B parameter instruction-tuned model ",
+    "description": "Mistral Small 24B parameter instruction-tuned model - Large",
+    "parameters": "24B",
+    "size_category": "large",
     "max_tokens": 512,
     "finetuned": false,
     "load_in_4bit": false,
@@ -102,16 +94,35 @@
     }
   },
 
-
-  "hf-Qwen3-Coder-30B": {
+  "hf-qwen2.5-3b": {
     "type": "local",
-    "model_path": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
-    "description": "Qwen3 Coder 30B parameter instruction-tuned model"
+    "model_path": "Qwen/Qwen2.5-3B-Instruct",
+    "description": "Qwen2.5 3B parameter instruction-tuned model - Small",
+    "parameters": "3B",
+    "size_category": "small",
+    "max_tokens": 512,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "context_length": "128k",
+    "generation_config": {
+      "temperature": 0.7,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
   },
-  "hf-Qwen3-235b": {
+  "hf-qwen2.5-32b": {
+    
     "type": "local",
-    "model_path": "Qwen/Qwen3-235B-A22B-Instruct-2507",
-    "description": "Qwen3 235B parameter instruction-tuned model",
+    "model_path": "Qwen/Qwen2.5-32B-Instruct",
+    "description": "Qwen2.5 32B parameter instruction-tuned model - Medium",
+    "parameters": "32B",
+    "size_category": "medium",
     "max_tokens": 1024,
     "finetuned": false,
     "load_in_4bit": false,
@@ -121,17 +132,19 @@
     "local_files_only": false,
     "torch_dtype": "auto",
     "device_map": "auto",
-    "is_reasoning_model": false,
+    "context_length": "128k",
     "generation_config": {
       "temperature": 0.7,
       "max_new_tokens": 1024,
       "do_sample": true
     }
   },
-  "hf-Qwen3-30B-A3B-Thinking-2507":{
+  "hf-qwen3-30b-thinking": {
     "type": "local",
     "model_path": "Qwen/Qwen3-30B-A3B-Thinking-2507",
-    "description": "Qwen3 30B parameter reasoning model with thinking capabilities",
+    "description": "Qwen3 30B parameter reasoning model with thinking capabilities - Reasoning",
+    "parameters": "30B",
+    "size_category": "reasoning",
     "is_reasoning_model": true,
     "reasoning_config": {
       "thinking_budget": 512,
@@ -144,24 +157,6 @@
       "do_sample": true
     }
   },
-  "hf-seed-oss-36b": {
-    "type": "local",
-    "model_path": "ByteDance-Seed/Seed-OSS-36B-Instruct",
-    "description": "ByteDance Seed reasoning model with thinking capabilities",
-    "is_reasoning_model": true,
-    "reasoning_config": {
-      "thinking_budget": 512,
-      "tokenize_chat_template": true,
-      "decode_full_output": true
-    },
-    "generation_config": {
-      "temperature": 0.7,
-      "top_p": 0.8,
-      "max_new_tokens": 2048,
-      "do_sample": true
-    }
-  },
-
 
 
   "gpt-3.5-turbo": {
