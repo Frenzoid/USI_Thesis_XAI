@@ -612,14 +612,23 @@ class ExperimentRunner:
             question_fields = prompt_fields_config['question_fields']
             
             for idx, row in df_slice.iterrows():
-                # Extract question field values
-                current_question_values = []
-                for field in question_fields:
-                    if field in row and not pd.isna(row[field]):
-                        current_question_values.append(str(row[field]))
-                    else:
+                # Extract question field values using proper field path resolution
+                current_question_values = self.prompt_manager.extract_field_values(row, question_fields)
+                
+                # Validate that we got the expected number of values
+                if len(current_question_values) != len(question_fields):
+                    logger.warning(f"Field count mismatch in row {idx}: expected {len(question_fields)}, got {len(current_question_values)}")
+                    # Pad with empty strings if needed
+                    while len(current_question_values) < len(question_fields):
                         current_question_values.append("")
-                        logger.warning(f"Missing field '{field}' in row {idx}")
+                
+                # Log any empty values for debugging
+                for field, value in zip(question_fields, current_question_values):
+                    if not value:
+                        if field.startswith('json:'):
+                            logger.warning(f"Empty JSON field path '{field}' in row {idx}")
+                        else:
+                            logger.warning(f"Empty field '{field}' in row {idx}")
                 
                 question_values_list.append(current_question_values)
                 
