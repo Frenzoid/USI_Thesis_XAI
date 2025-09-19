@@ -17,6 +17,7 @@ class FieldPathResolver:
     def _resolve_array_concatenation_path(data: Union[Dict, List, Any], path: str) -> str:
         """
         Handle array concatenation with [*] syntax.
+        Supports Python lists, tuples, and numpy arrays.
         
         Examples:
         - 'contexts[*]' -> concatenate all array elements as strings
@@ -52,9 +53,9 @@ class FieldPathResolver:
                         logger.debug(f"Could not resolve path before [*]: {before_star}")
                         return None
             
-            # Ensure we have an array
-            if not isinstance(current_data, (list, tuple)):
-                logger.debug(f"Expected array for [*] operation, got {type(current_data)}")
+            # Ensure we have an array-like object (including numpy arrays)
+            if not (hasattr(current_data, '__getitem__') and hasattr(current_data, '__len__')):
+                logger.debug(f"Expected array-like object for [*] operation, got {type(current_data)}")
                 return None
             
             # Handle the path after [*]
@@ -63,21 +64,33 @@ class FieldPathResolver:
             
             concatenated_values = []
             
-            for i, item in enumerate(current_data):
-                if item is None:
-                    logger.debug(f"Array element {i} is None, skipping")
-                    continue
-                
-                if after_star:
-                    # Apply the remaining path to this array element
-                    value = FieldPathResolver._resolve_complex_field_path(item, after_star)
-                    if value is not None:
-                        concatenated_values.append(str(value))
+            try:
+                array_length = len(current_data)
+            except:
+                logger.debug(f"Could not determine length of array-like object {type(current_data)}")
+                return None
+            
+            for i in range(array_length):
+                try:
+                    item = current_data[i]
+                    if item is None:
+                        logger.debug(f"Array element {i} is None, skipping")
+                        continue
+                    
+                    if after_star:
+                        # Apply the remaining path to this array element
+                        value = FieldPathResolver._resolve_complex_field_path(item, after_star)
+                        if value is not None:
+                            concatenated_values.append(str(value))
+                        else:
+                            logger.debug(f"Array element {i}: could not resolve path '{after_star}'")
                     else:
-                        logger.debug(f"Array element {i}: could not resolve path '{after_star}'")
-                else:
-                    # No path after [*], just convert element to string
-                    concatenated_values.append(str(item))
+                        # No path after [*], just convert element to string
+                        concatenated_values.append(str(item))
+                        
+                except (IndexError, TypeError) as e:
+                    logger.debug(f"Error accessing array element {i}: {e}")
+                    continue
             
             # Join all values with a space separator
             if concatenated_values:
@@ -192,20 +205,27 @@ class FieldPathResolver:
     
     @staticmethod
     def _resolve_complex_field_path(data: Union[Dict, List, Any], path: str) -> Any:
-        """Handle complex nested field path resolution"""
+        """Handle complex nested field path resolution with numpy array support"""
         try:
             parts = FieldPathResolver._parse_field_path(path)
             
             current = data
             for part in parts:
                 if isinstance(part, int):
-                    if not isinstance(current, (list, tuple)):
-                        logger.debug(f"Expected array at path component but got {type(current)}")
+                    # Handle array indexing - support both Python and numpy arrays
+                    if hasattr(current, '__getitem__') and hasattr(current, '__len__'):
+                        # This covers list, tuple, numpy arrays, and other array-like objects
+                        try:
+                            if part < 0 or part >= len(current):
+                                logger.debug(f"Array index {part} out of bounds (length: {len(current)})")
+                                return None
+                            current = current[part]
+                        except (IndexError, TypeError) as e:
+                            logger.debug(f"Error accessing array index {part}: {e}")
+                            return None
+                    else:
+                        logger.debug(f"Expected array-like object at path component but got {type(current)}")
                         return None
-                    if part < 0 or part >= len(current):
-                        logger.debug(f"Array index {part} out of bounds (length: {len(current)})")
-                        return None
-                    current = current[part]
                 else:
                     if not isinstance(current, dict):
                         logger.debug(f"Expected object at path component '{part}' but got {type(current)}")
