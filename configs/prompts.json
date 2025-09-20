@@ -7,19 +7,26 @@
     "description": "Annotators were shown one aligned sentence at a time. For each sentence, we instructed annotators to provide an explanation for all the revisions in the sentence in a bulleted list."
   },
 
-  "cose_explanation": {
+  "cose_explanation_with_answer": {
     "type": "evaluation",
     "mode": "zero-shot",
-    "compatible_setup": "RHAI_1",
-    "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}\n\nAnswer:\n{}\n\nWhy is the predicted output the most appropriate answer?",
-    "description": "LLM must justify the given answer."
+    "compatible_setup": "RHAI_cose_explanation",
+    "template": "Explain what is the answer? \n\n Question: {} \n\n Choices: {} \n\n Correct answer: {}",
+    "description": "QA-style prompt following paper's best QASIMPLE format"
   },
-  "cose_choice_selection": {
+  "cose_explanation": {
     "type": "evaluation", 
     "mode": "zero-shot",
-    "compatible_setup": "RHAI_2",
-    "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}\n\nSelect the single best choice and return only that choice.",
-    "description": "LLM must select exactly one choice from the provided options"
+    "compatible_setup": "RHAI_cose_explanation",
+    "template": "Explain what is the answer? \n\n Question: {} \n\n Choices: {}", 
+    "description": "QA-style choice selection following paper's format"
+ },
+ "cose_choice_selection": {
+    "type": "evaluation",
+    "mode": "zero-shot", 
+    "compatible_setup": "RHAI_cose_choice_selection",
+    "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, \n\nSelect the single best choice and return only that choice.",
+    "description": "QA-style choice selection following paper's format"
   },
     
   "ecqa_choice_selection": {
@@ -40,8 +47,8 @@
     "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "ecqa_negative",
-    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite negative properties that explain why each of the other answer choices is incorrect or not the best choice. Write simple sentences for each incorrect option.",
-    "description": "LLM must generate negative properties refuting incorrect answers"  
+    "template": "Question:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite negative properties explaining why each incorrect choice is wrong. Write at least one property for each incorrect option.",
+    "description": "Matches paper's instruction to write at least one property per choice"
   },
   "ecqa_freeflow_explanation": {
     "type": "evaluation", 
