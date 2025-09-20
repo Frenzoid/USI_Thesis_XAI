@@ -51,32 +51,20 @@
     "description": "LLM must generate a comprehensive free-form explanation"
   },
 
-  "pubmedqa_reasoning_required_evaluation": {
+  "pubmedqa_reasoning_free": {
     "type": "evaluation",
     "mode": "zero-shot", 
     "compatible_setup": "pubmedqa_reasoning_required",
-    "template": "Based on the provided biomedical research context, answer the research question only with 'yes', 'no', or 'maybe'.\n\nQuestion:\n{}\n\nContext:\n{}\n\nProvide only your answer (yes/no/maybe) and briefly explain your reasoning based on the evidence presented in the context.",
-    "description": "LLM must answer biomedical research questions using only context without seeing conclusions (mirrors annotator 2's task)"
+    "template": "You are a medical expert annotating research questions. Use the question, context, and conclusion to determine the answer.\n\nQuestion: {}\n\nContext: {}\n\nConclusion: {}\n\nBased on all available information, answer only with: yes, no, or maybe",    
+    "description": "Mirrors annotator 1's task with full information access"
   },
-  "pubmedqa_annotation_task": {
-    "type": "evaluation", 
+  "pubmedqa_reasoning_required": {
+    "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "pubmedqa_reasoning_required",
-    "template": "You are a medical expert annotating biomedical research questions. Read the research question and structured abstract context carefully.\n\nQuestion:\n{}\n\nContext:\n{}\n\nBased on the experimental results, statistical evidence, and findings described in the context:\n- Answer 'yes' if the evidence supports the statement/question\n- Answer 'no' if the evidence contradicts or does not support the statement/question  \n- Answer 'maybe' if the evidence is mixed, inconclusive, or shows conditional results\n\nYour answer:",
-    "description": "Mirrors the exact annotation task given to medical experts in the original study"
-  },
-  "pubmedqa_reasoning_free_evaluation": {
-    "type": "evaluation",
-    "mode": "zero-shot",
-    "compatible_setup": "pubmedqa_reasoning_free", 
-    "template": "Based on the provided biomedical research context and conclusion, answer the research question with 'yes', 'no', or 'maybe'.\n\nQuestion:\n{}\n\nContext:\n{}\n\nConclusion:\n{}\n\nProvide your answer (yes/no/maybe) based on the evidence and conclusion presented.",
-    "description": "LLM must answer biomedical research questions with access to conclusions (mirrors annotator 1's task)"
-  },
-  "pubmedqa_long_answer_generation": {
-    "type": "evaluation",
-    "mode": "zero-shot",
-    "compatible_setup": "pubmedqa_long_answer_generation",
-    "template": "Based on the provided biomedical research question and context, generate a conclusive answer that summarizes the key findings.\n\nQuestion:\n{}\n\nContext:\n{}\n\nProvide a conclusion that directly addresses the research question based on the evidence presented in the context. Your conclusion should be similar to what would appear in the 'Conclusions' section of a research abstract.",
-    "description": "LLM must generate conclusive long answers from biomedical research contexts"
+    "template": "You are a medical expert annotating research questions. You must reason over the experimental context to answer the question. You do NOT have access to the study's conclusion.\n\nQuestion: {}\n\nContext: {}\n\nBased only on the experimental evidence provided, answer only with: yes, no, or maybe",   
+    "description": "Mirrors annotator 2's task without conclusion access"
   }
+
+
 }
