@@ -1,0 +1,1890 @@
+{
+  "experiment_name": "ecqa_positive__hf-mistral-nemo-12b__zero-shot__ecqa_positive_explanation_formatted__100__0p100",
+  "experiment_config": {
+    "model": "hf-mistral-nemo-12b",
+    "setup": "ecqa_positive",
+    "prompt": "ecqa_positive_explanation_formatted",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-24T11:34:25.144477",
+  "dataset_info": {
+    "name": "ecqa_positive",
+    "original_size": 7598,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 7598,
+    "sampled_size": 100,
+    "columns": [
+      "Unnamed: 0",
+      "q_no",
+      "q_concept",
+      "q_text",
+      "q_op1",
+      "q_op2",
+      "q_op3",
+      "q_op4",
+      "q_op5",
+      "q_ans",
+      "taskA_pos",
+      "taskA_neg",
+      "taskB"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 7598,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "mistralai/Mistral-Nemo-Instruct-2407",
+    "description": "Mistral Nemo 12B parameter model with 128k context - Medium",
+    "parameters": "12B",
+    "size_category": "medium",
+    "max_tokens": 512,
+    "context_length": "128k",
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "generation_config": {
+      "temperature": 0.3,
+      "top_p": 0.8,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_positive",
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+    "description": "LLM generates atomic positive properties supporting the correct answer"
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn was playing football when he suffered a concussion.  He was really worried about the possible consequences of his sport, but the concussion was less scary than what?\n\nAnswer choices:\nhead injuries, having fun, being sick, death, getting hurt\n\nCorrect answer:\ndeath\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Concussions, while serious, are typically treatable.\n- Death is a permanent and irreversible outcome.",
+      "expected_output": "Death means end of life which is very scary\nOne can get back from consussion but not from death",
+      "question_values": [
+        "John was playing football when he suffered a concussion.  He was really worried about the possible consequences of his sport, but the concussion was less scary than what?",
+        "head injuries",
+        "having fun",
+        "being sick",
+        "death",
+        "getting hurt",
+        "death"
+      ],
+      "processing_time": 0.812326192855835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is part of a republic like the USA?\n\nAnswer choices:\nstate, democratic, kingdom, democracy, dictatorship\n\nCorrect answer:\nstate\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A republic is made up of states.\n- The USA is a republic.\n- Therefore, states are part of the USA.",
+      "expected_output": "States are a part of USA\nRepublic have states",
+      "question_values": [
+        "What is part of a republic like the USA?",
+        "state",
+        "democratic",
+        "kingdom",
+        "democracy",
+        "dictatorship",
+        "state"
+      ],
+      "processing_time": 0.9915280342102051,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJames wasn't much of a leader, because he had nothing to lead.  And a leader without something to lead, no matter how skilled, is useless.  What did James need?\n\nAnswer choices:\nbattle, army, company, organization, school\n\nCorrect answer:\narmy\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- James needed something to lead.\n- An army is a group of people to lead.\n- Therefore, James needed an army.",
+      "expected_output": "Army is an organised military force equipped for fighting on land.\nJames wasn't much of a leader, because he had nothing to lead. And a leader without something to lead, no matter how skilled, is useless. James need army.",
+      "question_values": [
+        "James wasn't much of a leader, because he had nothing to lead.  And a leader without something to lead, no matter how skilled, is useless.  What did James need?",
+        "battle",
+        "army",
+        "company",
+        "organization",
+        "school",
+        "army"
+      ],
+      "processing_time": 0.9944143295288086,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does an actor in a musical do?\n\nAnswer choices:\nbranch out, vocals, pretend, wear costume, sing songs\n\nCorrect answer:\nsing songs\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Actors in musicals perform songs as part of their role.\n- Singing is a key requirement for actors in musicals.",
+      "expected_output": "Musicals is a type of play.\nPeople sing songs in musical play.",
+      "question_values": [
+        "What does an actor in a musical do?",
+        "branch out",
+        "vocals",
+        "pretend",
+        "wear costume",
+        "sing songs",
+        "sing songs"
+      ],
+      "processing_time": 1.007197380065918,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA natural starting fire from lighting raged on for the second week, the governor declared it the biggest what he had seen?\n\nAnswer choices:\nnews report, unpredictable, disaster, explosion, burns\n\nCorrect answer:\ndisaster\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The fire was uncontrolled and destructive.\n- The governor's statement implies a severe and catastrophic event.",
+      "expected_output": "A natural starting fire from lighting is a disaster.\nThe governor declared the lighting raged on for the second week from natural starting fire to be the biggest disaster he had seen.",
+      "question_values": [
+        "A natural starting fire from lighting raged on for the second week, the governor declared it the biggest what he had seen?",
+        "news report",
+        "unpredictable",
+        "disaster",
+        "explosion",
+        "burns",
+        "disaster"
+      ],
+      "processing_time": 0.7823588848114014,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThey had a theory of what they could do in t he big game, so over and over they would what?\n\nAnswer choices:\npark, practice, fact, practical, practise\n\nCorrect answer:\npractice\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- \"Practice\" is the correct verb form to describe repeated actions.\n- The sentence implies continuous, repeated actions, which \"practice\" conveys.",
+      "expected_output": "Practice is required in every big game.\nIf they had a theory of practice than only they would over and over practice.",
+      "question_values": [
+        "They had a theory of what they could do in t he big game, so over and over they would what?",
+        "park",
+        "practice",
+        "fact",
+        "practical",
+        "practise",
+        "practice"
+      ],
+      "processing_time": 1.2102625370025635,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you need to write a letter?\n\nAnswer choices:\nhave paper, literate, not give up, move fingers, to keep warm\n\nCorrect answer:\nhave paper\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Writing a letter requires a physical surface to write on.\n- Paper is the most common material used for this purpose.",
+      "expected_output": "Letter is to be written on a paper.\nYou need to have paper to write a letter.",
+      "question_values": [
+        "What do you need to write a letter?",
+        "have paper",
+        "literate",
+        "not give up",
+        "move fingers",
+        "to keep warm",
+        "have paper"
+      ],
+      "processing_time": 0.9185225963592529,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhy does someone make sure they are eating breakfast?\n\nAnswer choices:\nfullness, have energy, better day, full stomach, indulge\n\nCorrect answer:\nhave energy\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Breakfast provides fuel for the body.\n- This fuel is converted into energy.",
+      "expected_output": "Breakfast is important as it give energy for the day.",
+      "question_values": [
+        "Why does someone make sure they are eating breakfast?",
+        "fullness",
+        "have energy",
+        "better day",
+        "full stomach",
+        "indulge",
+        "have energy"
+      ],
+      "processing_time": 0.6652238368988037,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat type of place has stopped giving out plastic shopping bags?\n\nAnswer choices:\nretail store, restaurant, mini mart, grocery store, home\n\nCorrect answer:\ngrocery store\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Many grocery stores have implemented bans on plastic bags.\n- This change aims to reduce environmental impact.",
+      "expected_output": "Grocery stores have nowadays stopped giving plastic bags\nPlastic shopping bags were most common to find at a grocery store",
+      "question_values": [
+        "What type of place has stopped giving out plastic shopping bags?",
+        "retail store",
+        "restaurant",
+        "mini mart",
+        "grocery store",
+        "home",
+        "grocery store"
+      ],
+      "processing_time": 0.8098728656768799,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is someone beginning work they really want to do likely to feel?\n\nAnswer choices:\nworking, stress, excitement, confusion, panic\n\nCorrect answer:\nexcitement\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- They eagerly anticipate starting.\n- They feel energized and motivated.",
+      "expected_output": "Excitement is a strong feeling of happiness.\nDoing what one likes makes one happy.",
+      "question_values": [
+        "What is someone beginning work they really want to do likely to feel?",
+        "working",
+        "stress",
+        "excitement",
+        "confusion",
+        "panic",
+        "excitement"
+      ],
+      "processing_time": 0.5557456016540527,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere in your office would you store a highlight that you don't use often?\n\nAnswer choices:\noffice supply store, case, desk drawer, campus book store, lamp\n\nCorrect answer:\ndesk drawer\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A desk drawer is a common place for office supplies.\n- It keeps the highlight easily accessible yet out of the way for infrequent use.",
+      "expected_output": "Desk drawer is a slidable storage place under a table.\nTable is a furniture.\nOffice generally has furniture.",
+      "question_values": [
+        "Where in your office would you store a highlight that you don't use often?",
+        "office supply store",
+        "case",
+        "desk drawer",
+        "campus book store",
+        "lamp",
+        "desk drawer"
+      ],
+      "processing_time": 1.0999970436096191,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe meteorologist said that there was a storm coming.  This forced John to delay his trip to what location?\n\nAnswer choices:\ntropical seas, cuba, tropics, caribbean, weather report\n\nCorrect answer:\ncaribbean\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question mentions a storm.\n- The Caribbean is known for its tropical storms.\n- Therefore, John delayed his trip to the Caribbean.",
+      "expected_output": "The storm was coming from caribbean.\nJohn was forced to delay his trip to caribbean as meteorologist said that a storm was coming.",
+      "question_values": [
+        "The meteorologist said that there was a storm coming.  This forced John to delay his trip to what location?",
+        "tropical seas",
+        "cuba",
+        "tropics",
+        "caribbean",
+        "weather report",
+        "caribbean"
+      ],
+      "processing_time": 1.0647649765014648,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nHe packed his toothpaste and brush in a small bag then stuffed it with his clothes into a what?\n\nAnswer choices:\nbathroom, suitcase, mouth, drug store, squirrel\n\nCorrect answer:\nsuitcase\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- He packed his toiletries in a small bag.\n- He then placed this bag into a larger container.\n- The suitcase is the most common container for such items when traveling.",
+      "expected_output": "Packed items are been kept in a suitcase.\nHe packed his toothpaste and brush in a small bag for keeping them into a suitcase and then stuffed them with his clothes.",
+      "question_values": [
+        "He packed his toothpaste and brush in a small bag then stuffed it with his clothes into a what?",
+        "bathroom",
+        "suitcase",
+        "mouth",
+        "drug store",
+        "squirrel",
+        "suitcase"
+      ],
+      "processing_time": 1.3919875621795654,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe crab was being shipped to be eaten, where was he heading?\n\nAnswer choices:\ngulf of mexico, north sea, fish market, picnic basket, grocery store\n\nCorrect answer:\ngrocery store\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The crab was being shipped.\n- It was intended to be eaten.\n- Grocery stores sell food for consumption.",
+      "expected_output": "Grocery store is a retail shop that primarily sells food, either fresh or preserved.\nThe crab was being shipped to be eaten, he was heading to grocery store.",
+      "question_values": [
+        "The crab was being shipped to be eaten, where was he heading?",
+        "gulf of mexico",
+        "north sea",
+        "fish market",
+        "picnic basket",
+        "grocery store",
+        "grocery store"
+      ],
+      "processing_time": 0.9561710357666016,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat always happens to someone after he or she finishes getting divorce?\n\nAnswer choices:\nno spouse, lot of grief, freedom, children suffer, party time\n\nCorrect answer:\nno spouse\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Divorce ends a marriage.\n- After divorce, one is no longer married to a spouse.",
+      "expected_output": "A divorce happens after a husband and wife decide they no longer want to be married.\nSpouse is person in a marriage relationship.\nThere will be no spouse after a divorce.",
+      "question_values": [
+        "What always happens to someone after he or she finishes getting divorce?",
+        "no spouse",
+        "lot of grief",
+        "freedom",
+        "children suffer",
+        "party time",
+        "no spouse"
+      ],
+      "processing_time": 0.7738387584686279,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do people feel in the winter?\n\nAnswer choices:\nuse money, sick, pay bills, feel cold, become old\n\nCorrect answer:\nfeel cold\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Winter is characterized by low temperatures.\n- Low temperatures cause people to feel cold.",
+      "expected_output": "Winter season always means cold weather\nPeople usually feel cold during cold weather",
+      "question_values": [
+        "What do people feel in the winter?",
+        "use money",
+        "sick",
+        "pay bills",
+        "feel cold",
+        "become old",
+        "feel cold"
+      ],
+      "processing_time": 0.6641213893890381,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you started killing people for no reason, what are you likely to lack?\n\nAnswer choices:\nprison sentence, going to jail, feelings of guilt, die, hunger\n\nCorrect answer:\nfeelings of guilt\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Lack of guilt implies no remorse for actions.\n- No guilt suggests no moral compass or empathy.",
+      "expected_output": "Feeling of guilt means a feeling of worry or unhappiness that you have because you have done something wrong, such as causing harm to another person.\nIf you started killing people for no reason, you are likely to lack feelings of guilt.",
+      "question_values": [
+        "If you started killing people for no reason, what are you likely to lack?",
+        "prison sentence",
+        "going to jail",
+        "feelings of guilt",
+        "die",
+        "hunger",
+        "feelings of guilt"
+      ],
+      "processing_time": 0.8108096122741699,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere do people keep money that is not in their wallet?\n\nAnswer choices:\nbank account, outside, art show, casino, race track\n\nCorrect answer:\nbank account\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- People use bank accounts to store money securely.\n- Bank accounts are designed for this purpose.",
+      "expected_output": "Bank account is personal account of a person\nBank account can have money",
+      "question_values": [
+        "Where do people keep money that is not in their wallet?",
+        "bank account",
+        "outside",
+        "art show",
+        "casino",
+        "race track",
+        "bank account"
+      ],
+      "processing_time": 0.737396240234375,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nwhere do you typically find a trash can in the city?\n\nAnswer choices:\npark, motel, corner, bus stop, store front\n\nCorrect answer:\ncorner\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Corners are high-traffic areas in cities.\n- Trash cans are often placed in high-traffic areas for easy access.",
+      "expected_output": "A trash can is typically found in corner of the city.",
+      "question_values": [
+        "where do you typically find a trash can in the city?",
+        "park",
+        "motel",
+        "corner",
+        "bus stop",
+        "store front",
+        "corner"
+      ],
+      "processing_time": 1.1005003452301025,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you get a washcloth if you do not have one?\n\nAnswer choices:\nbathing, bathroom sink, garage, linen closet, walmart\n\nCorrect answer:\nwalmart\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Walmart is a retail store.\n- Retail stores sell various household items.\n- Washcloths are household items.",
+      "expected_output": "You would get a washcloth at Walmart.\nWalmart is a place where you can go and buy a washcloth.",
+      "question_values": [
+        "Where would you get a washcloth if you do not have one?",
+        "bathing",
+        "bathroom sink",
+        "garage",
+        "linen closet",
+        "walmart",
+        "walmart"
+      ],
+      "processing_time": 0.9550936222076416,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you find a metal rod in most people's preferred method of transportation?\n\nAnswer choices:\nairplane, construction site, shops, engine, broken bone\n\nCorrect answer:\nengine\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Most people's preferred method of transportation is a car.\n- Cars have engines.\n- Metal rods are commonly found in car engines.",
+      "expected_output": "Engine is one of the most prefferd mode of transportation\nEngines have rods in them as they are heavily made of metals",
+      "question_values": [
+        "Where would you find a metal rod in most people's preferred method of transportation?",
+        "airplane",
+        "construction site",
+        "shops",
+        "engine",
+        "broken bone",
+        "engine"
+      ],
+      "processing_time": 1.0281834602355957,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nShe was a human in America who wanted to live well, what was a given for her situation?\n\nAnswer choices:\nthink critically, need money, say hello, think critically, drink tea\n\nCorrect answer:\nneed money\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- She desired a comfortable life in America.\n- Having money is essential for a comfortable life.",
+      "expected_output": "Money is a current medium of exchange in the form of coins and banknotes. Money is anything that people use to buy goods and services.\nShe was a human in America who wanted to live well and she need money for the situation.",
+      "question_values": [
+        "She was a human in America who wanted to live well, what was a given for her situation?",
+        "think critically",
+        "need money",
+        "say hello",
+        "think critically",
+        "drink tea",
+        "need money"
+      ],
+      "processing_time": 0.7378299236297607,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIt was dumb luck, his bad move had actually put him in an what position?\n\nAnswer choices:\nvirtuous, advantageous, excellent, adventurous, exceptional\n\nCorrect answer:\nadvantageous\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- \"Advantageous\" means providing an advantage, which fits the context of his bad move unexpectedly benefiting him.\n- The other options do not convey the idea of an unintended benefit.",
+      "expected_output": "Advantageous means favourable.\nLuck means fortunate.\nFortunate moments change bad moves into advantageous positions.",
+      "question_values": [
+        "It was dumb luck, his bad move had actually put him in an what position?",
+        "virtuous",
+        "advantageous",
+        "excellent",
+        "adventurous",
+        "exceptional",
+        "advantageous"
+      ],
+      "processing_time": 1.5000102519989014,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you be most likely to see a cow?\n\nAnswer choices:\nroad, slaughter house, ranch, switzerland, tennessee\n\nCorrect answer:\nranch\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Cows are commonly raised on ranches.\n- Ranches are farms specifically for raising cattle.",
+      "expected_output": "Ranch is a large farm, where cattle or other animals are bred.\nWe would be most likely to see a cow in a ranch.",
+      "question_values": [
+        "Where would you be most likely to see a cow?",
+        "road",
+        "slaughter house",
+        "ranch",
+        "switzerland",
+        "tennessee",
+        "ranch"
+      ],
+      "processing_time": 0.7734506130218506,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a hand?\n\nAnswer choices:\nbody part, foot, handglide, feet, help\n\nCorrect answer:\nbody part\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A hand is a part of the human body.\n- It is one of the two appendages at the end of each arm.\n- Hands are used for various tasks and activities.",
+      "expected_output": "Hand is the end of an arm of the body.\nArm is a body part.",
+      "question_values": [
+        "What is a hand?",
+        "body part",
+        "foot",
+        "handglide",
+        "feet",
+        "help",
+        "body part"
+      ],
+      "processing_time": 1.3900337219238281,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe animals all knew the importants of fluids.  They also knew what was safe to do what?\n\nAnswer choices:\ndrink, feel pain, bite, fly, gay\n\nCorrect answer:\ndrink\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question asks what the animals knew was safe to do.\n- Drinking is a safe action for animals.\n- The other options (feel pain, bite, fly, gay) are not safe or relevant to the context.",
+      "expected_output": "All animals drink water to hydrate themselves.\nWater is a fluid.",
+      "question_values": [
+        "The animals all knew the importants of fluids.  They also knew what was safe to do what?",
+        "drink",
+        "feel pain",
+        "bite",
+        "fly",
+        "gay",
+        "drink"
+      ],
+      "processing_time": 1.756117343902588,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is someone likely to find a huge amount of text?\n\nAnswer choices:\nnewspaper, writer's brain, own home, library, book store\n\nCorrect answer:\nlibrary\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Libraries contain vast collections of books, magazines, and other printed materials.\n- These materials contain a huge amount of text.",
+      "expected_output": "library contains a lots of books having texts written in it.\nSomeone finds a huge amount of texts in a library.",
+      "question_values": [
+        "Where is someone likely to find a huge amount of text?",
+        "newspaper",
+        "writer's brain",
+        "own home",
+        "library",
+        "book store",
+        "library"
+      ],
+      "processing_time": 0.9552490711212158,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is the process of going somewhere?\n\nAnswer choices:\nfire, energy, car, transporting, staying in place\n\nCorrect answer:\ntransporting\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The process involves moving from one location to another.\n- \"Transporting\" refers to the act of moving or carrying something from one place to another.\n- It is the most accurate term to describe the action of going somewhere.",
+      "expected_output": "Transporting means to take or carry people or goods from one place to another by means of a vehicle, aircraft, or ship.\nThe process of going somewhere means people going from one place to another by means of a vehicle, aircraft, or ship.",
+      "question_values": [
+        "What is the process of going somewhere?",
+        "fire",
+        "energy",
+        "car",
+        "transporting",
+        "staying in place",
+        "transporting"
+      ],
+      "processing_time": 1.7174911499023438,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat negative emotions or feelings can learning cause?\n\nAnswer choices:\ngaining knowledge, effectiveness, distress, dysfunction, happiness\n\nCorrect answer:\ndistress\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Learning can cause distress when material is difficult to understand.\n- Distress can arise from the fear of failure or not meeting expectations.",
+      "expected_output": "Distress is extreme anxiety, sorrow or pain.\nNegative emotions or feelings can learning cause is Distress.",
+      "question_values": [
+        "What negative emotions or feelings can learning cause?",
+        "gaining knowledge",
+        "effectiveness",
+        "distress",
+        "dysfunction",
+        "happiness",
+        "distress"
+      ],
+      "processing_time": 1.0272538661956787,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIn the city the family didn't have a back yard, but now they did since they lived in a what?\n\nAnswer choices:\nfarm, suburb, property, neighborhood, yards\n\nCorrect answer:\nsuburb\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The family previously lived in a city, which typically lacks backyards.\n- A suburb, by definition, is a residential area on the outskirts of a city, often featuring houses with yards.",
+      "expected_output": "Suburb is an outlying district of a city.\nHouses in the outlying district has more space than the houses in the city.\nHaving more space around a house means one can have a back yard.",
+      "question_values": [
+        "In the city the family didn't have a back yard, but now they did since they lived in a what?",
+        "farm",
+        "suburb",
+        "property",
+        "neighborhood",
+        "yards",
+        "suburb"
+      ],
+      "processing_time": 1.4649097919464111,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you believe something but then you begin getting and understanding new information you may come to a what?\n\nAnswer choices:\ndisappointment, new realization, heat wave, joy, wanting more\n\nCorrect answer:\nnew realization\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question implies a change in understanding.\n- A new realization is a change in understanding based on new information.\n- The other options do not reflect a change in understanding.",
+      "expected_output": "Realization is an act of becoming fully aware of something as a fact.\nWe become fully aware of something as a fact when we get new information.",
+      "question_values": [
+        "If you believe something but then you begin getting and understanding new information you may come to a what?",
+        "disappointment",
+        "new realization",
+        "heat wave",
+        "joy",
+        "wanting more",
+        "new realization"
+      ],
+      "processing_time": 1.3193295001983643,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nAll the kooky kids enjoyed each other's company, to them their behavior was perfectly what?\n\nAnswer choices:\nordinary, straight, normal, cool, mainstream\n\nCorrect answer:\nnormal\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The phrase \"to them\" indicates the perspective is from the kids themselves.\n- \"Normal\" describes behavior that is typical or usual, fitting their perspective.\n- \"Kooky\" suggests unusual behavior, but \"normal\" to them implies they find it acceptable.",
+      "expected_output": "Kooky means strange or eccentric.\nNormal means confirming to a standard, usual, typical or expected.\nAll the kooky kids enjoyed each other's company, to them their behaviour was perfectly normal.",
+      "question_values": [
+        "All the kooky kids enjoyed each other's company, to them their behavior was perfectly what?",
+        "ordinary",
+        "straight",
+        "normal",
+        "cool",
+        "mainstream",
+        "normal"
+      ],
+      "processing_time": 2.008662223815918,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf there is a pond with nobody nearby, where is it likely located?\n\nAnswer choices:\nrural area, meadow, forest side, countryside, forest\n\nCorrect answer:\ncountryside\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Countryside is less populated than urban areas.\n- It is likely to have a pond due to its rural nature.",
+      "expected_output": "Countryside has ponds\nCountryside does not have many people living there\nPonds in countryside have no one near them as people do not live there",
+      "question_values": [
+        "If there is a pond with nobody nearby, where is it likely located?",
+        "rural area",
+        "meadow",
+        "forest side",
+        "countryside",
+        "forest",
+        "countryside"
+      ],
+      "processing_time": 0.9549820423126221,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you do when you need to get food?\n\nAnswer choices:\ntable, disneyland, refrigerators, pantry, shop\n\nCorrect answer:\nshop\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- You need to acquire food.\n- Shops sell food.\n- Therefore, you go to a shop to get food.",
+      "expected_output": "Perosn shop the food when he need the food.\nShopping is the activity that person do to get food.",
+      "question_values": [
+        "What do you do when you need to get food?",
+        "table",
+        "disneyland",
+        "refrigerators",
+        "pantry",
+        "shop",
+        "shop"
+      ],
+      "processing_time": 0.9545085430145264,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA reaching advantage can help a boxer achieve what?\n\nAnswer choices:\nbeing ahead, fall, speed., victory, new option\n\nCorrect answer:\nvictory\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A reach advantage allows a boxer to strike opponents from a distance.\n- This can lead to scoring points and wearing down the opponent.\n- Ultimately, it increases the likelihood of winning the fight.",
+      "expected_output": "A boxer can achieve victory with help of a reaching advantage.",
+      "question_values": [
+        "A reaching advantage can help a boxer achieve what?",
+        "being ahead",
+        "fall",
+        "speed.",
+        "victory",
+        "new option",
+        "victory"
+      ],
+      "processing_time": 1.500312328338623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf a person is complimentary and making trivial physical contact what are they trying to do?\n\nAnswer choices:\nget laid, acknowledgment, accomplish goals, marry, talk about themselves\n\nCorrect answer:\nget laid\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- They are using charm and touch to initiate intimacy.\n- The goal is to engage in sexual activity.",
+      "expected_output": "Being complimentary and making trivial physical contact are signs of flirting\nPeople flirt with someone when they intend to get laid with that someone",
+      "question_values": [
+        "If a person is complimentary and making trivial physical contact what are they trying to do?",
+        "get laid",
+        "acknowledgment",
+        "accomplish goals",
+        "marry",
+        "talk about themselves",
+        "get laid"
+      ],
+      "processing_time": 0.8104126453399658,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?\n\nAnswer choices:\nrestless, active, lazybutt, productive, hard work\n\nCorrect answer:\nproductive\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The man in the blue worked hard.\n- He did useful things.\n- Therefore, he was productive.",
+      "expected_output": "Productive means producing or able to produce large amounts of goods, crops or other commodities.\nThe man in the white suit was very lazy. He did nothing useful. Meanwhile, the man in the blue had put in effort and was very productive.",
+      "question_values": [
+        "The man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?",
+        "restless",
+        "active",
+        "lazybutt",
+        "productive",
+        "hard work",
+        "productive"
+      ],
+      "processing_time": 0.8474771976470947,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does a ferret like to crawl up?\n\nAnswer choices:\ngreat britain, mother's hair, petting zoo, building, trouser leg\n\nCorrect answer:\ntrouser leg\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Ferrets are known for their love of tight, enclosed spaces.\n- Trouser legs provide such an environment, making them appealing to ferrets.",
+      "expected_output": "Ferret legging is game where contestants take live ferrets and shove them down their trouser.\nFerret crawl up trouser leg in ferret legging.",
+      "question_values": [
+        "What does a ferret like to crawl up?",
+        "great britain",
+        "mother's hair",
+        "petting zoo",
+        "building",
+        "trouser leg",
+        "trouser leg"
+      ],
+      "processing_time": 1.1363487243652344,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSam spent most of his time standing up.  His job was hectic and he never got any rest. But he was the best cashier at his workplace.    Where might he work?\n\nAnswer choices:\nbookstore, count till, supermarket, shop, preschool\n\nCorrect answer:\nsupermarket\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Sam's job is described as hectic, requiring constant activity.\n- A supermarket involves constant customer interaction and movement, fitting this description.\n- Supermarkets typically have cashiers, making it a suitable workplace for Sam.",
+      "expected_output": "Supermarket has cashiers\nWorkers in a supermarket spend most of their time standing up\nWorkers of a supermarket do not get any rest\nSupermarket is a building",
+      "question_values": [
+        "Sam spent most of his time standing up.  His job was hectic and he never got any rest. But he was the best cashier at his workplace.    Where might he work?",
+        "bookstore",
+        "count till",
+        "supermarket",
+        "shop",
+        "preschool",
+        "supermarket"
+      ],
+      "processing_time": 1.6847474575042725,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn walked up to the reception desk and rang a bell.  He waited for five minutes and told the reception person that he had a reservation. Where might he be?\n\nAnswer choices:\nlobby, office park, at hotel, large office, real estate office\n\nCorrect answer:\nat hotel\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- John rang a bell at the desk.\n- He mentioned a reservation.\n- This implies he is at a hotel.",
+      "expected_output": "Reception desk is there at a hotel\nPerson telling that he is having a reservation means it is reservation of a room of hotel.",
+      "question_values": [
+        "John walked up to the reception desk and rang a bell.  He waited for five minutes and told the reception person that he had a reservation. Where might he be?",
+        "lobby",
+        "office park",
+        "at hotel",
+        "large office",
+        "real estate office",
+        "at hotel"
+      ],
+      "processing_time": 0.9217596054077148,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere can you see snakes at a public zoological park?\n\nAnswer choices:\nkew gardens, tree, terrarium, thick forest, field\n\nCorrect answer:\nterrarium\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A terrarium is a glass enclosure for housing and displaying plants and small animals.\n- Zoos often have terrariums to exhibit snakes and other reptiles.\n- Snakes are not typically found in open areas like fields or trees in a public park.",
+      "expected_output": "You can see snakes in a terrarium.\nTerrarium is at a public zoological park.",
+      "question_values": [
+        "Where can you see snakes at a public zoological park?",
+        "kew gardens",
+        "tree",
+        "terrarium",
+        "thick forest",
+        "field",
+        "terrarium"
+      ],
+      "processing_time": 1.8991293907165527,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn was working late at night in a Casino.  When he got off work, he looked for a bar but couldn't find one.  Where might he go instead?\n\nAnswer choices:\nrestaurant, nightclub, las vegas, atlantic city, new york city\n\nCorrect answer:\nnightclub\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- John was working late at night.\n- Nightclubs are typically open late.\n- He was looking for a place to go after work.",
+      "expected_output": "Nightclub is an entertainment venue which is open throughout the night.\nEntertainment venues generally have bars.",
+      "question_values": [
+        "John was working late at night in a Casino.  When he got off work, he looked for a bar but couldn't find one.  Where might he go instead?",
+        "restaurant",
+        "nightclub",
+        "las vegas",
+        "atlantic city",
+        "new york city",
+        "nightclub"
+      ],
+      "processing_time": 1.103534460067749,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSomeone who's belief in a philosophy is not slight but extreme is what?\n\nAnswer choices:\nsignificant, important, radical, radical, essencial\n\nCorrect answer:\nradical\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- \"Radical\" implies extreme or far-reaching views.\n- The question asks for someone with an extreme belief in a philosophy.\n- Therefore, \"radical\" is the correct answer.",
+      "expected_output": "A philosophy is radical.\nSomeone's belief in philosophy is extreme radical and not slight.",
+      "question_values": [
+        "Someone who's belief in a philosophy is not slight but extreme is what?",
+        "significant",
+        "important",
+        "radical",
+        "radical",
+        "essencial",
+        "radical"
+      ],
+      "processing_time": 1.4650845527648926,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf a lizard is fed by people every day, what has happened to it?\n\nAnswer choices:\ndocumentary, costa rica, garden, encouragement, captivity\n\nCorrect answer:\ncaptivity\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Lizard is fed daily by people.\n- This indicates human intervention and control.\n- Therefore, the lizard is in captivity.",
+      "expected_output": "Lizards find their food by their own\nLizards who are kept captive are fed by its people",
+      "question_values": [
+        "If a lizard is fed by people every day, what has happened to it?",
+        "documentary",
+        "costa rica",
+        "garden",
+        "encouragement",
+        "captivity",
+        "captivity"
+      ],
+      "processing_time": 1.028545618057251,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you usually find a hole made by an animal?\n\nAnswer choices:\ntrap, golf course, wall, ground, swiss cheese\n\nCorrect answer:\nground\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Animals dig holes in the ground for various purposes like burrowing, nesting, or hunting.\n- The other options - trap, golf course, wall, swiss cheese - are not typical habitats or materials that animals would create holes in.",
+      "expected_output": "Few species of animals make hole in ground.\nSome animals live under the ground. They make hole unto the ground to live in it.",
+      "question_values": [
+        "Where would you usually find a hole made by an animal?",
+        "trap",
+        "golf course",
+        "wall",
+        "ground",
+        "swiss cheese",
+        "ground"
+      ],
+      "processing_time": 1.7902555465698242,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe cat saw animal control approaching her, what did she decide to do?\n\nAnswer choices:\nsleep all day, cast shadow, run away, bark like a dog, see at night\n\nCorrect answer:\nrun away\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Cats are natural prey animals.\n- Running away is their instinctual response to perceived danger.",
+      "expected_output": "Cats run away from animal control\nCats can decide to run away\nRunning away refers to going far away",
+      "question_values": [
+        "The cat saw animal control approaching her, what did she decide to do?",
+        "sleep all day",
+        "cast shadow",
+        "run away",
+        "bark like a dog",
+        "see at night",
+        "run away"
+      ],
+      "processing_time": 0.7378830909729004,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe person was stood up on a date, what was his reaction?\n\nAnswer choices:\ncross street, machine part, regret, selling things, feel resentful\n\nCorrect answer:\nfeel resentful\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The person was left waiting, implying he expected someone to show up.\n- \"Stand up\" in this context means to leave someone waiting, which is disrespectful.\n- Feeling resentful is a common reaction to being treated disrespectfully.",
+      "expected_output": "People feel betrayed and disrespected when they are stood up on a date\nFeeling bitterness at having been treated unfairly means feeling resentful",
+      "question_values": [
+        "The person was stood up on a date, what was his reaction?",
+        "cross street",
+        "machine part",
+        "regret",
+        "selling things",
+        "feel resentful",
+        "feel resentful"
+      ],
+      "processing_time": 1.863760232925415,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe board game instructed that you must conquer opponent, only the what would come out on top?\n\nAnswer choices:\ntop piece, strong, win, total domination, best\n\nCorrect answer:\nbest\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- \"Best\" implies superiority over all others.\n- \"Total domination\" is a result of being the best.\n- \"Win\" is the outcome of being the best.",
+      "expected_output": "Only the best which means highest quality player would come on top in the board game.",
+      "question_values": [
+        "The board game instructed that you must conquer opponent, only the what would come out on top?",
+        "top piece",
+        "strong",
+        "win",
+        "total domination",
+        "best",
+        "best"
+      ],
+      "processing_time": 1.3179185390472412,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere can you find the U.S. federal government?\n\nAnswer choices:\nwashington d.c, canada, country, capitol building, democracy\n\nCorrect answer:\nwashington d.c\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Washington D.C. is the capital of the United States.\n- The U.S. federal government is headquartered in the capital.",
+      "expected_output": "The U.S. federal government houses in the capitol building.\nThe capitol building is located in washington d.c.",
+      "question_values": [
+        "Where can you find the U.S. federal government?",
+        "washington d.c",
+        "canada",
+        "country",
+        "capitol building",
+        "democracy",
+        "washington d.c"
+      ],
+      "processing_time": 1.0276930332183838,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a positive feeling that you might get after going jogging?\n\nAnswer choices:\nheart rate increases, heart attacks, sweating, sore feet, feel pride\n\nCorrect answer:\nfeel pride\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Jogging often requires effort and achievement.\n- Feeling proud is a common response to personal accomplishment.",
+      "expected_output": "Jogging is the exercise of running at a steady and gentle pace.\nOne might feel pride after achieving goals of exercise to keep fit.\nPride is a positive feeling.",
+      "question_values": [
+        "What is a positive feeling that you might get after going jogging?",
+        "heart rate increases",
+        "heart attacks",
+        "sweating",
+        "sore feet",
+        "feel pride",
+        "feel pride"
+      ],
+      "processing_time": 0.7734777927398682,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you do when you're going to market?\n\nAnswer choices:\nbuy food, see other people, buying vegetables, buy a fat pig, traveling\n\nCorrect answer:\nbuy food\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- You go to the market to acquire food.\n- The primary purpose of a market visit is to shop for food.",
+      "expected_output": "Market is a place where various things are sold.\nFood is sold in a market.\nPeople buy what they want from market.",
+      "question_values": [
+        "What do you do when you're going to market?",
+        "buy food",
+        "see other people",
+        "buying vegetables",
+        "buy a fat pig",
+        "traveling",
+        "buy food"
+      ],
+      "processing_time": 0.9188480377197266,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would there be many people sitting in chair and listening to religious speech?\n\nAnswer choices:\nauditorium, office, synagogue, confession, church\n\nCorrect answer:\nsynagogue\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A synagogue is a Jewish house of worship.\n- Services in a synagogue often involve listening to religious speeches or sermons.\n- People sit in chairs during these services.",
+      "expected_output": "Synagogue is a place of worship\nJews pray in a Synagogue",
+      "question_values": [
+        "Where would there be many people sitting in chair and listening to religious speech?",
+        "auditorium",
+        "office",
+        "synagogue",
+        "confession",
+        "church",
+        "synagogue"
+      ],
+      "processing_time": 1.2814419269561768,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a corrupt government likely to lead to?\n\nAnswer choices:\ncivilization, money, city, control, trouble\n\nCorrect answer:\ntrouble\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Corruption breeds instability.\n- It causes mistrust in governance.\n- Leads to societal unrest.",
+      "expected_output": "Trouble means difficulty or problems.\nA corrupt government causes difficulties and problems to it's people.",
+      "question_values": [
+        "What is a corrupt government likely to lead to?",
+        "civilization",
+        "money",
+        "city",
+        "control",
+        "trouble",
+        "trouble"
+      ],
+      "processing_time": 0.809149980545044,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does a person who is a gardener have?\n\nAnswer choices:\nown house, contribution to society, food, ride horses, green thumb\n\nCorrect answer:\ngreen thumb\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- A gardener is someone who tends to plants.\n- A green thumb is a metaphor for a talent in gardening.\n- Therefore, a gardener has a green thumb.",
+      "expected_output": "Gardners are said to be experts in growing plants\nPeople who have a knack for growing plants well are said to have a green thumb",
+      "question_values": [
+        "What does a person who is a gardener have?",
+        "own house",
+        "contribution to society",
+        "food",
+        "ride horses",
+        "green thumb",
+        "green thumb"
+      ],
+      "processing_time": 1.3546957969665527,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nwhere is seaweed from?\n\nAnswer choices:\nbeach, sea, ocean, water, sea plant\n\nCorrect answer:\nocean\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Seaweed grows in marine environments.\n- The ocean is a marine environment.",
+      "expected_output": "Seaweeds are there in ocean",
+      "question_values": [
+        "where is seaweed from?",
+        "beach",
+        "sea",
+        "ocean",
+        "water",
+        "sea plant",
+        "ocean"
+      ],
+      "processing_time": 0.6650142669677734,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a place that has large cable hanging overhead?\n\nAnswer choices:\nradio shack, electrical device, shower, substation, television\n\nCorrect answer:\nsubstation\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Substations are part of electrical power systems.\n- They use large cables hanging overhead for transmission.",
+      "expected_output": "A substation has several cables\nSubstation is a place\nSubstation regulates power",
+      "question_values": [
+        "What is a place that has large cable hanging overhead?",
+        "radio shack",
+        "electrical device",
+        "shower",
+        "substation",
+        "television",
+        "substation"
+      ],
+      "processing_time": 0.8101241588592529,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nGeorge checked the rotor of the Apache, which wasn't powered by internal combustion, but by what?\n\nAnswer choices:\njet engine, helicopter, electric motor, rotator, electrical circuit\n\nCorrect answer:\njet engine\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Apache helicopters are powered by jet engines.\n- The question specifically asks about the rotor, which is turned by the jet engine.",
+      "expected_output": "A rotor can be powered by a jet engine.\nJet engine has electric motor fitted in whih helps to power up the rotor.",
+      "question_values": [
+        "George checked the rotor of the Apache, which wasn't powered by internal combustion, but by what?",
+        "jet engine",
+        "helicopter",
+        "electric motor",
+        "rotator",
+        "electrical circuit",
+        "jet engine"
+      ],
+      "processing_time": 0.9919662475585938,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is a good place to get food for most people?\n\nAnswer choices:\nfridge, oven, supermarket, kitchen, table\n\nCorrect answer:\nsupermarket\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Most people shop for food at supermarkets.\n- Supermarkets offer a wide variety of food items.\n- It's where people typically buy food to take home.",
+      "expected_output": "Supermarket have variety of food for sale so people can get food from supermarket.",
+      "question_values": [
+        "Where is a good place to get food for most people?",
+        "fridge",
+        "oven",
+        "supermarket",
+        "kitchen",
+        "table",
+        "supermarket"
+      ],
+      "processing_time": 1.3172500133514404,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you have to clean up after a party?\n\nAnswer choices:\nson's room, dishwasher, party, dish washer, dining room\n\nCorrect answer:\nparty\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question asks what needs to be cleaned up after a party.\n- The term \"party\" refers to the event itself, not a specific location or item.\n- Therefore, the correct answer is \"party,\" as it is the broadest and most encompassing term that requires cleanup.",
+      "expected_output": "Dishwasher is a machine for washing dishes automatically.\nYou will have to clean up a dishwasher after a party.",
+      "question_values": [
+        "What do you have to clean up after a party?",
+        "son's room",
+        "dishwasher",
+        "party",
+        "dish washer",
+        "dining room",
+        "party"
+      ],
+      "processing_time": 2.1184332370758057,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe servant was asked where to put the flowers, what was his status at the wedding?\n\nAnswer choices:\nfree person, celebrity, boss, in charge, rich person\n\nCorrect answer:\nin charge\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The servant was asked a question, indicating he was in a position of responsibility.\n- He was given a task to perform, suggesting he was in charge of something.",
+      "expected_output": "An incharge is asked for placement of flowers.\nServant may be the incharge at the wedding.",
+      "question_values": [
+        "The servant was asked where to put the flowers, what was his status at the wedding?",
+        "free person",
+        "celebrity",
+        "boss",
+        "in charge",
+        "rich person",
+        "in charge"
+      ],
+      "processing_time": 1.2828848361968994,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe competitive guy liked to play games, what was his goal?\n\nAnswer choices:\nentertaining, dice, win, bored, relax\n\nCorrect answer:\nwin\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- He was competitive.\n- Competitive people aim to win.",
+      "expected_output": "Winning is the aim of compititive people as they always aim at winning\nWin can be a goal of playing for many",
+      "question_values": [
+        "The competitive guy liked to play games, what was his goal?",
+        "entertaining",
+        "dice",
+        "win",
+        "bored",
+        "relax",
+        "win"
+      ],
+      "processing_time": 0.5186779499053955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere do people get beer after a bit of gambling?\n\nAnswer choices:\nbottle, grocery store, casino, spaceship, hockey game\n\nCorrect answer:\ncasino\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- People often gamble in casinos.\n- Casinos typically sell beer on-site.",
+      "expected_output": "Casino is a large building which has bar and gambling games.\nBar sells beer.",
+      "question_values": [
+        "Where do people get beer after a bit of gambling?",
+        "bottle",
+        "grocery store",
+        "casino",
+        "spaceship",
+        "hockey game",
+        "casino"
+      ],
+      "processing_time": 0.664290189743042,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is a personal washing machine likely to be found?\n\nAnswer choices:\nclean dishes, laundromat, streets, cellar, house\n\nCorrect answer:\nhouse\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Personal washing machines are designed for home use.\n- They are typically found in homes for convenience and privacy.",
+      "expected_output": "Our house is our personal property.\nA personal washing machine is likely to be found in a house.",
+      "question_values": [
+        "Where is a personal washing machine likely to be found?",
+        "clean dishes",
+        "laundromat",
+        "streets",
+        "cellar",
+        "house",
+        "house"
+      ],
+      "processing_time": 0.8466324806213379,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is the world known to be a part of?\n\nAnswer choices:\na fraud, countries, universe, galaxy, thought\n\nCorrect answer:\nuniverse\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The world is a planet.\n- The universe contains all planets.",
+      "expected_output": "In universe, the world is known to be a part of it.",
+      "question_values": [
+        "Where is the world known to be a part of?",
+        "a fraud",
+        "countries",
+        "universe",
+        "galaxy",
+        "thought",
+        "universe"
+      ],
+      "processing_time": 0.5548546314239502,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe weasel was sifting through garbage, where did it look for it?\n\nAnswer choices:\nchicken coop, law office, dog house, hollow log, backyards\n\nCorrect answer:\nbackyards\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Weasels are known to scavenge for food in various outdoor areas.\n- Backyards often contain discarded food or trash that weasels can feed on.\n- The other options are less likely to contain food waste that weasels would be interested in.",
+      "expected_output": "The weasel look for it in backyards while it was sifting through garbage.",
+      "question_values": [
+        "The weasel was sifting through garbage, where did it look for it?",
+        "chicken coop",
+        "law office",
+        "dog house",
+        "hollow log",
+        "backyards",
+        "backyards"
+      ],
+      "processing_time": 2.0113537311553955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you sit back and think about nice memories you will be able to?\n\nAnswer choices:\nsit quietly, concentrate, wake up, stay focused, relax\n\nCorrect answer:\nrelax\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Remembering pleasant memories often involves recalling calm and peaceful moments.\n- Relaxing allows the mind to access and reflect on these memories more easily.",
+      "expected_output": "You will feel relax by remembering memoreies.\nIf you sit back and think about nice memories you will be able to feel relax.",
+      "question_values": [
+        "If you sit back and think about nice memories you will be able to?",
+        "sit quietly",
+        "concentrate",
+        "wake up",
+        "stay focused",
+        "relax",
+        "relax"
+      ],
+      "processing_time": 1.1731927394866943,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat type of college do you learn science at?\n\nAnswer choices:\nspace lab, a state college, school, nanotechnology, university\n\nCorrect answer:\nuniversity\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Universities offer a wide range of science programs.\n- They have the necessary facilities and professors for scientific research.",
+      "expected_output": "University is a type of college.\nScience is learnt at university.",
+      "question_values": [
+        "What type of college do you learn science at?",
+        "space lab",
+        "a state college",
+        "school",
+        "nanotechnology",
+        "university",
+        "university"
+      ],
+      "processing_time": 0.8459975719451904,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nYou want strong steel cable in your what if you're going to be off road driving?\n\nAnswer choices:\nground, ship, construction site, winch, tool box\n\nCorrect answer:\nwinch\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Off-road driving requires a strong cable for pulling or securing the vehicle.\n- A winch is designed to handle such heavy-duty tasks.",
+      "expected_output": "Winch is made of a strong steel cable.\nYou want strong steel cable in your winch if you're going to be off road driving.",
+      "question_values": [
+        "You want strong steel cable in your what if you're going to be off road driving?",
+        "ground",
+        "ship",
+        "construction site",
+        "winch",
+        "tool box",
+        "winch"
+      ],
+      "processing_time": 1.1367323398590088,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you've been in a rut and busy, taking the time and eating breakfast could help you have a what?\n\nAnswer choices:\ndirty dishes, gain energy, bad breath, better day, gas\n\nCorrect answer:\nbetter day\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Eating breakfast provides necessary nutrients to start the day.\n- A balanced breakfast can improve mood and energy levels, setting the tone for a better day.",
+      "expected_output": "Breakfast is important meal of the day as it gives you energy and removes your dullness.\nBreakfast can turn your day a better one.",
+      "question_values": [
+        "If you've been in a rut and busy, taking the time and eating breakfast could help you have a what?",
+        "dirty dishes",
+        "gain energy",
+        "bad breath",
+        "better day",
+        "gas",
+        "better day"
+      ],
+      "processing_time": 1.175126552581787,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you see footprints that happen due to dirt being left behind inside?\n\nAnswer choices:\nroof, ground, rug, surface of earth, floorboards\n\nCorrect answer:\nrug\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Footprints are visible on rugs due to dirt being left behind.\n- Rugs are often walked on, accumulating dirt and creating footprints.",
+      "expected_output": "Footrpints on rugs can be seen only when foot left behind the dirt on rug.\nPeple walk on rug usually.",
+      "question_values": [
+        "Where would you see footprints that happen due to dirt being left behind inside?",
+        "roof",
+        "ground",
+        "rug",
+        "surface of earth",
+        "floorboards",
+        "rug"
+      ],
+      "processing_time": 1.1378471851348877,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is garbage brought to by garbagemen?\n\nAnswer choices:\ntrashcan, landfill, television, computer, dumpster\n\nCorrect answer:\nlandfill\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Garbage is collected for disposal.\n- Landfills are designed for waste disposal.",
+      "expected_output": "A landfill is an area of land where large amounts of waste material are buried.",
+      "question_values": [
+        "Where is garbage brought to by garbagemen?",
+        "trashcan",
+        "landfill",
+        "television",
+        "computer",
+        "dumpster",
+        "landfill"
+      ],
+      "processing_time": 0.7011284828186035,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you go if you need an armchair?\n\nAnswer choices:\nfurniture store, study, livin room, grocery store, hospital\n\nCorrect answer:\nfurniture store\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- An armchair is a type of furniture.\n- Furniture stores sell various types of furniture.\n- Therefore, you would go to a furniture store to buy an armchair.",
+      "expected_output": "Armchair is a large furniture used to sit and relax.\nFurniture is sold in a furniture store.",
+      "question_values": [
+        "Where would you go if you need an armchair?",
+        "furniture store",
+        "study",
+        "livin room",
+        "grocery store",
+        "hospital",
+        "furniture store"
+      ],
+      "processing_time": 1.3557443618774414,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you find a telephone directory in public?\n\nAnswer choices:\noffice, house, phone booth, kitchen, amusement park\n\nCorrect answer:\nphone booth\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Phone booths are designed for public use.\n- They often contain a telephone directory for reference.",
+      "expected_output": "Telephone directory is kept in a phone booth\nPhone booths are present at public places.",
+      "question_values": [
+        "Where would you find a telephone directory in public?",
+        "office",
+        "house",
+        "phone booth",
+        "kitchen",
+        "amusement park",
+        "phone booth"
+      ],
+      "processing_time": 0.772834062576294,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does someone committing perjury likely to have?\n\nAnswer choices:\nmiscarriage of justice, guilt, testify, lies, truth\n\nCorrect answer:\nguilt\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Perjury involves intentionally lying under oath.\n- Lying under oath is a crime, indicating guilt.\n- Guilt is the direct result of committing perjury.",
+      "expected_output": "Someone committing perjury is likely to have guilt and regret for not being truthful in a court of law.",
+      "question_values": [
+        "What does someone committing perjury likely to have?",
+        "miscarriage of justice",
+        "guilt",
+        "testify",
+        "lies",
+        "truth",
+        "guilt"
+      ],
+      "processing_time": 1.319040060043335,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhy do you create art?\n\nAnswer choices:\ncreative, express yourself, inspires, feeling of accomplishment, have fun\n\nCorrect answer:\nexpress yourself\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Art is a form of self-expression.\n- It allows artists to communicate their thoughts, feelings, and ideas.",
+      "expected_output": "Artist create art to express themselves.",
+      "question_values": [
+        "Why do you create art?",
+        "creative",
+        "express yourself",
+        "inspires",
+        "feeling of accomplishment",
+        "have fun",
+        "express yourself"
+      ],
+      "processing_time": 0.8826510906219482,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat can be the end result of waging war?\n\nAnswer choices:\npeople dying, heartache, killing people, evil, suffering\n\nCorrect answer:\npeople dying\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- War inherently involves loss of life.\n- Casualties are an inevitable consequence of armed conflict.",
+      "expected_output": "War leads to the death.\nThe end result of waging war can be people dying.",
+      "question_values": [
+        "What can be the end result of waging war?",
+        "people dying",
+        "heartache",
+        "killing people",
+        "evil",
+        "suffering",
+        "people dying"
+      ],
+      "processing_time": 0.7732572555541992,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nBob's only light source was a small bulb.  There were four walls, if there was a door he couldn't see it.  What was Bob in?\n\nAnswer choices:\nclosed room, sky, dard, his grave, house\n\nCorrect answer:\nclosed room\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Bob could not see a door, indicating he was in an enclosed space.\n- The only light source was a small bulb, suggesting a small, confined area.",
+      "expected_output": "Closed room is a protected space enclosed by walls, floors and ceiling with the doors and windows closed.\nBob's only light source was a small bulb.  There were four walls, if there was a door, he couldn't see it. Bob was in closed room.",
+      "question_values": [
+        "Bob's only light source was a small bulb.  There were four walls, if there was a door he couldn't see it.  What was Bob in?",
+        "closed room",
+        "sky",
+        "dard",
+        "his grave",
+        "house",
+        "closed room"
+      ],
+      "processing_time": 1.2487192153930664,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat would people do if they need money badly?\n\nAnswer choices:\npart company, go swimming, criminal, commit crimes, believe in god\n\nCorrect answer:\ncommit crimes\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- People may turn to desperate measures when in dire need of money.\n- \"Commit crimes\" is a direct and unfortunate action some might take under extreme financial pressure.",
+      "expected_output": "People tend to go to extreme heights when they are desperate\nCommiting crimes is an extremity some people go to, to get money",
+      "question_values": [
+        "What would people do if they need money badly?",
+        "part company",
+        "go swimming",
+        "criminal",
+        "commit crimes",
+        "believe in god",
+        "commit crimes"
+      ],
+      "processing_time": 1.2447311878204346,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSarah was sensitive to sunlight, so she wore thick sunscreen to make herself waht?\n\nAnswer choices:\nuncaring, resistant, non sensitive, sun-resistant, stoic\n\nCorrect answer:\nresistant\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Sarah wore sunscreen to protect against sunlight.\n- Being resistant means she was able to withstand sunlight better.\n- Therefore, the correct answer is resistant.",
+      "expected_output": "Sunscreen makes people resistant to sunlight.\nSunscreen is a good resistant for the one who is sensitive to sunlight.",
+      "question_values": [
+        "Sarah was sensitive to sunlight, so she wore thick sunscreen to make herself waht?",
+        "uncaring",
+        "resistant",
+        "non sensitive",
+        "sun-resistant",
+        "stoic",
+        "resistant"
+      ],
+      "processing_time": 1.2095277309417725,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you put your change if you plan to use it soon and you are a man?\n\nAnswer choices:\nbackseat of car, purse, pocket, jar, wallet\n\nCorrect answer:\npocket\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Man typically wears pants with pockets.\n- Pockets provide easy access to change for immediate use.",
+      "expected_output": "Men have pockets\nChange can be put in the pocket\nThings can be used soon from the pocket",
+      "question_values": [
+        "Where would you put your change if you plan to use it soon and you are a man?",
+        "backseat of car",
+        "purse",
+        "pocket",
+        "jar",
+        "wallet",
+        "pocket"
+      ],
+      "processing_time": 0.7737381458282471,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA homeless person asked Jim for advice.  Jim wasn't religious, but he told the person something that he remembered.  What might he have told the person?\n\nAnswer choices:\nhospital, street corner, synagogue, fairy tale, advice\n\nCorrect answer:\nfairy tale\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Jim wasn't religious, so he wouldn't direct the person to a religious place like a synagogue.\n- The homeless person asked for advice, not a specific location like a hospital or street corner.\n- Jim remembered a fairy tale, suggesting he shared a story or advice based on one.",
+      "expected_output": "People who are not religious, often believe that all the stories about god are fairy tales\nThey tend to tell people stories about gods which they believe are fairy tales",
+      "question_values": [
+        "A homeless person asked Jim for advice.  Jim wasn't religious, but he told the person something that he remembered.  What might he have told the person?",
+        "hospital",
+        "street corner",
+        "synagogue",
+        "fairy tale",
+        "advice",
+        "fairy tale"
+      ],
+      "processing_time": 2.195611000061035,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA fertilizer is making a flower grow, what is likely to happen next?\n\nAnswer choices:\nmore of, flowering, leaves, harvesting, blooms\n\nCorrect answer:\nblooms\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Fertilizer promotes plant growth.\n- Blooming is the next stage in a flower's growth cycle.",
+      "expected_output": "Fertilizers have nutrients which are required by all parts of plant to grow.\nOnce the flower gets enough nutrients it blooms.",
+      "question_values": [
+        "A fertilizer is making a flower grow, what is likely to happen next?",
+        "more of",
+        "flowering",
+        "leaves",
+        "harvesting",
+        "blooms",
+        "blooms"
+      ],
+      "processing_time": 0.8464481830596924,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nAfter standing up I had to sit right back down, why would I feel like this?\n\nAnswer choices:\ntrain, effort, balance, feet, muscles\n\nCorrect answer:\nbalance\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Standing up requires maintaining balance.\n- Feeling unsteady or needing to sit down suggests balance issues.",
+      "expected_output": "After standing up a person had to sit right back down because they would feel like to have balance.",
+      "question_values": [
+        "After standing up I had to sit right back down, why would I feel like this?",
+        "train",
+        "effort",
+        "balance",
+        "feet",
+        "muscles",
+        "balance"
+      ],
+      "processing_time": 0.7728695869445801,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJames used the cannon to shoot at something while seeking lunch. It was overkill.  What did he shoot at?\n\nAnswer choices:\nbody armor, ungulate, bomber, kill people, animal\n\nCorrect answer:\nungulate\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- James was seeking lunch, implying he shot at an animal.\n- Ungulate refers to a hoofed mammal, fitting the context of a lunch target.",
+      "expected_output": "Ungulate is a hoofed animal\nShooting at an ungulate is an overkill",
+      "question_values": [
+        "James used the cannon to shoot at something while seeking lunch. It was overkill.  What did he shoot at?",
+        "body armor",
+        "ungulate",
+        "bomber",
+        "kill people",
+        "animal",
+        "ungulate"
+      ],
+      "processing_time": 1.2112557888031006,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn just made first violin.  This is  is a position on what?\n\nAnswer choices:\nviolin case, symphony orchestra, class, learning to play violin, music store\n\nCorrect answer:\nsymphony orchestra\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- John's position is in an orchestra.\n- First violin is a specific role in a symphony orchestra.",
+      "expected_output": "An symphony orchestra has voilin\nOne can have a position on the symphony orchestra",
+      "question_values": [
+        "John just made first violin.  This is  is a position on what?",
+        "violin case",
+        "symphony orchestra",
+        "class",
+        "learning to play violin",
+        "music store",
+        "symphony orchestra"
+      ],
+      "processing_time": 0.8467144966125488,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nwhat is another word for getting drunk?\n\nAnswer choices:\nintoxication, blazed, vomiting, hangover, being sick\n\nCorrect answer:\nintoxication\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- \"Intoxication\" refers to the state of being poisoned, often by alcohol.\n- \"Intoxication\" is a synonym for being drunk.\n- \"Intoxication\" does not specifically refer to the aftermath or symptoms of drinking, unlike \"hangover\" or \"being sick\".",
+      "expected_output": "Intoxication is a state of being affected by alcohol.\nIntoxication means losing control over body and mind.\nDrinking alcohol means getting drunk.",
+      "question_values": [
+        "what is another word for getting drunk?",
+        "intoxication",
+        "blazed",
+        "vomiting",
+        "hangover",
+        "being sick",
+        "intoxication"
+      ],
+      "processing_time": 2.228240489959717,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their what?\n\nAnswer choices:\nbook store, university, meeting, class, encyclopedia\n\nCorrect answer:\nuniversity\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- They prided themselves on being knowledgeable.\n- A university is a place known for its wealth of knowledge.\n- Therefore, many chose to attend their university.",
+      "expected_output": "University is an institution of higher education and research, which awards academic degrees in various academic disciplines.\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their university.",
+      "question_values": [
+        "They prided themselves on being a wealth of knowledge, and that's why many chose to attend their what?",
+        "book store",
+        "university",
+        "meeting",
+        "class",
+        "encyclopedia",
+        "university"
+      ],
+      "processing_time": 1.209782361984253,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe condominium has public recreational areas, what was the purpose of these?\n\nAnswer choices:\npark cars, complex, florida, washington, community\n\nCorrect answer:\ncommunity\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question specifies \"public recreational areas,\" which implies a shared space for residents.\n- \"Community\" is the only answer choice that reflects a shared space among residents in a condominium complex.\n- The other answer choices do not fit the context: \"park cars\" is too specific, \"complex\" is too broad, and \"florida\" and \"washington\" are not related to the context of a condominium's recreational areas.",
+      "expected_output": "The purpose is for members of the community to do fun activities and relax.",
+      "question_values": [
+        "The condominium has public recreational areas, what was the purpose of these?",
+        "park cars",
+        "complex",
+        "florida",
+        "washington",
+        "community",
+        "community"
+      ],
+      "processing_time": 3.392249822616577,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nGeorge couldn't move without being killed, so he put in effort to do what?\n\nAnswer choices:\nnot die, lay still, stationary, staying put, be still\n\nCorrect answer:\nbe still\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- \"Be still\" directly instructs George to remain motionless.\n- The other options imply different actions or states, not specifically remaining unmoving.",
+      "expected_output": "If john moved, he would be killed hence he had",
+      "question_values": [
+        "George couldn't move without being killed, so he put in effort to do what?",
+        "not die",
+        "lay still",
+        "stationary",
+        "staying put",
+        "be still",
+        "be still"
+      ],
+      "processing_time": 1.1367614269256592,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat type of closet are canned goods likely to be in?\n\nAnswer choices:\ncupboard, pantry, shelf, cabinet, drower\n\nCorrect answer:\npantry\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Canned goods are typically stored in a cool, dry place.\n- Pantries are designed for food storage.\n- Canned goods are often kept in the pantry for easy access and preservation.",
+      "expected_output": "Pantry is a type of closet\nCanned goods can be kept in a pantry",
+      "question_values": [
+        "What type of closet are canned goods likely to be in?",
+        "cupboard",
+        "pantry",
+        "shelf",
+        "cabinet",
+        "drower",
+        "pantry"
+      ],
+      "processing_time": 1.499272346496582,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe ball was hit over a boundary and struck an audience member.  What kind of game were they playing?\n\nAnswer choices:\nsporting event, sporting, basketball, society, ranch country\n\nCorrect answer:\nsporting event\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question mentions a ball being hit, suggesting a sport.\n- The term \"boundary\" is commonly used in sports to refer to the playing area's edge.\n- An \"audience member\" implies a spectator sport, which fits the \"sporting event\" category.",
+      "expected_output": "Audience are present in a sporting event\nA sporting event could involve a ball\nA sporting event can be any game",
+      "question_values": [
+        "The ball was hit over a boundary and struck an audience member.  What kind of game were they playing?",
+        "sporting event",
+        "sporting",
+        "basketball",
+        "society",
+        "ranch country",
+        "sporting event"
+      ],
+      "processing_time": 2.1565537452697754,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nDriving to work can be monotonous, she would play her favorite music and just what along with it?\n\nAnswer choices:\nsing, listen to radio, listen to music, speed, head bang\n\nCorrect answer:\nsing\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- She plays her favorite music.\n- She sings along with it.",
+      "expected_output": "Doing something you like makes you cheered and things interesting even though you are doing tideous thing.\nplaying music and singing your favourite song makes you cheered when driving",
+      "question_values": [
+        "Driving to work can be monotonous, she would play her favorite music and just what along with it?",
+        "sing",
+        "listen to radio",
+        "listen to music",
+        "speed",
+        "head bang",
+        "sing"
+      ],
+      "processing_time": 0.5566327571868896,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat would you be building if you designed a place for an annoying critter to stay?\n\nAnswer choices:\nspread disease, swamp, fly away, cat condo, bug campers\n\nCorrect answer:\nbug campers\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question implies creating a structure for a specific type of critter.\n- \"Bug campers\" is a playful term for a structure designed to house insects.\n- The other options do not specifically cater to insects or are not structures.",
+      "expected_output": "Bug campers can be built\nBug campers are campers that can repel annoying critters",
+      "question_values": [
+        "What would you be building if you designed a place for an annoying critter to stay?",
+        "spread disease",
+        "swamp",
+        "fly away",
+        "cat condo",
+        "bug campers",
+        "bug campers"
+      ],
+      "processing_time": 1.793900966644287,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nBoredom and hunger led to a wandering waste of time and a cart full of unhealthy snacks during her trip to where?\n\nAnswer choices:\nnew moon, play cards, read book, see art, grocery shop\n\nCorrect answer:\ngrocery shop\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- She went to the grocery shop to buy unhealthy snacks.\n- The other options do not involve acquiring food.",
+      "expected_output": "People go grocery shopping when they are bored\nGrocery shopping leads to waste of time\nUnhealthy snacks are eaten on the way to the grocery shop\nGrocery shop is a store",
+      "question_values": [
+        "Boredom and hunger led to a wandering waste of time and a cart full of unhealthy snacks during her trip to where?",
+        "new moon",
+        "play cards",
+        "read book",
+        "see art",
+        "grocery shop",
+        "grocery shop"
+      ],
+      "processing_time": 0.8475680351257324,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSome idiots die of dehydration because they spend too much time playing games.  Where might someone play games so much?\n\nAnswer choices:\nbar, sporting event, hockey game, baseball field, internet cafe\n\nCorrect answer:\ninternet cafe\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Internet cafes provide access to computers and the internet.\n- This allows users to play games for extended periods.",
+      "expected_output": "Some are engrossed so much in playing games that they forget to drink water timely. This may result into dehydration.\nInternet caf\u00e9 is such a place where someone might play so much.",
+      "question_values": [
+        "Some idiots die of dehydration because they spend too much time playing games.  Where might someone play games so much?",
+        "bar",
+        "sporting event",
+        "hockey game",
+        "baseball field",
+        "internet cafe",
+        "internet cafe"
+      ],
+      "processing_time": 0.8837475776672363,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe lady had her specialized looking glasses and gown ready for the evening, she sent her butler to the ticket office of the what?\n\nAnswer choices:\ntrain station, end of line, arena, hero show, opera house\n\nCorrect answer:\nopera house\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question mentions a gown and specialized glasses, suggesting a formal event.\n- Opera houses are known for hosting formal events, such as operas and ballets.\n- The other options (train station, end of line, arena, hero show) do not fit the context of a formal event.",
+      "expected_output": "By having her specialized looking glasses and gown ready for the evening, lady sent her butler to the ticket office of opera house.",
+      "question_values": [
+        "The lady had her specialized looking glasses and gown ready for the evening, she sent her butler to the ticket office of the what?",
+        "train station",
+        "end of line",
+        "arena",
+        "hero show",
+        "opera house",
+        "opera house"
+      ],
+      "processing_time": 2.1936891078948975,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nTo learn must have the right book, to work efficiently what must one have?\n\nAnswer choices:\nimprove yourself, become knowledgeable, have tools, persistence, have more knowledge\n\nCorrect answer:\nhave tools\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Efficient work often requires specific equipment or software.\n- Having the right tools can enhance productivity and accuracy.",
+      "expected_output": "Have tools means to have any instrument or simple piece of equipment that you hold in your hands and use to do a particular kind of work.\nTo learn must have the right book, to work efficiently one must have tools.",
+      "question_values": [
+        "To learn must have the right book, to work efficiently what must one have?",
+        "improve yourself",
+        "become knowledgeable",
+        "have tools",
+        "persistence",
+        "have more knowledge",
+        "have tools"
+      ],
+      "processing_time": 0.8471250534057617,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere are humans kept in large amounts in small spaces?\n\nAnswer choices:\nsolar system, school, prison, apartment building, bus\n\nCorrect answer:\napartment building\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- Humans live in apartment buildings.\n- Apartment buildings house many people in small spaces.",
+      "expected_output": "Apartment buildings are a block of apartments.\nApartment buildings are highly populated because of more number of apartments.",
+      "question_values": [
+        "Where are humans kept in large amounts in small spaces?",
+        "solar system",
+        "school",
+        "prison",
+        "apartment building",
+        "bus",
+        "apartment building"
+      ],
+      "processing_time": 0.7009189128875732,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nHe had a hard time finding the room on his schedule, it was on the second floor and he got lost in the very large what?\n\nAnswer choices:\nschool, office building, house, hotel, centre\n\nCorrect answer:\nschool\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- The question mentions a \"schedule,\" suggesting an educational context.\n- A school is typically a large building with multiple floors.\n- The phrase \"very large\" fits the description of a school better than other options.",
+      "expected_output": "Classrooms are there in a school.\nRoom on schedule is found in a large school.",
+      "question_values": [
+        "He had a hard time finding the room on his schedule, it was on the second floor and he got lost in the very large what?",
+        "school",
+        "office building",
+        "house",
+        "hotel",
+        "centre",
+        "school"
+      ],
+      "processing_time": 1.6099822521209717,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe man and the woman chipped the wood for their garden and then did what to it?\n\nAnswer choices:\nwarp, sanded, composted, petrify, feel rough\n\nCorrect answer:\ncomposted\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+      "response": "- They were preparing the wood for their garden.\n- Composting is a process that breaks down organic material.\n- This makes it suitable for use in a garden.",
+      "expected_output": "The man and the woman chipped the wood for their garden and then composted it.",
+      "question_values": [
+        "The man and the woman chipped the wood for their garden and then did what to it?",
+        "warp",
+        "sanded",
+        "composted",
+        "petrify",
+        "feel rough",
+        "composted"
+      ],
+      "processing_time": 1.2460646629333496,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "Death means end of life which is very scary\nOne can get back from consussion but not from death",
+    "States are a part of USA\nRepublic have states",
+    "Army is an organised military force equipped for fighting on land.\nJames wasn't much of a leader, because he had nothing to lead. And a leader without something to lead, no matter how skilled, is useless. James need army.",
+    "Musicals is a type of play.\nPeople sing songs in musical play.",
+    "A natural starting fire from lighting is a disaster.\nThe governor declared the lighting raged on for the second week from natural starting fire to be the biggest disaster he had seen.",
+    "Practice is required in every big game.\nIf they had a theory of practice than only they would over and over practice.",
+    "Letter is to be written on a paper.\nYou need to have paper to write a letter.",
+    "Breakfast is important as it give energy for the day.",
+    "Grocery stores have nowadays stopped giving plastic bags\nPlastic shopping bags were most common to find at a grocery store",
+    "Excitement is a strong feeling of happiness.\nDoing what one likes makes one happy.",
+    "Desk drawer is a slidable storage place under a table.\nTable is a furniture.\nOffice generally has furniture.",
+    "The storm was coming from caribbean.\nJohn was forced to delay his trip to caribbean as meteorologist said that a storm was coming.",
+    "Packed items are been kept in a suitcase.\nHe packed his toothpaste and brush in a small bag for keeping them into a suitcase and then stuffed them with his clothes.",
+    "Grocery store is a retail shop that primarily sells food, either fresh or preserved.\nThe crab was being shipped to be eaten, he was heading to grocery store.",
+    "A divorce happens after a husband and wife decide they no longer want to be married.\nSpouse is person in a marriage relationship.\nThere will be no spouse after a divorce.",
+    "Winter season always means cold weather\nPeople usually feel cold during cold weather",
+    "Feeling of guilt means a feeling of worry or unhappiness that you have because you have done something wrong, such as causing harm to another person.\nIf you started killing people for no reason, you are likely to lack feelings of guilt.",
+    "Bank account is personal account of a person\nBank account can have money",
+    "A trash can is typically found in corner of the city.",
+    "You would get a washcloth at Walmart.\nWalmart is a place where you can go and buy a washcloth.",
+    "Engine is one of the most prefferd mode of transportation\nEngines have rods in them as they are heavily made of metals",
+    "Money is a current medium of exchange in the form of coins and banknotes. Money is anything that people use to buy goods and services.\nShe was a human in America who wanted to live well and she need money for the situation.",
+    "Advantageous means favourable.\nLuck means fortunate.\nFortunate moments change bad moves into advantageous positions.",
+    "Ranch is a large farm, where cattle or other animals are bred.\nWe would be most likely to see a cow in a ranch.",
+    "Hand is the end of an arm of the body.\nArm is a body part.",
+    "All animals drink water to hydrate themselves.\nWater is a fluid.",
+    "library contains a lots of books having texts written in it.\nSomeone finds a huge amount of texts in a library.",
+    "Transporting means to take or carry people or goods from one place to another by means of a vehicle, aircraft, or ship.\nThe process of going somewhere means people going from one place to another by means of a vehicle, aircraft, or ship.",
+    "Distress is extreme anxiety, sorrow or pain.\nNegative emotions or feelings can learning cause is Distress.",
+    "Suburb is an outlying district of a city.\nHouses in the outlying district has more space than the houses in the city.\nHaving more space around a house means one can have a back yard.",
+    "Realization is an act of becoming fully aware of something as a fact.\nWe become fully aware of something as a fact when we get new information.",
+    "Kooky means strange or eccentric.\nNormal means confirming to a standard, usual, typical or expected.\nAll the kooky kids enjoyed each other's company, to them their behaviour was perfectly normal.",
+    "Countryside has ponds\nCountryside does not have many people living there\nPonds in countryside have no one near them as people do not live there",
+    "Perosn shop the food when he need the food.\nShopping is the activity that person do to get food.",
+    "A boxer can achieve victory with help of a reaching advantage.",
+    "Being complimentary and making trivial physical contact are signs of flirting\nPeople flirt with someone when they intend to get laid with that someone",
+    "Productive means producing or able to produce large amounts of goods, crops or other commodities.\nThe man in the white suit was very lazy. He did nothing useful. Meanwhile, the man in the blue had put in effort and was very productive.",
+    "Ferret legging is game where contestants take live ferrets and shove them down their trouser.\nFerret crawl up trouser leg in ferret legging.",
+    "Supermarket has cashiers\nWorkers in a supermarket spend most of their time standing up\nWorkers of a supermarket do not get any rest\nSupermarket is a building",
+    "Reception desk is there at a hotel\nPerson telling that he is having a reservation means it is reservation of a room of hotel.",
+    "You can see snakes in a terrarium.\nTerrarium is at a public zoological park.",
+    "Nightclub is an entertainment venue which is open throughout the night.\nEntertainment venues generally have bars.",
+    "A philosophy is radical.\nSomeone's belief in philosophy is extreme radical and not slight.",
+    "Lizards find their food by their own\nLizards who are kept captive are fed by its people",
+    "Few species of animals make hole in ground.\nSome animals live under the ground. They make hole unto the ground to live in it.",
+    "Cats run away from animal control\nCats can decide to run away\nRunning away refers to going far away",
+    "People feel betrayed and disrespected when they are stood up on a date\nFeeling bitterness at having been treated unfairly means feeling resentful",
+    "Only the best which means highest quality player would come on top in the board game.",
+    "The U.S. federal government houses in the capitol building.\nThe capitol building is located in washington d.c.",
+    "Jogging is the exercise of running at a steady and gentle pace.\nOne might feel pride after achieving goals of exercise to keep fit.\nPride is a positive feeling.",
+    "Market is a place where various things are sold.\nFood is sold in a market.\nPeople buy what they want from market.",
+    "Synagogue is a place of worship\nJews pray in a Synagogue",
+    "Trouble means difficulty or problems.\nA corrupt government causes difficulties and problems to it's people.",
+    "Gardners are said to be experts in growing plants\nPeople who have a knack for growing plants well are said to have a green thumb",
+    "Seaweeds are there in ocean",
+    "A substation has several cables\nSubstation is a place\nSubstation regulates power",
+    "A rotor can be powered by a jet engine.\nJet engine has electric motor fitted in whih helps to power up the rotor.",
+    "Supermarket have variety of food for sale so people can get food from supermarket.",
+    "Dishwasher is a machine for washing dishes automatically.\nYou will have to clean up a dishwasher after a party.",
+    "An incharge is asked for placement of flowers.\nServant may be the incharge at the wedding.",
+    "Winning is the aim of compititive people as they always aim at winning\nWin can be a goal of playing for many",
+    "Casino is a large building which has bar and gambling games.\nBar sells beer.",
+    "Our house is our personal property.\nA personal washing machine is likely to be found in a house.",
+    "In universe, the world is known to be a part of it.",
+    "The weasel look for it in backyards while it was sifting through garbage.",
+    "You will feel relax by remembering memoreies.\nIf you sit back and think about nice memories you will be able to feel relax.",
+    "University is a type of college.\nScience is learnt at university.",
+    "Winch is made of a strong steel cable.\nYou want strong steel cable in your winch if you're going to be off road driving.",
+    "Breakfast is important meal of the day as it gives you energy and removes your dullness.\nBreakfast can turn your day a better one.",
+    "Footrpints on rugs can be seen only when foot left behind the dirt on rug.\nPeple walk on rug usually.",
+    "A landfill is an area of land where large amounts of waste material are buried.",
+    "Armchair is a large furniture used to sit and relax.\nFurniture is sold in a furniture store.",
+    "Telephone directory is kept in a phone booth\nPhone booths are present at public places.",
+    "Someone committing perjury is likely to have guilt and regret for not being truthful in a court of law.",
+    "Artist create art to express themselves.",
+    "War leads to the death.\nThe end result of waging war can be people dying.",
+    "Closed room is a protected space enclosed by walls, floors and ceiling with the doors and windows closed.\nBob's only light source was a small bulb.  There were four walls, if there was a door, he couldn't see it. Bob was in closed room.",
+    "People tend to go to extreme heights when they are desperate\nCommiting crimes is an extremity some people go to, to get money",
+    "Sunscreen makes people resistant to sunlight.\nSunscreen is a good resistant for the one who is sensitive to sunlight.",
+    "Men have pockets\nChange can be put in the pocket\nThings can be used soon from the pocket",
+    "People who are not religious, often believe that all the stories about god are fairy tales\nThey tend to tell people stories about gods which they believe are fairy tales",
+    "Fertilizers have nutrients which are required by all parts of plant to grow.\nOnce the flower gets enough nutrients it blooms.",
+    "After standing up a person had to sit right back down because they would feel like to have balance.",
+    "Ungulate is a hoofed animal\nShooting at an ungulate is an overkill",
+    "An symphony orchestra has voilin\nOne can have a position on the symphony orchestra",
+    "Intoxication is a state of being affected by alcohol.\nIntoxication means losing control over body and mind.\nDrinking alcohol means getting drunk.",
+    "University is an institution of higher education and research, which awards academic degrees in various academic disciplines.\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their university.",
+    "The purpose is for members of the community to do fun activities and relax.",
+    "If john moved, he would be killed hence he had",
+    "Pantry is a type of closet\nCanned goods can be kept in a pantry",
+    "Audience are present in a sporting event\nA sporting event could involve a ball\nA sporting event can be any game",
+    "Doing something you like makes you cheered and things interesting even though you are doing tideous thing.\nplaying music and singing your favourite song makes you cheered when driving",
+    "Bug campers can be built\nBug campers are campers that can repel annoying critters",
+    "People go grocery shopping when they are bored\nGrocery shopping leads to waste of time\nUnhealthy snacks are eaten on the way to the grocery shop\nGrocery shop is a store",
+    "Some are engrossed so much in playing games that they forget to drink water timely. This may result into dehydration.\nInternet caf\u00e9 is such a place where someone might play so much.",
+    "By having her specialized looking glasses and gown ready for the evening, lady sent her butler to the ticket office of opera house.",
+    "Have tools means to have any instrument or simple piece of equipment that you hold in your hands and use to do a particular kind of work.\nTo learn must have the right book, to work efficiently one must have tools.",
+    "Apartment buildings are a block of apartments.\nApartment buildings are highly populated because of more number of apartments.",
+    "Classrooms are there in a school.\nRoom on schedule is found in a large school.",
+    "The man and the woman chipped the wood for their garden and then composted it."
+  ],
+  "processing_stats": {
+    "total_time": 115.86975860595703,
+    "avg_time": 1.1586975860595703,
+    "min_time": 0.5186779499053955,
+    "max_time": 3.392249822616577,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

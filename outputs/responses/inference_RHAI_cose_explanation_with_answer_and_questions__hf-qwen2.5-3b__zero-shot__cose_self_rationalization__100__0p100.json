@@ -1,0 +1,1483 @@
+{
+  "experiment_name": "RHAI_cose_explanation_with_answer_and_questions__hf-qwen2.5-3b__zero-shot__cose_self_rationalization__100__0p100",
+  "experiment_config": {
+    "model": "hf-qwen2.5-3b",
+    "setup": "RHAI_cose_explanation_with_answer_and_questions",
+    "prompt": "cose_self_rationalization",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-23T21:02:03.970722",
+  "dataset_info": {
+    "name": "RHAI_cose_explanation_with_answer_and_questions",
+    "original_size": 115,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 115,
+    "sampled_size": 100,
+    "columns": [
+      "id",
+      "type",
+      "question",
+      "choices",
+      "answer",
+      "orig_explanation",
+      "our_explanation"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 115,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "Qwen/Qwen2.5-3B-Instruct",
+    "description": "Qwen2.5 3B parameter instruction-tuned model - Small",
+    "parameters": "3B",
+    "size_category": "small",
+    "max_tokens": 512,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "context_length": "128k",
+    "generation_config": {
+      "temperature": 0.7,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "RHAI_cose_explanation_with_answer_and_questions",
+    "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}\n\nAnswer:\n{}\n\nProvide a short explanation on why this answer is correct.",
+    "description": "QA-style prompt following paper's best QASIMPLE format"
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThat person next to me is always on her cell phone.\n\nOptions:\n['feel important', 'know what time', 'talk about themselves', 'issues', 'own house']\n\nAnswer:\ntalk about themselves\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"talk about themselves.\" This is because the sentence \"That person next to me is always on her cell phone\" implies that the person is using their phone to communicate or engage in activities that involve talking, such as sending messages, making calls, or browsing social media. Among the given options, \"talk about themselves\" best fits this context, as it suggests that the person is likely using their phone to communicate or share information about themselves.\n\nThe other options do not fit as well with the given sentence:\n- \"feel important\" and \"issues\" are not directly related to the action of using a cell phone.\n- \"know what time\" could be a reason to use a cell phone, but it's not the most specific or direct reason.\n- \"own house\" is unrelated to the context of using a cell phone.",
+      "expected_output": "When someone talks on the phone, they may discuss various topics with their conversation partner, e.g., themselves, and what's going on in their lives.",
+      "question_values": [
+        "That person next to me is always on her cell phone.",
+        "['feel important', 'know what time', 'talk about themselves', 'issues', 'own house']",
+        "talk about themselves"
+      ],
+      "processing_time": 4.839091062545776,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere can someone get a flute?\n\nOptions:\n['orchestra', 'steal it', 'marching band', 'symphony', 'musical instrument store']\n\nAnswer:\nmusical instrument store\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"musical instrument store\" because it is the most appropriate and legal place to purchase a flute. Musical instrument stores are dedicated to selling musical instruments, including flutes, and they have the necessary expertise to help customers choose the right instrument and accessories. While flutes can sometimes be found in orchestras, marching bands, or symphonies, these are not places to purchase the instrument. Stealing a flute is illegal and unethical. Therefore, a musical instrument store is the most suitable and responsible option for obtaining a flute.",
+      "expected_output": "A flute is a musical instrument, and it's therefore plausable that one could buy one at a musical instrument store.",
+      "question_values": [
+        "Where can someone get a flute?",
+        "['orchestra', 'steal it', 'marching band', 'symphony', 'musical instrument store']",
+        "musical instrument store"
+      ],
+      "processing_time": 3.0646159648895264,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere might informational pamphlets be found?\n\nOptions:\n['health department', 'library', 'bookstore', 'drawer', 'mail box']\n\nAnswer:\nlibrary\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'library' because libraries are typically places where informational pamphlets are commonly found. Libraries often have a variety of informational pamphlets and brochures on different topics, such as health, science, technology, and more. They are made available to patrons to educate and inform them about various subjects. While pamphlets can be found in other places like health departments, bookstores, and mailboxes, libraries are the most consistent and reliable source for informational pamphlets.",
+      "expected_output": "Informational pamphlets can contain lots of types of information, e.g., about medical information, local attractions, advertisements, etc.; various types of these pamphlets could be available at a library.",
+      "question_values": [
+        "Where might informational pamphlets be found?",
+        "['health department', 'library', 'bookstore', 'drawer', 'mail box']",
+        "library"
+      ],
+      "processing_time": 2.7041420936584473,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat might a teacher do most during a week?\n\nOptions:\n['demonstrate', 'eat lunch', 'time test', 'work in school', 'school children']\n\nAnswer:\nwork in school\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"work in school\" because a teacher's primary role is to be present and engaged in their educational institution. During a typical week, a teacher spends most of their time in school, preparing lessons, teaching classes, grading assignments, and interacting with students and colleagues. While teachers do perform other activities like demonstrating lessons, eating lunch, and working with students, \"work in school\" encompasses the majority of their responsibilities and is the most accurate description of what they do most during a week.",
+      "expected_output": "Teachers are usually employed at schools, and most people work during weekdays.",
+      "question_values": [
+        "What might a teacher do most during a week?",
+        "['demonstrate', 'eat lunch', 'time test', 'work in school', 'school children']",
+        "work in school"
+      ],
+      "processing_time": 2.886279344558716,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhen a person is looking at an altar, where might they be standing?\n\nOptions:\n['at a cross', 'sanctuary', 'church services', 'ceremony', 'temple']\n\nAnswer:\ntemple\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"temple\" because an altar is typically found in a temple, which is a place of worship for certain religions, such as Hinduism, Buddhism, and some forms of Christianity. The other options like \"at a cross,\" \"sanctuary,\" \"church services,\" and \"ceremony\" are more specific to certain religious contexts and may not always include an altar. \"Temple\" is the most general term that can encompass the presence of an altar.",
+      "expected_output": "An altar is likely to be located at a temple, and so if a person was standing next to an alter, they could likely be in a temple.",
+      "question_values": [
+        "When a person is looking at an altar, where might they be standing?",
+        "['at a cross', 'sanctuary', 'church services', 'ceremony', 'temple']",
+        "temple"
+      ],
+      "processing_time": 2.732605218887329,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat do people do sometimes when they find a good deal?\n\nOptions:\n['race cars', 'believe in god', 'fight each other', 'fear death', 'murder each other']\n\nAnswer:\nfight each other\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer \"fight each other\" is not the most appropriate response to the question \"What do people do sometimes when they find a good deal?\" based on common human behavior and societal norms. \n\nWhen people find a good deal, they are typically excited about the opportunity to purchase something at a lower price than usual. This excitement often leads to positive behaviors such as buying more, sharing the good news, or engaging in friendly competition. \n\n\"Fighting each other\" is not a typical or desirable behavior in such situations. While there can be some competitive behavior, it is usually more about the excitement of the deal rather than aggressive or violent actions. \n\nThe other options provided do not fit the context of finding a good deal:\n- \"Race cars\" is unrelated to the context of a good deal.\n- \"Believe in god\" is a personal belief and not a response to finding a good deal.\n- \"Fear death\" is not relevant to the context of a good deal.\n- \"Murder each other\" is an extreme and violent action that is not a common response to finding a good deal.\n\nTherefore, \"fight each other\" is the least appropriate answer among the given options.",
+      "expected_output": "Malls sometimes have sales, e.g., on black friday, when they offer good deals; however, the items are sometimes in limited supply, which can cause altercations between folks, each trying to buy the same item.",
+      "question_values": [
+        "What do people do sometimes when they find a good deal?",
+        "['race cars', 'believe in god', 'fight each other', 'fear death', 'murder each other']",
+        "fight each other"
+      ],
+      "processing_time": 6.670855760574341,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere would you find a telephone directory in public?\n\nOptions:\n['office', 'house', 'phone booth', 'kitchen', 'amusement park']\n\nAnswer:\nphone booth\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'phone booth' because phone booths are typically found in public places, such as streets, parks, and other open areas. They are designed for people to use a telephone, and often, these booths contain a telephone directory for the convenience of the users. While telephone directories can be found in offices, houses, and kitchens, they are not as commonly found in public spaces like phone booths. Amusement parks might have phone booths, but they are less likely to contain a telephone directory compared to a standard public phone booth.",
+      "expected_output": "Telephone directories can be found in phone booths because people often want to look up numbers before making calls; phone booths are accessible to the public.",
+      "question_values": [
+        "Where would you find a telephone directory in public?",
+        "['office', 'house', 'phone booth', 'kitchen', 'amusement park']",
+        "phone booth"
+      ],
+      "processing_time": 3.0574913024902344,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nTwo people were hanging around the quick stop.  They were getting hungry.    What might have they been doing?\n\nOptions:\n['eat eggs', 'smoke pot', 'believe in god', 'make tools', 'writing']\n\nAnswer:\nsmoke pot\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"smoke pot\" because the phrase \"quick stop\" is often associated with convenience stores or gas stations, which typically sell tobacco products and are known for their convenience. Among the given options, \"smoke pot\" (presumably referring to smoking marijuana) is the most likely activity that could be associated with hanging around a convenience store while feeling hungry.\n\nThe other options are less plausible in this context:\n- \"Eat eggs\" is a common activity but not typically associated with hanging around a convenience store.\n- \"Believe in god\" is a personal belief and not an activity that can be inferred from the given context.\n- \"Make tools\" is unrelated to the context of hanging around a convenience store.\n- \"Writing\" is also unrelated to the context and does not align with the scenario of two people getting hungry and hanging around a convenience store.\n\nTherefore, \"smoke pot\" is the most appropriate answer based on the given context.",
+      "expected_output": "Smoking cannabis frequently causes people to feel hungry, and it wouldn't be uncommon to see people smoking outside of a convinence store like the quick stop.",
+      "question_values": [
+        "Two people were hanging around the quick stop.  They were getting hungry.    What might have they been doing?",
+        "['eat eggs', 'smoke pot', 'believe in god', 'make tools', 'writing']",
+        "smoke pot"
+      ],
+      "processing_time": 5.429191827774048,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat could you do inside but not outside if you have boredom?\n\nOptions:\n['skateboard', 'hang out at bar', 'laugh', 'go skiing', 'watch film']\n\nAnswer:\nhang out at bar\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"hang out at bar\" because it is an activity that can be done inside a building, such as a bar or a pub, and it is a common way to alleviate boredom. The other options are either activities that are typically done outside (like skiing) or actions that are not activities (like laughing).\n\n\"Skateboarding\" and \"go skiing\" are both outdoor activities that cannot be done inside. \"Laugh\" is an action, not an activity, and while it can help alleviate boredom, it's not a specific activity that can be done inside. \"Hang out at a bar\" is a common indoor activity that people do to relax and socialize, which can help combat boredom.",
+      "expected_output": "Most  bars that serve alcohol are inside of buildings, and so, usually, hanging out at a bar is an activity that could only be done inside. Exceptions to the \"bars are inside\" rule include: rooftop bars, and oceanside bars on beaches.",
+      "question_values": [
+        "What could you do inside but not outside if you have boredom?",
+        "['skateboard', 'hang out at bar', 'laugh', 'go skiing', 'watch film']",
+        "hang out at bar"
+      ],
+      "processing_time": 4.058945655822754,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe person was cold and wet, where should he go?\n\nOptions:\n['building', 'back home', 'hospital', 'demonstration', 'bus stop']\n\nAnswer:\nbuilding\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'building' because a building provides shelter from the cold and wet weather. It offers protection from the elements, making it the most suitable place for someone who is both cold and wet. The other options are less appropriate: 'back home' is a general statement that doesn't specify a shelter, 'hospital' is for medical care, 'demonstration' is an event, and 'bus stop' is a place to wait for a bus, not a place to stay dry and warm. Therefore, a building is the most logical and immediate choice for someone in need of shelter from the cold and wet conditions.",
+      "expected_output": "An indoor space (with heaters, blankets, and warm showers) is likely to be warmer than this outdoor one, where the person became cold and wet.",
+      "question_values": [
+        "The person was cold and wet, where should he go?",
+        "['building', 'back home', 'hospital', 'demonstration', 'bus stop']",
+        "building"
+      ],
+      "processing_time": 3.5935604572296143,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nIn a predicament an animal might choose flight or what?\n\nOptions:\n['leave home', 'hunt for food', 'smell prey', 'feel pain', 'fight for life']\n\nAnswer:\nfight for life\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'fight for life'. In a predicament, an animal might choose to fight for life if it feels threatened and cannot escape. This is a common survival instinct, especially for prey animals that cannot outrun their predators. The other options do not fit the context of a predicament or survival instinct:\n\n- 'Leave home' is not directly related to a predicament or survival instinct.\n- 'Hunt for food' is not typically a response to a predicament but rather an action taken when food is available.\n- 'Smell prey' is an action that might occur during hunting, but it doesn't describe the choice an animal makes in a predicament.\n- 'Feel pain' is a sensation that might occur during a predicament, but it is not a choice an animal makes.\n\nTherefore, 'fight for life' is the most appropriate answer as it represents the action an animal might take to defend itself in a threatening situation.",
+      "expected_output": "The expression \"flight or fight\" comes from animal behavior when faced with a threat. To fight for one's life means to face the threat head-on.",
+      "question_values": [
+        "In a predicament an animal might choose flight or what?",
+        "['leave home', 'hunt for food', 'smell prey', 'feel pain', 'fight for life']",
+        "fight for life"
+      ],
+      "processing_time": 5.4072489738464355,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat is something not optional, that I have to do?\n\nOptions:\n['obligatory', 'mandatory', 'required', 'selective', 'compulsory']\n\nAnswer:\nobligatory\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"obligatory\" because it best fits the context of something that is not optional and that one has to do. \n\n\"Obligatory\" means something that is required or expected, and it aligns perfectly with the idea of something that is mandatory or compulsory. All the other options (mandatory, required, selective, and compulsory) are essentially synonymous with \"obligatory\" in this context. However, \"obligatory\" is the most commonly used term in everyday language to describe something that is not optional and that one must do.\n\nSo, \"obligatory\" is the best choice among the given options for describing something that is not optional and that one has to do.",
+      "expected_output": "If you are oblidged to do something, you might have made a professional, personal, or legal promise to do it, which, by definition, makes it not optional.",
+      "question_values": [
+        "What is something not optional, that I have to do?",
+        "['obligatory', 'mandatory', 'required', 'selective', 'compulsory']",
+        "obligatory"
+      ],
+      "processing_time": 4.066396474838257,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA battleship is a powerful vessel.  If you need something similar but faster, what would you use?\n\nOptions:\n['yatch', 'corvette', 'aircraft carrier', 'destroyer', 'patrol boat']\n\nAnswer:\ncorvette\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is a corvette. \n\nA corvette is a type of naval vessel that is designed to be faster and more maneuverable than a battleship, while still being a formidable combatant. It is typically larger than a patrol boat but smaller than a destroyer or aircraft carrier. Corvettes are known for their speed, agility, and versatility, making them suitable for a variety of roles including anti-submarine warfare, anti-surface warfare, and escort duties. They are often used by navies as a cost-effective alternative to larger vessels, offering a balance between speed and combat capability. In contrast, a battleship is known for its size, firepower, and armor, but is not as fast or maneuverable as a corvette.",
+      "expected_output": "Corvettes are very fast cars. Because cars are more lightweight than battleships, they are faster.",
+      "question_values": [
+        "A battleship is a powerful vessel.  If you need something similar but faster, what would you use?",
+        "['yatch', 'corvette', 'aircraft carrier', 'destroyer', 'patrol boat']",
+        "corvette"
+      ],
+      "processing_time": 4.266217231750488,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nIf you didn't find any plants on another planet, where might you look to find some?\n\nOptions:\n['surface of earth', 'park', 'greenhouse', 'windowsill', 'ice burg']\n\nAnswer:\nsurface of earth\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'surface of earth'. \n\nThis is because the Earth is the only planet in our solar system where we have direct evidence of life, including plants. While it's possible that plants could exist on other planets, we have not yet found any definitive evidence of life or plants on any other planet. The surface of the Earth is the most likely place to find plants, as it is the only planet we know of that supports life as we know it. \n\nThe other options are not as plausible:\n- 'Park' is a specific location on Earth, not a place to look for plants on another planet.\n- 'Greenhouse' is a controlled environment on Earth, not a place to look for plants on another planet.\n- 'Windowsill' is a specific location on Earth, not a place to look for plants on another planet.\n- 'Ice burg' is a floating piece of ice, not a place to look for plants.\n\nTherefore, the surface of the Earth is the most logical place to look for plants if we were to find them on another planet.",
+      "expected_output": "If plants were to exist on a planet, they would be on the surface.",
+      "question_values": [
+        "If you didn't find any plants on another planet, where might you look to find some?",
+        "['surface of earth', 'park', 'greenhouse', 'windowsill', 'ice burg']",
+        "surface of earth"
+      ],
+      "processing_time": 6.1430888175964355,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJohn runs a small corner shop.   If you were walking on a sidewalk near it, where would you look for it?\n\nOptions:\n['england', 'street corner', 'minnesota', 'arizona', 'iowa']\n\nAnswer:\nstreet corner\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'street corner' because John runs a small corner shop, which implies that the shop is located at the corner of a street. This is a common and logical location for a small corner shop, as it would be easily identifiable and accessible to pedestrians walking on the sidewalk near it. The other options (England, Minnesota, Arizona, and Iowa) are countries or states, which are too broad and not specific to the location of a corner shop.",
+      "expected_output": "Corner shops often are run out of buildings on street corners.",
+      "question_values": [
+        "John runs a small corner shop.   If you were walking on a sidewalk near it, where would you look for it?",
+        "['england', 'street corner', 'minnesota', 'arizona', 'iowa']",
+        "street corner"
+      ],
+      "processing_time": 2.645793914794922,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat is someone not legal to buy alcohol?\n\nOptions:\n['underage', 'banned', 'adult', 'rules', 'black market']\n\nAnswer:\nunderage\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"underage\" because in most jurisdictions, individuals who are under the legal drinking age are not legally allowed to purchase or consume alcohol. The other options do not fit the context of the question:\n\n- \"Banned\" is too vague and doesn't specify a legal age.\n- \"Adult\" is the opposite of what the question is asking; adults are typically allowed to buy alcohol.\n- \"Rules\" is too broad and doesn't specify a particular age group.\n- \"Black market\" refers to illegal sales and is not a legal status for purchasing alcohol.\n\nTherefore, \"underage\" is the most appropriate answer as it directly addresses the legality of purchasing alcohol.",
+      "expected_output": "21 is the legal age to buy alcohol in the US",
+      "question_values": [
+        "What is someone not legal to buy alcohol?",
+        "['underage', 'banned', 'adult', 'rules', 'black market']",
+        "underage"
+      ],
+      "processing_time": 3.846281051635742,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere can someone view a county highway as a line?\n\nOptions:\n['from the sky', 'map', 'cross counties by car', 'country', 'michigan']\n\nAnswer:\nmap\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"map.\" \n\nA map is a visual representation of an area, typically showing roads, highways, and other geographical features. When someone views a county highway as a line on a map, they are seeing the highway's path represented in a two-dimensional format, which allows for an overview of the highway's layout and its relation to other geographical features. \n\nWhile it's possible to view a county highway as a line from the sky, this is not a common or practical method for most people. \"Cross counties by car\" is not a location, and \"country\" and \"Michigan\" are too specific and do not accurately describe where one would view a county highway as a line. A map is the most appropriate and accessible option for viewing a county highway as a line.",
+      "expected_output": "The only context in which an entire county road could be represented meaningfully as a single line would be on a map, e.g., a map of roads in the county, or a GPS application on a smartphone.",
+      "question_values": [
+        "Where can someone view a county highway as a line?",
+        "['from the sky', 'map', 'cross counties by car', 'country', 'michigan']",
+        "map"
+      ],
+      "processing_time": 4.531566381454468,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA car was going from Florida to Ohio, what was it doing?\n\nOptions:\n['roll over', 'head north', 'flying', 'speed up', 'heading north']\n\nAnswer:\nheading north\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'heading north' because the question states that the car was traveling from Florida to Ohio. Ohio is located north of Florida, so the car was moving in a northerly direction. The other options do not fit the context of the question:\n\n- 'roll over' is an action that a car cannot perform while in motion.\n- 'head north' is similar to 'heading north' but is less precise in this context.\n- 'flying' is not possible for a car, as cars are not designed to fly.\n-'speed up' is an action that could occur during the journey, but it doesn't describe the direction of travel.\n\nTherefore, 'heading north' is the most accurate and appropriate answer to describe the car's direction of travel from Florida to Ohio.",
+      "expected_output": "Florida is to the south of Ohio, and you need to drive north to go from Florida to Ohio.",
+      "question_values": [
+        "A car was going from Florida to Ohio, what was it doing?",
+        "['roll over', 'head north', 'flying', 'speed up', 'heading north']",
+        "heading north"
+      ],
+      "processing_time": 4.515840530395508,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nHe ordered his men to go forth and drive the enemy which way?\n\nOptions:\n['straightforth', 'back and', 'reverse', 'forward', 'backwards']\n\nAnswer:\nbackwards\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"backwards.\" \n\nThe phrase \"drive the enemy backwards\" is a common military term that means to push the enemy away from your position, forcing them to retreat. The word \"backwards\" fits best in this context because it indicates the enemy is being forced to retreat or move in the opposite direction. \n\nThe other options don't fit as well:\n- \"Straightforth\" and \"forward\" both mean moving in the same direction, which doesn't align with the idea of forcing the enemy to retreat.\n- \"Reverse\" can be used in some contexts, but it's less commonly used in this specific military context compared to \"backwards.\"\n- \"Back and\" is grammatically incorrect and doesn't convey the intended meaning.\n\nTherefore, \"backwards\" is the most appropriate and accurate answer to the question.",
+      "expected_output": "When one drives away the enemy, the goal is to keep them from advancing forward and claiming more land, instead sending them back the way they came.",
+      "question_values": [
+        "He ordered his men to go forth and drive the enemy which way?",
+        "['straightforth', 'back and', 'reverse', 'forward', 'backwards']",
+        "backwards"
+      ],
+      "processing_time": 4.73016357421875,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe electricity went out, and people couldn't see during worship, where were they?\n\nOptions:\n['concert', 'garden', 'bedroom', 'church', 'opera']\n\nAnswer:\nchurch\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The answer \"church\" is correct because churches are typically places of worship where people gather to pray, often in the presence of religious artifacts and decorations. In a church, there is usually a primary source of light, such as a chandelier or a large window, which would be affected by an electricity outage. Without electricity, the church would be dark, making it impossible for people to see during worship. The other options like concert, garden, bedroom, and opera are not typically places where people gather for religious worship and are less likely to be affected by a sudden loss of electricity in the same way.",
+      "expected_output": "People worship at churches, synagoges, mosques, and shrines; so, if the power went out at one of these locations, the lights might go off, which would make it difficult to read scriptures, or pray.",
+      "question_values": [
+        "The electricity went out, and people couldn't see during worship, where were they?",
+        "['concert', 'garden', 'bedroom', 'church', 'opera']",
+        "church"
+      ],
+      "processing_time": 3.4059884548187256,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere might you use a forklift to stack boxes onto shelves?\n\nOptions:\n['loading dock', 'construction site', 'supermarket', 'construction yard', 'warehouse']\n\nAnswer:\nwarehouse\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'warehouse'. A warehouse is a large building or facility used for storing goods, and forklifts are commonly used in warehouses to move and stack boxes onto shelves efficiently. The other options, such as loading docks, construction sites, supermarkets, and construction yards, are not primarily designed for storing and stacking large quantities of goods in the same manner as a warehouse. Therefore, a forklift would be most commonly used to stack boxes onto shelves in a warehouse setting.",
+      "expected_output": "A warehouse is generally used to store goods, which can be heavy and be stacked on high shelves. Forklifts can assist humans at lifting heavy objects, especially to high places.",
+      "question_values": [
+        "Where might you use a forklift to stack boxes onto shelves?",
+        "['loading dock', 'construction site', 'supermarket', 'construction yard', 'warehouse']",
+        "warehouse"
+      ],
+      "processing_time": 2.7611613273620605,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat happens when snow on a mountain becomes heavy?\n\nOptions:\n['build really neat fort', 'avalanches', 'shovelling', 'eat cake', 'blizzard']\n\nAnswer:\navalanches\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"avalanches\" because when snow on a mountain becomes heavy, it can cause the snowpack to become unstable. If the weight of the snow exceeds the strength of the snowpack, it can lead to an avalanche, which is a rapid downhill movement of a large mass of snow and ice down a mountain slope. Avalanches can be dangerous and destructive, often causing significant damage to the environment and posing a risk to people and wildlife in the area. The other options do not accurately describe what happens when heavy snow accumulates on a mountain.",
+      "expected_output": "An avalanche occurs when pieces of ice or snow go rolling down the side of a mountain in great force. This can be caused by snow becoming heavy, because gravity will pull the snow downward.",
+      "question_values": [
+        "What happens when snow on a mountain becomes heavy?",
+        "['build really neat fort', 'avalanches', 'shovelling', 'eat cake', 'blizzard']",
+        "avalanches"
+      ],
+      "processing_time": 3.1520538330078125,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe buffalo was hunted until it was scare, but after much effort and many years they are now what again?\n\nOptions:\n['available', 'endangered', 'plentiful', 'common', 'abundant']\n\nAnswer:\nabundant\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"abundant.\" This answer is correct because the question implies a situation where the buffalo population was severely reduced due to hunting, making them scarce or endangered. However, after a significant period of conservation efforts, the buffalo population has grown back to a point where they are plentiful and easily available. \"Abundant\" best describes a situation where there is a large number of something available, which aligns with the idea that the buffalo population has recovered to a point where they are easily accessible and plentiful again.",
+      "expected_output": "Animal populations get depleted via hunting by humans for sport, however conservationist efforts over multiple years can reverse this process to ensure that the populations are restored.",
+      "question_values": [
+        "The buffalo was hunted until it was scare, but after much effort and many years they are now what again?",
+        "['available', 'endangered', 'plentiful', 'common', 'abundant']",
+        "abundant"
+      ],
+      "processing_time": 2.978692054748535,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere can a human find body coverings?\n\nOptions:\n['phone booth', 'clothing store', 'workplace', 'swimming pool', 'closets']\n\nAnswer:\nclothing store\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'clothing store' because clothing stores are specifically designed to sell garments and other body coverings that humans can use to cover their bodies. Phone booths, workplaces, swimming pools, and closets are not primarily places where one would go to purchase body coverings. While one might find clothing in a phone booth, workplace, or swimming pool, these are not places where one would go to acquire new body coverings. Closets are places where one stores clothing, not where one buys it. Therefore, a clothing store is the most appropriate place for a human to find body coverings.",
+      "expected_output": "Human bodies are usually covered using clothes, which can be found for sale at clothing stores.",
+      "question_values": [
+        "Where can a human find body coverings?",
+        "['phone booth', 'clothing store', 'workplace', 'swimming pool', 'closets']",
+        "clothing store"
+      ],
+      "processing_time": 3.4649412631988525,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere would I go to see a musician playing a snare drum in a theater?\n\nOptions:\n['drum kit', 'piano', 'high school band', 'marching band', 'orchestra']\n\nAnswer:\norchestra\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'orchestra' because an orchestra typically features a wide variety of instruments, including percussion instruments like the snare drum. In a theater setting, an orchestra would be the most likely place to see a musician playing a snare drum. The other options are either too specific (like a drum kit or piano, which are usually played by one person) or not typically found in a theater setting (like a high school band or a marching band, which are usually outdoor or in a stadium setting).",
+      "expected_output": "Snare drums are instruments that can be played by members of orchestras, and if an orchestra was performing, it might be inside a theatre. So, a musician in an orchestra might be playing a snare drum in a theatre.",
+      "question_values": [
+        "Where would I go to see a musician playing a snare drum in a theater?",
+        "['drum kit', 'piano', 'high school band', 'marching band', 'orchestra']",
+        "orchestra"
+      ],
+      "processing_time": 2.997527837753296,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat is the payment collected on a toll road designed to do to the condition of roads?\n\nOptions:\n['good repair', 'new jersey', 'eastern united states', 'connecticut', 'potholes']\n\nAnswer:\ngood repair\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"good repair.\" A toll road is typically designed to maintain and improve the condition of the roads it serves. The payment collected from tolls is used to fund the upkeep, maintenance, and sometimes even the improvement of the road infrastructure. This ensures that the roads remain in good repair, safe for drivers, and capable of handling the traffic volume. The other options like \"new jersey,\" \"eastern united states,\" \"connecticut,\" and \"potholes\" do not accurately describe the primary purpose of toll road payments.",
+      "expected_output": "Payments are collected to improve the condition of the toll roads. This is done through road repairs.",
+      "question_values": [
+        "What is the payment collected on a toll road designed to do to the condition of roads?",
+        "['good repair', 'new jersey', 'eastern united states', 'connecticut', 'potholes']",
+        "good repair"
+      ],
+      "processing_time": 3.1302804946899414,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nShe was a human in America who wanted to live well, what was a given for her situation?\n\nOptions:\n['think critically', 'need money', 'say hello', 'think critically', 'drink tea']\n\nAnswer:\nneed money\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"need money\" because in the context of living well in America, financial stability is often a fundamental requirement. To live well, one typically needs resources such as money to afford basic necessities, healthcare, education, and other amenities. While \"think critically\" is also a valuable skill, it is not a given necessity for living well. \"Say hello\" is an action, not a necessity. \"Think critically\" is mentioned twice in the options, but it is not the most appropriate answer in this context. \"Drink tea\" is a personal preference and not a necessity for living well. Therefore, \"need money\" is the most fitting answer as it directly addresses a basic requirement for a comfortable and well-lived life.",
+      "expected_output": "One needs money to be able to live well in America. ",
+      "question_values": [
+        "She was a human in America who wanted to live well, what was a given for her situation?",
+        "['think critically', 'need money', 'say hello', 'think critically', 'drink tea']",
+        "need money"
+      ],
+      "processing_time": 4.200152635574341,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere does someone obtain a frying pan?\n\nOptions:\n['department store', 'homes', 'stove', 'kitchen cupboard', 'kitchen cabinet']\n\nAnswer:\ndepartment store\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'department store' because a frying pan is typically a household item that is commonly sold in stores that specialize in selling a wide range of products, including kitchenware. Department stores are retail establishments that offer a variety of goods, including kitchen items, which makes them a logical place to purchase a frying pan. \n\nThe other options are less suitable:\n- 'homes' is where frying pans are kept, not where they are obtained.\n-'stove' is where you use a frying pan, not where you get one.\n- 'kitchen cupboard' or 'kitchen cabinet' are where you store a frying pan, not where you obtain one.\n- 'kitchen store' is similar to a department store but more specialized, and it's still a place where you would obtain a frying pan.\n\nTherefore, 'department store' is the most appropriate answer for where someone would go to obtain a frying pan.",
+      "expected_output": "Department stores usually sell kitchen equipments, and a frying pan is a kitchen equipment.",
+      "question_values": [
+        "Where does someone obtain a frying pan?",
+        "['department store', 'homes', 'stove', 'kitchen cupboard', 'kitchen cabinet']",
+        "department store"
+      ],
+      "processing_time": 5.376753807067871,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat sort of hall do you have a large meeting in?\n\nOptions:\n['church', 'conference', 'dormitory', 'large building', 'library']\n\nAnswer:\nconference\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'conference' because a conference hall is specifically designed to accommodate large meetings, presentations, and other gatherings. It is typically equipped with the necessary facilities such as audio-visual equipment, seating for a large number of attendees, and often has a layout that facilitates networking and interaction among participants. While other options like 'church' and 'large building' might also host meetings, they are not specifically designed for large-scale meetings. 'Dormitory' and 'library' are not typically used for large meetings. Therefore, 'conference' is the most appropriate and commonly used term for a hall designed for hosting large meetings.",
+      "expected_output": "Large meetings are often called conferences, and conferences can take place in conference halls, conference rooms, etc.",
+      "question_values": [
+        "What sort of hall do you have a large meeting in?",
+        "['church', 'conference', 'dormitory', 'large building', 'library']",
+        "conference"
+      ],
+      "processing_time": 3.669097900390625,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere does water in the sky come from?\n\nOptions:\n['space', 'rain cloud', 'surface of earth', 'wishing well', 'lake or river']\n\nAnswer:\nrain cloud\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'rain cloud'. Rain clouds are formed when water vapor in the atmosphere condenses into liquid water droplets. This process typically occurs when warm, moist air rises and cools, causing the water vapor to change into liquid water. As more water vapor condenses, the cloud grows and eventually releases this water as precipitation, which we see as rain. While water can come from other sources like lakes or rivers, the water in the sky that we see as clouds and rain originates from the surface of the Earth through evaporation and condensation processes.",
+      "expected_output": "Water in the sky falls from rain clouds, where moisture in the air is collected.",
+      "question_values": [
+        "Where does water in the sky come from?",
+        "['space', 'rain cloud', 'surface of earth', 'wishing well', 'lake or river']",
+        "rain cloud"
+      ],
+      "processing_time": 3.2117364406585693,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere can someone get well water?\n\nOptions:\n['oil field', 'field', 'countryside', 'kansas', 'ground']\n\nAnswer:\nground\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'ground' because well water is typically obtained from wells that are dug or drilled into the ground to access underground aquifers. These aquifers are layers of permeable rock or soil that contain groundwater. The other options like 'oil field', 'field', 'countryside', and 'kansas' are not specific enough or do not accurately describe the source of well water.",
+      "expected_output": "Well water is a type of water extracted from a deep hole in the ground, i.e., a well. Thus, well water ultimately comes from the grond.",
+      "question_values": [
+        "Where can someone get well water?",
+        "['oil field', 'field', 'countryside', 'kansas', 'ground']",
+        "ground"
+      ],
+      "processing_time": 2.2577993869781494,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA bad person places little value on being honest, acting without pretense or being what?\n\nOptions:\n['excellent', 'upright', 'premium', 'competent', 'sincere']\n\nAnswer:\nsincere\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'sincere'. A bad person typically places little value on being honest, acting without pretense, and being sincere. Sincerity means being genuine and truthful, which a bad person would likely disregard. The other options do not fit the context as well:\n\n- 'Excellent' means of the highest quality or standard.\n- 'Upright' means behaving in a way that is morally correct and honest.\n- 'Premium' refers to something of high quality or value.\n- 'Competent' means having the necessary skills or abilities to do a job well.\n\nTherefore,'sincere' is the most appropriate answer as it directly contrasts with the behavior of a bad person who does not value honesty or genuineness.",
+      "expected_output": "Being honest is synonymous with being sincere.",
+      "question_values": [
+        "A bad person places little value on being honest, acting without pretense or being what?",
+        "['excellent', 'upright', 'premium', 'competent', 'sincere']",
+        "sincere"
+      ],
+      "processing_time": 4.239758729934692,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJohn put something on the night table.  But he forgot about it in the morning because it was unfamiliar. Where was he?\n\nOptions:\n['in jail', 'homes', 'hotel', 'furniture store', 'hallway']\n\nAnswer:\nhotel\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The answer \"hotel\" is correct because the scenario described suggests a situation that is most likely to occur in a hotel setting. In a hotel, guests often place unfamiliar items on nightstands without realizing it, as they are not familiar with the layout of the room. This could include toiletries, books, or other items that are not typically part of the guest's personal belongings. The unfamiliarity of the item and the forgetfulness about it in the morning are common experiences for hotel guests. \n\nThe other options do not fit as well with the scenario:\n- \"in jail\" is too specific and unlikely for a general scenario.\n- \"homes\" is too broad and could include any type of residence.\n- \"furniture store\" is not a place where one would typically sleep or leave items.\n- \"hallway\" is not a place where one would typically leave items or sleep.\n\nTherefore, the hotel setting best fits the described scenario.",
+      "expected_output": "Hotels are places where people sleep for a few nights when they are travelling, and so it's often the case that hotel guests would be unfamiliar with their room. Given that travellers are unfamiliar with the location, losing items, for example in a night stand, might be more common.",
+      "question_values": [
+        "John put something on the night table.  But he forgot about it in the morning because it was unfamiliar. Where was he?",
+        "['in jail', 'homes', 'hotel', 'furniture store', 'hallway']",
+        "hotel"
+      ],
+      "processing_time": 5.303289175033569,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat do people feel in the winter?\n\nOptions:\n['use money', 'sick', 'pay bills', 'feel cold', 'become old']\n\nAnswer:\nfeel cold\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"feel cold\" because in the winter, people typically experience a drop in temperature, which leads to a sensation of coldness. This is a common and relatable experience for most people during the colder months. The other options do not accurately describe a typical winter experience:\n\n- \"use money\" and \"pay bills\" are actions that occur year-round and are not specific to winter.\n- \"sick\" can happen at any time of the year, and while colds and flu are more common in winter, not everyone feels sick in winter.\n- \"become old\" is a natural process that happens over time and is not directly related to the season of winter.\n\nTherefore, \"feel cold\" is the most appropriate answer to the question \"What do people feel in the winter?\".",
+      "expected_output": "Winter is a very cold part of the year in many places, and winter weather might make people feel cold.",
+      "question_values": [
+        "What do people feel in the winter?",
+        "['use money', 'sick', 'pay bills', 'feel cold', 'become old']",
+        "feel cold"
+      ],
+      "processing_time": 4.62050986289978,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJohn asked for a tissue holder because he had a cold.  Where might he be?\n\nOptions:\n['car', 'resturant', 'convenient spot', 'airplane', \"dotor's office\"]\n\nAnswer:\nairplane\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"airplane\" because airplane cabins are often equipped with amenities like tissues and tissue holders for passengers who may be sick. This is a common expectation for comfort and hygiene during flights. While tissue holders might be found in other places like restaurants or convenience stores, the context of needing one due to a cold strongly suggests an airplane setting.",
+      "expected_output": "An airplane is a place with very close contact with other passengers, and it is where you might transmit germs to others, when you have a cold. John might need a tissue from the tissue holder to blow his nose for his cold to prevent transmitting germs.",
+      "question_values": [
+        "John asked for a tissue holder because he had a cold.  Where might he be?",
+        "['car', 'resturant', 'convenient spot', 'airplane', \"dotor's office\"]",
+        "airplane"
+      ],
+      "processing_time": 2.0279996395111084,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nEven if was clean and chlorinated, shallow water wouldn't make for much summer fun in your backyard what?\n\nOptions:\n['lake', 'childrens pools', 'pond', 'swimming pool', 'puddle']\n\nAnswer:\nswimming pool\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'swimming pool'. This is because swimming pools are typically designed for swimming and are often cleaned and chlorinated to ensure safety and cleanliness. However, shallow water in a backyard swimming pool, especially if it's not deep enough for swimming, would not provide much enjoyment for someone wanting to swim in the summer. \n\nIn contrast, a lake, pond, or puddle might be shallow, but they are natural bodies of water that can still offer fun activities like wading, splashing, or even small swimming for children. Backyard swimming pools, on the other hand, are man-made and designed for swimming, making shallow water less suitable for the type of summer fun a swimming pool is meant to provide.",
+      "expected_output": "If a pool is too shallow, it might be difficult to swim in it; a common example of a shallow pool is a kiddie pool, which may be fun for children but not for adults.",
+      "question_values": [
+        "Even if was clean and chlorinated, shallow water wouldn't make for much summer fun in your backyard what?",
+        "['lake', 'childrens pools', 'pond', 'swimming pool', 'puddle']",
+        "swimming pool"
+      ],
+      "processing_time": 4.1052141189575195,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA bald eagle flies over St. Paul, where is it?\n\nOptions:\n['texas', 'thermal', 'minnesota', 'canada', 'photograph']\n\nAnswer:\nminnesota\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"minnesota\" because St. Paul is the capital city of the state of Minnesota in the United States. Bald eagles are known to fly over various locations in Minnesota, including its lakes and rivers where they can be found nesting and hunting. Therefore, when a question asks where a bald eagle flies over St. Paul, the most logical and correct answer is Minnesota, as St. Paul is located within the state of Minnesota.",
+      "expected_output": "st.paul is a city in minnesota",
+      "question_values": [
+        "A bald eagle flies over St. Paul, where is it?",
+        "['texas', 'thermal', 'minnesota', 'canada', 'photograph']",
+        "minnesota"
+      ],
+      "processing_time": 2.6061151027679443,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere can you find people trying to alleviate suffering?\n\nOptions:\n['hospital', 'hockey game', 'apartment', 'kitchen', 'water cooler']\n\nAnswer:\nhospital\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'hospital' because hospitals are specifically designed and staffed to provide medical care and alleviate suffering for patients who are ill, injured, or in need of medical attention. The other options do not typically serve this purpose:\n\n- A hockey game is a recreational or competitive sporting event where people gather to watch or play hockey.\n- An apartment is a residential building or a single unit within a building, typically used for living.\n- A kitchen is a room or area in a house or building where food is prepared and cooked.\n- A water cooler is a device used to provide cold water to people, often found in offices or other workplaces.\n\nTherefore, among the given options, a hospital is the most appropriate place to find people actively trying to alleviate suffering through medical care and treatment.",
+      "expected_output": "Sick and injured people are often suffering because of medical problems. To solve these problems, they might see a doctor at a hospital.",
+      "question_values": [
+        "Where can you find people trying to alleviate suffering?",
+        "['hospital', 'hockey game', 'apartment', 'kitchen', 'water cooler']",
+        "hospital"
+      ],
+      "processing_time": 4.525559186935425,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat lawn is most likely to be on a street?\n\nOptions:\n['green yard', 'suburbia', 'golf course', 'front yard', 'michigan']\n\nAnswer:\nfront yard\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'front yard' because front yards are typically found on the street side of a property, directly facing the road. They are common in residential areas and are often the first thing visitors or passersby see when approaching a house. \n\nIn contrast, 'green yard' is too broad and could refer to any lawn, not necessarily on a street. 'Suburbia' is a general term for residential areas, not a specific type of lawn. 'Golf course' is a large, maintained lawn typically found in a specific location, not on a street. 'Michigan' is a state in the United States and not a type of lawn. \n\nTherefore, 'front yard' is the most specific and correct answer for a lawn that is most likely to be on a street.",
+      "expected_output": "Front yards face the street, and usually have lawns.",
+      "question_values": [
+        "What lawn is most likely to be on a street?",
+        "['green yard', 'suburbia', 'golf course', 'front yard', 'michigan']",
+        "front yard"
+      ],
+      "processing_time": 4.5622498989105225,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJames constructed a playroom for his children.   His place was small, so he put it in an unattached what?\n\nOptions:\n['preschool', 'indoor games', 'nursery school', 'building', 'big house']\n\nAnswer:\nbuilding\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'building'. This is because the question states that James' place (likely referring to his house) was small, and he constructed a playroom for his children. Given that his house was small, it wouldn't make sense to place the playroom inside the main house. Instead, he would put it in an unattached structure, such as a building, which could be a detached garage, a shed, or a separate structure that is not part of the main house. Therefore, 'building' is the most appropriate option from the given choices.",
+      "expected_output": "James' house wasn't large enough for him to subdivide an existing room to serve as a playroom. To have enough room, he had to construct the playroom in a different, unattached building, like a garage.",
+      "question_values": [
+        "James constructed a playroom for his children.   His place was small, so he put it in an unattached what?",
+        "['preschool', 'indoor games', 'nursery school', 'building', 'big house']",
+        "building"
+      ],
+      "processing_time": 3.214308500289917,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n\"There are 10 apples on an apple tree.  Three fall off.  Now there are X apples.\"  What is this an example of?\n\nOptions:\n['park', 'coloring book', 'garden center', 'math problem', 'gravity']\n\nAnswer:\nmath problem\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The answer \"math problem\" is correct because the question describes a scenario that involves basic arithmetic operations (specifically subtraction) and is purely a mathematical problem. The question asks how many apples are left on the tree after some fall off, which is a straightforward mathematical calculation.\n\nLet's break it down:\n- Initially, there are 10 apples on the tree.\n- 3 apples fall off the tree.\n- To find out how many apples are left, we subtract: 10 - 3 = 7 apples.\n\nThis type of question is typically used in math problems to test basic arithmetic skills and understanding of subtraction. The other options like \"park,\" \"coloring book,\" \"garden center,\" and \"gravity\" do not fit the context of the question, as they are not directly related to the mathematical operation described. Gravity is a scientific concept, but the question is specifically about the number of apples, which is a mathematical concept.",
+      "expected_output": "A math problem is usually posed as a question that requires some operation such as subtraction or addition to answer.",
+      "question_values": [
+        "\"There are 10 apples on an apple tree.  Three fall off.  Now there are X apples.\"  What is this an example of?",
+        "['park', 'coloring book', 'garden center', 'math problem', 'gravity']",
+        "math problem"
+      ],
+      "processing_time": 5.336039066314697,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA person notices popcorn, cotton candy on the grass, where is he likely?\n\nOptions:\n['soccer game', 'fairgrounds', 'movie theatre', 'countryside', 'state park']\n\nAnswer:\nfairgrounds\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The answer \"fairgrounds\" is correct because fairgrounds are known for their variety of food stalls, including popcorn and cotton candy vendors. These items are often set up on the grassy areas surrounding the fairgrounds to attract visitors and provide a sensory experience. While these items can be found in other places like movie theatres or state parks, the combination of popcorn and cotton candy on the grass is most commonly associated with fairgrounds.",
+      "expected_output": "Popcorn and cotton candy is frequently sold at fairs, and people accidentally leave them behind on the ground as they are distracted by the fair. Fairs are held in large open spaces where the ground is grassy.",
+      "question_values": [
+        "A person notices popcorn, cotton candy on the grass, where is he likely?",
+        "['soccer game', 'fairgrounds', 'movie theatre', 'countryside', 'state park']",
+        "fairgrounds"
+      ],
+      "processing_time": 2.4283876419067383,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA shark is stuck in a lake, where does it need to go provided it isn't a bull shark?\n\nOptions:\n['medium', 'saltwater', 'sea world', 'atlantic ocean', 'seawater']\n\nAnswer:\nsaltwater\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'saltwater' because sharks are typically found in saltwater environments like oceans, seas, and some large lakes. Bull sharks are the only species of shark that can survive in freshwater, but the question specifies that the shark is not a bull shark. Therefore, a shark stuck in a lake would need to go to a saltwater environment to survive.",
+      "expected_output": "most lakes are fresh water, sharks normally live in saltwater.",
+      "question_values": [
+        "A shark is stuck in a lake, where does it need to go provided it isn't a bull shark?",
+        "['medium', 'saltwater', 'sea world', 'atlantic ocean', 'seawater']",
+        "saltwater"
+      ],
+      "processing_time": 2.087019681930542,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJames had trouble learning the French language because he never had any what to it?\n\nOptions:\n['attempt', 'exposure', 'study', 'effort', 'thought']\n\nAnswer:\nexposure\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'exposure'. \n\nJames had trouble learning the French language because he never had any exposure to it. Exposure refers to the amount of time and opportunity one has to be in contact with or experience something. In the context of learning a language, exposure means being regularly exposed to the language through listening, reading, speaking, and writing. Without exposure, it would be difficult for James to learn French effectively. The other options do not fit the context as well:\n\n- 'Attempt' means trying to do something, but it doesn't explain why he had trouble learning.\n- 'Study' is a part of learning, but it doesn't address the lack of exposure.\n- 'Effort' is a general term for putting in work, but it doesn't explain why he had trouble learning.\n- 'Thought' is a mental process, but it doesn't explain why he had trouble learning.\n\nTherefore, 'exposure' is the most appropriate answer as it directly addresses the reason for James's difficulty in learning French.",
+      "expected_output": "Inexperience with a language comes from lack of exposure to it, e.g., through a class or from living in a contry where the language is widely spoken. So, it might be difficult to learn French without being exposed to it (by studying, or living in a French-speaking country).",
+      "question_values": [
+        "James had trouble learning the French language because he never had any what to it?",
+        "['attempt', 'exposure', 'study', 'effort', 'thought']",
+        "exposure"
+      ],
+      "processing_time": 5.797035455703735,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere does litter end up when it's tossed from a car?\n\nOptions:\n['roadsides', 'street corner', 'not in the garbage', 'park', 'ground']\n\nAnswer:\nroadsides\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"roadsides.\" When people toss litter from their car, it often ends up on the roadside. Cars are frequently parked on or near roadsides, and the act of tossing litter out the window is most likely to result in the litter landing on the roadside rather than in the street, on a street corner, in the garbage, in a park, or on the ground.",
+      "expected_output": "If one was to toss garbage from a moving car, because the car is likely to be driving along a road, the trash would likely end up a few feet away on the road side.",
+      "question_values": [
+        "Where does litter end up when it's tossed from a car?",
+        "['roadsides', 'street corner', 'not in the garbage', 'park', 'ground']",
+        "roadsides"
+      ],
+      "processing_time": 2.228158950805664,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nAfter being stuck indoors all day breathing fresh air would lead to what?\n\nOptions:\n['feeling better', 'oxygen intake', 'think more clearly', 'happiness', 'feeling refreshed']\n\nAnswer:\nfeeling refreshed\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"feeling refreshed.\" After being stuck indoors all day, breathing fresh air would lead to a significant improvement in one's physical and mental state. Fresh air typically contains more oxygen and fewer pollutants compared to indoor air, which can make one feel more invigorated and energized. This feeling of invigoration and renewed energy is often referred to as feeling refreshed. The other options, while potentially true, do not capture the immediate and direct effect of fresh air as well as \"feeling refreshed\" does.",
+      "expected_output": "Being stuck indoors all day, e.g., at an office, tends to make people feel stuffy. This stuffy feeling can be reduced by going outside for refreshing, fresh air.",
+      "question_values": [
+        "After being stuck indoors all day breathing fresh air would lead to what?",
+        "['feeling better', 'oxygen intake', 'think more clearly', 'happiness', 'feeling refreshed']",
+        "feeling refreshed"
+      ],
+      "processing_time": 2.9774391651153564,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nLuke was a human. Like most humans, he learned from his parents.  He was mortal, but he could preserve himself by doing what?\n\nOptions:\n['ocean', 'write', 'smile', 'die', 'think critically']\n\nAnswer:\nwrite\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'write'. \n\nThis answer is correct because the question mentions that Luke was mortal but could preserve himself. Among the given options, 'write' is the only action that could potentially preserve Luke's legacy or knowledge, allowing his influence to continue beyond his physical life. Writing can be seen as a form of immortality in a way, as it allows ideas, thoughts, and experiences to be preserved and shared with others long after the writer's death. The other options ('ocean','smile', 'die', 'think critically') do not directly relate to preserving oneself in the context of the question.",
+      "expected_output": "People often consider writings to be a way to preserve one's history. People can live on in the memories of future people reading the words they wrote.",
+      "question_values": [
+        "Luke was a human. Like most humans, he learned from his parents.  He was mortal, but he could preserve himself by doing what?",
+        "['ocean', 'write', 'smile', 'die', 'think critically']",
+        "write"
+      ],
+      "processing_time": 3.5418992042541504,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nAfter being shipwrecked, Robinson relied on the huge tree to do what?\n\nOptions:\n['falling down', 'provide shelter', 'bud', 'produce fruit', 'back yard']\n\nAnswer:\nprovide shelter\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"provide shelter.\" After being shipwrecked on a deserted island, Robinson Crusoe would need a place to protect himself from the elements, wild animals, and other dangers. A huge tree could provide shelter by acting as a natural roof and walls, offering protection from the sun, rain, and wind. The other options do not make sense in the context of Robinson's situation.",
+      "expected_output": "If one was stranded on a desert island after a boat crash, one of the things that you would probably seek out is shelter; things like trees and caves could provide cover from the rain.",
+      "question_values": [
+        "After being shipwrecked, Robinson relied on the huge tree to do what?",
+        "['falling down', 'provide shelter', 'bud', 'produce fruit', 'back yard']",
+        "provide shelter"
+      ],
+      "processing_time": 2.2892305850982666,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhen remembering a tragedy in the past, what do many people feel?\n\nOptions:\n['depression', 'pain', 'nostalgia', 'knowing', 'knowledge']\n\nAnswer:\ndepression\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'depression'. When people recall a tragic event from the past, they often experience feelings of sadness, sorrow, and a sense of loss, which are characteristic of depression. Recalling such events can trigger intense emotional responses, including feelings of sadness, hopelessness, and despair, which are hallmarks of depression. While 'pain' and 'nostalgia' are also common emotional responses to past tragedies, they are not as specific or universally applicable as 'depression' in this context. 'Knowing' and 'knowledge' do not accurately describe emotional responses to past events.",
+      "expected_output": "Remebering a past tradedy can resurface feelings that arose in response to that tragedy. Because tradgedies are not positive events, it's possible that sadness and depression could arise from remembering it.",
+      "question_values": [
+        "When remembering a tragedy in the past, what do many people feel?",
+        "['depression', 'pain', 'nostalgia', 'knowing', 'knowledge']",
+        "depression"
+      ],
+      "processing_time": 3.4369099140167236,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA boss may like an employee's ambition, so the employee may get put what?\n\nOptions:\n['in charge of project', 'conquer opponent', 'go to school', 'begin work', 'webisode']\n\nAnswer:\nin charge of project\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"in charge of project.\" This answer is correct because ambition often correlates with a desire to take on more responsibility and lead projects. When a boss likes an employee's ambition, they might see this as a positive trait and assign them to more significant or challenging projects, where they can demonstrate their capabilities and leadership. \n\nLet's examine why the other options are incorrect:\n- \"Conquer opponent\" is not a typical outcome of a boss liking an employee's ambition. Ambition generally refers to personal or professional growth rather than conflict or competition.\n- \"Go to school\" is unrelated to ambition and does not logically follow from a boss liking an employee's ambition.\n- \"Begin work\" is too vague and doesn't align with the context of ambition and leadership.\n- \"Webisode\" is not a relevant term in the context of workplace scenarios and does not fit the question.\n\nTherefore, \"in charge of project\" is the most logical and appropriate answer given the context of ambition and leadership.",
+      "expected_output": "Ambitious employees are likely to work hard and take leadership roles in a project, and this initiative is typically recognized by their bosses and rewarded by letting them be in charge of projects.",
+      "question_values": [
+        "A boss may like an employee's ambition, so the employee may get put what?",
+        "['in charge of project', 'conquer opponent', 'go to school', 'begin work', 'webisode']",
+        "in charge of project"
+      ],
+      "processing_time": 5.808021068572998,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat happens if lovers want to show affection?\n\nOptions:\n['kiss each other', 'show disgust of each other', 'argue', 'part ways', 'break up']\n\nAnswer:\nkiss each other\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"kiss each other\" because kissing is a common and widely recognized form of affection and expression of love between lovers. It is a physical gesture that conveys warmth, intimacy, and a desire to be close to the other person. While the other options like \"show disgust of each other,\" \"argue,\" \"part ways,\" and \"break up\" might also occur in relationships, they are not typical or positive expressions of affection. Therefore, \"kiss each other\" is the most appropriate and correct answer to the question \"What happens if lovers want to show affection?\"",
+      "expected_output": "Kissing is a sign of showing affection, commonly used among lovers.",
+      "question_values": [
+        "What happens if lovers want to show affection?",
+        "['kiss each other', 'show disgust of each other', 'argue', 'part ways', 'break up']",
+        "kiss each other"
+      ],
+      "processing_time": 3.3713486194610596,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe dairy cow farm was special, it provided all the milk for the big chocolate company from where?\n\nOptions:\n['ranch', 'tennessee', 'barnyard', 'switzerland', 'antarctica']\n\nAnswer:\nswitzerland\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is Switzerland because Switzerland is known for its high-quality dairy products and is famous for its Alpine dairy farming. Many Swiss dairy farms are renowned for producing milk that is used in various high-end chocolate products. The other options like \"ranch,\" \"tennessee,\" \"barnyard,\" and \"antarctica\" do not have the same association with providing milk for large chocolate companies. Therefore, Switzerland is the most logical and correct answer among the given options.",
+      "expected_output": "Switzerland is a country known for its high-quality chocolate production; it's likely that high-quality Swiss chocolate could be made from special dairy farms in Switzerland.",
+      "question_values": [
+        "The dairy cow farm was special, it provided all the milk for the big chocolate company from where?",
+        "['ranch', 'tennessee', 'barnyard', 'switzerland', 'antarctica']",
+        "switzerland"
+      ],
+      "processing_time": 2.6779603958129883,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nHow can someone listen to vinyl?\n\nOptions:\n['record store', 'car', 'omlinr', 'wallpaper', 'record albums']\n\nAnswer:\nrecord albums\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"record albums\" because vinyl records are physical objects that contain grooves etched into them, which are then played using a turntable and a needle. Record albums are the actual vinyl discs that contain the music. \n\nWhile record stores and car stereos can play vinyl records, and wallpaper is not a listening device, \"record albums\" is the most accurate term for the physical medium that contains the music. \"Omlinr\" is not a valid option and appears to be a typo or incorrect entry.",
+      "expected_output": "Record albums are also called vinyls. One must own a record album in order to listen to vinyl.",
+      "question_values": [
+        "How can someone listen to vinyl?",
+        "['record store', 'car', 'omlinr', 'wallpaper', 'record albums']",
+        "record albums"
+      ],
+      "processing_time": 2.9649155139923096,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere do people gather to see large men in pads play a game where they run and smash in to each other?\n\nOptions:\n['surface of earth', 'car show', 'football stadium', 'gym', 'opera']\n\nAnswer:\nfootball stadium\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'football stadium'. This is because football, or soccer as it's known in many parts of the world, is a sport where players run and collide with each other on a large field. Football stadiums are specifically designed for this purpose, with large open spaces and specific areas for players to run and engage in the game. The other options do not fit the description of where people gather to see large men in pads (suits of armor or protective gear) running and colliding with each other.",
+      "expected_output": "Football, a game often played at football stadiums, is a contact-heavy sport that requires the players (who are usually large men) to wear significant protective padding.",
+      "question_values": [
+        "Where do people gather to see large men in pads play a game where they run and smash in to each other?",
+        "['surface of earth', 'car show', 'football stadium', 'gym', 'opera']",
+        "football stadium"
+      ],
+      "processing_time": 2.910536050796509,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe ladies at the salon had plenty of curiosity, anytime someone came in they wanted to what?\n\nOptions:\n['examine thing', 'go to market', 'attend school', 'hear news', 'bad news']\n\nAnswer:\nhear news\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"hear news.\" This is because the question implies that the ladies at the salon were eager to learn about new information or events as soon as someone entered. \"Hear news\" best captures this curiosity and eagerness to be informed. The other options do not fit the context as well:\n\n- \"Examine thing\" is too vague and doesn't align with the idea of wanting to learn about new information.\n- \"Go to market\" and \"attend school\" are unrelated to the context of a salon and the ladies' curiosity.\n- \"Bad news\" is not necessarily what they wanted to hear; it could be either positive or negative news that they were curious about.\n\nTherefore, \"hear news\" is the most appropriate answer to describe their curiosity.",
+      "expected_output": "Curiosity is satisfied with information, and news provides information, and a newcomer usually carries with them some news.",
+      "question_values": [
+        "The ladies at the salon had plenty of curiosity, anytime someone came in they wanted to what?",
+        "['examine thing', 'go to market', 'attend school', 'hear news', 'bad news']",
+        "hear news"
+      ],
+      "processing_time": 4.36150860786438,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe family wanted to live with carpeting, so where did they end up putting it?\n\nOptions:\n['istanbul', 'fireplace', 'gym', 'houses', 'bedroom']\n\nAnswer:\nhouses\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'houses'. This is because the question is asking about where the family ended up putting the carpeting, and 'houses' is the only option that makes sense in this context. Houses are the places where families live, so it's logical that they would put carpeting in their houses. The other options ('istanbul', 'fireplace', 'gym', 'bedroom') are either locations (though 'istanbul' is a city, not a place to put carpeting) or specific rooms in a house, which are not the final destination for where carpeting would be placed.",
+      "expected_output": "Families often live in houses, and houses have floors that can be carpeted.",
+      "question_values": [
+        "The family wanted to live with carpeting, so where did they end up putting it?",
+        "['istanbul', 'fireplace', 'gym', 'houses', 'bedroom']",
+        "houses"
+      ],
+      "processing_time": 3.4643566608428955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere would someone have to carry their brass instrument while they played?\n\nOptions:\n['punk rock band', 'marching band', 'brass band', 'annoy mom', 'jazz band']\n\nAnswer:\nmarching band\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'marching band' because brass instruments are typically used in marching bands where players carry their instruments while marching. This requires the instrument to be lightweight and portable, which is why marching bands often use instruments like the saxophone, trumpet, and trombone. The other options do not involve carrying the instrument while playing, such as a punk rock band, which might use electric instruments, or a jazz band, which could be played in various settings. Annoying mom is not a musical context and does not involve playing an instrument.",
+      "expected_output": "A marching band is a band that plays brass instruments while marching. Due to moving, members of the band must carry their instruments.",
+      "question_values": [
+        "Where would someone have to carry their brass instrument while they played?",
+        "['punk rock band', 'marching band', 'brass band', 'annoy mom', 'jazz band']",
+        "marching band"
+      ],
+      "processing_time": 3.0934860706329346,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nHe enjoyed the factory work, he liked the idea that he did what for sale?\n\nOptions:\n['earn money', 'introduction', 'create', 'workhour', 'produce goods']\n\nAnswer:\nproduce goods\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"produce goods.\" This answer is correct because the question implies that the person enjoys the factory work and specifically mentions that he liked the idea that he did something for sale. In a factory setting, the primary activity is producing goods, which are then sold. Therefore, the person enjoys the idea of producing goods for sale, making \"produce goods\" the most appropriate choice from the given options.",
+      "expected_output": "Factory work involves producing goods, and him liking the factory work indicates he might like producing goods.",
+      "question_values": [
+        "He enjoyed the factory work, he liked the idea that he did what for sale?",
+        "['earn money', 'introduction', 'create', 'workhour', 'produce goods']",
+        "produce goods"
+      ],
+      "processing_time": 2.3112499713897705,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nAll the contestants had to wait turn for their chance to what on American Idol?\n\nOptions:\n['have patience', 'stand in line', 'sing', 'get ready', 'get in line']\n\nAnswer:\nsing\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'sing'. This is because American Idol is a singing competition show where contestants are judged on their vocal performances. The question implies that the contestants had to wait their turn to perform, which is the core activity of the show. Therefore, the most appropriate answer is that they had to wait their turn to sing.",
+      "expected_output": "American Idol is a singing competition.",
+      "question_values": [
+        "All the contestants had to wait turn for their chance to what on American Idol?",
+        "['have patience', 'stand in line', 'sing', 'get ready', 'get in line']",
+        "sing"
+      ],
+      "processing_time": 1.864501714706421,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA bride and groom are taking care of proposals, what is the likely ceremony?\n\nOptions:\n['efficiency', 'getting work done', 'marriage', 'finishing up', 'results']\n\nAnswer:\nmarriage\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"marriage.\" This is because a proposal is typically the first step in the process of getting married. The ceremony that follows a proposal is usually the wedding, which is the formal ceremony where a couple marries. Therefore, when a bride and groom are taking care of proposals, the likely ceremony that follows is a marriage ceremony.",
+      "expected_output": "the term bride and groom is mostly associated with a marriage ceremony",
+      "question_values": [
+        "A bride and groom are taking care of proposals, what is the likely ceremony?",
+        "['efficiency', 'getting work done', 'marriage', 'finishing up', 'results']",
+        "marriage"
+      ],
+      "processing_time": 1.9822044372558594,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA boy is leaving line because he's tired of listening to the teacher's orders, what might the teacher give?\n\nOptions:\n['punishment', 'utter chaos', 'trouble', 'have to start over', 'high five']\n\nAnswer:\npunishment\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'punishment' because when a student is leaving a line due to being tired of the teacher's orders, it often indicates a lack of compliance or respect for the teacher's authority. In such a scenario, the teacher might respond by imposing a consequence, which is typically referred to as punishment. The other options do not fit the context as well: 'utter chaos' and 'trouble' suggest a more extreme and disorderly situation, 'have to start over' implies a restart of the activity, and 'high five' is an expression of camaraderie or approval, which does not align with the student's apparent dissatisfaction.",
+      "expected_output": "Not listening to a teacher's orders is usually considered a sign of lack of discipline and obedience, as a remedy to which teachers often give out punishments to discourage similar behavior in the future.",
+      "question_values": [
+        "A boy is leaving line because he's tired of listening to the teacher's orders, what might the teacher give?",
+        "['punishment', 'utter chaos', 'trouble', 'have to start over', 'high five']",
+        "punishment"
+      ],
+      "processing_time": 3.6969571113586426,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nBoredom led him to go out to the bar, there were many characters there and he what?\n\nOptions:\n['meet interesting people', 'play games', 'field', 'skateboard', 'listen to music']\n\nAnswer:\nmeet interesting people\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"meet interesting people.\" This answer is correct because the question implies that boredom led the person to seek social interaction or new experiences. Going to a bar, especially one with many characters, is a common place where people go to meet new people and engage in social activities. Among the given options, \"meet interesting people\" best fits this context. The other options like \"play games,\" \"field,\" \"skateboard,\" and \"listen to music\" are not typically associated with the typical activities one engages in at a bar, especially when one is looking to alleviate boredom.",
+      "expected_output": "Bars are often patronized by a mix of locals, travellers, etc. Thus, if you are bored and sociable, meeting interesting people is a good reason to go to one.",
+      "question_values": [
+        "Boredom led him to go out to the bar, there were many characters there and he what?",
+        "['meet interesting people', 'play games', 'field', 'skateboard', 'listen to music']",
+        "meet interesting people"
+      ],
+      "processing_time": 3.346097230911255,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJohn rented a hotel room while on a business trip.  It was a a company sponsored event.  Where might it have been?\n\nOptions:\n['convention center.', 'business interviews', 'michigan', 'resort', 'city']\n\nAnswer:\nresort\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'resort' because the question mentions that it was a company-sponsored event. Company-sponsored events are often held in luxurious settings to impress clients or partners, and resorts are typically known for their upscale accommodations and amenities. While a convention center could be a suitable venue for a business event, the mention of a hotel room suggests a more private and potentially more luxurious setting, which aligns better with a resort. The other options like 'business interviews' and 'city' are not specific enough or don't fit the context of a company-sponsored event typically held in a hotel room. 'Michigan' is a state and not a specific venue. Therefore,'resort' is the most appropriate answer given the context.",
+      "expected_output": "When people travel for work, it's often the case that their companies will pay for their accomodations, like hotel rooms, meals, etc. It's common for companies to pay for fancy accomodations, e.g., at resorts, to keep their employees happy.",
+      "question_values": [
+        "John rented a hotel room while on a business trip.  It was a a company sponsored event.  Where might it have been?",
+        "['convention center.', 'business interviews', 'michigan', 'resort', 'city']",
+        "resort"
+      ],
+      "processing_time": 4.134291648864746,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe kids wanted to cool off so they all went to what?\n\nOptions:\n['manual', 'think', 'relief', 'calm down', 'go swimming']\n\nAnswer:\ngo swimming\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'go swimming' because swimming is an activity that naturally cools off the body through the action of water on the skin and the exertion involved in swimming. The other options do not make sense in the context of cooling off:\n\n-'manual' is not a place or activity for cooling off.\n- 'think' is an action, not a place or activity for cooling off.\n-'relief' is an emotion or state, not a place or activity for cooling off.\n- 'calm down' is an action, not a place or activity for cooling off.\n\nTherefore, 'go swimming' is the most logical and appropriate answer to the question.",
+      "expected_output": "Especially during warmer times of the year, it's common for kids to go to pools to cool off, becuase swimming at a pool can cool down the body.",
+      "question_values": [
+        "The kids wanted to cool off so they all went to what?",
+        "['manual', 'think', 'relief', 'calm down', 'go swimming']",
+        "go swimming"
+      ],
+      "processing_time": 3.863307476043701,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat do you normally get out to get yourself a drink?\n\nOptions:\n['bucket', 'backpack', 'getting drunk', 'cup', 'cabinet']\n\nAnswer:\ncup\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'cup' because a cup is the most common and practical item used to carry and hold a drink. When someone goes to get a drink, they typically use a cup to hold the beverage they are consuming. The other options are either not items used to carry drinks, are actions or states (like 'getting drunk'), or are not items at all (like 'bucket' or 'backpack'). A 'cabinet' is a storage place for items, not something used to carry drinks. Therefore, 'cup' is the most logical and appropriate answer to the question.",
+      "expected_output": "A cup can hold liquids, and drinks are always liquids.",
+      "question_values": [
+        "What do you normally get out to get yourself a drink?",
+        "['bucket', 'backpack', 'getting drunk', 'cup', 'cabinet']",
+        "cup"
+      ],
+      "processing_time": 3.350771903991699,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA big fountain was the center piece of the renovation, it had all been paid for by a grant to the what?\n\nOptions:\n['city', 'state', 'front of casino', 'rome', 'public place']\n\nAnswer:\ncity\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"city\" because grants to cities are common for funding large-scale projects such as renovations of public spaces, including fountains. City governments often seek grants to fund infrastructure improvements, beautification projects, and public amenities. The other options like \"state,\" \"front of casino,\" \"rome,\" and \"public place\" are either too specific (like \"front of casino\") or not typically the recipients of such grants. \"City\" is the most appropriate and general answer among the given options.",
+      "expected_output": "Cities sometimes feature big fountains, which require large sums of money for construction, and this money usually comes from grants.",
+      "question_values": [
+        "A big fountain was the center piece of the renovation, it had all been paid for by a grant to the what?",
+        "['city', 'state', 'front of casino', 'rome', 'public place']",
+        "city"
+      ],
+      "processing_time": 2.9388580322265625,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere might an expressway leave the Us to go?\n\nOptions:\n['large city', 'canada', 'country', 'map', 'highways']\n\nAnswer:\ncanada\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'Canada' because an expressway in the United States (US) typically leads to neighboring countries, and Canada is the country directly to the north of the US. Expressways often connect major cities and regions within the US, but they also serve as major routes to international borders, with Canada being the closest international border to many US expressways.",
+      "expected_output": "In terms of international travel, freeways in a country generally could only provide access to neighboring countries, rather than those seperated by a large body of water. Because the USA boarders Canada, a highway could exist that connect them. ",
+      "question_values": [
+        "Where might an expressway leave the Us to go?",
+        "['large city', 'canada', 'country', 'map', 'highways']",
+        "canada"
+      ],
+      "processing_time": 2.1132750511169434,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nTeachers play many roles such as babysitter, but they get the most out of just simply doing what?\n\nOptions:\n['answering questions', 'teach children', 'writing', 'talk too much', 'open boxes']\n\nAnswer:\nteach children\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'teach children'. This is the most appropriate role for a teacher among the given options. Teachers are professionals whose primary role is to educate and guide students, imparting knowledge and skills. While teachers do answer questions, write, and talk to their students, the core and most significant aspect of their job is teaching. The other options like 'babysitting' or 'open boxes' do not align with the typical responsibilities of a teacher. Therefore, 'teach children' is the most fitting answer to the question.",
+      "expected_output": "Teachers' main profession is to teach children. This is what they are trained for, and likely enjoy doing if they have chosen the job.",
+      "question_values": [
+        "Teachers play many roles such as babysitter, but they get the most out of just simply doing what?",
+        "['answering questions', 'teach children', 'writing', 'talk too much', 'open boxes']",
+        "teach children"
+      ],
+      "processing_time": 3.152012586593628,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA cat is wandering outside, where is likely to be found?\n\nOptions:\n['floor', 'residential area', 'bed', 'comfortable position', 'family room']\n\nAnswer:\nresidential area\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'residential area' because a residential area is a common location where cats might be found wandering outside. Residential areas typically contain houses, apartments, and other dwellings where cats can be seen exploring their surroundings. The other options like 'floor,' 'bed,' 'comfortable position,' and 'family room' are not places where a cat would typically be found wandering outside. 'Floor' is a surface, 'bed' is a piece of furniture, and 'comfortable position' and 'family room' are locations inside a house or apartment, which are not typical places for a cat to be found wandering outside.",
+      "expected_output": "A residential area is where cats often roam around, especially if they are thrown out.",
+      "question_values": [
+        "A cat is wandering outside, where is likely to be found?",
+        "['floor', 'residential area', 'bed', 'comfortable position', 'family room']",
+        "residential area"
+      ],
+      "processing_time": 3.6125385761260986,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nLilly loved peace and quiet, but she couldn't find any where she lived.  She took drastic measures and went somewhere for solitude. Where did she go?\n\nOptions:\n['library', 'home', 'top of mountain', 'sea', 'grocery']\n\nAnswer:\nsea\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'sea'. This answer is correct because the sea is typically associated with peace and solitude. It offers a vast, open space that can provide a sense of tranquility and quiet, which aligns with Lilly's preference for peace and quiet. Additionally, the sea can be a place where one can find solitude, as it is a vast and often remote environment. In contrast, the other options like a library, home, top of a mountain, or grocery do not typically offer the same level of peace and solitude as a body of water like the sea.",
+      "expected_output": "The sea can be a quiet place: for example, if you sail on a boat alone, or if you are living by yourself in a quiet beach community. By moving to the sea, Lily escaped her current, noiser living situation.",
+      "question_values": [
+        "Lilly loved peace and quiet, but she couldn't find any where she lived.  She took drastic measures and went somewhere for solitude. Where did she go?",
+        "['library', 'home', 'top of mountain', 'sea', 'grocery']",
+        "sea"
+      ],
+      "processing_time": 3.3246004581451416,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat is a reason to pay your television bill?\n\nOptions:\n['informative', 'dead', 'legal', 'entertaining', 'obsolete']\n\nAnswer:\nlegal\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"legal\" because paying your television bill is a legal obligation. If you do not pay your television bill, the service provider may terminate your service, which can be a serious inconvenience. In many jurisdictions, failing to pay bills on time can also result in late fees, penalties, or even legal action. Therefore, paying your television bill is a legal requirement to maintain your service and avoid potential legal consequences.",
+      "expected_output": "One reason to pay your telephone bill is that you are legally obligated to. The telephone company can send a debt collector after you if you do not pay it.",
+      "question_values": [
+        "What is a reason to pay your television bill?",
+        "['informative', 'dead', 'legal', 'entertaining', 'obsolete']",
+        "legal"
+      ],
+      "processing_time": 2.448937177658081,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nHow does a police officer report his work?\n\nOptions:\n['charge person with crime', 'case', 'computer', 'direct traffic', 'retire']\n\nAnswer:\ncase\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'case'. A police officer reports their work by documenting incidents, investigations, and cases they handle. This involves creating detailed reports that outline the circumstances of crimes, accidents, or other incidents they encounter. These reports are then filed and used in legal proceedings, making 'case' the most appropriate answer among the given options. The other options do not accurately describe how a police officer reports their work:\n\n- 'Charge person with crime' is an action a police officer takes, not a method of reporting.\n- 'Computer' is a tool used by police officers but not a method of reporting.\n- 'Direct traffic' is a task a police officer might perform but not a method of reporting work.\n- 'Retire' is an action a police officer takes, not a method of reporting work.",
+      "expected_output": "A police officer reports his work by filing a case.",
+      "question_values": [
+        "How does a police officer report his work?",
+        "['charge person with crime', 'case', 'computer', 'direct traffic', 'retire']",
+        "case"
+      ],
+      "processing_time": 4.68180251121521,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nShe began to play violin at a young age, she had a passion to do what?\n\nOptions:\n['inspiring', 'like music', 'be musician', 'make music', 'tune']\n\nAnswer:\nmake music\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"make music.\" This is the most appropriate choice because the question states that the person began playing the violin at a young age and had a passion. Making music is the ultimate goal of playing an instrument, especially for someone who has a passion for it. The other options are either too vague, not directly related to playing an instrument, or not specific enough to the context of the question.",
+      "expected_output": "Playing a violin is a way of making music, and if someone begins an activity at a young age, they probably have a passion for that activity.",
+      "question_values": [
+        "She began to play violin at a young age, she had a passion to do what?",
+        "['inspiring', 'like music', 'be musician', 'make music', 'tune']",
+        "make music"
+      ],
+      "processing_time": 2.372912883758545,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhy might a person go to get counseling?\n\nOptions:\n['to be heard', 'receive gifts', 'understand themselves', 'good things in life', 'acknowledgment']\n\nAnswer:\nunderstand themselves\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"understand themselves.\" Counseling is typically aimed at helping individuals gain insight into their thoughts, feelings, and behaviors. It provides a safe space for people to explore their inner world and understand their motivations, fears, and desires. This process of self-exploration and self-discovery is a fundamental aspect of counseling, making it the most appropriate choice among the given options. The other options do not accurately reflect the primary purpose of counseling.",
+      "expected_output": "Often, the goal of therapy is to better understand and manage the people and problems in one's life; a step towards that understanding often involves exploring and accepting one's self.",
+      "question_values": [
+        "Why might a person go to get counseling?",
+        "['to be heard', 'receive gifts', 'understand themselves', 'good things in life', 'acknowledgment']",
+        "understand themselves"
+      ],
+      "processing_time": 2.62376070022583,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat place could have one back garden?\n\nOptions:\n['police station', 'city', 'town', 'england', 'house']\n\nAnswer:\nhouse\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"house\" because a house is the only option that typically has a back garden. Houses are residential buildings designed for living, and they often include outdoor spaces such as gardens or yards. The other options\u2014police station, city, town, and England\u2014are not residential buildings and do not typically have back gardens.",
+      "expected_output": "Unlike apartments or most condominiums, larger houses are likely to have yards behind the house, and these yards are likely to have gardens (i.e., \"back\" gardens).",
+      "question_values": [
+        "What place could have one back garden?",
+        "['police station', 'city', 'town', 'england', 'house']",
+        "house"
+      ],
+      "processing_time": 1.943049430847168,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA bug was looking for wildflowers and no human interruption, where did he go?\n\nOptions:\n['garden', 'meadow', 'bug zapper', 'rug', 'rock']\n\nAnswer:\nmeadow\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'meadow'. This is because a meadow is a large area of grassland, often with wildflowers, which provides a natural habitat for bugs. It is also less likely to have human interruption in a meadow compared to a garden, which is typically managed and maintained by humans, or a rug or rock, which are not natural environments for bugs. A bug zapper, on the other hand, is an electronic device that emits ultrasonic waves to kill insects, which would be harmful to a bug looking for wildflowers and would not be a suitable place for it to find what it's looking for. Therefore, a meadow is the most appropriate and natural environment for a bug looking for wildflowers without human interruption.",
+      "expected_output": "Meadows are usually not human-owned or attended, and tend to have wildflowers.",
+      "question_values": [
+        "A bug was looking for wildflowers and no human interruption, where did he go?",
+        "['garden', 'meadow', 'bug zapper', 'rug', 'rock']",
+        "meadow"
+      ],
+      "processing_time": 4.3168535232543945,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA beaver is taking logs from a Pacific beach, where is it located?\n\nOptions:\n['washington', 'ontario', 'books', 'canada', 'in russia']\n\nAnswer:\nwashington\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'washington'. This is because Washington is a state in the United States, and it borders the Pacific Ocean. Beavers can be found in various locations along the Pacific coast, including in Washington. The other options like Ontario, Canada, and Russia are not on the Pacific coast, and 'books' and 'in russia' are not locations at all. Therefore, 'washington' is the only correct answer among the given options.",
+      "expected_output": "Washington is a state in the United States which is located on the Pacific ocean coast, and if the beaver is on the pacific beach, it is very likely to be in Washington.",
+      "question_values": [
+        "A beaver is taking logs from a Pacific beach, where is it located?",
+        "['washington', 'ontario', 'books', 'canada', 'in russia']",
+        "washington"
+      ],
+      "processing_time": 2.681398391723633,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA John is a bum.  Much like the stereotype, he lives near this sort of transportation infrastructure. Where does he live?\n\nOptions:\n['bus depot', 'beach', 'train station', 'bridge', 'bridge']\n\nAnswer:\nbridge\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The answer \"bridge\" is correct because bridges are often considered a type of transportation infrastructure, especially in urban areas. The stereotype of a \"bum\" (a person who lives on the streets and is often homeless) often associates them with areas that are easily accessible and where they can find shelter or resources, such as under bridges. Bridges provide a level of protection from the elements and can offer a temporary living space for someone who is homeless. Therefore, it aligns with the stereotype that a bum might live near transportation infrastructure.",
+      "expected_output": "bums are well known to take up residence under bridges.",
+      "question_values": [
+        "A John is a bum.  Much like the stereotype, he lives near this sort of transportation infrastructure. Where does he live?",
+        "['bus depot', 'beach', 'train station', 'bridge', 'bridge']",
+        "bridge"
+      ],
+      "processing_time": 2.9945011138916016,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat could you find moving in a ticket office?\n\nOptions:\n['humans', 'movie theaters', 'city', 'animals', 'stadium']\n\nAnswer:\nhumans\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'humans' because a ticket office is typically a place where humans buy tickets for various events or venues. It is not associated with movie theaters, cities, stadiums, or animals. Therefore, among the given options, 'humans' is the most logical and correct answer for what you could find moving in a ticket office.",
+      "expected_output": "Humans go to a ticket office to buy tickets. They are often walking forward while waiting in line to buy the tickets.",
+      "question_values": [
+        "What could you find moving in a ticket office?",
+        "['humans', 'movie theaters', 'city', 'animals', 'stadium']",
+        "humans"
+      ],
+      "processing_time": 1.9926140308380127,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat does someone who has a greed for energy do?\n\nOptions:\n['cause businesses to grow', 'get', 'lie', 'buy food', 'win']\n\nAnswer:\nbuy food\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"buy food.\" Someone who has a greed for energy is likely referring to a person who is hungry or in need of sustenance. Among the given options, \"buy food\" is the most logical choice as it directly addresses the need for energy (in the form of nutrition) that one might have.\n\nThe other options do not fit the context of someone with a \"greed for energy\":\n- \"cause businesses to grow\" is unrelated to energy or hunger.\n- \"get\" is too vague and doesn't specify what the person is getting.\n- \"lie\" is not related to energy or hunger.\n- \"win\" is unrelated to the context of energy or hunger.\n\nTherefore, \"buy food\" is the most appropriate answer as it directly addresses the need for energy in the form of nutrition.",
+      "expected_output": "When consumed, food provides energy and satisfies the greed for it.",
+      "question_values": [
+        "What does someone who has a greed for energy do?",
+        "['cause businesses to grow', 'get', 'lie', 'buy food', 'win']",
+        "buy food"
+      ],
+      "processing_time": 4.749423027038574,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nRandy was suffering from great hunger and he didn't even need cheese or toppings, he just wanted to what?\n\nOptions:\n['eat hamburger', 'prepare meal', 'eat breakfast', 'cook dinner', 'buy food']\n\nAnswer:\neat hamburger\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'eat hamburger'. This is because hamburgers are a food item that can be consumed quickly and easily, and they are often associated with satisfying hunger. The question mentions that Randy didn't need cheese or toppings, which aligns with the simplicity of a plain hamburger. Among the given options, 'eat hamburger' is the most straightforward and direct answer to someone who is extremely hungry and doesn't require additional toppings or preparation.",
+      "expected_output": "Hamburgers often contain cheese or other toppings. Someone who is very hungry may not want those extra toppings so that they can eat the hamburger as soon as possible.",
+      "question_values": [
+        "Randy was suffering from great hunger and he didn't even need cheese or toppings, he just wanted to what?",
+        "['eat hamburger', 'prepare meal', 'eat breakfast', 'cook dinner', 'buy food']",
+        "eat hamburger"
+      ],
+      "processing_time": 2.547708034515381,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat signals when an animal has received an injury?\n\nOptions:\n['procreate', 'feel pain', 'a distress call', 'reproduce asexually', 'bite']\n\nAnswer:\nfeel pain\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"feel pain.\" When an animal has received an injury, it typically responds by feeling pain. Pain is a natural biological response that alerts the animal to potential harm and encourages it to take action to protect itself. This response is crucial for the animal's survival and recovery. The other options do not accurately describe the immediate response to an injury:\n\n- \"Procreate\" and \"reproduce asexually\" are not directly related to the immediate response to an injury.\n- \"A distress call\" is a possible response, but it's not the primary signal of pain itself.\n- \"Bite\" is a defensive action that might occur after an injury, but it's not the signal that the injury has occurred.\n\nTherefore, \"feel pain\" is the most accurate answer as it directly describes the animal's immediate response to an injury.",
+      "expected_output": "Injuries cause the body to send pain signals to the brain, which focuses attention on the injury so that it can be healed.",
+      "question_values": [
+        "What signals when an animal has received an injury?",
+        "['procreate', 'feel pain', 'a distress call', 'reproduce asexually', 'bite']",
+        "feel pain"
+      ],
+      "processing_time": 4.913610458374023,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe deep fryers used gallons and gallons of oil a week, the location was the busiest what in town?\n\nOptions:\n['service station', 'restaurant', 'street', 'ground', 'auto parts store']\n\nAnswer:\nrestaurant\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The answer \"restaurant\" is correct because deep fryers are commonly used in restaurants to prepare various fried foods such as french fries, chicken wings, and other similar dishes. Restaurants are typically the busiest locations in town, especially during peak dining hours, and they require a significant amount of oil for their deep fryers. The other options like service station, street, ground, and auto parts store are less likely to use deep fryers in such large quantities.",
+      "expected_output": "Resturants will often have deep friers, which are appliances that require cooking oil; if the restaurant is busy, the oil in the frier may require frequent replacement.",
+      "question_values": [
+        "The deep fryers used gallons and gallons of oil a week, the location was the busiest what in town?",
+        "['service station', 'restaurant', 'street', 'ground', 'auto parts store']",
+        "restaurant"
+      ],
+      "processing_time": 2.581850290298462,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat gas vehicle uses a chain to move the back wheel?\n\nOptions:\n['gear shift', 'bicycle', 'car', 'tow truck', 'motorbike']\n\nAnswer:\nmotorbike\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'motorbike'. \n\nMotorbikes typically use a chain (also known as a chain drive or sprocket chain) to transfer power from the engine to the rear wheel. This chain is connected to the engine's crankshaft and to the rear wheel's sprocket. As the engine rotates, the chain moves the rear wheel, propelling the motorbike forward. \n\nIn contrast, the other options are incorrect:\n- Gear shift: This is a feature found in cars and refers to the mechanism used to change gears.\n- Bicycle: While bicycles do have a chain, it's used to transfer power from the pedals to the rear wheel, not to move the back wheel.\n- Car: Cars use a different system to move the back wheel, typically a differential and a drive shaft.\n- Tow truck: Tow trucks are used to pull other vehicles and do not use a chain to move the back wheel.\n\nTherefore, among the given options, a motorbike is the only vehicle that uses a chain to move the back wheel.",
+      "expected_output": "Motorbikes are propelled by a chain that extends from the engine to the wheel, thus, enabling the bike to move forward when throttled.",
+      "question_values": [
+        "What gas vehicle uses a chain to move the back wheel?",
+        "['gear shift', 'bicycle', 'car', 'tow truck', 'motorbike']",
+        "motorbike"
+      ],
+      "processing_time": 5.904862403869629,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nThe calm seas weren't going to stay that way long, their sails filled as it got what?\n\nOptions:\n['disturbed', 'stressed', 'give up', 'windy', 'flustered']\n\nAnswer:\nwindy\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'windy'. The sentence is describing a ship's sails filling as the seas became active and not calm. When a ship's sails fill, it means the wind is strong enough to move the sails and propel the ship forward. Therefore, the seas weren't calm anymore, which implies they became windy. The other options don't fit the context as well: 'disturbed','stressed', 'give up', and 'flustered' don't describe the change in the seas' condition, and 'windy' is the most appropriate choice to explain the change in the seas' state.",
+      "expected_output": "Wind often makes a sea choppy, the opposite of calm. Sails fill with wind. ",
+      "question_values": [
+        "The calm seas weren't going to stay that way long, their sails filled as it got what?",
+        "['disturbed', 'stressed', 'give up', 'windy', 'flustered']",
+        "windy"
+      ],
+      "processing_time": 3.518367290496826,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat to living things do to continue their species?\n\nOptions:\n['communing', 'reproducing', 'palpitations', 'perspiration', 'respiration']\n\nAnswer:\nreproducing\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"reproducing\" because living things, including plants and animals, reproduce to continue their species. Reproduction is the process by which organisms produce offspring, ensuring the survival and continuation of their genetic traits. This is a fundamental biological function that maintains the continuity of species in the ecosystem. The other options do not relate to the continuation of species: \"communing\" is not a biological term, \"palpitations\" and \"perspiration\" are physiological processes, and \"respiration\" is the process of taking in oxygen and expelling carbon dioxide, both of which are essential for life but not specifically for species continuation.",
+      "expected_output": "Reproduction involves giving birth to new members of the same species, and therefore ensures continuation of the species.",
+      "question_values": [
+        "What to living things do to continue their species?",
+        "['communing', 'reproducing', 'palpitations', 'perspiration', 'respiration']",
+        "reproducing"
+      ],
+      "processing_time": 3.615384340286255,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nBilly was a student taking a course in communications.  Where might he be taking his classes?\n\nOptions:\n['every aspect of life', 'library', 'in a movie hall', 'classroom', 'university']\n\nAnswer:\nuniversity\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"university\" because universities are institutions of higher learning where students typically take courses in various subjects, including communications. While Billy could potentially take classes in other locations such as a library or classroom, the most common and appropriate setting for a course in communications would be at a university. Movie halls are not typically used for academic courses, and \"every aspect of life\" is too broad and not a specific location for taking classes. Therefore, \"university\" is the most fitting answer among the given options.",
+      "expected_output": "Universities commonly offer a \"communications\" major, and because students need to take relevant classes to complete their major, many classes on the subject take place at universities.",
+      "question_values": [
+        "Billy was a student taking a course in communications.  Where might he be taking his classes?",
+        "['every aspect of life', 'library', 'in a movie hall', 'classroom', 'university']",
+        "university"
+      ],
+      "processing_time": 2.979627847671509,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat is something only humans can do?\n\nOptions:\n['hear sounds', 'drive cars', 'reproduce', 'make mistakes', 'excrete']\n\nAnswer:\ndrive cars\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"drive cars.\" This is because driving a car is a skill that is uniquely associated with humans. While other options like \"hear sounds,\" \"reproduce,\" and \"make mistakes\" are activities that can be performed by humans, they are not specific to humans in the same way that driving a car is. \"Excrete\" is also an activity that humans can perform, but it is not as specific to humans as driving a car is. Therefore, among the given options, \"drive cars\" is the one that is most uniquely associated with human capabilities.",
+      "expected_output": "Humans, unlike animals, cannot drive cars.",
+      "question_values": [
+        "What is something only humans can do?",
+        "['hear sounds', 'drive cars', 'reproduce', 'make mistakes', 'excrete']",
+        "drive cars"
+      ],
+      "processing_time": 3.297783851623535,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat do a string of words with a proper noun and verb form?\n\nOptions:\n['english', 'dictionary', 'phrase', 'sentence', 'language']\n\nAnswer:\nsentence\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"sentence.\" A sentence is a grammatical unit that contains a subject and a predicate, typically including a verb and a proper noun. A string of words with a proper noun and a verb can form a sentence, as long as it also includes other necessary components like a subject and possibly other parts of speech to make it grammatically complete.\n\nTo elaborate:\n- An English sentence is a grammatically complete unit of speech or writing that expresses a complete thought.\n- A dictionary is a reference book that lists words and their meanings.\n- A phrase is a group of words that function together but does not necessarily express a complete thought.\n- A language is a system of communication used by a community of people.\n- A proper noun is a specific name for a particular person, place, or thing.\n\nTherefore, a string of words with a proper noun and a verb can be part of a sentence, but it alone does not constitute a sentence. A sentence requires more than just a verb and a proper noun; it needs to include other elements to form a complete thought.",
+      "expected_output": "A sentence is a set of words which cohesively form a syntactic unit. This generally requires a subject in the form of a noun, and a verb.",
+      "question_values": [
+        "What do a string of words with a proper noun and verb form?",
+        "['english', 'dictionary', 'phrase', 'sentence', 'language']",
+        "sentence"
+      ],
+      "processing_time": 6.214089393615723,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nHow would someone feel after going for run?\n\nOptions:\n['working out', 'sore', 'get tired', 'satisfaction', 'falling down']\n\nAnswer:\nget tired\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"get tired\" because after going for a run, one typically experiences physical fatigue. Running is a form of exercise that requires the body to use energy and expend effort, which leads to tiredness. While \"satisfaction\" could be a feeling after a run, especially if the person enjoys the activity, \"get tired\" is the most immediate and common physical sensation one would experience after a run. The other options like \"working out,\" \"sore,\" and \"falling down\" are not as directly related to the immediate physical state after a run.",
+      "expected_output": "Running is a physically demanding activity, and aftering doing such an activity, most people would feel tired.",
+      "question_values": [
+        "How would someone feel after going for run?",
+        "['working out', 'sore', 'get tired', 'satisfaction', 'falling down']",
+        "get tired"
+      ],
+      "processing_time": 3.4070217609405518,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat do most people have on their feet?\n\nOptions:\n['shoes and socks', 'floor', 'table', 'surface', 'desk']\n\nAnswer:\nshoes and socks\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"shoes and socks\" because most people wear shoes and socks on their feet for protection, comfort, and to maintain hygiene. While people do sometimes stand or walk barefoot on floors, tables, or desks, these are not the most common or typical situations. Shoes and socks are the most universally used and practical footwear for feet.",
+      "expected_output": "it is very common for people to always wear shoes and socks.",
+      "question_values": [
+        "What do most people have on their feet?",
+        "['shoes and socks', 'floor', 'table', 'surface', 'desk']",
+        "shoes and socks"
+      ],
+      "processing_time": 2.0755064487457275,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nReturning to work was easy for Dan.  He had liked doing nothing for weeks, and after his treatment he was complately what?\n\nOptions:\n['sobering', 'work', 'painless', 'malaise', 'boredom']\n\nAnswer:\npainless\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"painless.\" \n\nThe sentence suggests that Dan had been doing nothing for weeks, which implies he was likely in a state of inactivity or rest. After his treatment, he was described as \"completely\" something. Given the context, \"completely painless\" makes the most sense because it indicates that Dan was no longer experiencing any discomfort or pain, which aligns with the idea of being able to return to work easily. The other options do not fit as well with the context provided in the sentence.",
+      "expected_output": "The question insinuates that Dan was away from work on medical leave, since he had a treatment during this time. One common reason to have a medical treatment is to relieve pain. ",
+      "question_values": [
+        "Returning to work was easy for Dan.  He had liked doing nothing for weeks, and after his treatment he was complately what?",
+        "['sobering', 'work', 'painless', 'malaise', 'boredom']",
+        "painless"
+      ],
+      "processing_time": 3.124443769454956,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhat can help you with an illness?\n\nOptions:\n['elderly person', 'sick person', 'hospital', \"doctor's office\", 'stomach']\n\nAnswer:\ndoctor's office\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'doctor's office' because it is the place where a doctor, who is a medical professional, can diagnose and treat illnesses. A doctor's office is equipped with the necessary tools and knowledge to help with an illness, unlike the other options provided.\n\n- An 'elderly person' or a'sick person' can be someone who needs help, but they are not the places where medical help is provided.\n- A 'hospital' is a broader term that includes doctor's offices and can provide more extensive medical care, but the question is asking about a specific place where one can get help for an illness.\n- 'Stomach' is a body part, not a place where one can get help for an illness.\n\nTherefore, a 'doctor's office' is the most appropriate answer as it is the specific place where medical help for an illness can be obtained.",
+      "expected_output": "Illnesses can be cured via medications and care, which is provided by doctors and nurses who operate out of the doctor's office.",
+      "question_values": [
+        "What can help you with an illness?",
+        "['elderly person', 'sick person', 'hospital', \"doctor's office\", 'stomach']",
+        "doctor's office"
+      ],
+      "processing_time": 5.0926783084869385,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJoe bought a bunch of grapes because he likes to use them to top his what?\n\nOptions:\n['make wine', 'shops', 'deserts', 'bowl of fruit', 'sunshine']\n\nAnswer:\ndeserts\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'deserts'. This answer is correct because grapes are commonly used as toppings for various desserts, such as fruit salads, cheese plates, or as a sweet topping for ice cream. Among the given options, 'deserts' (likely meant to be 'desserts') is the only one that makes logical sense in the context of topping something. \n\nThe other options are not as relevant:\n- 'Make wine' is a process, not something you'd top.\n- 'Shops' is a place, not something you'd top with grapes.\n- 'Bowl of fruit' is a type of dish, not something you'd top with grapes.\n- 'Sunshine' is a natural phenomenon, not something you'd top with grapes.",
+      "expected_output": "Grapes are sometimes a topping for desserts, e.g., fruit tarts.",
+      "question_values": [
+        "Joe bought a bunch of grapes because he likes to use them to top his what?",
+        "['make wine', 'shops', 'deserts', 'bowl of fruit', 'sunshine']",
+        "deserts"
+      ],
+      "processing_time": 4.298861503601074,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nHow can a company efficiently sell things to their customer?\n\nOptions:\n['sell', 'branch out', 'own factory', 'ship goods', 'mail order']\n\nAnswer:\nmail order\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"mail order\" because it is a method of selling goods directly to customers through the mail. This approach allows companies to reach a wide customer base without the need for physical storefronts or extensive distribution networks. Mail order has been particularly popular in the past, especially for products that are not easily transportable or for those who prefer to shop from home. Companies can use catalogs, websites, or other mail-based communication channels to advertise their products and offer them for purchase. Once the order is placed, the company ships the goods directly to the customer's address. This method can be efficient for companies looking to expand their customer base and reduce overhead costs associated with physical retail locations.",
+      "expected_output": "Mail orders are an efficient way to sell things to customers, because a company simply has to pack up and mail the items to a customer, rather than paying and setting up a brick-and-mortar store. A postal service can perform delivery, saving the company time and resources.",
+      "question_values": [
+        "How can a company efficiently sell things to their customer?",
+        "['sell', 'branch out', 'own factory', 'ship goods', 'mail order']",
+        "mail order"
+      ],
+      "processing_time": 3.952632188796997,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhen you are expressing yourself by yelling after getting a bruise, what are you feeling?\n\nOptions:\n['self pity', 'communication', 'understood', 'pain', 'embarrassment']\n\nAnswer:\npain\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is 'pain'. When someone yells after getting a bruise, it is a clear indication of physical discomfort or pain. Bruises are caused by external impacts that result in broken blood vessels under the skin, leading to swelling and discoloration. Yelling in response to a bruise is a way of expressing the physical pain one is experiencing. The other options do not accurately describe the situation:\n\n- 'Self pity' is about feeling sorry for oneself, which is not typically associated with the immediate physical response to a bruise.\n- 'Communication' is a broader term that could apply to yelling, but it doesn't specifically address the cause of the yelling.\n- 'Understood' is not a feeling and doesn't fit the context of the question.\n- 'Embarrassment' is about feeling awkward or ashamed, which is not directly related to the physical sensation of a bruise.\n\nTherefore, 'pain' is the most appropriate answer as it directly relates to the physical sensation of a bruise and the immediate reaction to it.",
+      "expected_output": "A bruise is caused when a person is hit by an object forcefully --- such an action would be quite painful to the person, and people often yell when they are caused pain.",
+      "question_values": [
+        "When you are expressing yourself by yelling after getting a bruise, what are you feeling?",
+        "['self pity', 'communication', 'understood', 'pain', 'embarrassment']",
+        "pain"
+      ],
+      "processing_time": 6.02402400970459,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJames shaved, but this left a lot of hair where?\n\nOptions:\n['arm', \"person's head\", 'floor', 'sink', 'moustache']\n\nAnswer:\nsink\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"sink\" because shaving typically involves using a razor or electric shaver to remove hair from the face, neck, or other areas of the body. The sink is where one would typically place a razor or electric shaver to shave, and it's also where shaving water and other shaving products are often kept. After shaving, the sink is where the excess hair and shaving water would be left.\n\nThe other options are incorrect for the following reasons:\n- 'arm': Shaving is not typically done on the arm.\n- \"person's head\": While shaving can be done on the head, the question specifies \"James shaved\" which implies shaving on a part of the body other than the head.\n- 'floor': Hair is not left on the floor after shaving.\n-'moustache': The moustache is a facial hair growth, and shaving removes hair, not leaves it behind.",
+      "expected_output": "People usually shave at the sink, and shaving leaves behind discarded hair.",
+      "question_values": [
+        "James shaved, but this left a lot of hair where?",
+        "['arm', \"person's head\", 'floor', 'sink', 'moustache']",
+        "sink"
+      ],
+      "processing_time": 5.165604829788208,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nWhere are you likely to receive mouthwash in a little paper cup?\n\nOptions:\n['bottle', 'drug store', \"dentist's office\", 'doctor office', 'bathroom']\n\nAnswer:\ndentist's office\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"dentist's office.\" This is because dentists often provide mouthwash as part of a dental hygiene routine. Mouthwash is typically dispensed in a small, disposable container, such as a little paper cup, to ensure it is used correctly and to minimize contamination. Dentists are the professionals who prescribe and administer mouthwash as part of their treatment plans, making it the most likely place to receive mouthwash in a little paper cup.",
+      "expected_output": "Dentists perform procedures in the mouth, and afterwards offer a small amount of mouthwash to clean out the patients' mouth.",
+      "question_values": [
+        "Where are you likely to receive mouthwash in a little paper cup?",
+        "['bottle', 'drug store', \"dentist's office\", 'doctor office', 'bathroom']",
+        "dentist's office"
+      ],
+      "processing_time": 2.6629135608673096,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nA cat can't talk, but a cat can what?\n\nOptions:\n['sleep all day', 'meow', 'shed fur', 'see king', 'live many years']\n\nAnswer:\nmeow\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is \"meow.\" This is because cats are known for their distinctive vocalization, which is a series of short, repeated sounds often described as \"meows.\" While cats cannot talk in the human sense, they can make the \"meow\" sound, which is a form of communication. The other options are either not true for cats (like \"see king,\" which is not a real concept) or are not the primary or most notable things a cat can do. Sleep all day, shed fur, and live many years are all true for cats, but they are not the most distinctive or commonly associated behaviors.",
+      "expected_output": "A cat can meow as a way to vocalize.",
+      "question_values": [
+        "A cat can't talk, but a cat can what?",
+        "['sleep all day', 'meow', 'shed fur', 'see king', 'live many years']",
+        "meow"
+      ],
+      "processing_time": 3.6345226764678955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\nJames and Ruth were getting a divorce.  It was amicable, but it wasn't happy.  There was a lot of what emotion?\n\nOptions:\n['bitterness', 'sadness', 'depression', 'pain', 'anguish']\n\nAnswer:\nsadness\n\nProvide a short explanation on why this answer is correct.",
+      "response": "The correct answer is'sadness'. This answer is correct because when people are getting a divorce, especially one that is described as amicable but not happy, the predominant emotion is often sadness. Even in amicable divorces, the end of a relationship can be emotionally challenging and lead to feelings of sadness as people process the changes and separations. While other emotions like bitterness, depression, pain, and anguish might also be present, sadness is the most fitting general term for the overall emotional state in this context.",
+      "expected_output": "Divorces are difficult, and even the amicable ones are sad as they signify the end of relationships.",
+      "question_values": [
+        "James and Ruth were getting a divorce.  It was amicable, but it wasn't happy.  There was a lot of what emotion?",
+        "['bitterness', 'sadness', 'depression', 'pain', 'anguish']",
+        "sadness"
+      ],
+      "processing_time": 2.9161667823791504,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "When someone talks on the phone, they may discuss various topics with their conversation partner, e.g., themselves, and what's going on in their lives.",
+    "A flute is a musical instrument, and it's therefore plausable that one could buy one at a musical instrument store.",
+    "Informational pamphlets can contain lots of types of information, e.g., about medical information, local attractions, advertisements, etc.; various types of these pamphlets could be available at a library.",
+    "Teachers are usually employed at schools, and most people work during weekdays.",
+    "An altar is likely to be located at a temple, and so if a person was standing next to an alter, they could likely be in a temple.",
+    "Malls sometimes have sales, e.g., on black friday, when they offer good deals; however, the items are sometimes in limited supply, which can cause altercations between folks, each trying to buy the same item.",
+    "Telephone directories can be found in phone booths because people often want to look up numbers before making calls; phone booths are accessible to the public.",
+    "Smoking cannabis frequently causes people to feel hungry, and it wouldn't be uncommon to see people smoking outside of a convinence store like the quick stop.",
+    "Most  bars that serve alcohol are inside of buildings, and so, usually, hanging out at a bar is an activity that could only be done inside. Exceptions to the \"bars are inside\" rule include: rooftop bars, and oceanside bars on beaches.",
+    "An indoor space (with heaters, blankets, and warm showers) is likely to be warmer than this outdoor one, where the person became cold and wet.",
+    "The expression \"flight or fight\" comes from animal behavior when faced with a threat. To fight for one's life means to face the threat head-on.",
+    "If you are oblidged to do something, you might have made a professional, personal, or legal promise to do it, which, by definition, makes it not optional.",
+    "Corvettes are very fast cars. Because cars are more lightweight than battleships, they are faster.",
+    "If plants were to exist on a planet, they would be on the surface.",
+    "Corner shops often are run out of buildings on street corners.",
+    "21 is the legal age to buy alcohol in the US",
+    "The only context in which an entire county road could be represented meaningfully as a single line would be on a map, e.g., a map of roads in the county, or a GPS application on a smartphone.",
+    "Florida is to the south of Ohio, and you need to drive north to go from Florida to Ohio.",
+    "When one drives away the enemy, the goal is to keep them from advancing forward and claiming more land, instead sending them back the way they came.",
+    "People worship at churches, synagoges, mosques, and shrines; so, if the power went out at one of these locations, the lights might go off, which would make it difficult to read scriptures, or pray.",
+    "A warehouse is generally used to store goods, which can be heavy and be stacked on high shelves. Forklifts can assist humans at lifting heavy objects, especially to high places.",
+    "An avalanche occurs when pieces of ice or snow go rolling down the side of a mountain in great force. This can be caused by snow becoming heavy, because gravity will pull the snow downward.",
+    "Animal populations get depleted via hunting by humans for sport, however conservationist efforts over multiple years can reverse this process to ensure that the populations are restored.",
+    "Human bodies are usually covered using clothes, which can be found for sale at clothing stores.",
+    "Snare drums are instruments that can be played by members of orchestras, and if an orchestra was performing, it might be inside a theatre. So, a musician in an orchestra might be playing a snare drum in a theatre.",
+    "Payments are collected to improve the condition of the toll roads. This is done through road repairs.",
+    "One needs money to be able to live well in America. ",
+    "Department stores usually sell kitchen equipments, and a frying pan is a kitchen equipment.",
+    "Large meetings are often called conferences, and conferences can take place in conference halls, conference rooms, etc.",
+    "Water in the sky falls from rain clouds, where moisture in the air is collected.",
+    "Well water is a type of water extracted from a deep hole in the ground, i.e., a well. Thus, well water ultimately comes from the grond.",
+    "Being honest is synonymous with being sincere.",
+    "Hotels are places where people sleep for a few nights when they are travelling, and so it's often the case that hotel guests would be unfamiliar with their room. Given that travellers are unfamiliar with the location, losing items, for example in a night stand, might be more common.",
+    "Winter is a very cold part of the year in many places, and winter weather might make people feel cold.",
+    "An airplane is a place with very close contact with other passengers, and it is where you might transmit germs to others, when you have a cold. John might need a tissue from the tissue holder to blow his nose for his cold to prevent transmitting germs.",
+    "If a pool is too shallow, it might be difficult to swim in it; a common example of a shallow pool is a kiddie pool, which may be fun for children but not for adults.",
+    "st.paul is a city in minnesota",
+    "Sick and injured people are often suffering because of medical problems. To solve these problems, they might see a doctor at a hospital.",
+    "Front yards face the street, and usually have lawns.",
+    "James' house wasn't large enough for him to subdivide an existing room to serve as a playroom. To have enough room, he had to construct the playroom in a different, unattached building, like a garage.",
+    "A math problem is usually posed as a question that requires some operation such as subtraction or addition to answer.",
+    "Popcorn and cotton candy is frequently sold at fairs, and people accidentally leave them behind on the ground as they are distracted by the fair. Fairs are held in large open spaces where the ground is grassy.",
+    "most lakes are fresh water, sharks normally live in saltwater.",
+    "Inexperience with a language comes from lack of exposure to it, e.g., through a class or from living in a contry where the language is widely spoken. So, it might be difficult to learn French without being exposed to it (by studying, or living in a French-speaking country).",
+    "If one was to toss garbage from a moving car, because the car is likely to be driving along a road, the trash would likely end up a few feet away on the road side.",
+    "Being stuck indoors all day, e.g., at an office, tends to make people feel stuffy. This stuffy feeling can be reduced by going outside for refreshing, fresh air.",
+    "People often consider writings to be a way to preserve one's history. People can live on in the memories of future people reading the words they wrote.",
+    "If one was stranded on a desert island after a boat crash, one of the things that you would probably seek out is shelter; things like trees and caves could provide cover from the rain.",
+    "Remebering a past tradedy can resurface feelings that arose in response to that tragedy. Because tradgedies are not positive events, it's possible that sadness and depression could arise from remembering it.",
+    "Ambitious employees are likely to work hard and take leadership roles in a project, and this initiative is typically recognized by their bosses and rewarded by letting them be in charge of projects.",
+    "Kissing is a sign of showing affection, commonly used among lovers.",
+    "Switzerland is a country known for its high-quality chocolate production; it's likely that high-quality Swiss chocolate could be made from special dairy farms in Switzerland.",
+    "Record albums are also called vinyls. One must own a record album in order to listen to vinyl.",
+    "Football, a game often played at football stadiums, is a contact-heavy sport that requires the players (who are usually large men) to wear significant protective padding.",
+    "Curiosity is satisfied with information, and news provides information, and a newcomer usually carries with them some news.",
+    "Families often live in houses, and houses have floors that can be carpeted.",
+    "A marching band is a band that plays brass instruments while marching. Due to moving, members of the band must carry their instruments.",
+    "Factory work involves producing goods, and him liking the factory work indicates he might like producing goods.",
+    "American Idol is a singing competition.",
+    "the term bride and groom is mostly associated with a marriage ceremony",
+    "Not listening to a teacher's orders is usually considered a sign of lack of discipline and obedience, as a remedy to which teachers often give out punishments to discourage similar behavior in the future.",
+    "Bars are often patronized by a mix of locals, travellers, etc. Thus, if you are bored and sociable, meeting interesting people is a good reason to go to one.",
+    "When people travel for work, it's often the case that their companies will pay for their accomodations, like hotel rooms, meals, etc. It's common for companies to pay for fancy accomodations, e.g., at resorts, to keep their employees happy.",
+    "Especially during warmer times of the year, it's common for kids to go to pools to cool off, becuase swimming at a pool can cool down the body.",
+    "A cup can hold liquids, and drinks are always liquids.",
+    "Cities sometimes feature big fountains, which require large sums of money for construction, and this money usually comes from grants.",
+    "In terms of international travel, freeways in a country generally could only provide access to neighboring countries, rather than those seperated by a large body of water. Because the USA boarders Canada, a highway could exist that connect them. ",
+    "Teachers' main profession is to teach children. This is what they are trained for, and likely enjoy doing if they have chosen the job.",
+    "A residential area is where cats often roam around, especially if they are thrown out.",
+    "The sea can be a quiet place: for example, if you sail on a boat alone, or if you are living by yourself in a quiet beach community. By moving to the sea, Lily escaped her current, noiser living situation.",
+    "One reason to pay your telephone bill is that you are legally obligated to. The telephone company can send a debt collector after you if you do not pay it.",
+    "A police officer reports his work by filing a case.",
+    "Playing a violin is a way of making music, and if someone begins an activity at a young age, they probably have a passion for that activity.",
+    "Often, the goal of therapy is to better understand and manage the people and problems in one's life; a step towards that understanding often involves exploring and accepting one's self.",
+    "Unlike apartments or most condominiums, larger houses are likely to have yards behind the house, and these yards are likely to have gardens (i.e., \"back\" gardens).",
+    "Meadows are usually not human-owned or attended, and tend to have wildflowers.",
+    "Washington is a state in the United States which is located on the Pacific ocean coast, and if the beaver is on the pacific beach, it is very likely to be in Washington.",
+    "bums are well known to take up residence under bridges.",
+    "Humans go to a ticket office to buy tickets. They are often walking forward while waiting in line to buy the tickets.",
+    "When consumed, food provides energy and satisfies the greed for it.",
+    "Hamburgers often contain cheese or other toppings. Someone who is very hungry may not want those extra toppings so that they can eat the hamburger as soon as possible.",
+    "Injuries cause the body to send pain signals to the brain, which focuses attention on the injury so that it can be healed.",
+    "Resturants will often have deep friers, which are appliances that require cooking oil; if the restaurant is busy, the oil in the frier may require frequent replacement.",
+    "Motorbikes are propelled by a chain that extends from the engine to the wheel, thus, enabling the bike to move forward when throttled.",
+    "Wind often makes a sea choppy, the opposite of calm. Sails fill with wind. ",
+    "Reproduction involves giving birth to new members of the same species, and therefore ensures continuation of the species.",
+    "Universities commonly offer a \"communications\" major, and because students need to take relevant classes to complete their major, many classes on the subject take place at universities.",
+    "Humans, unlike animals, cannot drive cars.",
+    "A sentence is a set of words which cohesively form a syntactic unit. This generally requires a subject in the form of a noun, and a verb.",
+    "Running is a physically demanding activity, and aftering doing such an activity, most people would feel tired.",
+    "it is very common for people to always wear shoes and socks.",
+    "The question insinuates that Dan was away from work on medical leave, since he had a treatment during this time. One common reason to have a medical treatment is to relieve pain. ",
+    "Illnesses can be cured via medications and care, which is provided by doctors and nurses who operate out of the doctor's office.",
+    "Grapes are sometimes a topping for desserts, e.g., fruit tarts.",
+    "Mail orders are an efficient way to sell things to customers, because a company simply has to pack up and mail the items to a customer, rather than paying and setting up a brick-and-mortar store. A postal service can perform delivery, saving the company time and resources.",
+    "A bruise is caused when a person is hit by an object forcefully --- such an action would be quite painful to the person, and people often yell when they are caused pain.",
+    "People usually shave at the sink, and shaving leaves behind discarded hair.",
+    "Dentists perform procedures in the mouth, and afterwards offer a small amount of mouthwash to clean out the patients' mouth.",
+    "A cat can meow as a way to vocalize.",
+    "Divorces are difficult, and even the amicable ones are sad as they signify the end of relationships."
+  ],
+  "processing_stats": {
+    "total_time": 362.19839668273926,
+    "avg_time": 3.6219839668273925,
+    "min_time": 1.864501714706421,
+    "max_time": 6.670855760574341,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

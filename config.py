@@ -293,7 +293,7 @@ class Config:
               "csv_file": "..." OR "parquet_file": "..."
             },
             "prompt_fields": {
-              "question_fields": [...],
+              "question_fields": [X, json:context.contexts[*], ...],
               "answer_field": "..."
             },
             "prune_row": { ... },  // Optional

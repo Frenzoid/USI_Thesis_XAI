@@ -1,0 +1,1296 @@
+{
+  "experiment_name": "gmeg__hf-mistral-small-24b__zero-shot__gmeg_explaination__100__0p100",
+  "experiment_config": {
+    "model": "hf-mistral-small-24b",
+    "setup": "gmeg",
+    "prompt": "gmeg_explaination",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-23T20:43:03.020402",
+  "dataset_info": {
+    "name": "gmeg",
+    "original_size": 2536,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 2536,
+    "sampled_size": 100,
+    "columns": [
+      "_unit_id",
+      "_created_at",
+      "_id",
+      "_started_at",
+      "_tainted",
+      "_channel",
+      "_trust",
+      "_worker_id",
+      "_country",
+      "_region",
+      "_city",
+      "_ip",
+      "comments",
+      "describe_why_this_is_not_annotatable",
+      "not_annotatable",
+      "please_explain_the_revisions_write_na_if_not_annotatable",
+      "aligned",
+      "id",
+      "original",
+      "revised"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 2536,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "mistralai/Mistral-Small-24B-Instruct-2501",
+    "description": "Mistral Small 24B parameter instruction-tuned model - Large",
+    "parameters": "24B",
+    "size_category": "large",
+    "max_tokens": 512,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "generation_config": {
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "gmeg",
+    "template": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+    "description": "Annotators were shown one aligned sentence at a time. For each sentence, we instructed annotators to provide an explanation for all the revisions in the sentence in a bulleted list."
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThat was not {=>what} your advertisement had shown .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"What\" was inserted to link \"that\" and \"the advertisement had shown.\"",
+      "question_values": [
+        "That was not {=>what} your advertisement had shown ."
+      ],
+      "processing_time": 0.06873536109924316,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHad Tilly not gone into {labour=>labor} , Cotton and Topsy would have {succeded=>succeeded} in killing Castro .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The spelling of the word \"labor\" was corrected to conform to American English spelling.\r\n- A spelling error was corrected. The correct spelling is \"succeeded.\"",
+      "question_values": [
+        "Had Tilly not gone into {labour=>labor} , Cotton and Topsy would have {succeded=>succeeded} in killing Castro ."
+      ],
+      "processing_time": 0.0058176517486572266,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWe have n't asked for any special clothes {=>,} so I would wear casual and comfortable clothes , although you can come {well-dressed ,=>well dressed} if you feel {=>that would be} better .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- Comma added before \"so\" to introduce new clause.\r\n- Unnecessary hyphen removed in \"well dressed.\" Unless it is before a noun, a compound adjective doesn't usually need a hyphen.\r\n- Unnecessary comma removed after \"well dressed.\"\r\n-NA",
+      "question_values": [
+        "We have n't asked for any special clothes {=>,} so I would wear casual and comfortable clothes , although you can come {well-dressed ,=>well dressed} if you feel {=>that would be} better ."
+      ],
+      "processing_time": 0.0043375492095947266,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTake the 67 route {=>,} and it will take you {just=>right} in front of The Royal Hall .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was inserted as the two phrases are complete and could be independent.\r\n- \"Just\" was replaced with \"right\" as it is more commonly used with the phrase \"in front of.\"",
+      "question_values": [
+        "Take the 67 route {=>,} and it will take you {just=>right} in front of The Royal Hall ."
+      ],
+      "processing_time": 0.004425048828125,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would like to travel in July because during that period I will be free from work {, my=>. My} current post finishes at the end of June {=>,} but I will start another job at the beginning of August .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The comma was changed to a period in order to separate two sentences. \"My\" was capitalized since it is at the beginning of a sentence.\r\n-  A comma was added after \"June\" because \"but\" is separating two independent clauses.",
+      "question_values": [
+        "I would like to travel in July because during that period I will be free from work {, my=>. My} current post finishes at the end of June {=>,} but I will start another job at the beginning of August ."
+      ],
+      "processing_time": 0.003504514694213867,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI was very surprised {,=>} when I saw that singers are n't so sophisticated and self-confident as they are written {=>about} in the newspapers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The comma before \"when\" was deleted \" because there is no comma when the dependent clause comes after the main clause.\r\n- The preposition \"about\" was added after the verb \"written\" because \"about\" carries the meaning of \"on the subject of.\"",
+      "question_values": [
+        "I was very surprised {,=>} when I saw that singers are n't so sophisticated and self-confident as they are written {=>about} in the newspapers ."
+      ],
+      "processing_time": 0.0027282238006591797,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would be grateful if you could put me into the tent side of {accomodation=>accommodation} because I have had all {holidays=>vacations} with my parents in luxury hotels {before=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"accommodation\" fixes a spelling error.\r\n- \"vacations\" is the American English term.",
+      "question_values": [
+        "I would be grateful if you could put me into the tent side of {accomodation=>accommodation} because I have had all {holidays=>vacations} with my parents in luxury hotels {before=>} ."
+      ],
+      "processing_time": 0.002621173858642578,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space {=>,} seen most often after right hemisphere brain injury .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "Hemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space {=>,} seen most often after right hemisphere brain injury ."
+      ],
+      "processing_time": 0.002580404281616211,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut {=>,} this was also the moment when my nightmare started to come alive .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "But {=>,} this was also the moment when my nightmare started to come alive ."
+      ],
+      "processing_time": 0.0025043487548828125,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nEven when precise maps are available , the {length=>distance} measurement is not always clear .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "Even when precise maps are available , the {length=>distance} measurement is not always clear ."
+      ],
+      "processing_time": 0.002496957778930664,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nEndless imagination and {=>the} development of technology will lead us to future fashion .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The determiner is added to improve fluency.",
+      "question_values": [
+        "Endless imagination and {=>the} development of technology will lead us to future fashion ."
+      ],
+      "processing_time": 0.0024728775024414062,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn popular culture , including films such as Rosemary 's Baby , {,=>} The Exorcism of Emily Rose , The Devil Inside {=>,} and The Omen , inverted crosses are often displayed to represent Satan .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The extra comma was removed to avoid two consecutive commas.\r\n- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+      "question_values": [
+        "In popular culture , including films such as Rosemary 's Baby , {,=>} The Exorcism of Emily Rose , The Devil Inside {=>,} and The Omen , inverted crosses are often displayed to represent Satan ."
+      ],
+      "processing_time": 0.002532482147216797,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe was also {surgeon in chief=>surgeon-in-chief} of a division in the Fifteenth Army Corps and of the district of Memphis .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The phrase \"surgeon-in-chief\" was hyphenated. In American English, many occupations are hyphenated to show that all the included words are related to the same job title.",
+      "question_values": [
+        "He was also {surgeon in chief=>surgeon-in-chief} of a division in the Fifteenth Army Corps and of the district of Memphis ."
+      ],
+      "processing_time": 0.003637552261352539,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would rather type some coursework up than {=>to} hand-write it .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The infinitive should not be used here but instead the verb conjugated for the first person singular.",
+      "question_values": [
+        "I would rather type some coursework up than {=>to} hand-write it ."
+      ],
+      "processing_time": 0.0025594234466552734,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut on July 17 , 1999 {=>,} the band did the biggest concert to date , {infront=>in front} of a home {crowed=>crowd} of 45,000 people at Lansdowne Road .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A comma is inserted because it is needed after an introductory phrase.\r\n-The correct spelling is \"in front.\"\r\n-The correct spelling is \"crowd.\"",
+      "question_values": [
+        "But on July 17 , 1999 {=>,} the band did the biggest concert to date , {infront=>in front} of a home {crowed=>crowd} of 45,000 people at Lansdowne Road ."
+      ],
+      "processing_time": 0.002566814422607422,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI look {=>forward} to hearing from you soon .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"forward\" was added because of the high collocation with \"look.\" This edit increases the readability and fluency of the sentence.",
+      "question_values": [
+        "I look {=>forward} to hearing from you soon ."
+      ],
+      "processing_time": 0.002467632293701172,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn 2009 , Tenet {pay=>paid} $ 85 million USD in a class action settlement for not paying overtime after a change in California law {entitled them to overtime=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Pay\" was changed to \"paid\" to match the past tense implied by the prepositional phrase \"in 2009.\"\r\n- \"Entitled them to overtime\" was deleted to avoid redundancy and improve conciseness.",
+      "question_values": [
+        "In 2009 , Tenet {pay=>paid} $ 85 million USD in a class action settlement for not paying overtime after a change in California law {entitled them to overtime=>} ."
+      ],
+      "processing_time": 0.002557039260864258,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPost source decay is a process specific to MALDI ( LDI ) {process=>,} where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "Post source decay is a process specific to MALDI ( LDI ) {process=>,} where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) ."
+      ],
+      "processing_time": 0.0025589466094970703,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut to solve this problem , we {may=>should} think first about its origin {...=>.}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- NA\r\n- Unnecessary ellipsis replaced with single period.",
+      "question_values": [
+        "But to solve this problem , we {may=>should} think first about its origin {...=>.}"
+      ],
+      "processing_time": 0.002480745315551758,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{MITs investigate=>MIT investigates} cases of murder , manslaughter , {=>and} attempted murder where the evidence of intent is unambiguous , or where a risk {assesment=>assessment} identifies {substantative=>substantive} risk to life .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- An \"and\" was added to adhere to the correct grammar for lists.\r\n- \"assessment\" is the correct spelling.\r\n- \"substantive\" is the correct spelling.",
+      "question_values": [
+        "{MITs investigate=>MIT investigates} cases of murder , manslaughter , {=>and} attempted murder where the evidence of intent is unambiguous , or where a risk {assesment=>assessment} identifies {substantative=>substantive} risk to life ."
+      ],
+      "processing_time": 0.0026051998138427734,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{=>\"} Mendel Palace , {=>\"} originally released in Japan as {=>\"Quinty} , {=>\"} is a 1989 action / puzzle arcade game developed by KID and published by Namco .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-These quotation marks are added because what is within them is the title of something.\r\n-These quotation marks are added because what is within them is the title of something.",
+      "question_values": [
+        "{=>\"} Mendel Palace , {=>\"} originally released in Japan as {=>\"Quinty} , {=>\"} is a 1989 action / puzzle arcade game developed by KID and published by Namco ."
+      ],
+      "processing_time": 0.002561807632446289,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWhen the Los Alamos lab was first being {organised=>organized ,} a {descision=>decision} was made by Oppenheimer to not compartmentalize the technical information among different departments .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"Organised\" was substituted for \"organized\" to follow American English spelling conventions.\r\n-The correct spelling is \"decision.\"",
+      "question_values": [
+        "When the Los Alamos lab was first being {organised=>organized ,} a {descision=>decision} was made by Oppenheimer to not compartmentalize the technical information among different departments ."
+      ],
+      "processing_time": 0.002557992935180664,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAmong all these {=>,} the {theatre=>theater} restaurant was closed {,=>} because the {shef=>chef} and the waiters {where=>were} on {holiday=>vacation} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was added after the introductory phrase to improve the clarity of the sentence.\r\n- \"theater\" is the American English spelling of \"theatre.\"\r\n- A comma was removed before \"because\" since the subordinating clause comes after the main clause. A comma might be used if the sentence becomes ambiguous otherwise or if the subordinating clause provides an explanation for the content in the main clause.\r\n- \"shef\" is a misspelling of \"chef.\"\r\n- \"where\" is a misspelling of \"were.\"\r\n- \"vacation\" is preferred in American English over \"holiday.\"",
+      "question_values": [
+        "Among all these {=>,} the {theatre=>theater} restaurant was closed {,=>} because the {shef=>chef} and the waiters {where=>were} on {holiday=>vacation} ."
+      ],
+      "processing_time": 0.002580404281616211,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{\"=>It} aired on TBS Superstation in the 1990s after it was {cancelled ,=>canceled} and was also added to the ABC Family Channel {line-up=>lineup} in the late 1990s / early 2000s .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The quote was changed to \"It\" to create a complete clause.\r\n- \"Cancelled\" was changed to \"canceled\" to reflect the version used more often in American English.\r\n- \"Line-up\" was corrected to the standard \"lineup.\"",
+      "question_values": [
+        "{\"=>It} aired on TBS Superstation in the 1990s after it was {cancelled ,=>canceled} and was also added to the ABC Family Channel {line-up=>lineup} in the late 1990s / early 2000s ."
+      ],
+      "processing_time": 0.003717660903930664,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAlso , I belonged to {=>a} golf club when I {went to=>was in} university in Japan .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- An article was added because the noun it quantifies is a countable noun, which requires an article if it is singular, but it can be omitted if it is plural.",
+      "question_values": [
+        "Also , I belonged to {=>a} golf club when I {went to=>was in} university in Japan ."
+      ],
+      "processing_time": 0.0025179386138916016,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWood 's name is inscribed in one of the base stones of The Sloat Monument {=>,} erected at the Presidio in Monterey , California {=>,} in commemoration of the US Navy 's Pacific Fleet taking {posession=>possession} of California in 1846 .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- 'Possession' is the correct spelling of 'posession.'\r\n- A comma was inserted after 'California.' When a city and state combination is presented in the middle of a sentence, the state must be surrounded by commas.",
+      "question_values": [
+        "Wood 's name is inscribed in one of the base stones of The Sloat Monument {=>,} erected at the Presidio in Monterey , California {=>,} in commemoration of the US Navy 's Pacific Fleet taking {posession=>possession} of California in 1846 ."
+      ],
+      "processing_time": 0.002599954605102539,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThere {xere importants=>were important} rugby matches in the Stadium .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- Corrected misspellings of \"were\" and \"important.\"",
+      "question_values": [
+        "There {xere importants=>were important} rugby matches in the Stadium ."
+      ],
+      "processing_time": 0.0025043487548828125,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nMax talked to her and took Lauren to get her ears {peirced=>pierced} for accepting Bradley .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-This edit corrects the spelling to 'pierced.'",
+      "question_values": [
+        "Max talked to her and took Lauren to get her ears {peirced=>pierced} for accepting Bradley ."
+      ],
+      "processing_time": 0.002492666244506836,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents {=>,} and narco-armies since the country {gain it 's independance=>gained its independence} from Great Britain .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-  A comma was introduced after 'dissidents' because commas must separate every time in a list in American English.\r\n- \"Gain\" was written in its past tense form because the event already occurred.\r\n- \"It's\" was changed to \"its\" to indicate possession as opposed to the contraction \"it is.\"",
+      "question_values": [
+        "The \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents {=>,} and narco-armies since the country {gain it 's independance=>gained its independence} from Great Britain ."
+      ],
+      "processing_time": 0.0025529861450195312,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI find shopping {is=>to be} the most {time consuming=>time-consuming} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"Is\" was changed to \"to be\" because that is the collocation that is often used in \"find + something + adjective\" form.\r\n-A hyphen is added to time consuming when we use the term \"time-consuming\" the adjective in a sentence.",
+      "question_values": [
+        "I find shopping {is=>to be} the most {time consuming=>time-consuming} ."
+      ],
+      "processing_time": 0.0024955272674560547,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAt first I felt really annoyed and disappointed {=>,} so I {run=>ran} to my brother {in order=>} to explain {=>to} him what I had seen .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was inserted before \"so\" because \"so\" functions as a coordinating conjunction combining two independent clauses.\r\n-The verb tense was changed from present tense \"run\" to past tense \"ran\" to maintain the same verb tense throughout the sentence.\r\n- The phrase \"in order\" was deleted to maintain conciseness. \r\n- The preposition \"to\" was added because it is needed before the object \"him.\"",
+      "question_values": [
+        "At first I felt really annoyed and disappointed {=>,} so I {run=>ran} to my brother {in order=>} to explain {=>to} him what I had seen ."
+      ],
+      "processing_time": 0.003756999969482422,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would like to suggest a change in the {programme=>program} by giving up shopping and going to the London Fashion and Leisure Show .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"Programme\" is substituted for \"program\" to follow American English spelling conventions.",
+      "question_values": [
+        "I would like to suggest a change in the {programme=>program} by giving up shopping and going to the London Fashion and Leisure Show ."
+      ],
+      "processing_time": 0.005270481109619141,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nNow the only {think=>thing} I have to do is to go to {=>the} computer room and turn on the computer .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The word that fits this context and is likely intended by the author is 'thing.'\r\n-Common nouns like 'computer room' require articles in English if they are singular, so 'the' is added.",
+      "question_values": [
+        "Now the only {think=>thing} I have to do is to go to {=>the} computer room and turn on the computer ."
+      ],
+      "processing_time": 0.004212617874145508,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn the winter {=>,} you 'll freeze .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "In the winter {=>,} you 'll freeze ."
+      ],
+      "processing_time": 0.0027608871459960938,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAs with GI Joe , during the 60s , Action Man had a {: Image : AMfootlockerLid.JPGwooden=>wooden} footlocker ( Kit locker box ) to store his accessories in .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The phrase is replaced with \"wooden\" to improve conciseness.",
+      "question_values": [
+        "As with GI Joe , during the 60s , Action Man had a {: Image : AMfootlockerLid.JPGwooden=>wooden} footlocker ( Kit locker box ) to store his accessories in ."
+      ],
+      "processing_time": 0.0026192665100097656,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThere are many historical buildings {remain=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The verb \"remain\" is deleted because the sentence already has the auxiliary verb \"are.\" However, if \"remain\" refers to the noun \"remains,\" as in \"remains of historical buildings,\" then this revision is incorrect.",
+      "question_values": [
+        "There are many historical buildings {remain=>} ."
+      ],
+      "processing_time": 0.004157543182373047,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe appears only in the {sidestory=>side story ,\"} Saint Seiya {=>: The} Lost {Canvas=>Canvas,\"} not authored by Masami Kurumada , {=>the status of} which {status=>} as canon is unknown {..=>.}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Sidestory\" was separated to two words: \"side\" and \"story.\"\r\n- A comma and quotation mark was added on either end of the title name. Short story titles should be surrounded by quotation marks. The commas confirm that, while relevant, the story title is not mandatory to include. \r\n- The phrase \"which status\" was restructured to read \"the status of which.\" This change elevates the writing by improving flow and academic quality.\r\n- A pair of periods was reduced to just one period, as is normal.",
+      "question_values": [
+        "He appears only in the {sidestory=>side story ,\"} Saint Seiya {=>: The} Lost {Canvas=>Canvas,\"} not authored by Masami Kurumada , {=>the status of} which {status=>} as canon is unknown {..=>.}"
+      ],
+      "processing_time": 0.0026149749755859375,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTherefore {=>,} we should try to educate ourselves {so as to=>and} respect {altrui in his=>everyone 's} privacy .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was added after \"therefore\" as is typically required when it is at the beginning of a sentence.\r\n- \"So as to\" was changed to \"and\" to make the phrase more concise and improve fluency.",
+      "question_values": [
+        "Therefore {=>,} we should try to educate ourselves {so as to=>and} respect {altrui in his=>everyone 's} privacy ."
+      ],
+      "processing_time": 0.0027244091033935547,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti {=>,} & Somalia , where they made notable geographical explorations and natural history discoveries .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A comma was added before a conjunction joining two clauses.",
+      "question_values": [
+        "The Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti {=>,} & Somalia , where they made notable geographical explorations and natural history discoveries ."
+      ],
+      "processing_time": 0.002626180648803711,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTo sum {=>it} up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"It\" is inserted because an object is needed for the verb \"to sum.\"",
+      "question_values": [
+        "To sum {=>it} up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group ."
+      ],
+      "processing_time": 0.002526521682739258,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn addition , it would be nice if you could send me an address {which=>where} I am going to stay , so that I can keep in touch with my friends and family .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The determiner was changed because \"where\" is used for location.",
+      "question_values": [
+        "In addition , it would be nice if you could send me an address {which=>where} I am going to stay , so that I can keep in touch with my friends and family ."
+      ],
+      "processing_time": 0.002675771713256836,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nCreative Directors rise to become Executive Creative Directors , a position with executive {reponsibility=>responsibility} for the entire creative department .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A spelling error was corrected. The correct spelling is \"responsibility.\"",
+      "question_values": [
+        "Creative Directors rise to become Executive Creative Directors , a position with executive {reponsibility=>responsibility} for the entire creative department ."
+      ],
+      "processing_time": 0.0025589466094970703,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nOn the other hand {=>,} I would like to request all details of {=>the} accommodation and if you could {specifie=>specify} what this trip includes , since I need to know how much money {I have=>} to {take=>bring} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- Comma added after \"On the other hand.\" A comma is usually  needed after transitional phrases like this.\r\n- \"The\" added before \"accommodation\" for clarity.\r\n- Spelling of \"specify\" corrected.\r\n- \"I have\" removed for conciseness.\r\n- NA",
+      "question_values": [
+        "On the other hand {=>,} I would like to request all details of {=>the} accommodation and if you could {specifie=>specify} what this trip includes , since I need to know how much money {I have=>} to {take=>bring} ."
+      ],
+      "processing_time": 0.0025610923767089844,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPsychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism {in=>from} the academic community .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "Psychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism {in=>from} the academic community ."
+      ],
+      "processing_time": 0.0026464462280273438,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nFirst of all , the hotel booked for the group is the Palace Hotel , which is {very=>} impressive in terms of comfort and facilities .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"Very\" was removed from the sentence for conciseness.",
+      "question_values": [
+        "First of all , the hotel booked for the group is the Palace Hotel , which is {very=>} impressive in terms of comfort and facilities ."
+      ],
+      "processing_time": 0.0024912357330322266,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{Discovery=>The discovery} of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities {=>,} and {russian=>Russian} fiction became more entertaining .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The determiner is inserted because \"discovery\" is a singular noun and a determiner is necessary with a singular noun. Due to the determiner being introduced, the capitalization has to change because it alters what word begins the sentence and needs to be capitalized.\r\n-The comma was inserted because it is needed before a conjunction and independent clause.\r\n-This is a capitalization error. \"Russian\" is an adjective based on the name of a country and should be capitalized.",
+      "question_values": [
+        "{Discovery=>The discovery} of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities {=>,} and {russian=>Russian} fiction became more entertaining ."
+      ],
+      "processing_time": 0.0025548934936523438,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIt always happens with people , does n't {=>it} ?\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-It was inserted at the end of the sentence because the tag question \"doesn't it\" is what we usually use.",
+      "question_values": [
+        "It always happens with people , does n't {=>it} ?"
+      ],
+      "processing_time": 0.0027077198028564453,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI went to the \" International Arts Festival \" on {=>November} 21-22 {November=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-This edit puts the month in front of the day because that is the convention in American English.",
+      "question_values": [
+        "I went to the \" International Arts Festival \" on {=>November} 21-22 {November=>} ."
+      ],
+      "processing_time": 0.0036439895629882812,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe restaurant should {had=>have} been {oppened=>opened} when I came out , but it was closed because of the hour the show finished .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Opened\" is the correct spelling of \"oppened.\"\r\n- \"Have\" replaces \"had.\"",
+      "question_values": [
+        "The restaurant should {had=>have} been {oppened=>opened} when I came out , but it was closed because of the hour the show finished ."
+      ],
+      "processing_time": 0.0025243759155273438,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI understood everything he said {=>,} and Sting {said to=>told} me that I {spoken=>spoke English} very well {English=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma should be used when a conjunction joins two clauses.\r\n-While \"said to me\" is acceptable, \"told\" is used more commonly in this context.\r\n-\"spoken\" is a participle, in this case, it should be in past tense, not participle form.\r\n-\"English\" should immediately follow \"spoke\" as it is the object of the verb.",
+      "question_values": [
+        "I understood everything he said {=>,} and Sting {said to=>told} me that I {spoken=>spoke English} very well {English=>} ."
+      ],
+      "processing_time": 0.002710103988647461,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked {ever=>even} more German cities from 1942 until Germany surrendered .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The word \"ever\" was replaced with \"even\" because the context shows that the sentence is referring to \"even more German cities.\"",
+      "question_values": [
+        "The weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked {ever=>even} more German cities from 1942 until Germany surrendered ."
+      ],
+      "processing_time": 0.002504587173461914,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAs well as touring Europe , Japan , and Australia , they {toured=>played} with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer {=>,} and Ozma .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+      "question_values": [
+        "As well as touring Europe , Japan , and Australia , they {toured=>played} with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer {=>,} and Ozma ."
+      ],
+      "processing_time": 0.0025491714477539062,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTherefore , if you want to learn something about the Olympic Games , it must be the best place for {this=>that} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The word \"this\" was replaced with \"that\" because \"that\" functions as a substitute for \"knowledge about the Olympic Games.\"",
+      "question_values": [
+        "Therefore , if you want to learn something about the Olympic Games , it must be the best place for {this=>that} ."
+      ],
+      "processing_time": 0.0027008056640625,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nRobert 's film \" Leave , \" a psychological thriller {,=>} starring Frank John , Hughes , Rick Gomez , {Vinessa=>Vanessa} Shaw , Bryan Cranston {=>,} and Ron Livingston is due out in 2010 .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was removed after \"thriller\" as the following information is essential to the main clause.\r\n- The name \"Vinessa\" was corrected to \"Vanessa\" as this may have been a spelling error.\r\n- A comma was inserted as the list is a series of names.",
+      "question_values": [
+        "Robert 's film \" Leave , \" a psychological thriller {,=>} starring Frank John , Hughes , Rick Gomez , {Vinessa=>Vanessa} Shaw , Bryan Cranston {=>,} and Ron Livingston is due out in 2010 ."
+      ],
+      "processing_time": 0.0025594234466552734,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPolish Brethren , Antitrinitians , Arians , or Socinians {was=>were} the {name=>names} of a Polish sect from 16th century .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The verb was replaced with \"were\" to fulfill subject-verb agreement.\r\n-The noun was pluralized to fulfill number agreement with the listed, multiple names.",
+      "question_values": [
+        "Polish Brethren , Antitrinitians , Arians , or Socinians {was=>were} the {name=>names} of a Polish sect from 16th century ."
+      ],
+      "processing_time": 0.0025436878204345703,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHowever , some elements , such as iron , readily {forms=>form} iron oxide , or rust , at standard conditions {for=>with} temperature and pressure .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The verb form is changed to agree with the subject.\r\n-The preposition was changed. This is a stylistic edit.",
+      "question_values": [
+        "However , some elements , such as iron , readily {forms=>form} iron oxide , or rust , at standard conditions {for=>with} temperature and pressure ."
+      ],
+      "processing_time": 0.0026853084564208984,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWill I be going out much , or just {stay in=>staying at} Camp California {all=>} the {=>whole} time ?\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Stay in\" was changed to \"staying at.\" The gerund form of the verb 'stay' was used to create parallelism with 'going out.' The prepositions 'in' and 'at' both refer to location, but 'in' is more general while 'at' is more specific.\r\n- The phrase \"all the time\" is changed to \"the whole time.\" This is an optional change, and the meanings are nearly identical in this context.",
+      "question_values": [
+        "Will I be going out much , or just {stay in=>staying at} Camp California {all=>} the {=>whole} time ?"
+      ],
+      "processing_time": 0.0025131702423095703,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut , it 's not easy for workers , because the shops close their doors {=>at} about {5.30=>5 : 30} pm ( half past five ) .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The preposition \"at\" was added because \"at\" is used to discuss a specific time frame.\r\n-To indicate time, the period was changed to a colon to separate hours and minutes.",
+      "question_values": [
+        "But , it 's not easy for workers , because the shops close their doors {=>at} about {5.30=>5 : 30} pm ( half past five ) ."
+      ],
+      "processing_time": 0.002555370330810547,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn the {=>summer of} 2008 {summer=>,} Roberge signed for Greek {side=>club ,} Aris Thessaloniki FC , penning a three-year contract .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Summer of\" was inserted before \"2008\" and \"summer\" was removed from after \"2008\" to produce the phrase, \"summer of 2008.\" This slight change improved the natural flow of the sentence.\r\n- A comma was inserted before \"Aris\" to separate a name.",
+      "question_values": [
+        "In the {=>summer of} 2008 {summer=>,} Roberge signed for Greek {side=>club ,} Aris Thessaloniki FC , penning a three-year contract ."
+      ],
+      "processing_time": 0.0029306411743164062,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{ddddddThe=>The} first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The correct spelling is \"The.\"",
+      "question_values": [
+        "{ddddddThe=>The} first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 ."
+      ],
+      "processing_time": 0.005851268768310547,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nFor spring 2009 they focused on touring Canada , while also playing some concerts in the {north-eastern=>Northeastern} US .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- Changing \"north-eastern\" fixes a spelling error, and it is capitalized because it is referring to a well-known areas in the country.",
+      "question_values": [
+        "For spring 2009 they focused on touring Canada , while also playing some concerts in the {north-eastern=>Northeastern} US ."
+      ],
+      "processing_time": 0.00453639030456543,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBoth of them are my favorite sports {=>,} and I 'm quite good .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was added because \"and\" is separating two independent clauses.",
+      "question_values": [
+        "Both of them are my favorite sports {=>,} and I 'm quite good ."
+      ],
+      "processing_time": 0.006983041763305664,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIf any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law {=>,} and could be fined $ 2,500 for every download .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-Added a comma, which is necessary before a conjunction joining two independent clauses.",
+      "question_values": [
+        "If any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law {=>,} and could be fined $ 2,500 for every download ."
+      ],
+      "processing_time": 0.0053253173828125,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{As well as=>In addition to} this , the stars should n't {complaint=>complain} at any time about their fans and their {lost=>loss} of privacy .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"complaint\" was changed to \"complain\" because a verb is required after \"shouldn't.\"\r\n- \"lost\" was changed to \"loss\" because a noun is required after \"their.\"",
+      "question_values": [
+        "{As well as=>In addition to} this , the stars should n't {complaint=>complain} at any time about their fans and their {lost=>loss} of privacy ."
+      ],
+      "processing_time": 0.004046916961669922,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAlso {Iternet=>the Internet} has influence on my daily life , {beause=>because} I can find {there=>} many interesting things , or I can meet with people from all over the world {=>,} which is exciting for me .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"The\" added before \"internet.\" The word usually appears with \"the.\"\r\n- Spelling of \"internet\" corrected.\r\n- Spelling of \"because\" corrected.\r\n- \"There\" removed for clarity and conciseness.\r\n- Comma added before \"which.\" A comma is frequently used to introduce this type of clause.",
+      "question_values": [
+        "Also {Iternet=>the Internet} has influence on my daily life , {beause=>because} I can find {there=>} many interesting things , or I can meet with people from all over the world {=>,} which is exciting for me ."
+      ],
+      "processing_time": 0.004347324371337891,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nMusic , sports , {the theatre=>theater ,} and other {students=>student} activities help create a healthy and balanced environment .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"The theatre\" was changed to \"theater ,\" as the later is the standard American English spelling. \r\n- \"Students\" was changed to \"student\" as it is being used as to describe the noun \"activities.\"",
+      "question_values": [
+        "Music , sports , {the theatre=>theater ,} and other {students=>student} activities help create a healthy and balanced environment ."
+      ],
+      "processing_time": 0.005611896514892578,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nNagase has dated J-Pop singer and former actress {=>,} Ayumi Hamasaki {=>,} since the beginning of both of their acting careers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A comma was inserted before and after the name \"Ayumi Hamasaki\" to separate this nonessential phrase, which provides extra information, from the main clause.",
+      "question_values": [
+        "Nagase has dated J-Pop singer and former actress {=>,} Ayumi Hamasaki {=>,} since the beginning of both of their acting careers ."
+      ],
+      "processing_time": 0.003665924072265625,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe intensity of the fighting had lead to a severe shortage of ammunition among the defenders {, and=>;} attempts to resupply the Australians were plagued by heavy shelling .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The comma and coordinating conjunction were replaced with a semicolon. Both options of combining two independent clauses are acceptable.",
+      "question_values": [
+        "The intensity of the fighting had lead to a severe shortage of ammunition among the defenders {, and=>;} attempts to resupply the Australians were plagued by heavy shelling ."
+      ],
+      "processing_time": 0.003316640853881836,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe {=>websites of the} two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , {had their websites=>} immediately stalled {by=>due to} web traffic immediately after the announcement .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-This stylistic edit makes the sentence active voice, which is often preferable.\r\n-This stylistic edit fits \"web traffic\" better because \"web traffic\" isn't an agent.",
+      "question_values": [
+        "The {=>websites of the} two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , {had their websites=>} immediately stalled {by=>due to} web traffic immediately after the announcement ."
+      ],
+      "processing_time": 0.003449678421020508,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe PAL versions of the console looked identical to the Japanese Super Famicom , except for {labelling=>the label} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Labelling\" was changed to \"label.\" First, \"labelling\" is not a spelling choice in American English. Secondly, the noun form of this word is a better choice. \"The\" was added as a determiner for this singular noun.",
+      "question_values": [
+        "The PAL versions of the console looked identical to the Japanese Super Famicom , except for {labelling=>the label} ."
+      ],
+      "processing_time": 0.004073143005371094,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn the first two years of international competition , Cyprus {have=>has} managed to {=>lose} only {loss=>} one match {, an=>and} promotion / relegation playoff away to Israel .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Has\" replaces \"have\" because the noun to which it refers is singular. \r\n- The verb \"lose\" is inserted in place of the noun \"loss,\" as the verb is needed to state the purpose.\r\n- A comma is removed because the following phrase is dependent on the previous phrase.\r\n- \"And\" is the correct spelling of \"an.\"",
+      "question_values": [
+        "In the first two years of international competition , Cyprus {have=>has} managed to {=>lose} only {loss=>} one match {, an=>and} promotion / relegation playoff away to Israel ."
+      ],
+      "processing_time": 0.006047248840332031,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe was born in Brunswick Square , London in 1821 , his father Jonathan Dawson {=>,} being Principal of the Baptist Seminary .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "He was born in Brunswick Square , London in 1821 , his father Jonathan Dawson {=>,} being Principal of the Baptist Seminary ."
+      ],
+      "processing_time": 0.0045735836029052734,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHowever \" Megamind \" won the weekend earning earning $ 30 million to \" {Unstoppable=>Unstoppable's} \" {'s=>} $ 23.9 million .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The apostrophe \"'s\" outside the double quotation marks was placed inside the quotation marks because the possessive noun is formed by adding the apostrophe \"'s\" to the noun,  as in \"Unstoppable's.\"",
+      "question_values": [
+        "However \" Megamind \" won the weekend earning earning $ 30 million to \" {Unstoppable=>Unstoppable's} \" {'s=>} $ 23.9 million ."
+      ],
+      "processing_time": 0.003667593002319336,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{we=>We} do n't think that {there is=>,} less {of=>than} a hundred years {=>ago} , {nothing=>none} of that existed .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The first word of the sentence was capitalized.\r\n- The phrase \"there is\" was removed and replaced with a comma to introduce a clause with extra detail about the main subject.\r\n- The preposition \"of\" was replaced with \"than.\" This construction gives a sense of comparison and emphasis.\r\n- The word \"ago\" was added to convey the sense of projection backward in time.",
+      "question_values": [
+        "{we=>We} do n't think that {there is=>,} less {of=>than} a hundred years {=>ago} , {nothing=>none} of that existed ."
+      ],
+      "processing_time": 0.0032470226287841797,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{Home grown=>Home-grown} talent , like quarterbacks Tony Adams and Danny White {=>,} quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A hyphen was added to \"home-grown.\" Hyphens are required for compound adjectives when they are before a noun.\r\n- A comma was added after \"Danny White.\" It is generally required that there be commas on both sides of phrases starting with \"like\" when they give specifics in cases like this.",
+      "question_values": [
+        "{Home grown=>Home-grown} talent , like quarterbacks Tony Adams and Danny White {=>,} quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys ."
+      ],
+      "processing_time": 0.002956390380859375,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThese officials {then=>} take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"Then\" was removed from the sentence since we usually use \"then\" to convey that this action happened after a previous action.",
+      "question_values": [
+        "These officials {then=>} take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David ."
+      ],
+      "processing_time": 0.0033435821533203125,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn my opinion , shopping is {like=>} relaxing .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"Like\" is deleted to improve conciseness.",
+      "question_values": [
+        "In my opinion , shopping is {like=>} relaxing ."
+      ],
+      "processing_time": 0.0031995773315429688,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBenoni 's school is a {recognised=>recognized} school for tourism located in the heart of Brussels , Belgium .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "\"Recognized\" is the American English spelling of \"recognised.\"",
+      "question_values": [
+        "Benoni 's school is a {recognised=>recognized} school for tourism located in the heart of Brussels , Belgium ."
+      ],
+      "processing_time": 0.002748250961303711,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWhether Schumann found it unnecessary to specify {Metronome=>metronome} speeds for the second and fourth movements is unknown .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Metronome\" is used as a common noun. Common nouns do not need to be capitalized.",
+      "question_values": [
+        "Whether Schumann found it unnecessary to specify {Metronome=>metronome} speeds for the second and fourth movements is unknown ."
+      ],
+      "processing_time": 0.0025637149810791016,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nFirstly , I wanted to see DANN BLOCK playing {=>,} as your advertisement already said , but there was a different actor instead of him {at=>} that evening .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A comma is needed when a conjunction joins two clauses.\r\n-\"that evening\" is idiomatically acting as an adverb, so a preposition is not needed, and \"at\" has been removed.",
+      "question_values": [
+        "Firstly , I wanted to see DANN BLOCK playing {=>,} as your advertisement already said , but there was a different actor instead of him {at=>} that evening ."
+      ],
+      "processing_time": 0.002595186233520508,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nLamson had {learnt=>learned} about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Learnt\" was changed to the American English Standard \"learned.\"",
+      "question_values": [
+        "Lamson had {learnt=>learned} about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days ."
+      ],
+      "processing_time": 0.0026149749755859375,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPreviously , the city was the provincial capital of Arachosia {=>,} and was ruled by the Achaemenid Empire .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "",
+      "question_values": [
+        "Previously , the city was the provincial capital of Arachosia {=>,} and was ruled by the Achaemenid Empire ."
+      ],
+      "processing_time": 0.002550840377807617,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIt was the very last day of my trip {=>,} and at that time I was in Kyoto .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A comma was inserted before the conjunction \"and.\" We use commas before conjunctions in order to join two independent clauses.",
+      "question_values": [
+        "It was the very last day of my trip {=>,} and at that time I was in Kyoto ."
+      ],
+      "processing_time": 0.002502918243408203,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWe {=>would} also {would=>} like to have a history {on=>lesson} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The word order was changed to improve the fluency and clarity of the sentence. So \"also would like\" was changed to \"would also like.\"\r\n- The preposition \"on\" was replaced with the noun \"lesson\" because the noun phrase needs to have a noun.",
+      "question_values": [
+        "We {=>would} also {would=>} like to have a history {on=>lesson} ."
+      ],
+      "processing_time": 0.003668546676635742,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe was very {out spoken=>outspoken} on his views and known for {self mutalation=>self-mutilation} during live shows .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The words \"out\" and \"spoken\" were combined to produce the correctly spelled \"outspoken.\"\r\n- The words \"self\" and \"mutalation\" were hyphenated to produce the correctly spelled \"self-mutilation.\"",
+      "question_values": [
+        "He was very {out spoken=>outspoken} on his views and known for {self mutalation=>self-mutilation} during live shows ."
+      ],
+      "processing_time": 0.0025398731231689453,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHowever , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing {along=>around} 38 of Shi {Hu=>Hu's} grandsons and the rest of the Shi clan .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-\"along\" was replaced with the more sensible \"around.\"\r\n-\"Hu\" was made into a possessive.",
+      "question_values": [
+        "However , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing {along=>around} 38 of Shi {Hu=>Hu's} grandsons and the rest of the Shi clan ."
+      ],
+      "processing_time": 0.0025370121002197266,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThese tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they {succeded=>succeeded} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Succeeded\" is the correct spelling of \"succeded.\"",
+      "question_values": [
+        "These tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they {succeded=>succeeded} ."
+      ],
+      "processing_time": 0.0024695396423339844,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nKuklinski was the chief of a planning division of the Polish army {,=>} and {was=>} a {liason=>liaison} between the Polish army and the Russian military .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The comma was removed because the second half of the sentence does not have a new subject.\r\n- \"Liaison\" is the correct spelling of \"liason.\"",
+      "question_values": [
+        "Kuklinski was the chief of a planning division of the Polish army {,=>} and {was=>} a {liason=>liaison} between the Polish army and the Russian military ."
+      ],
+      "processing_time": 0.002538442611694336,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nCovering an area of more than {2104=>2,104} acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation {Golf=>golf} course {=>,} and other features .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-This edit adds a comma to delineate the thousands place in this number.\r\n-This edit makes 'golf' lower case because it is a common noun.\r\n-This edit adds an Oxford comma because it is Grammarly's preferred convention.",
+      "question_values": [
+        "Covering an area of more than {2104=>2,104} acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation {Golf=>golf} course {=>,} and other features ."
+      ],
+      "processing_time": 0.003373384475708008,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{K '=>K'} and Maxima are once again separated from their teammates {,=>} but are joined {Whip=>by Whip,} who joins them after revealing her identity to K ' .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-An unnecessary space before an apostrophe has been removed.\r\n-A comma was added before a conjunction joining two clauses.\r\n-The preposition \"by\" was added since \"join\" can't take an object.",
+      "question_values": [
+        "{K '=>K'} and Maxima are once again separated from their teammates {,=>} but are joined {Whip=>by Whip,} who joins them after revealing her identity to K ' ."
+      ],
+      "processing_time": 0.003616809844970703,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe 4Music stage will also host loads of exclusive short sets from {up and coming=>up-and-coming} bands that they reckon are going to be huge this time next year .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- As three words that come before the noun and function together as an adjective to describe \"bands,\" \"up and coming\" were combined and hyphenated to produce \"up-and-coming.\"",
+      "question_values": [
+        "The 4Music stage will also host loads of exclusive short sets from {up and coming=>up-and-coming} bands that they reckon are going to be huge this time next year ."
+      ],
+      "processing_time": 0.0028066635131835938,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI also wanted to know if I {have=>need} to take some money to buy souvenirs and food {=>,} or {=>will} that {will=>} be paid for {me=>} , too ?\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma was inserted to separate two independent questions within the sentence.\r\n- \"That will\" was changed to \"will that\" because in English, the question word always comes first.",
+      "question_values": [
+        "I also wanted to know if I {have=>need} to take some money to buy souvenirs and food {=>,} or {=>will} that {will=>} be paid for {me=>} , too ?"
+      ],
+      "processing_time": 0.0027637481689453125,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWith the help of {some=>} modern technology {=>,} our daily life {would=>will} not {=>be} so difficult .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"some\" was removed because it's not necessary and removing it improves the flow of the sentence.\r\n- A comma was added after technology because commas are added after introductory phrases in English. \r\n- \"be\" was added because a verb is needed to make the sentence grammatical.",
+      "question_values": [
+        "With the help of {some=>} modern technology {=>,} our daily life {would=>will} not {=>be} so difficult ."
+      ],
+      "processing_time": 0.0030934810638427734,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe Soviet view was that as efforts to {'=>\"} surround {'=>\"} Hitler failed , and as the {western=>Western} powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some {accomodation=>arrangement} had to be reached with Germany in order to buy time .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-These two edits replace the single quotes 'surround' had been in with full quotes because it is a direct quote.\r\n-'Western' is capitalized here because it is a proper noun.\r\n-This is an optional stylistic edit that chooses to use 'arrangement' here for unclear reasons.",
+      "question_values": [
+        "The Soviet view was that as efforts to {'=>\"} surround {'=>\"} Hitler failed , and as the {western=>Western} powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some {accomodation=>arrangement} had to be reached with Germany in order to buy time ."
+      ],
+      "processing_time": 0.002828359603881836,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBourne is next seen on a train {travelling=>, traveling} from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- \"Traveling\" is the American English standard of spelling for \"travelling.\"",
+      "question_values": [
+        "Bourne is next seen on a train {travelling=>, traveling} from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand ."
+      ],
+      "processing_time": 0.0028009414672851562,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{Lemon grass=>Lemongrass} is {=>a} widely used {as a=>} herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- The unnecessary space between \"lemon\" and \"grass\" in the compound word \"lemongrass\" was removed.\r\n- The sentence was corrected for clarity. Instead of stating that it is \"widely used as a herb,\" the corrected form states that it is \"a widely used herb.\"",
+      "question_values": [
+        "{Lemon grass=>Lemongrass} is {=>a} widely used {as a=>} herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking ."
+      ],
+      "processing_time": 0.0042765140533447266,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nEddie Keith Bonine ( born June 6 , {1981=>1981,} in Columbus , Georgia ) is {=>a} Major League Baseball starting pitcher for the Detroit Tigers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-A comma is added after the year because when using the month-date-year format, a comma is required after the year.\r\n- Indefinite article \"a\" is inserted before the singular noun \"Major League Baseball starting pitcher.\"",
+      "question_values": [
+        "Eddie Keith Bonine ( born June 6 , {1981=>1981,} in Columbus , Georgia ) is {=>a} Major League Baseball starting pitcher for the Detroit Tigers ."
+      ],
+      "processing_time": 0.002736806869506836,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTales about the Bakunawa say that it is the cause {=>of} eclipses .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-This edit inserted a preposition to be grammatical.",
+      "question_values": [
+        "Tales about the Bakunawa say that it is the cause {=>of} eclipses ."
+      ],
+      "processing_time": 0.0027256011962890625,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAround 185 million people live in the catchment area of the rivers that flow into the North Sea {=>,} encompassing some highly industrialized areas .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "- A comma is inserted before \"encompassing\" to mark the beginning of a nonrestrictive clause that includes nonessential information.",
+      "question_values": [
+        "Around 185 million people live in the catchment area of the rivers that flow into the North Sea {=>,} encompassing some highly industrialized areas ."
+      ],
+      "processing_time": 0.002599000930786133,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{That=>At that} time {=>,} I met the magic world of computers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "Error: 'MistralAttention' object has no attribute 'apply_qkv'",
+      "expected_output": "-The preposition \"at\" should be used to indicate that what follows happened during \"that time.\"\r\n-This is an introductory phrase, so it should be followed by a comma.",
+      "question_values": [
+        "{That=>At that} time {=>,} I met the magic world of computers ."
+      ],
+      "processing_time": 0.0026772022247314453,
+      "success": false,
+      "error": "'MistralAttention' object has no attribute 'apply_qkv'"
+    }
+  ],
+  "expected_outputs": [
+    "- \"What\" was inserted to link \"that\" and \"the advertisement had shown.\"",
+    "- The spelling of the word \"labor\" was corrected to conform to American English spelling.\r\n- A spelling error was corrected. The correct spelling is \"succeeded.\"",
+    "- Comma added before \"so\" to introduce new clause.\r\n- Unnecessary hyphen removed in \"well dressed.\" Unless it is before a noun, a compound adjective doesn't usually need a hyphen.\r\n- Unnecessary comma removed after \"well dressed.\"\r\n-NA",
+    "- A comma was inserted as the two phrases are complete and could be independent.\r\n- \"Just\" was replaced with \"right\" as it is more commonly used with the phrase \"in front of.\"",
+    "- The comma was changed to a period in order to separate two sentences. \"My\" was capitalized since it is at the beginning of a sentence.\r\n-  A comma was added after \"June\" because \"but\" is separating two independent clauses.",
+    "- The comma before \"when\" was deleted \" because there is no comma when the dependent clause comes after the main clause.\r\n- The preposition \"about\" was added after the verb \"written\" because \"about\" carries the meaning of \"on the subject of.\"",
+    "- \"accommodation\" fixes a spelling error.\r\n- \"vacations\" is the American English term.",
+    "",
+    "",
+    "",
+    "-The determiner is added to improve fluency.",
+    "- The extra comma was removed to avoid two consecutive commas.\r\n- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+    "- The phrase \"surgeon-in-chief\" was hyphenated. In American English, many occupations are hyphenated to show that all the included words are related to the same job title.",
+    "-The infinitive should not be used here but instead the verb conjugated for the first person singular.",
+    "-A comma is inserted because it is needed after an introductory phrase.\r\n-The correct spelling is \"in front.\"\r\n-The correct spelling is \"crowd.\"",
+    "- \"forward\" was added because of the high collocation with \"look.\" This edit increases the readability and fluency of the sentence.",
+    "- \"Pay\" was changed to \"paid\" to match the past tense implied by the prepositional phrase \"in 2009.\"\r\n- \"Entitled them to overtime\" was deleted to avoid redundancy and improve conciseness.",
+    "",
+    "- NA\r\n- Unnecessary ellipsis replaced with single period.",
+    "- An \"and\" was added to adhere to the correct grammar for lists.\r\n- \"assessment\" is the correct spelling.\r\n- \"substantive\" is the correct spelling.",
+    "-These quotation marks are added because what is within them is the title of something.\r\n-These quotation marks are added because what is within them is the title of something.",
+    "-\"Organised\" was substituted for \"organized\" to follow American English spelling conventions.\r\n-The correct spelling is \"decision.\"",
+    "- A comma was added after the introductory phrase to improve the clarity of the sentence.\r\n- \"theater\" is the American English spelling of \"theatre.\"\r\n- A comma was removed before \"because\" since the subordinating clause comes after the main clause. A comma might be used if the sentence becomes ambiguous otherwise or if the subordinating clause provides an explanation for the content in the main clause.\r\n- \"shef\" is a misspelling of \"chef.\"\r\n- \"where\" is a misspelling of \"were.\"\r\n- \"vacation\" is preferred in American English over \"holiday.\"",
+    "- The quote was changed to \"It\" to create a complete clause.\r\n- \"Cancelled\" was changed to \"canceled\" to reflect the version used more often in American English.\r\n- \"Line-up\" was corrected to the standard \"lineup.\"",
+    "- An article was added because the noun it quantifies is a countable noun, which requires an article if it is singular, but it can be omitted if it is plural.",
+    "- 'Possession' is the correct spelling of 'posession.'\r\n- A comma was inserted after 'California.' When a city and state combination is presented in the middle of a sentence, the state must be surrounded by commas.",
+    "- Corrected misspellings of \"were\" and \"important.\"",
+    "-This edit corrects the spelling to 'pierced.'",
+    "-  A comma was introduced after 'dissidents' because commas must separate every time in a list in American English.\r\n- \"Gain\" was written in its past tense form because the event already occurred.\r\n- \"It's\" was changed to \"its\" to indicate possession as opposed to the contraction \"it is.\"",
+    "-\"Is\" was changed to \"to be\" because that is the collocation that is often used in \"find + something + adjective\" form.\r\n-A hyphen is added to time consuming when we use the term \"time-consuming\" the adjective in a sentence.",
+    "- A comma was inserted before \"so\" because \"so\" functions as a coordinating conjunction combining two independent clauses.\r\n-The verb tense was changed from present tense \"run\" to past tense \"ran\" to maintain the same verb tense throughout the sentence.\r\n- The phrase \"in order\" was deleted to maintain conciseness. \r\n- The preposition \"to\" was added because it is needed before the object \"him.\"",
+    "-\"Programme\" is substituted for \"program\" to follow American English spelling conventions.",
+    "-The word that fits this context and is likely intended by the author is 'thing.'\r\n-Common nouns like 'computer room' require articles in English if they are singular, so 'the' is added.",
+    "",
+    "- The phrase is replaced with \"wooden\" to improve conciseness.",
+    "- The verb \"remain\" is deleted because the sentence already has the auxiliary verb \"are.\" However, if \"remain\" refers to the noun \"remains,\" as in \"remains of historical buildings,\" then this revision is incorrect.",
+    "- \"Sidestory\" was separated to two words: \"side\" and \"story.\"\r\n- A comma and quotation mark was added on either end of the title name. Short story titles should be surrounded by quotation marks. The commas confirm that, while relevant, the story title is not mandatory to include. \r\n- The phrase \"which status\" was restructured to read \"the status of which.\" This change elevates the writing by improving flow and academic quality.\r\n- A pair of periods was reduced to just one period, as is normal.",
+    "- A comma was added after \"therefore\" as is typically required when it is at the beginning of a sentence.\r\n- \"So as to\" was changed to \"and\" to make the phrase more concise and improve fluency.",
+    "-A comma was added before a conjunction joining two clauses.",
+    "-\"It\" is inserted because an object is needed for the verb \"to sum.\"",
+    "-The determiner was changed because \"where\" is used for location.",
+    "-A spelling error was corrected. The correct spelling is \"responsibility.\"",
+    "- Comma added after \"On the other hand.\" A comma is usually  needed after transitional phrases like this.\r\n- \"The\" added before \"accommodation\" for clarity.\r\n- Spelling of \"specify\" corrected.\r\n- \"I have\" removed for conciseness.\r\n- NA",
+    "",
+    "-\"Very\" was removed from the sentence for conciseness.",
+    "-The determiner is inserted because \"discovery\" is a singular noun and a determiner is necessary with a singular noun. Due to the determiner being introduced, the capitalization has to change because it alters what word begins the sentence and needs to be capitalized.\r\n-The comma was inserted because it is needed before a conjunction and independent clause.\r\n-This is a capitalization error. \"Russian\" is an adjective based on the name of a country and should be capitalized.",
+    "-It was inserted at the end of the sentence because the tag question \"doesn't it\" is what we usually use.",
+    "-This edit puts the month in front of the day because that is the convention in American English.",
+    "- \"Opened\" is the correct spelling of \"oppened.\"\r\n- \"Have\" replaces \"had.\"",
+    "- A comma should be used when a conjunction joins two clauses.\r\n-While \"said to me\" is acceptable, \"told\" is used more commonly in this context.\r\n-\"spoken\" is a participle, in this case, it should be in past tense, not participle form.\r\n-\"English\" should immediately follow \"spoke\" as it is the object of the verb.",
+    "- The word \"ever\" was replaced with \"even\" because the context shows that the sentence is referring to \"even more German cities.\"",
+    "- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+    "- The word \"this\" was replaced with \"that\" because \"that\" functions as a substitute for \"knowledge about the Olympic Games.\"",
+    "- A comma was removed after \"thriller\" as the following information is essential to the main clause.\r\n- The name \"Vinessa\" was corrected to \"Vanessa\" as this may have been a spelling error.\r\n- A comma was inserted as the list is a series of names.",
+    "-The verb was replaced with \"were\" to fulfill subject-verb agreement.\r\n-The noun was pluralized to fulfill number agreement with the listed, multiple names.",
+    "-The verb form is changed to agree with the subject.\r\n-The preposition was changed. This is a stylistic edit.",
+    "- \"Stay in\" was changed to \"staying at.\" The gerund form of the verb 'stay' was used to create parallelism with 'going out.' The prepositions 'in' and 'at' both refer to location, but 'in' is more general while 'at' is more specific.\r\n- The phrase \"all the time\" is changed to \"the whole time.\" This is an optional change, and the meanings are nearly identical in this context.",
+    "- The preposition \"at\" was added because \"at\" is used to discuss a specific time frame.\r\n-To indicate time, the period was changed to a colon to separate hours and minutes.",
+    "- \"Summer of\" was inserted before \"2008\" and \"summer\" was removed from after \"2008\" to produce the phrase, \"summer of 2008.\" This slight change improved the natural flow of the sentence.\r\n- A comma was inserted before \"Aris\" to separate a name.",
+    "-The correct spelling is \"The.\"",
+    "- Changing \"north-eastern\" fixes a spelling error, and it is capitalized because it is referring to a well-known areas in the country.",
+    "- A comma was added because \"and\" is separating two independent clauses.",
+    "-Added a comma, which is necessary before a conjunction joining two independent clauses.",
+    "- \"complaint\" was changed to \"complain\" because a verb is required after \"shouldn't.\"\r\n- \"lost\" was changed to \"loss\" because a noun is required after \"their.\"",
+    "- \"The\" added before \"internet.\" The word usually appears with \"the.\"\r\n- Spelling of \"internet\" corrected.\r\n- Spelling of \"because\" corrected.\r\n- \"There\" removed for clarity and conciseness.\r\n- Comma added before \"which.\" A comma is frequently used to introduce this type of clause.",
+    "- \"The theatre\" was changed to \"theater ,\" as the later is the standard American English spelling. \r\n- \"Students\" was changed to \"student\" as it is being used as to describe the noun \"activities.\"",
+    "-A comma was inserted before and after the name \"Ayumi Hamasaki\" to separate this nonessential phrase, which provides extra information, from the main clause.",
+    "- The comma and coordinating conjunction were replaced with a semicolon. Both options of combining two independent clauses are acceptable.",
+    "-This stylistic edit makes the sentence active voice, which is often preferable.\r\n-This stylistic edit fits \"web traffic\" better because \"web traffic\" isn't an agent.",
+    "- \"Labelling\" was changed to \"label.\" First, \"labelling\" is not a spelling choice in American English. Secondly, the noun form of this word is a better choice. \"The\" was added as a determiner for this singular noun.",
+    "- \"Has\" replaces \"have\" because the noun to which it refers is singular. \r\n- The verb \"lose\" is inserted in place of the noun \"loss,\" as the verb is needed to state the purpose.\r\n- A comma is removed because the following phrase is dependent on the previous phrase.\r\n- \"And\" is the correct spelling of \"an.\"",
+    "",
+    "- The apostrophe \"'s\" outside the double quotation marks was placed inside the quotation marks because the possessive noun is formed by adding the apostrophe \"'s\" to the noun,  as in \"Unstoppable's.\"",
+    "- The first word of the sentence was capitalized.\r\n- The phrase \"there is\" was removed and replaced with a comma to introduce a clause with extra detail about the main subject.\r\n- The preposition \"of\" was replaced with \"than.\" This construction gives a sense of comparison and emphasis.\r\n- The word \"ago\" was added to convey the sense of projection backward in time.",
+    "- A hyphen was added to \"home-grown.\" Hyphens are required for compound adjectives when they are before a noun.\r\n- A comma was added after \"Danny White.\" It is generally required that there be commas on both sides of phrases starting with \"like\" when they give specifics in cases like this.",
+    "-\"Then\" was removed from the sentence since we usually use \"then\" to convey that this action happened after a previous action.",
+    "-\"Like\" is deleted to improve conciseness.",
+    "\"Recognized\" is the American English spelling of \"recognised.\"",
+    "- \"Metronome\" is used as a common noun. Common nouns do not need to be capitalized.",
+    "-A comma is needed when a conjunction joins two clauses.\r\n-\"that evening\" is idiomatically acting as an adverb, so a preposition is not needed, and \"at\" has been removed.",
+    "- \"Learnt\" was changed to the American English Standard \"learned.\"",
+    "",
+    "-A comma was inserted before the conjunction \"and.\" We use commas before conjunctions in order to join two independent clauses.",
+    "- The word order was changed to improve the fluency and clarity of the sentence. So \"also would like\" was changed to \"would also like.\"\r\n- The preposition \"on\" was replaced with the noun \"lesson\" because the noun phrase needs to have a noun.",
+    "- The words \"out\" and \"spoken\" were combined to produce the correctly spelled \"outspoken.\"\r\n- The words \"self\" and \"mutalation\" were hyphenated to produce the correctly spelled \"self-mutilation.\"",
+    "-\"along\" was replaced with the more sensible \"around.\"\r\n-\"Hu\" was made into a possessive.",
+    "- \"Succeeded\" is the correct spelling of \"succeded.\"",
+    "- The comma was removed because the second half of the sentence does not have a new subject.\r\n- \"Liaison\" is the correct spelling of \"liason.\"",
+    "-This edit adds a comma to delineate the thousands place in this number.\r\n-This edit makes 'golf' lower case because it is a common noun.\r\n-This edit adds an Oxford comma because it is Grammarly's preferred convention.",
+    "-An unnecessary space before an apostrophe has been removed.\r\n-A comma was added before a conjunction joining two clauses.\r\n-The preposition \"by\" was added since \"join\" can't take an object.",
+    "- As three words that come before the noun and function together as an adjective to describe \"bands,\" \"up and coming\" were combined and hyphenated to produce \"up-and-coming.\"",
+    "- A comma was inserted to separate two independent questions within the sentence.\r\n- \"That will\" was changed to \"will that\" because in English, the question word always comes first.",
+    "- \"some\" was removed because it's not necessary and removing it improves the flow of the sentence.\r\n- A comma was added after technology because commas are added after introductory phrases in English. \r\n- \"be\" was added because a verb is needed to make the sentence grammatical.",
+    "-These two edits replace the single quotes 'surround' had been in with full quotes because it is a direct quote.\r\n-'Western' is capitalized here because it is a proper noun.\r\n-This is an optional stylistic edit that chooses to use 'arrangement' here for unclear reasons.",
+    "- \"Traveling\" is the American English standard of spelling for \"travelling.\"",
+    "- The unnecessary space between \"lemon\" and \"grass\" in the compound word \"lemongrass\" was removed.\r\n- The sentence was corrected for clarity. Instead of stating that it is \"widely used as a herb,\" the corrected form states that it is \"a widely used herb.\"",
+    "-A comma is added after the year because when using the month-date-year format, a comma is required after the year.\r\n- Indefinite article \"a\" is inserted before the singular noun \"Major League Baseball starting pitcher.\"",
+    "-This edit inserted a preposition to be grammatical.",
+    "- A comma is inserted before \"encompassing\" to mark the beginning of a nonrestrictive clause that includes nonessential information.",
+    "-The preposition \"at\" should be used to indicate that what follows happened during \"that time.\"\r\n-This is an introductory phrase, so it should be followed by a comma."
+  ],
+  "processing_stats": {
+    "total_time": 0.38052821159362793,
+    "avg_time": 0.0038052821159362793,
+    "min_time": 0.002467632293701172,
+    "max_time": 0.06873536109924316,
+    "success_count": 0,
+    "error_count": 100,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

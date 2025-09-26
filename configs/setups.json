@@ -1,5 +1,5 @@
 {
-  "gmeg": {
+  "gmeg_paper": {
     "description": "LLM explanation generation benchmark based on Grammarly's My Edit Graph (GMEG) dataset, which includes human-annotated explanations for text revisions.",
     "dataset": {
       "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
@@ -18,8 +18,35 @@
       "metrics_registry": "GMEG_METRICS"
     }
   },
+  "gmeg_ours": {
+    "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
+    "download_path": "DS_GMEG_EXP",
+    "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv",
+    "question_fields": ["original", "revised"],
+    "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable",
+    "description": "A Dataset of Human and LLM-Generated Explanations of Grammatical and Fluency Edits",
+    "prune_row": {
+      "please_explain_the_revisions_write_na_if_not_annotatable": [""]
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.gmeg_metrics",
+      "metrics_registry": "GMEG_METRICS"
+    }
+  },
   
   "RHAI_cose_explanation_with_answer": {
+    "description": "Evaluates the ability of models to generate human-like explanations for various tasks, focusing on the reframing of explanations to enhance clarity and understanding.",
+    "dataset": {
+      "download_link": "https://github.com/allenai/few_shot_explanations/archive/refs/heads/main.zip",
+      "download_path": "DS_ReframingHumanAI",
+      "csv_file": "few_shot_explanations-main/data/handwritten_cose_v1.11_examples.csv"
+    },
+    "prompt_fields": {
+      "question_fields": ["question", "answer"],
+      "answer_field": "our_explanation"
+    }
+  },
+  "RHAI_cose_explanation_with_answer_and_questions": {
     "description": "Evaluates the ability of models to generate human-like explanations for various tasks, focusing on the reframing of explanations to enhance clarity and understanding.",
     "dataset": {
       "download_link": "https://github.com/allenai/few_shot_explanations/archive/refs/heads/main.zip",
@@ -69,6 +96,30 @@
       "answer_field": "q_ans"
     }
   },
+  "ecqa_choice_selection_3choices": {
+    "description": "Choice selection for ECQA commonsense questions with only 3 choices (correct + 2 random distractors)",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_ECQA", 
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["q_concept", "q_text", "q_op1", "q_ans", "q_op3"],
+      "answer_field": "q_ans"
+    }
+  },
+  "ecqa_choice_selection_no_concept":{
+    "description": "Remove topic context (q_concept field) to test if reasoning works without explicit domain framing",
+    "dataset": {
+      "download_link": "https://huggingface.co/datasets/yangdong/ecqa/resolve/main/data/train-00000-of-00001.parquet?download=true",
+      "download_path": "DS_ECQA", 
+      "parquet_file": "train-00000-of-00001.parquet"
+    },
+    "prompt_fields": {
+      "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5"],
+      "answer_field": "q_ans"
+    }
+  },
   "ecqa_positive": {
     "description": "Generate positive properties explaining correct answer",
     "dataset": {
@@ -103,6 +154,33 @@
     "prompt_fields": {
       "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
       "answer_field": "taskB"
+    }
+  },
+
+
+  "ecare_choice_selection": {
+    "description": "Choice selection for e-CARE causal reasoning questions - select correct hypothesis for given premise",
+    "dataset": {
+      "download_link": "https://github.com/Waste-Wood/e-CARE/archive/refs/heads/main.zip",
+      "download_path": "DS_ECARE",
+      "jsonl_file": "e-CARE-main/dataset/Causal_Reasoning/train.jsonl"
+    },
+    "prompt_fields": {
+      "question_fields": ["premise", "ask-for", "hypothesis1", "hypothesis2"],
+      "answer_field": "label"
+    }
+  },
+
+  "ecare_explanation_generation": {
+    "description": "Generate conceptual explanations for e-CARE causal reasoning questions", 
+    "dataset": {
+      "download_link": "https://github.com/Waste-Wood/e-CARE/archive/refs/heads/main.zip",
+      "download_path": "DS_ECARE",
+      "jsonl_file": "e-CARE-main/dataset/Explanation_Generation/train.jsonl"
+    },
+    "prompt_fields": {
+      "question_fields": ["cause", "effect"],
+      "answer_field": "conceptual_explanation"
     }
   },
 

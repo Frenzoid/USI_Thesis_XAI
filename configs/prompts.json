@@ -1,89 +1,281 @@
 {
   "gmeg_explaination": {
-    "type": "baseline",
     "mode": "zero-shot",
-    "compatible_setup": "gmeg",
-    "template": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{}\n\nProvide an explanation for all the revisions in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+    "compatible_setup": "gmeg_paper",
+    "template": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
     "description": "Annotators were shown one aligned sentence at a time. For each sentence, we instructed annotators to provide an explanation for all the revisions in the sentence in a bulleted list."
   },
-
-  "cose_explanation_with_answer": {
-    "type": "evaluation",
+  "gmeg_basic": {
+    "type": "gmeg_ours",
     "mode": "zero-shot",
-    "compatible_setup": "RHAI_cose_explanation",
-    "template": "Explain what is the answer? \n\n Question: {} \n\n Choices: {} \n\n Correct answer: {}",
+    "compatible_setup": "gmeg_ours",
+    "template": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\n{}\n\nRevised Text:\n{}\n\n",
+    "description": "Basic correction explanation prompt"
+  },
+  "gmeg_few_shot": {
+    "mode": "few-shot",
+    "compatible_setup": "gmeg_paper",
+    "few_shot_example": "Given this example:\n\nOriginal: \"{}\"\nRevised: \"{}.\"\nExplanation:\n{}\n",
+    "template": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+    "description": "Few-shot learning prompt with examples"
+  },
+  "gmeg_few_shot_original": {
+    "type": "baseline",
+    "mode": "few-shot",
+    "compatible_setup": "gmeg_ours",
+    "few_shot_example": "Given this example:\n\nOriginal: \"{}\"\nRevised: \"{}.\"\nExplanation:\n{}\n",
+    "template": "\nNow, analyze the following texts:\n\nOriginal: {}\nRevised: {}\n\nProvide explanations in the same format as above.",
+    "description": "Few-shot learning prompt with examples"
+  },
+
+
+  "cose_self_rationalization": {
+    "mode": "zero-shot",
+    "compatible_setup": "RHAI_cose_explanation_with_answer_and_questions",
+    "template": "You will be given a question, a list of options, and its correct answer.\n\nQuestion:\n{}\n\nOptions:\n{}\n\nAnswer:\n{}\n\nProvide a short explanation on why this answer is correct.",
+    "description": "QA-style prompt following paper's best QASIMPLE format"
+  },
+  "cose_explanation_with_answer": {
+    "mode": "zero-shot",
+    "compatible_setup": "RHAI_cose_explanation_with_answer",
+    "template": "In one short sentence, explain why the given answer is correct: \n\n\n Question: {} \n\n Answer: {}",
     "description": "QA-style prompt following paper's best QASIMPLE format"
   },
   "cose_explanation": {
-    "type": "evaluation", 
     "mode": "zero-shot",
     "compatible_setup": "RHAI_cose_explanation",
-    "template": "Explain what is the answer? \n\n Question: {} \n\n Choices: {}", 
+    "template": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: {} \n\n Choices: {}", 
     "description": "QA-style choice selection following paper's format"
  },
  "cose_choice_selection": {
-    "type": "evaluation",
     "mode": "zero-shot", 
     "compatible_setup": "RHAI_cose_choice_selection",
-    "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, \n\nSelect the single best choice and return only that choice.",
+    "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, \n\nRespond only with the single best choice.",
     "description": "QA-style choice selection following paper's format"
   },
-    
+
+
   "ecqa_choice_selection": {
-    "type": "evaluation",
     "mode": "zero-shot", 
     "compatible_setup": "ecqa_choice",
-    "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice and return only that choice.",
-    "description": "LLM must select exactly one choice from the provided options"
+    "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+    "description": "LLM must select exactly one choice from the provided options using commonsense"
+  },
+  "ecqa_choice_selection_3choices": {
+    "mode": "zero-shot", 
+    "compatible_setup": "ecqa_choice_selection_3choices",
+    "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+    "description": "Present only 3 choices (correct + 2 random distractors) to test if reasoning changes with fewer options and reduced cognitive load"
+  },
+  "ecqa_choice_selection_no_concept": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_choice_selection_no_concept", 
+    "template": "You will be given a question and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+    "description": "Remove topic context (q_concept field) to test if reasoning works without explicit domain framing"
   },
   "ecqa_positive_explanation": {
-    "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "ecqa_positive", 
-    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite positive properties that justify why this answer choice is correct. Write simple sentences explaining the reasoning.",
-    "description": "LLM must generate positive properties supporting the correct answer"
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+    "description": "LLM generates atomic positive properties supporting the correct answer"
+  },
+  "ecqa_positive_explanation_formatted": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_positive", 
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite 2-3 short, atomic sentences justifying why this choice is correct. Write each sentence on a separate line without preamble phrases.",
+    "description": "LLM generates atomic positive properties supporting the correct answer"
   },
   "ecqa_negative_explanation": {
-    "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "ecqa_negative",
-    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nSimply write negative properties explaining why each incorrect choice is wrong. Write at least one property for each incorrect option in a short sentence.",
-    "description": "Matches paper's instruction to write at least one property per choice"
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nWrite negative properties explaining why each incorrect choice is wrong. Requirements:\n- Write at least one property for each incorrect option\n- Each property should be a simple, atomic sentence with one commonsense fact\n- Draw on external knowledge not stated in the question\n- Each sentence should contain one fact that cannot be broken down further\n\nWrite one clear sentence per property.",
+    "description": "LLM generates atomic negative properties refuting each incorrect choice"
   },
   "ecqa_freeflow_explanation": {
-    "type": "evaluation", 
     "mode": "zero-shot",
     "compatible_setup": "ecqa_freeflow",
-    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a complete explanation that includes both why the correct answer is right and why the other choices are wrong. Write this as a coherent paragraph.",
-    "description": "LLM must generate a comprehensive free-form explanation"
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation that:\n- Justifies why the correct answer is right using commonsense facts\n- Refutes why each incorrect choice is wrong\n- Combines positive and negative reasoning into a coherent paragraph\n- Is minimal (no redundant information from the question itself)\n- Uses external commonsense knowledge not stated in the question\n- Presents all necessary reasoning without irrelevant details\n\nWrite this as one well-structured paragraph.",
+    "description": "LLM generates comprehensive free-flow explanation following ECQA desiderata"
+  },
+  "ecqa_demographic_young_american": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_choice",
+    "template": "You are a 22-year-old female from the United States with a Bachelor's degree in Communications. You approach problems based on your life experience and cultural perspective as a young American.\n\nTopic: {}\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice based on your personal experience and cultural understanding. Consider how someone with your background would naturally think about this situation.",
+    "description": "Young American female with undergraduate education - represents digital native perspective"
+  },
+  "ecqa_demographic_middle_aged_asian": {
+    "mode": "zero-shot", 
+    "compatible_setup": "ecqa_choice",
+    "template": "You are a 45-year-old male from East Asia with a PhD in Engineering. You approach problems based on your life experience and cultural perspective as a middle-aged Asian professional.\n\nTopic: {}\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice based on your personal experience and cultural understanding. Consider how someone with your background would naturally think about this situation.",
+    "description": "Middle-aged Asian male with advanced technical education - represents analytical perspective"
+  },
+  "ecqa_demographic_senior_european": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_choice", 
+    "template": "You are a 68-year-old female from Western Europe with a high school diploma. You approach problems based on your life experience and cultural perspective as a senior European.\n\nTopic: {}\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice based on your personal experience and cultural understanding. Consider how someone with your background would naturally think about this situation.",
+    "description": "Senior European female with basic education - represents traditional wisdom perspective"
+  },
+  "ecqa_expert_psychologist": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow",
+    "template": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation from your psychological expertise that:\n- Analyzes the psychological factors influencing this decision\n- Explains human behavior patterns relevant to this scenario\n- Considers cognitive biases and mental processes\n- Uses psychological principles to justify the reasoning\n- Addresses how people typically think and behave in such situations\n\nWrite this as one well-structured paragraph reflecting your psychological expertise.",
+    "description": "Clinical psychologist analyzing commonsense through behavioral and cognitive psychology"
+  },
+  "ecqa_expert_anthropologist": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow", 
+    "template": "You are a cultural anthropologist with expertise in cross-cultural studies and human societies. You analyze situations through the lens of cultural practices and social norms.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation from your anthropological expertise that:\n- Considers cultural variations in approaching this situation\n- Analyzes social norms and practices that influence this decision\n- Explains how different societies might view this scenario\n- Uses anthropological insights to justify the reasoning\n- Addresses the cultural context of human behavior\n\nWrite this as one well-structured paragraph reflecting your anthropological expertise.",
+    "description": "Cultural anthropologist analyzing commonsense through social and cultural lens"
+  },
+  "ecqa_expert_behavioral_economist": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow",
+    "template": "You are a behavioral economist specializing in decision-making processes and human economic behavior. You analyze situations through the lens of economic psychology and choice architecture.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation from your behavioral economics expertise that:\n- Analyzes the decision-making processes involved\n- Explains economic principles and incentives at play\n- Considers cognitive biases affecting choices\n- Uses behavioral economic theory to justify the reasoning\n- Addresses the rational and irrational aspects of human decisions\n\nWrite this as one well-structured paragraph reflecting your behavioral economics expertise.",
+    "description": "Behavioral economist analyzing commonsense through decision theory and economic psychology"
+  },
+  "ecqa_stakeholder_parent": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow",
+    "template": "You are a parent of two school-aged children who prioritizes family safety, educational value, and child development. Your primary concerns are child welfare, age-appropriate content, and positive role modeling.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation from your parental perspective that:\n- Explains how this decision impacts children and families\n- Addresses safety, educational, and developmental concerns\n- Considers the long-term effects on child welfare\n- Uses parental judgment and family values to justify the reasoning\n- Reflects the practical concerns of raising children in today's world\n\nWrite this as one well-structured paragraph reflecting your parental priorities and concerns.",
+    "description": "Parent stakeholder focusing on child welfare and family values"
+  },
+  "ecqa_stakeholder_small_business": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow",
+    "template": "You are a small business owner who prioritizes cost-effectiveness, practical implementation, and customer satisfaction. Your primary concerns are business viability, resource constraints, and competitive advantage.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation from your small business perspective that:\n- Explains how this decision impacts small businesses and entrepreneurs\n- Addresses cost, implementation, and competitive concerns\n- Considers practical business operations and customer needs\n- Uses business judgment and economic reasoning to justify the decision\n- Reflects the real-world constraints of small business operations\n\nWrite this as one well-structured paragraph reflecting your small business perspective and priorities.",
+    "description": "Small business owner stakeholder focusing on practical business concerns"
+  },
+  "ecqa_stakeholder_disability_advocate": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_freeflow",
+    "template": "You are a disability rights advocate who prioritizes accessibility, inclusion, and equal opportunities. Your primary concerns are barrier removal, universal design, and empowerment of people with disabilities.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nProvide a comprehensive explanation from your disability advocacy perspective that:\n- Explains how this decision impacts people with disabilities\n- Addresses accessibility barriers and inclusion concerns\n- Considers the needs of diverse disability communities\n- Uses disability rights principles to justify the reasoning\n- Reflects the importance of universal access and accommodation\n\nWrite this as one well-structured paragraph reflecting your advocacy perspective and priorities.",
+    "description": "Disability rights advocate focusing on accessibility and inclusion"
   },
 
+
+
+  "ecare_choice_selection": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection", 
+    "template": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+    "description": "LLM selects the correct causal hypothesis for a given premise"
+  },
+  "ecare_explanation_generation": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_explanation_generation",
+    "template": "You will be given a causal relationship and need to provide a conceptual explanation.\n\nCause:\n{}\n\nEffect:\n{}\n\nProvide a brief conceptual explanation for why this causal relationship makes sense:",
+    "description": "LLM generates conceptual explanations for causal relationships"
+  },
+  "ecare_choice_selection_expert_psychologist": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection",
+    "template": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+    "description": "Clinical psychologist selects correct causal hypothesis using psychological expertise"
+  },
+  "ecare_explanation_generation_expert_psychologist": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_explanation_generation", 
+    "template": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nCause:\n{}\n\nEffect:\n{}\n\nAs a psychologist, provide a brief conceptual explanation from your psychological expertise for why this causal relationship makes sense:",
+    "description": "Clinical psychologist generates causal explanations using psychological principles"
+  },
+  "ecare_choice_selection_expert_medical": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection",
+    "template": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+    "description": "Medical doctor selects correct causal hypothesis using medical expertise"
+  },
+  "ecare_explanation_generation_expert_medical": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_explanation_generation",
+    "template": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nCause:\n{}\n\nEffect:\n{}\n\nAs a medical doctor, provide a brief conceptual explanation from your medical expertise for why this causal relationship makes sense:",
+    "description": "Medical doctor generates causal explanations using medical knowledge"
+  },
+  "ecare_choice_selection_demographic_young_american": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection", 
+    "template": "You are a 22-year-old female from the United States with a Bachelor's degree in Communications. You approach problems based on your life experience and cultural perspective as a young American.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your personal experience and cultural understanding:",
+    "description": "Young American female selects causal hypothesis based on cultural perspective"
+  },
+  "ecare_explanation_generation_demographic_young_american": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_explanation_generation",
+    "template": "You are a 22-year-old female from the United States with a Bachelor's degree in Communications. You approach problems based on your life experience and cultural perspective as a young American.\n\nCause:\n{}\n\nEffect:\n{}\n\nProvide a brief conceptual explanation from your perspective as a young American for why this causal relationship makes sense:",
+    "description": "Young American female generates causal explanations from cultural perspective"
+  },
+  "ecare_choice_selection_stakeholder_parent": {
+    "mode": "zero-shot", 
+    "compatible_setup": "ecare_choice_selection",
+    "template": "You are a parent of two school-aged children who prioritizes family safety, educational value, and child development. Your primary concerns are child welfare, age-appropriate content, and positive role modeling.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) from your parental perspective, considering family values and child welfare:",
+    "description": "Parent selects causal hypothesis from family-focused perspective" 
+  },
+  "ecare_explanation_generation_stakeholder_parent": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_explanation_generation", 
+    "template": "You are a parent of two school-aged children who prioritizes family safety, educational value, and child development. Your primary concerns are child welfare, age-appropriate content, and positive role modeling.\n\nCause:\n{}\n\nEffect:\n{}\n\nProvide a brief conceptual explanation from your parental perspective for why this causal relationship makes sense, considering family values and child welfare:",
+    "description": "Parent generates causal explanations from family-focused perspective"
+  },
+  
+
+
   "pubmedqa_reasoning_free": {
-    "type": "evaluation",
     "mode": "zero-shot", 
     "compatible_setup": "pubmedqa_reasoning_free",
-    "template": "You are a medical expert annotating research questions. Use the question, context, and conclusion to determine the answer.\n\nQuestion: {}\n\nContext: {}\n\nConclusion: {}\n\nBased on all available information, answer only with: yes, no, or maybe",    
+    "template": "You are a medical expert annotating research questions. Use the question, context, and conclusion to determine the answer.\n\nQuestion: {}\n\nContext: {}\n\nConclusion: {}\n\nBased on all available information, respond with only one word: yes, no, or maybe.",    
     "description": "Mirrors annotator 1's task with full information access"
   },
   "pubmedqa_reasoning_required": {
     "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "pubmedqa_reasoning_required",
-    "template": "You are a medical expert annotating research questions. You must reason over the experimental context to answer the question. You do NOT have access to the study's conclusion.\n\nQuestion: {}\n\nContext: {}\n\nBased only on the experimental evidence provided, answer only with: yes, no, or maybe",   
+    "template": "You are a medical expert annotating research questions. You must reason over the experimental context to answer the question. You do NOT have access to the study's conclusion.\n\nQuestion: {}\n\nContext: {}\n\nBased only on the experimental evidence provided, respond with only one word: yes, no, or maybe.",   
     "description": "Mirrors annotator 2's task without conclusion access"
   },
   "pubmedqa_reasoning_free_min": {
-    "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "pubmedqa_reasoning_free",
     "template": "Question: {}\n\nContext: {}\n\nConclusion: {}\n\nAnswer (yes/no/maybe):",
     "description": "Minimal prompt matching paper's sparse description"
   },
   "pubmedqa_reasoning_required_min": {
-    "type": "evaluation",
     "mode": "zero-shot",
     "compatible_setup": "pubmedqa_reasoning_required",
     "template": "Question: {}\n\nContext: {}\n\nAnswer (yes/no/maybe):",
     "description": "Minimal prompt matching paper's sparse description"
+  },
+  "pubmedqa_expert_epidemiologist": {
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_free",
+    "template": "You are an epidemiologist with 20 years of experience in population health and disease patterns. You specialize in analyzing research methodology and public health implications.\n\nQuestion: {}\n\nContext: {}\n\nConclusion: {}\n\nAs an epidemiologist, evaluate this research from your population health perspective, considering study design, statistical power, and public health implications. Respond with only one word: yes, no, or maybe.",
+    "description": "Epidemiologist specialist evaluating research through population health lens"
+  },
+  "pubmedqa_expert_biostatistician": {
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_free", 
+    "template": "You are a biostatistician with expertise in clinical trial design and statistical analysis. You focus on methodology, sample sizes, and statistical validity of medical research.\n\nQuestion: {}\n\nContext: {}\n\nConclusion: {}\n\nAs a biostatistician, evaluate this research from your statistical methodology perspective, focusing on study design, statistical power, and analytical rigor. Respond with only one word: yes, no, or maybe.",
+    "description": "Biostatistician specialist evaluating research methodology and statistical validity"
+  },
+  "pubmedqa_expert_primary_care": {
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_free",
+    "template": "You are a primary care physician with 25 years of clinical experience treating diverse patient populations. You focus on practical clinical applications and patient care.\n\nQuestion: {}\n\nContext: {}\n\nConclusion: {}\n\nAs a primary care physician, evaluate this research from your clinical practice perspective, considering patient care implications, practical applicability, and real-world effectiveness. Respond with only one word: yes, no, or maybe.",
+    "description": "Primary care physician evaluating research through clinical practice lens"
+  },
+  "pubmedqa_expert_epidemiologist_reasoning_required": {
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_required",
+    "template": "You are an epidemiologist with 20 years of experience in population health and disease patterns. You specialize in analyzing research methodology and public health implications. You do NOT have access to the study's conclusion.\n\nQuestion: {}\n\nContext: {}\n\nAs an epidemiologist, evaluate this research from your population health perspective, considering study design and public health implications. Based only on the experimental evidence provided, respond with only one word: yes, no, or maybe.",
+    "description": "Epidemiologist evaluating research without conclusion access"
+  },
+  "pubmedqa_expert_biostatistician_reasoning_required": {
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_required", 
+    "template": "You are a biostatistician with expertise in clinical trial design and statistical analysis. You focus on methodology, sample sizes, and statistical validity of medical research. You do NOT have access to the study's conclusion.\n\nQuestion: {}\n\nContext: {}\n\nAs a biostatistician, evaluate this research from your statistical methodology perspective, focusing on study design and analytical rigor. Based only on the experimental evidence provided, respond with only one word: yes, no, or maybe.",
+    "description": "Biostatistician evaluating research methodology without conclusion"
+  },
+  "pubmedqa_expert_primary_care_reasoning_required": {
+    "mode": "zero-shot",
+    "compatible_setup": "pubmedqa_reasoning_required",
+    "template": "You are a primary care physician with 25 years of clinical experience treating diverse patient populations. You focus on practical clinical applications and patient care. You do NOT have access to the study's conclusion.\n\nQuestion: {}\n\nContext: {}\n\nAs a primary care physician, evaluate this research from your clinical practice perspective, considering practical applicability. Based only on the experimental evidence provided, respond with only one word: yes, no, or maybe.",
+    "description": "Primary care physician evaluating research without conclusion access"
   }
 }

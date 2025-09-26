@@ -1,0 +1,1383 @@
+{
+  "experiment_name": "RHAI_cose_explanation__hf-qwen2.5-3b__zero-shot__cose_explanation__100__0p100",
+  "experiment_config": {
+    "model": "hf-qwen2.5-3b",
+    "setup": "RHAI_cose_explanation",
+    "prompt": "cose_explanation",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-23T21:03:08.284536",
+  "dataset_info": {
+    "name": "RHAI_cose_explanation",
+    "original_size": 115,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 115,
+    "sampled_size": 100,
+    "columns": [
+      "id",
+      "type",
+      "question",
+      "choices",
+      "answer",
+      "orig_explanation",
+      "our_explanation"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 115,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "Qwen/Qwen2.5-3B-Instruct",
+    "description": "Qwen2.5 3B parameter instruction-tuned model - Small",
+    "parameters": "3B",
+    "size_category": "small",
+    "max_tokens": 512,
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "context_length": "128k",
+    "generation_config": {
+      "temperature": 0.7,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "RHAI_cose_explanation",
+    "template": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: {} \n\n Choices: {}",
+    "description": "QA-style choice selection following paper's format"
+  },
+  "responses": [
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: That person next to me is always on her cell phone. \n\n Choices: ['feel important', 'know what time', 'talk about themselves', 'issues', 'own house']",
+      "response": "The correct answer is: \"talk about themselves,\" as it best fits the context of someone always on their cell phone, likely using it to communicate with others.",
+      "expected_output": "When someone talks on the phone, they may discuss various topics with their conversation partner, e.g., themselves, and what's going on in their lives.",
+      "question_values": [
+        "That person next to me is always on her cell phone.",
+        "['feel important', 'know what time', 'talk about themselves', 'issues', 'own house']"
+      ],
+      "processing_time": 0.9030554294586182,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where can someone get a flute? \n\n Choices: ['orchestra', 'steal it', 'marching band', 'symphony', 'musical instrument store']",
+      "response": "The correct answer is that someone can get a flute from a musical instrument store.",
+      "expected_output": "A flute is a musical instrument, and it's therefore plausable that one could buy one at a musical instrument store.",
+      "question_values": [
+        "Where can someone get a flute?",
+        "['orchestra', 'steal it', 'marching band', 'symphony', 'musical instrument store']"
+      ],
+      "processing_time": 0.4744729995727539,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where might informational pamphlets be found? \n\n Choices: ['health department', 'library', 'bookstore', 'drawer', 'mail box']",
+      "response": "The correct answer is that informational pamphlets might be found in a library.",
+      "expected_output": "Informational pamphlets can contain lots of types of information, e.g., about medical information, local attractions, advertisements, etc.; various types of these pamphlets could be available at a library.",
+      "question_values": [
+        "Where might informational pamphlets be found?",
+        "['health department', 'library', 'bookstore', 'drawer', 'mail box']"
+      ],
+      "processing_time": 0.4460568428039551,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What might a teacher do most during a week? \n\n Choices: ['demonstrate', 'eat lunch', 'time test', 'work in school', 'school children']",
+      "response": "A teacher might most commonly work in school during a week.",
+      "expected_output": "Teachers are usually employed at schools, and most people work during weekdays.",
+      "question_values": [
+        "What might a teacher do most during a week?",
+        "['demonstrate', 'eat lunch', 'time test', 'work in school', 'school children']"
+      ],
+      "processing_time": 0.364091157913208,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: When a person is looking at an altar, where might they be standing? \n\n Choices: ['at a cross', 'sanctuary', 'church services', 'ceremony', 'temple']",
+      "response": "The correct answer is that a person looking at an altar might be standing in a sanctuary, church, temple, or similar sacred space.",
+      "expected_output": "An altar is likely to be located at a temple, and so if a person was standing next to an alter, they could likely be in a temple.",
+      "question_values": [
+        "When a person is looking at an altar, where might they be standing?",
+        "['at a cross', 'sanctuary', 'church services', 'ceremony', 'temple']"
+      ],
+      "processing_time": 0.8475697040557861,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What do people do sometimes when they find a good deal? \n\n Choices: ['race cars', 'believe in god', 'fight each other', 'fear death', 'murder each other']",
+      "response": "The correct answer is that people sometimes \"race cars\" when they find a good deal, though this is not a typical or accurate description of how people respond to good deals. A more appropriate answer would be that people sometimes \"buy things\" or \"take advantage of sales\" when they find a good deal.",
+      "expected_output": "Malls sometimes have sales, e.g., on black friday, when they offer good deals; however, the items are sometimes in limited supply, which can cause altercations between folks, each trying to buy the same item.",
+      "question_values": [
+        "What do people do sometimes when they find a good deal?",
+        "['race cars', 'believe in god', 'fight each other', 'fear death', 'murder each other']"
+      ],
+      "processing_time": 1.748155117034912,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where would you find a telephone directory in public? \n\n Choices: ['office', 'house', 'phone booth', 'kitchen', 'amusement park']",
+      "response": "The correct answer is: you would find a telephone directory in a phone booth in public.",
+      "expected_output": "Telephone directories can be found in phone booths because people often want to look up numbers before making calls; phone booths are accessible to the public.",
+      "question_values": [
+        "Where would you find a telephone directory in public?",
+        "['office', 'house', 'phone booth', 'kitchen', 'amusement park']"
+      ],
+      "processing_time": 0.5275700092315674,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Two people were hanging around the quick stop.  They were getting hungry.    What might have they been doing? \n\n Choices: ['eat eggs', 'smoke pot', 'believe in god', 'make tools', 'writing']",
+      "response": "The correct answer is that they might have been 'eating eggs', as it's the most plausible action given they were getting hungry while hanging around a quick stop.",
+      "expected_output": "Smoking cannabis frequently causes people to feel hungry, and it wouldn't be uncommon to see people smoking outside of a convinence store like the quick stop.",
+      "question_values": [
+        "Two people were hanging around the quick stop.  They were getting hungry.    What might have they been doing?",
+        "['eat eggs', 'smoke pot', 'believe in god', 'make tools', 'writing']"
+      ],
+      "processing_time": 0.9166774749755859,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What could you do inside but not outside if you have boredom? \n\n Choices: ['skateboard', 'hang out at bar', 'laugh', 'go skiing', 'watch film']",
+      "response": "The correct answer is: 'laugh', as it is the only choice that can be done inside but not typically outside if you have boredom.",
+      "expected_output": "Most  bars that serve alcohol are inside of buildings, and so, usually, hanging out at a bar is an activity that could only be done inside. Exceptions to the \"bars are inside\" rule include: rooftop bars, and oceanside bars on beaches.",
+      "question_values": [
+        "What could you do inside but not outside if you have boredom?",
+        "['skateboard', 'hang out at bar', 'laugh', 'go skiing', 'watch film']"
+      ],
+      "processing_time": 0.8296353816986084,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The person was cold and wet, where should he go? \n\n Choices: ['building', 'back home', 'hospital', 'demonstration', 'bus stop']",
+      "response": "The correct answer is that the person should go back home, as it is the most logical place to seek warmth and dryness after being cold and wet.",
+      "expected_output": "An indoor space (with heaters, blankets, and warm showers) is likely to be warmer than this outdoor one, where the person became cold and wet.",
+      "question_values": [
+        "The person was cold and wet, where should he go?",
+        "['building', 'back home', 'hospital', 'demonstration', 'bus stop']"
+      ],
+      "processing_time": 0.9002299308776855,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: In a predicament an animal might choose flight or what? \n\n Choices: ['leave home', 'hunt for food', 'smell prey', 'feel pain', 'fight for life']",
+      "response": "The correct answer is: In a predicament an animal might choose flight or fight for life.",
+      "expected_output": "The expression \"flight or fight\" comes from animal behavior when faced with a threat. To fight for one's life means to face the threat head-on.",
+      "question_values": [
+        "In a predicament an animal might choose flight or what?",
+        "['leave home', 'hunt for food', 'smell prey', 'feel pain', 'fight for life']"
+      ],
+      "processing_time": 0.5724201202392578,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What is something not optional, that I have to do? \n\n Choices: ['obligatory', 'mandatory', 'required', 'selective', 'compulsory']",
+      "response": "The correct answer is: \"obligatory\" and \"mandatory\" are the choices that best describe something not optional, that I have to do.",
+      "expected_output": "If you are oblidged to do something, you might have made a professional, personal, or legal promise to do it, which, by definition, makes it not optional.",
+      "question_values": [
+        "What is something not optional, that I have to do?",
+        "['obligatory', 'mandatory', 'required', 'selective', 'compulsory']"
+      ],
+      "processing_time": 0.8784904479980469,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A battleship is a powerful vessel.  If you need something similar but faster, what would you use? \n\n Choices: ['yatch', 'corvette', 'aircraft carrier', 'destroyer', 'patrol boat']",
+      "response": "The correct answer is: If you need something similar but faster than a battleship, you would use a corvette.",
+      "expected_output": "Corvettes are very fast cars. Because cars are more lightweight than battleships, they are faster.",
+      "question_values": [
+        "A battleship is a powerful vessel.  If you need something similar but faster, what would you use?",
+        "['yatch', 'corvette', 'aircraft carrier', 'destroyer', 'patrol boat']"
+      ],
+      "processing_time": 0.714714527130127,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: If you didn't find any plants on another planet, where might you look to find some? \n\n Choices: ['surface of earth', 'park', 'greenhouse', 'windowsill', 'ice burg']",
+      "response": "The correct answer is: you might look to find some plants on the surface of the Earth, as it is the only planet known to have abundant plant life.",
+      "expected_output": "If plants were to exist on a planet, they would be on the surface.",
+      "question_values": [
+        "If you didn't find any plants on another planet, where might you look to find some?",
+        "['surface of earth', 'park', 'greenhouse', 'windowsill', 'ice burg']"
+      ],
+      "processing_time": 0.9269545078277588,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: John runs a small corner shop.   If you were walking on a sidewalk near it, where would you look for it? \n\n Choices: ['england', 'street corner', 'minnesota', 'arizona', 'iowa']",
+      "response": "The correct answer is: you would look for it at the'street corner', as John runs a small corner shop.",
+      "expected_output": "Corner shops often are run out of buildings on street corners.",
+      "question_values": [
+        "John runs a small corner shop.   If you were walking on a sidewalk near it, where would you look for it?",
+        "['england', 'street corner', 'minnesota', 'arizona', 'iowa']"
+      ],
+      "processing_time": 0.6922144889831543,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What is someone not legal to buy alcohol? \n\n Choices: ['underage', 'banned', 'adult', 'rules', 'black market']",
+      "response": "The correct answer is: someone not legal to buy alcohol is underage.",
+      "expected_output": "21 is the legal age to buy alcohol in the US",
+      "question_values": [
+        "What is someone not legal to buy alcohol?",
+        "['underage', 'banned', 'adult', 'rules', 'black market']"
+      ],
+      "processing_time": 0.4170536994934082,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where can someone view a county highway as a line? \n\n Choices: ['from the sky', 'map', 'cross counties by car', 'country', 'michigan']",
+      "response": "The correct answer is: \"from the sky\" - someone can view a county highway as a line from above, such as by air or satellite imagery.",
+      "expected_output": "The only context in which an entire county road could be represented meaningfully as a single line would be on a map, e.g., a map of roads in the county, or a GPS application on a smartphone.",
+      "question_values": [
+        "Where can someone view a county highway as a line?",
+        "['from the sky', 'map', 'cross counties by car', 'country', 'michigan']"
+      ],
+      "processing_time": 0.9113540649414062,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A car was going from Florida to Ohio, what was it doing? \n\n Choices: ['roll over', 'head north', 'flying', 'speed up', 'heading north']",
+      "response": "The correct answer is: \"heading north\".",
+      "expected_output": "Florida is to the south of Ohio, and you need to drive north to go from Florida to Ohio.",
+      "question_values": [
+        "A car was going from Florida to Ohio, what was it doing?",
+        "['roll over', 'head north', 'flying', 'speed up', 'heading north']"
+      ],
+      "processing_time": 0.287412166595459,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: He ordered his men to go forth and drive the enemy which way? \n\n Choices: ['straightforth', 'back and', 'reverse', 'forward', 'backwards']",
+      "response": "The correct answer is: \"forward\".",
+      "expected_output": "When one drives away the enemy, the goal is to keep them from advancing forward and claiming more land, instead sending them back the way they came.",
+      "question_values": [
+        "He ordered his men to go forth and drive the enemy which way?",
+        "['straightforth', 'back and', 'reverse', 'forward', 'backwards']"
+      ],
+      "processing_time": 0.2567014694213867,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The electricity went out, and people couldn't see during worship, where were they? \n\n Choices: ['concert', 'garden', 'bedroom', 'church', 'opera']",
+      "response": "The correct answer is: they were in the church, where the lack of electricity during worship would make it difficult for people to see.",
+      "expected_output": "People worship at churches, synagoges, mosques, and shrines; so, if the power went out at one of these locations, the lights might go off, which would make it difficult to read scriptures, or pray.",
+      "question_values": [
+        "The electricity went out, and people couldn't see during worship, where were they?",
+        "['concert', 'garden', 'bedroom', 'church', 'opera']"
+      ],
+      "processing_time": 0.789193868637085,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where might you use a forklift to stack boxes onto shelves? \n\n Choices: ['loading dock', 'construction site', 'supermarket', 'construction yard', 'warehouse']",
+      "response": "The correct answer is that you might use a forklift to stack boxes onto shelves at a warehouse.",
+      "expected_output": "A warehouse is generally used to store goods, which can be heavy and be stacked on high shelves. Forklifts can assist humans at lifting heavy objects, especially to high places.",
+      "question_values": [
+        "Where might you use a forklift to stack boxes onto shelves?",
+        "['loading dock', 'construction site', 'supermarket', 'construction yard', 'warehouse']"
+      ],
+      "processing_time": 0.624492883682251,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What happens when snow on a mountain becomes heavy? \n\n Choices: ['build really neat fort', 'avalanches', 'shovelling', 'eat cake', 'blizzard']",
+      "response": "The correct answer is that when snow on a mountain becomes heavy, avalanches can occur.",
+      "expected_output": "An avalanche occurs when pieces of ice or snow go rolling down the side of a mountain in great force. This can be caused by snow becoming heavy, because gravity will pull the snow downward.",
+      "question_values": [
+        "What happens when snow on a mountain becomes heavy?",
+        "['build really neat fort', 'avalanches', 'shovelling', 'eat cake', 'blizzard']"
+      ],
+      "processing_time": 0.5437271595001221,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The buffalo was hunted until it was scare, but after much effort and many years they are now what again? \n\n Choices: ['available', 'endangered', 'plentiful', 'common', 'abundant']",
+      "response": "The correct answer is: 'plentiful'.",
+      "expected_output": "Animal populations get depleted via hunting by humans for sport, however conservationist efforts over multiple years can reverse this process to ensure that the populations are restored.",
+      "question_values": [
+        "The buffalo was hunted until it was scare, but after much effort and many years they are now what again?",
+        "['available', 'endangered', 'plentiful', 'common', 'abundant']"
+      ],
+      "processing_time": 0.2857630252838135,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where can a human find body coverings? \n\n Choices: ['phone booth', 'clothing store', 'workplace', 'swimming pool', 'closets']",
+      "response": "The correct answer is: a human can find body coverings at clothing store, workplace, and closets.",
+      "expected_output": "Human bodies are usually covered using clothes, which can be found for sale at clothing stores.",
+      "question_values": [
+        "Where can a human find body coverings?",
+        "['phone booth', 'clothing store', 'workplace', 'swimming pool', 'closets']"
+      ],
+      "processing_time": 0.6315586566925049,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where would I go to see a musician playing a snare drum in a theater? \n\n Choices: ['drum kit', 'piano', 'high school band', 'marching band', 'orchestra']",
+      "response": "The correct answer is: I would go to an orchestra to see a musician playing a snare drum in a theater.",
+      "expected_output": "Snare drums are instruments that can be played by members of orchestras, and if an orchestra was performing, it might be inside a theatre. So, a musician in an orchestra might be playing a snare drum in a theatre.",
+      "question_values": [
+        "Where would I go to see a musician playing a snare drum in a theater?",
+        "['drum kit', 'piano', 'high school band', 'marching band', 'orchestra']"
+      ],
+      "processing_time": 0.7090620994567871,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What is the payment collected on a toll road designed to do to the condition of roads? \n\n Choices: ['good repair', 'new jersey', 'eastern united states', 'connecticut', 'potholes']",
+      "response": "The correct answer is that the payment collected on a toll road is designed to good repair of the roads.",
+      "expected_output": "Payments are collected to improve the condition of the toll roads. This is done through road repairs.",
+      "question_values": [
+        "What is the payment collected on a toll road designed to do to the condition of roads?",
+        "['good repair', 'new jersey', 'eastern united states', 'connecticut', 'potholes']"
+      ],
+      "processing_time": 0.6319677829742432,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: She was a human in America who wanted to live well, what was a given for her situation? \n\n Choices: ['think critically', 'need money', 'say hello', 'think critically', 'drink tea']",
+      "response": "The correct answer is: 'need money' for her situation, as financial stability is often a fundamental need for living well in America.",
+      "expected_output": "One needs money to be able to live well in America. ",
+      "question_values": [
+        "She was a human in America who wanted to live well, what was a given for her situation?",
+        "['think critically', 'need money', 'say hello', 'think critically', 'drink tea']"
+      ],
+      "processing_time": 0.7978591918945312,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where does someone obtain a frying pan? \n\n Choices: ['department store', 'homes', 'stove', 'kitchen cupboard', 'kitchen cabinet']",
+      "response": "The correct answer is: someone obtains a frying pan at a department store.",
+      "expected_output": "Department stores usually sell kitchen equipments, and a frying pan is a kitchen equipment.",
+      "question_values": [
+        "Where does someone obtain a frying pan?",
+        "['department store', 'homes', 'stove', 'kitchen cupboard', 'kitchen cabinet']"
+      ],
+      "processing_time": 0.4425673484802246,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What sort of hall do you have a large meeting in? \n\n Choices: ['church', 'conference', 'dormitory', 'large building', 'library']",
+      "response": "The correct answer is that you have a large meeting in a conference hall.",
+      "expected_output": "Large meetings are often called conferences, and conferences can take place in conference halls, conference rooms, etc.",
+      "question_values": [
+        "What sort of hall do you have a large meeting in?",
+        "['church', 'conference', 'dormitory', 'large building', 'library']"
+      ],
+      "processing_time": 0.4449176788330078,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where does water in the sky come from? \n\n Choices: ['space', 'rain cloud', 'surface of earth', 'wishing well', 'lake or river']",
+      "response": "The correct answer is: water in the sky comes from space, specifically through evaporation from the surface of the Earth and condensation into clouds.",
+      "expected_output": "Water in the sky falls from rain clouds, where moisture in the air is collected.",
+      "question_values": [
+        "Where does water in the sky come from?",
+        "['space', 'rain cloud', 'surface of earth', 'wishing well', 'lake or river']"
+      ],
+      "processing_time": 0.830009937286377,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where can someone get well water? \n\n Choices: ['oil field', 'field', 'countryside', 'kansas', 'ground']",
+      "response": "The correct answer is: someone can get well water from the countryside.",
+      "expected_output": "Well water is a type of water extracted from a deep hole in the ground, i.e., a well. Thus, well water ultimately comes from the grond.",
+      "question_values": [
+        "Where can someone get well water?",
+        "['oil field', 'field', 'countryside', 'kansas', 'ground']"
+      ],
+      "processing_time": 0.4176802635192871,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A bad person places little value on being honest, acting without pretense or being what? \n\n Choices: ['excellent', 'upright', 'premium', 'competent', 'sincere']",
+      "response": "The correct answer is that a bad person places little value on being sincere.",
+      "expected_output": "Being honest is synonymous with being sincere.",
+      "question_values": [
+        "A bad person places little value on being honest, acting without pretense or being what?",
+        "['excellent', 'upright', 'premium', 'competent', 'sincere']"
+      ],
+      "processing_time": 0.4441697597503662,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: John put something on the night table.  But he forgot about it in the morning because it was unfamiliar. Where was he? \n\n Choices: ['in jail', 'homes', 'hotel', 'furniture store', 'hallway']",
+      "response": "John was in a hotel, as it is the most plausible setting where one might put something on a night table and forget about it in the morning due to unfamiliarity.",
+      "expected_output": "Hotels are places where people sleep for a few nights when they are travelling, and so it's often the case that hotel guests would be unfamiliar with their room. Given that travellers are unfamiliar with the location, losing items, for example in a night stand, might be more common.",
+      "question_values": [
+        "John put something on the night table.  But he forgot about it in the morning because it was unfamiliar. Where was he?",
+        "['in jail', 'homes', 'hotel', 'furniture store', 'hallway']"
+      ],
+      "processing_time": 0.9675395488739014,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What do people feel in the winter? \n\n Choices: ['use money', 'sick', 'pay bills', 'feel cold', 'become old']",
+      "response": "The correct answer is: people feel cold in the winter.",
+      "expected_output": "Winter is a very cold part of the year in many places, and winter weather might make people feel cold.",
+      "question_values": [
+        "What do people feel in the winter?",
+        "['use money', 'sick', 'pay bills', 'feel cold', 'become old']"
+      ],
+      "processing_time": 0.36370182037353516,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: John asked for a tissue holder because he had a cold.  Where might he be? \n\n Choices: ['car', 'resturant', 'convenient spot', 'airplane', \"dotor's office\"]",
+      "response": "John might be in an airplane where he would need a tissue holder due to having a cold.",
+      "expected_output": "An airplane is a place with very close contact with other passengers, and it is where you might transmit germs to others, when you have a cold. John might need a tissue from the tissue holder to blow his nose for his cold to prevent transmitting germs.",
+      "question_values": [
+        "John asked for a tissue holder because he had a cold.  Where might he be?",
+        "['car', 'resturant', 'convenient spot', 'airplane', \"dotor's office\"]"
+      ],
+      "processing_time": 0.5540063381195068,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Even if was clean and chlorinated, shallow water wouldn't make for much summer fun in your backyard what? \n\n Choices: ['lake', 'childrens pools', 'pond', 'swimming pool', 'puddle']",
+      "response": "The correct answer is: Even if clean and chlorinated, shallow water wouldn't make for much summer fun in your backyard pond.",
+      "expected_output": "If a pool is too shallow, it might be difficult to swim in it; a common example of a shallow pool is a kiddie pool, which may be fun for children but not for adults.",
+      "question_values": [
+        "Even if was clean and chlorinated, shallow water wouldn't make for much summer fun in your backyard what?",
+        "['lake', 'childrens pools', 'pond', 'swimming pool', 'puddle']"
+      ],
+      "processing_time": 0.7457959651947021,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A bald eagle flies over St. Paul, where is it? \n\n Choices: ['texas', 'thermal', 'minnesota', 'canada', 'photograph']",
+      "response": "The correct answer is: Minnesota, as St. Paul is the capital city of Minnesota.",
+      "expected_output": "st.paul is a city in minnesota",
+      "question_values": [
+        "A bald eagle flies over St. Paul, where is it?",
+        "['texas', 'thermal', 'minnesota', 'canada', 'photograph']"
+      ],
+      "processing_time": 0.5280163288116455,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where can you find people trying to alleviate suffering? \n\n Choices: ['hospital', 'hockey game', 'apartment', 'kitchen', 'water cooler']",
+      "response": "The correct answer is that you can find people trying to alleviate suffering at the hospital.",
+      "expected_output": "Sick and injured people are often suffering because of medical problems. To solve these problems, they might see a doctor at a hospital.",
+      "question_values": [
+        "Where can you find people trying to alleviate suffering?",
+        "['hospital', 'hockey game', 'apartment', 'kitchen', 'water cooler']"
+      ],
+      "processing_time": 0.5017440319061279,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What lawn is most likely to be on a street? \n\n Choices: ['green yard', 'suburbia', 'golf course', 'front yard', 'michigan']",
+      "response": "The correct answer is: 'front yard', as it is most likely to be on a street.",
+      "expected_output": "Front yards face the street, and usually have lawns.",
+      "question_values": [
+        "What lawn is most likely to be on a street?",
+        "['green yard', 'suburbia', 'golf course', 'front yard', 'michigan']"
+      ],
+      "processing_time": 0.5847814083099365,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: James constructed a playroom for his children.   His place was small, so he put it in an unattached what? \n\n Choices: ['preschool', 'indoor games', 'nursery school', 'building', 'big house']",
+      "response": "The correct answer is: His place was small, so he put it in an unattached building.",
+      "expected_output": "James' house wasn't large enough for him to subdivide an existing room to serve as a playroom. To have enough room, he had to construct the playroom in a different, unattached building, like a garage.",
+      "question_values": [
+        "James constructed a playroom for his children.   His place was small, so he put it in an unattached what?",
+        "['preschool', 'indoor games', 'nursery school', 'building', 'big house']"
+      ],
+      "processing_time": 0.578571081161499,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: \"There are 10 apples on an apple tree.  Three fall off.  Now there are X apples.\"  What is this an example of? \n\n Choices: ['park', 'coloring book', 'garden center', 'math problem', 'gravity']",
+      "response": "This is an example of a math problem, as it involves basic arithmetic operations to determine the current number of apples remaining on the tree.",
+      "expected_output": "A math problem is usually posed as a question that requires some operation such as subtraction or addition to answer.",
+      "question_values": [
+        "\"There are 10 apples on an apple tree.  Three fall off.  Now there are X apples.\"  What is this an example of?",
+        "['park', 'coloring book', 'garden center', 'math problem', 'gravity']"
+      ],
+      "processing_time": 0.7783317565917969,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A person notices popcorn, cotton candy on the grass, where is he likely? \n\n Choices: ['soccer game', 'fairgrounds', 'movie theatre', 'countryside', 'state park']",
+      "response": "The correct answer is that he is likely at the fairgrounds, as both popcorn and cotton candy are typically found at fairgrounds or carnivals.",
+      "expected_output": "Popcorn and cotton candy is frequently sold at fairs, and people accidentally leave them behind on the ground as they are distracted by the fair. Fairs are held in large open spaces where the ground is grassy.",
+      "question_values": [
+        "A person notices popcorn, cotton candy on the grass, where is he likely?",
+        "['soccer game', 'fairgrounds', 'movie theatre', 'countryside', 'state park']"
+      ],
+      "processing_time": 0.8345696926116943,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A shark is stuck in a lake, where does it need to go provided it isn't a bull shark? \n\n Choices: ['medium', 'saltwater', 'sea world', 'atlantic ocean', 'seawater']",
+      "response": "The correct answer is: a shark needs to go to saltwater, provided it isn't a bull shark, as bull sharks can survive in freshwater.",
+      "expected_output": "most lakes are fresh water, sharks normally live in saltwater.",
+      "question_values": [
+        "A shark is stuck in a lake, where does it need to go provided it isn't a bull shark?",
+        "['medium', 'saltwater', 'sea world', 'atlantic ocean', 'seawater']"
+      ],
+      "processing_time": 0.8584818840026855,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: James had trouble learning the French language because he never had any what to it? \n\n Choices: ['attempt', 'exposure', 'study', 'effort', 'thought']",
+      "response": "The correct answer is: James had trouble learning the French language because he never had any exposure to it.",
+      "expected_output": "Inexperience with a language comes from lack of exposure to it, e.g., through a class or from living in a contry where the language is widely spoken. So, it might be difficult to learn French without being exposed to it (by studying, or living in a French-speaking country).",
+      "question_values": [
+        "James had trouble learning the French language because he never had any what to it?",
+        "['attempt', 'exposure', 'study', 'effort', 'thought']"
+      ],
+      "processing_time": 0.6096868515014648,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where does litter end up when it's tossed from a car? \n\n Choices: ['roadsides', 'street corner', 'not in the garbage', 'park', 'ground']",
+      "response": "The correct answer is: litter ends up on roadsides when it's tossed from a car.",
+      "expected_output": "If one was to toss garbage from a moving car, because the car is likely to be driving along a road, the trash would likely end up a few feet away on the road side.",
+      "question_values": [
+        "Where does litter end up when it's tossed from a car?",
+        "['roadsides', 'street corner', 'not in the garbage', 'park', 'ground']"
+      ],
+      "processing_time": 0.5570306777954102,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: After being stuck indoors all day breathing fresh air would lead to what? \n\n Choices: ['feeling better', 'oxygen intake', 'think more clearly', 'happiness', 'feeling refreshed']",
+      "response": "Feeling refreshed is the correct answer to the question as it best describes the positive effect of breathing fresh air after being stuck indoors all day.",
+      "expected_output": "Being stuck indoors all day, e.g., at an office, tends to make people feel stuffy. This stuffy feeling can be reduced by going outside for refreshing, fresh air.",
+      "question_values": [
+        "After being stuck indoors all day breathing fresh air would lead to what?",
+        "['feeling better', 'oxygen intake', 'think more clearly', 'happiness', 'feeling refreshed']"
+      ],
+      "processing_time": 0.8031318187713623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Luke was a human. Like most humans, he learned from his parents.  He was mortal, but he could preserve himself by doing what? \n\n Choices: ['ocean', 'write', 'smile', 'die', 'think critically']",
+      "response": "The correct answer is that Luke could preserve himself by 'write', as it implies creating art, literature, or other forms of expression that could be preserved beyond his physical life.",
+      "expected_output": "People often consider writings to be a way to preserve one's history. People can live on in the memories of future people reading the words they wrote.",
+      "question_values": [
+        "Luke was a human. Like most humans, he learned from his parents.  He was mortal, but he could preserve himself by doing what?",
+        "['ocean', 'write', 'smile', 'die', 'think critically']"
+      ],
+      "processing_time": 0.9963011741638184,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: After being shipwrecked, Robinson relied on the huge tree to do what? \n\n Choices: ['falling down', 'provide shelter', 'bud', 'produce fruit', 'back yard']",
+      "response": "The correct answer is: provide shelter.",
+      "expected_output": "If one was stranded on a desert island after a boat crash, one of the things that you would probably seek out is shelter; things like trees and caves could provide cover from the rain.",
+      "question_values": [
+        "After being shipwrecked, Robinson relied on the huge tree to do what?",
+        "['falling down', 'provide shelter', 'bud', 'produce fruit', 'back yard']"
+      ],
+      "processing_time": 0.25061750411987305,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: When remembering a tragedy in the past, what do many people feel? \n\n Choices: ['depression', 'pain', 'nostalgia', 'knowing', 'knowledge']",
+      "response": "Many people feel pain when remembering a tragedy in the past.",
+      "expected_output": "Remebering a past tradedy can resurface feelings that arose in response to that tragedy. Because tradgedies are not positive events, it's possible that sadness and depression could arise from remembering it.",
+      "question_values": [
+        "When remembering a tragedy in the past, what do many people feel?",
+        "['depression', 'pain', 'nostalgia', 'knowing', 'knowledge']"
+      ],
+      "processing_time": 0.36196351051330566,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A boss may like an employee's ambition, so the employee may get put what? \n\n Choices: ['in charge of project', 'conquer opponent', 'go to school', 'begin work', 'webisode']",
+      "response": "The correct answer is that the employee may get put \"in charge of project\" due to the boss's appreciation of the employee's ambition.",
+      "expected_output": "Ambitious employees are likely to work hard and take leadership roles in a project, and this initiative is typically recognized by their bosses and rewarded by letting them be in charge of projects.",
+      "question_values": [
+        "A boss may like an employee's ambition, so the employee may get put what?",
+        "['in charge of project', 'conquer opponent', 'go to school', 'begin work', 'webisode']"
+      ],
+      "processing_time": 0.8024773597717285,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What happens if lovers want to show affection? \n\n Choices: ['kiss each other', 'show disgust of each other', 'argue', 'part ways', 'break up']",
+      "response": "The correct answer is that lovers who want to show affection kiss each other.",
+      "expected_output": "Kissing is a sign of showing affection, commonly used among lovers.",
+      "question_values": [
+        "What happens if lovers want to show affection?",
+        "['kiss each other', 'show disgust of each other', 'argue', 'part ways', 'break up']"
+      ],
+      "processing_time": 0.4468111991882324,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The dairy cow farm was special, it provided all the milk for the big chocolate company from where? \n\n Choices: ['ranch', 'tennessee', 'barnyard', 'switzerland', 'antarctica']",
+      "response": "The correct answer is: The dairy cow farm was special, it provided all the milk for the big chocolate company from Switzerland.",
+      "expected_output": "Switzerland is a country known for its high-quality chocolate production; it's likely that high-quality Swiss chocolate could be made from special dairy farms in Switzerland.",
+      "question_values": [
+        "The dairy cow farm was special, it provided all the milk for the big chocolate company from where?",
+        "['ranch', 'tennessee', 'barnyard', 'switzerland', 'antarctica']"
+      ],
+      "processing_time": 0.7201368808746338,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: How can someone listen to vinyl? \n\n Choices: ['record store', 'car', 'omlinr', 'wallpaper', 'record albums']",
+      "response": "The correct answer is:'record albums' because they contain the grooves that a vinyl player can read to produce sound.",
+      "expected_output": "Record albums are also called vinyls. One must own a record album in order to listen to vinyl.",
+      "question_values": [
+        "How can someone listen to vinyl?",
+        "['record store', 'car', 'omlinr', 'wallpaper', 'record albums']"
+      ],
+      "processing_time": 0.7191812992095947,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where do people gather to see large men in pads play a game where they run and smash in to each other? \n\n Choices: ['surface of earth', 'car show', 'football stadium', 'gym', 'opera']",
+      "response": "The correct answer is: 'football stadium'.",
+      "expected_output": "Football, a game often played at football stadiums, is a contact-heavy sport that requires the players (who are usually large men) to wear significant protective padding.",
+      "question_values": [
+        "Where do people gather to see large men in pads play a game where they run and smash in to each other?",
+        "['surface of earth', 'car show', 'football stadium', 'gym', 'opera']"
+      ],
+      "processing_time": 0.2820773124694824,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The ladies at the salon had plenty of curiosity, anytime someone came in they wanted to what? \n\n Choices: ['examine thing', 'go to market', 'attend school', 'hear news', 'bad news']",
+      "response": "The correct answer is that the ladies at the salon had plenty of curiosity, anytime someone came in they wanted to hear news.",
+      "expected_output": "Curiosity is satisfied with information, and news provides information, and a newcomer usually carries with them some news.",
+      "question_values": [
+        "The ladies at the salon had plenty of curiosity, anytime someone came in they wanted to what?",
+        "['examine thing', 'go to market', 'attend school', 'hear news', 'bad news']"
+      ],
+      "processing_time": 0.7188091278076172,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The family wanted to live with carpeting, so where did they end up putting it? \n\n Choices: ['istanbul', 'fireplace', 'gym', 'houses', 'bedroom']",
+      "response": "The correct answer is that they ended up putting the carpeting in the bedroom, as it is the most common room in a house where carpeting is commonly installed for comfort and aesthetics.",
+      "expected_output": "Families often live in houses, and houses have floors that can be carpeted.",
+      "question_values": [
+        "The family wanted to live with carpeting, so where did they end up putting it?",
+        "['istanbul', 'fireplace', 'gym', 'houses', 'bedroom']"
+      ],
+      "processing_time": 1.0504224300384521,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where would someone have to carry their brass instrument while they played? \n\n Choices: ['punk rock band', 'marching band', 'brass band', 'annoy mom', 'jazz band']",
+      "response": "The correct answer is that someone would have to carry their brass instrument while they played in a marching band.",
+      "expected_output": "A marching band is a band that plays brass instruments while marching. Due to moving, members of the band must carry their instruments.",
+      "question_values": [
+        "Where would someone have to carry their brass instrument while they played?",
+        "['punk rock band', 'marching band', 'brass band', 'annoy mom', 'jazz band']"
+      ],
+      "processing_time": 0.617520809173584,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: He enjoyed the factory work, he liked the idea that he did what for sale? \n\n Choices: ['earn money', 'introduction', 'create', 'workhour', 'produce goods']",
+      "response": "The correct answer is: He enjoyed the factory work, he liked the idea that he did produce goods for sale.",
+      "expected_output": "Factory work involves producing goods, and him liking the factory work indicates he might like producing goods.",
+      "question_values": [
+        "He enjoyed the factory work, he liked the idea that he did what for sale?",
+        "['earn money', 'introduction', 'create', 'workhour', 'produce goods']"
+      ],
+      "processing_time": 0.6653285026550293,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: All the contestants had to wait turn for their chance to what on American Idol? \n\n Choices: ['have patience', 'stand in line', 'sing', 'get ready', 'get in line']",
+      "response": "The correct answer is: All the contestants had to stand in line for their chance to sing on American Idol.",
+      "expected_output": "American Idol is a singing competition.",
+      "question_values": [
+        "All the contestants had to wait turn for their chance to what on American Idol?",
+        "['have patience', 'stand in line', 'sing', 'get ready', 'get in line']"
+      ],
+      "processing_time": 0.6368811130523682,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A bride and groom are taking care of proposals, what is the likely ceremony? \n\n Choices: ['efficiency', 'getting work done', 'marriage', 'finishing up', 'results']",
+      "response": "The correct answer is: marriage.",
+      "expected_output": "the term bride and groom is mostly associated with a marriage ceremony",
+      "question_values": [
+        "A bride and groom are taking care of proposals, what is the likely ceremony?",
+        "['efficiency', 'getting work done', 'marriage', 'finishing up', 'results']"
+      ],
+      "processing_time": 0.2227034568786621,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A boy is leaving line because he's tired of listening to the teacher's orders, what might the teacher give? \n\n Choices: ['punishment', 'utter chaos', 'trouble', 'have to start over', 'high five']",
+      "response": "The correct answer is that the teacher might give the boy a high five, acknowledging his effort and potentially encouraging him to stay engaged.",
+      "expected_output": "Not listening to a teacher's orders is usually considered a sign of lack of discipline and obedience, as a remedy to which teachers often give out punishments to discourage similar behavior in the future.",
+      "question_values": [
+        "A boy is leaving line because he's tired of listening to the teacher's orders, what might the teacher give?",
+        "['punishment', 'utter chaos', 'trouble', 'have to start over', 'high five']"
+      ],
+      "processing_time": 0.7496511936187744,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Boredom led him to go out to the bar, there were many characters there and he what? \n\n Choices: ['meet interesting people', 'play games', 'field', 'skateboard', 'listen to music']",
+      "response": "The correct answer is: \"meet interesting people.\"",
+      "expected_output": "Bars are often patronized by a mix of locals, travellers, etc. Thus, if you are bored and sociable, meeting interesting people is a good reason to go to one.",
+      "question_values": [
+        "Boredom led him to go out to the bar, there were many characters there and he what?",
+        "['meet interesting people', 'play games', 'field', 'skateboard', 'listen to music']"
+      ],
+      "processing_time": 0.30541348457336426,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: John rented a hotel room while on a business trip.  It was a a company sponsored event.  Where might it have been? \n\n Choices: ['convention center.', 'business interviews', 'michigan', 'resort', 'city']",
+      "response": "The correct answer is that it might have been at a convention center, as company-sponsored events are often held there.",
+      "expected_output": "When people travel for work, it's often the case that their companies will pay for their accomodations, like hotel rooms, meals, etc. It's common for companies to pay for fancy accomodations, e.g., at resorts, to keep their employees happy.",
+      "question_values": [
+        "John rented a hotel room while on a business trip.  It was a a company sponsored event.  Where might it have been?",
+        "['convention center.', 'business interviews', 'michigan', 'resort', 'city']"
+      ],
+      "processing_time": 0.6659181118011475,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The kids wanted to cool off so they all went to what? \n\n Choices: ['manual', 'think', 'relief', 'calm down', 'go swimming']",
+      "response": "The correct answer is that the kids went to go swimming to cool off.",
+      "expected_output": "Especially during warmer times of the year, it's common for kids to go to pools to cool off, becuase swimming at a pool can cool down the body.",
+      "question_values": [
+        "The kids wanted to cool off so they all went to what?",
+        "['manual', 'think', 'relief', 'calm down', 'go swimming']"
+      ],
+      "processing_time": 0.44449424743652344,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What do you normally get out to get yourself a drink? \n\n Choices: ['bucket', 'backpack', 'getting drunk', 'cup', 'cabinet']",
+      "response": "The correct answer is: 'cup', as it is the most common item used to get a drink.",
+      "expected_output": "A cup can hold liquids, and drinks are always liquids.",
+      "question_values": [
+        "What do you normally get out to get yourself a drink?",
+        "['bucket', 'backpack', 'getting drunk', 'cup', 'cabinet']"
+      ],
+      "processing_time": 0.6106176376342773,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A big fountain was the center piece of the renovation, it had all been paid for by a grant to the what? \n\n Choices: ['city', 'state', 'front of casino', 'rome', 'public place']",
+      "response": "The correct answer is that the big fountain had all been paid for by a grant to the city.",
+      "expected_output": "Cities sometimes feature big fountains, which require large sums of money for construction, and this money usually comes from grants.",
+      "question_values": [
+        "A big fountain was the center piece of the renovation, it had all been paid for by a grant to the what?",
+        "['city', 'state', 'front of casino', 'rome', 'public place']"
+      ],
+      "processing_time": 0.5811581611633301,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where might an expressway leave the Us to go? \n\n Choices: ['large city', 'canada', 'country', 'map', 'highways']",
+      "response": "The correct answer is that an expressway might leave the US to go to Canada.",
+      "expected_output": "In terms of international travel, freeways in a country generally could only provide access to neighboring countries, rather than those seperated by a large body of water. Because the USA boarders Canada, a highway could exist that connect them. ",
+      "question_values": [
+        "Where might an expressway leave the Us to go?",
+        "['large city', 'canada', 'country', 'map', 'highways']"
+      ],
+      "processing_time": 0.5034968852996826,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Teachers play many roles such as babysitter, but they get the most out of just simply doing what? \n\n Choices: ['answering questions', 'teach children', 'writing', 'talk too much', 'open boxes']",
+      "response": "The correct answer is: answering questions.",
+      "expected_output": "Teachers' main profession is to teach children. This is what they are trained for, and likely enjoy doing if they have chosen the job.",
+      "question_values": [
+        "Teachers play many roles such as babysitter, but they get the most out of just simply doing what?",
+        "['answering questions', 'teach children', 'writing', 'talk too much', 'open boxes']"
+      ],
+      "processing_time": 0.25862908363342285,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A cat is wandering outside, where is likely to be found? \n\n Choices: ['floor', 'residential area', 'bed', 'comfortable position', 'family room']",
+      "response": "The correct answer is: a residential area, as that is where a wandering cat is most likely to be found outside.",
+      "expected_output": "A residential area is where cats often roam around, especially if they are thrown out.",
+      "question_values": [
+        "A cat is wandering outside, where is likely to be found?",
+        "['floor', 'residential area', 'bed', 'comfortable position', 'family room']"
+      ],
+      "processing_time": 0.7133939266204834,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Lilly loved peace and quiet, but she couldn't find any where she lived.  She took drastic measures and went somewhere for solitude. Where did she go? \n\n Choices: ['library', 'home', 'top of mountain', 'sea', 'grocery']",
+      "response": "Lilly went to the top of the mountain for solitude where she could find peace and quiet.",
+      "expected_output": "The sea can be a quiet place: for example, if you sail on a boat alone, or if you are living by yourself in a quiet beach community. By moving to the sea, Lily escaped her current, noiser living situation.",
+      "question_values": [
+        "Lilly loved peace and quiet, but she couldn't find any where she lived.  She took drastic measures and went somewhere for solitude. Where did she go?",
+        "['library', 'home', 'top of mountain', 'sea', 'grocery']"
+      ],
+      "processing_time": 0.5669996738433838,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What is a reason to pay your television bill? \n\n Choices: ['informative', 'dead', 'legal', 'entertaining', 'obsolete']",
+      "response": "The correct answer is: paying your television bill is to ensure you have access to entertainment, which is 'entertaining'.",
+      "expected_output": "One reason to pay your telephone bill is that you are legally obligated to. The telephone company can send a debt collector after you if you do not pay it.",
+      "question_values": [
+        "What is a reason to pay your television bill?",
+        "['informative', 'dead', 'legal', 'entertaining', 'obsolete']"
+      ],
+      "processing_time": 0.737130880355835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: How does a police officer report his work? \n\n Choices: ['charge person with crime', 'case', 'computer', 'direct traffic', 'retire']",
+      "response": "The correct answer is: 'charge person with crime'.",
+      "expected_output": "A police officer reports his work by filing a case.",
+      "question_values": [
+        "How does a police officer report his work?",
+        "['charge person with crime', 'case', 'computer', 'direct traffic', 'retire']"
+      ],
+      "processing_time": 0.34329915046691895,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: She began to play violin at a young age, she had a passion to do what? \n\n Choices: ['inspiring', 'like music', 'be musician', 'make music', 'tune']",
+      "response": "The correct answer is: She had a passion to be a musician.",
+      "expected_output": "Playing a violin is a way of making music, and if someone begins an activity at a young age, they probably have a passion for that activity.",
+      "question_values": [
+        "She began to play violin at a young age, she had a passion to do what?",
+        "['inspiring', 'like music', 'be musician', 'make music', 'tune']"
+      ],
+      "processing_time": 0.42572903633117676,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Why might a person go to get counseling? \n\n Choices: ['to be heard', 'receive gifts', 'understand themselves', 'good things in life', 'acknowledgment']",
+      "response": "A person might go to get counseling to understand themselves.",
+      "expected_output": "Often, the goal of therapy is to better understand and manage the people and problems in one's life; a step towards that understanding often involves exploring and accepting one's self.",
+      "question_values": [
+        "Why might a person go to get counseling?",
+        "['to be heard', 'receive gifts', 'understand themselves', 'good things in life', 'acknowledgment']"
+      ],
+      "processing_time": 0.34228515625,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What place could have one back garden? \n\n Choices: ['police station', 'city', 'town', 'england', 'house']",
+      "response": "The correct answer is that a 'house' could have one back garden, as houses are typically designed with gardens.",
+      "expected_output": "Unlike apartments or most condominiums, larger houses are likely to have yards behind the house, and these yards are likely to have gardens (i.e., \"back\" gardens).",
+      "question_values": [
+        "What place could have one back garden?",
+        "['police station', 'city', 'town', 'england', 'house']"
+      ],
+      "processing_time": 0.6818933486938477,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A bug was looking for wildflowers and no human interruption, where did he go? \n\n Choices: ['garden', 'meadow', 'bug zapper', 'rug', 'rock']",
+      "response": "The correct answer is that the bug went to the meadow, as it is the only natural environment free from human interruption among the given choices.",
+      "expected_output": "Meadows are usually not human-owned or attended, and tend to have wildflowers.",
+      "question_values": [
+        "A bug was looking for wildflowers and no human interruption, where did he go?",
+        "['garden', 'meadow', 'bug zapper', 'rug', 'rock']"
+      ],
+      "processing_time": 0.8621408939361572,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A beaver is taking logs from a Pacific beach, where is it located? \n\n Choices: ['washington', 'ontario', 'books', 'canada', 'in russia']",
+      "response": "The correct answer is: washington, as it is the only U.S. state where a Pacific beach is located.",
+      "expected_output": "Washington is a state in the United States which is located on the Pacific ocean coast, and if the beaver is on the pacific beach, it is very likely to be in Washington.",
+      "question_values": [
+        "A beaver is taking logs from a Pacific beach, where is it located?",
+        "['washington', 'ontario', 'books', 'canada', 'in russia']"
+      ],
+      "processing_time": 0.6822543144226074,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A John is a bum.  Much like the stereotype, he lives near this sort of transportation infrastructure. Where does he live? \n\n Choices: ['bus depot', 'beach', 'train station', 'bridge', 'bridge']",
+      "response": "John lives near a train station, as train stations are a common location for homeless individuals and align with the stereotype of a \"bum.\"",
+      "expected_output": "bums are well known to take up residence under bridges.",
+      "question_values": [
+        "A John is a bum.  Much like the stereotype, he lives near this sort of transportation infrastructure. Where does he live?",
+        "['bus depot', 'beach', 'train station', 'bridge', 'bridge']"
+      ],
+      "processing_time": 0.7939894199371338,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What could you find moving in a ticket office? \n\n Choices: ['humans', 'movie theaters', 'city', 'animals', 'stadium']",
+      "response": "The correct answer is: humans, as you could find humans moving in a ticket office.",
+      "expected_output": "Humans go to a ticket office to buy tickets. They are often walking forward while waiting in line to buy the tickets.",
+      "question_values": [
+        "What could you find moving in a ticket office?",
+        "['humans', 'movie theaters', 'city', 'animals', 'stadium']"
+      ],
+      "processing_time": 0.5419912338256836,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What does someone who has a greed for energy do? \n\n Choices: ['cause businesses to grow', 'get', 'lie', 'buy food', 'win']",
+      "response": "The correct answer is: \"get\" (as in obtaining energy, often in the context of obtaining energy sources or resources for businesses).",
+      "expected_output": "When consumed, food provides energy and satisfies the greed for it.",
+      "question_values": [
+        "What does someone who has a greed for energy do?",
+        "['cause businesses to grow', 'get', 'lie', 'buy food', 'win']"
+      ],
+      "processing_time": 0.7944965362548828,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Randy was suffering from great hunger and he didn't even need cheese or toppings, he just wanted to what? \n\n Choices: ['eat hamburger', 'prepare meal', 'eat breakfast', 'cook dinner', 'buy food']",
+      "response": "The correct answer is: Randy just wanted to eat hamburger.",
+      "expected_output": "Hamburgers often contain cheese or other toppings. Someone who is very hungry may not want those extra toppings so that they can eat the hamburger as soon as possible.",
+      "question_values": [
+        "Randy was suffering from great hunger and he didn't even need cheese or toppings, he just wanted to what?",
+        "['eat hamburger', 'prepare meal', 'eat breakfast', 'cook dinner', 'buy food']"
+      ],
+      "processing_time": 0.3696634769439697,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What signals when an animal has received an injury? \n\n Choices: ['procreate', 'feel pain', 'a distress call', 'reproduce asexually', 'bite']",
+      "response": "The correct answer is that 'feel pain' signals when an animal has received an injury.",
+      "expected_output": "Injuries cause the body to send pain signals to the brain, which focuses attention on the injury so that it can be healed.",
+      "question_values": [
+        "What signals when an animal has received an injury?",
+        "['procreate', 'feel pain', 'a distress call', 'reproduce asexually', 'bite']"
+      ],
+      "processing_time": 0.541067361831665,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The deep fryers used gallons and gallons of oil a week, the location was the busiest what in town? \n\n Choices: ['service station', 'restaurant', 'street', 'ground', 'auto parts store']",
+      "response": "The correct answer is that the location was the busiest restaurant in town, as deep fryers use large amounts of oil.",
+      "expected_output": "Resturants will often have deep friers, which are appliances that require cooking oil; if the restaurant is busy, the oil in the frier may require frequent replacement.",
+      "question_values": [
+        "The deep fryers used gallons and gallons of oil a week, the location was the busiest what in town?",
+        "['service station', 'restaurant', 'street', 'ground', 'auto parts store']"
+      ],
+      "processing_time": 0.7108449935913086,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What gas vehicle uses a chain to move the back wheel? \n\n Choices: ['gear shift', 'bicycle', 'car', 'tow truck', 'motorbike']",
+      "response": "The correct answer is: bicycle, as it is the only choice that describes a gas-powered vehicle using a chain to move the back wheel.",
+      "expected_output": "Motorbikes are propelled by a chain that extends from the engine to the wheel, thus, enabling the bike to move forward when throttled.",
+      "question_values": [
+        "What gas vehicle uses a chain to move the back wheel?",
+        "['gear shift', 'bicycle', 'car', 'tow truck', 'motorbike']"
+      ],
+      "processing_time": 0.8202369213104248,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: The calm seas weren't going to stay that way long, their sails filled as it got what? \n\n Choices: ['disturbed', 'stressed', 'give up', 'windy', 'flustered']",
+      "response": "The correct answer is: The calm seas weren't going to stay that way long, their sails filled as it got windy.",
+      "expected_output": "Wind often makes a sea choppy, the opposite of calm. Sails fill with wind. ",
+      "question_values": [
+        "The calm seas weren't going to stay that way long, their sails filled as it got what?",
+        "['disturbed', 'stressed', 'give up', 'windy', 'flustered']"
+      ],
+      "processing_time": 0.7387030124664307,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What to living things do to continue their species? \n\n Choices: ['communing', 'reproducing', 'palpitations', 'perspiration', 'respiration']",
+      "response": "The correct answer is that living things reproduce to continue their species.",
+      "expected_output": "Reproduction involves giving birth to new members of the same species, and therefore ensures continuation of the species.",
+      "question_values": [
+        "What to living things do to continue their species?",
+        "['communing', 'reproducing', 'palpitations', 'perspiration', 'respiration']"
+      ],
+      "processing_time": 0.38896989822387695,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Billy was a student taking a course in communications.  Where might he be taking his classes? \n\n Choices: ['every aspect of life', 'library', 'in a movie hall', 'classroom', 'university']",
+      "response": "The correct answer is that Billy might be taking his classes in a classroom or at a university.",
+      "expected_output": "Universities commonly offer a \"communications\" major, and because students need to take relevant classes to complete their major, many classes on the subject take place at universities.",
+      "question_values": [
+        "Billy was a student taking a course in communications.  Where might he be taking his classes?",
+        "['every aspect of life', 'library', 'in a movie hall', 'classroom', 'university']"
+      ],
+      "processing_time": 0.5529756546020508,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What is something only humans can do? \n\n Choices: ['hear sounds', 'drive cars', 'reproduce', 'make mistakes', 'excrete']",
+      "response": "The correct answer is: reproduce, as it is a unique biological function specific to humans among the given choices.",
+      "expected_output": "Humans, unlike animals, cannot drive cars.",
+      "question_values": [
+        "What is something only humans can do?",
+        "['hear sounds', 'drive cars', 'reproduce', 'make mistakes', 'excrete']"
+      ],
+      "processing_time": 0.6357977390289307,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What do a string of words with a proper noun and verb form? \n\n Choices: ['english', 'dictionary', 'phrase', 'sentence', 'language']",
+      "response": "The correct answer is: a string of words with a proper noun and verb forms a sentence.",
+      "expected_output": "A sentence is a set of words which cohesively form a syntactic unit. This generally requires a subject in the form of a noun, and a verb.",
+      "question_values": [
+        "What do a string of words with a proper noun and verb form?",
+        "['english', 'dictionary', 'phrase', 'sentence', 'language']"
+      ],
+      "processing_time": 0.5553340911865234,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: How would someone feel after going for run? \n\n Choices: ['working out', 'sore', 'get tired', 'satisfaction', 'falling down']",
+      "response": "The correct answer is that someone would feel satisfaction after going for a run.",
+      "expected_output": "Running is a physically demanding activity, and aftering doing such an activity, most people would feel tired.",
+      "question_values": [
+        "How would someone feel after going for run?",
+        "['working out', 'sore', 'get tired', 'satisfaction', 'falling down']"
+      ],
+      "processing_time": 0.44585704803466797,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What do most people have on their feet? \n\n Choices: ['shoes and socks', 'floor', 'table', 'surface', 'desk']",
+      "response": "The correct answer is: shoes and socks, as these are most commonly worn on one's feet.",
+      "expected_output": "it is very common for people to always wear shoes and socks.",
+      "question_values": [
+        "What do most people have on their feet?",
+        "['shoes and socks', 'floor', 'table', 'surface', 'desk']"
+      ],
+      "processing_time": 0.5825352668762207,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Returning to work was easy for Dan.  He had liked doing nothing for weeks, and after his treatment he was complately what? \n\n Choices: ['sobering', 'work', 'painless', 'malaise', 'boredom']",
+      "response": "The correct answer is that Dan was \"boredom\", as the sentence implies he had enjoyed his weeks of doing nothing and was now ready to return to work.",
+      "expected_output": "The question insinuates that Dan was away from work on medical leave, since he had a treatment during this time. One common reason to have a medical treatment is to relieve pain. ",
+      "question_values": [
+        "Returning to work was easy for Dan.  He had liked doing nothing for weeks, and after his treatment he was complately what?",
+        "['sobering', 'work', 'painless', 'malaise', 'boredom']"
+      ],
+      "processing_time": 0.9475207328796387,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: What can help you with an illness? \n\n Choices: ['elderly person', 'sick person', 'hospital', \"doctor's office\", 'stomach']",
+      "response": "The correct answer is that a hospital can help you with an illness.",
+      "expected_output": "Illnesses can be cured via medications and care, which is provided by doctors and nurses who operate out of the doctor's office.",
+      "question_values": [
+        "What can help you with an illness?",
+        "['elderly person', 'sick person', 'hospital', \"doctor's office\", 'stomach']"
+      ],
+      "processing_time": 0.4188554286956787,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Joe bought a bunch of grapes because he likes to use them to top his what? \n\n Choices: ['make wine', 'shops', 'deserts', 'bowl of fruit', 'sunshine']",
+      "response": "The correct answer is: Joe bought a bunch of grapes because he likes to use them to top his bowl of fruit.",
+      "expected_output": "Grapes are sometimes a topping for desserts, e.g., fruit tarts.",
+      "question_values": [
+        "Joe bought a bunch of grapes because he likes to use them to top his what?",
+        "['make wine', 'shops', 'deserts', 'bowl of fruit', 'sunshine']"
+      ],
+      "processing_time": 0.6931061744689941,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: How can a company efficiently sell things to their customer? \n\n Choices: ['sell', 'branch out', 'own factory', 'ship goods', 'mail order']",
+      "response": "The correct answer is: ship goods, as it directly addresses the efficient delivery of products to customers.",
+      "expected_output": "Mail orders are an efficient way to sell things to customers, because a company simply has to pack up and mail the items to a customer, rather than paying and setting up a brick-and-mortar store. A postal service can perform delivery, saving the company time and resources.",
+      "question_values": [
+        "How can a company efficiently sell things to their customer?",
+        "['sell', 'branch out', 'own factory', 'ship goods', 'mail order']"
+      ],
+      "processing_time": 0.5840914249420166,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: When you are expressing yourself by yelling after getting a bruise, what are you feeling? \n\n Choices: ['self pity', 'communication', 'understood', 'pain', 'embarrassment']",
+      "response": "You are feeling pain when you yell after getting a bruise.",
+      "expected_output": "A bruise is caused when a person is hit by an object forcefully --- such an action would be quite painful to the person, and people often yell when they are caused pain.",
+      "question_values": [
+        "When you are expressing yourself by yelling after getting a bruise, what are you feeling?",
+        "['self pity', 'communication', 'understood', 'pain', 'embarrassment']"
+      ],
+      "processing_time": 0.38813185691833496,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: James shaved, but this left a lot of hair where? \n\n Choices: ['arm', \"person's head\", 'floor', 'sink', 'moustache']",
+      "response": "The correct answer is that James shaved, but this left a lot of hair where his \"person's head\" (excluding the beard/moustache area).",
+      "expected_output": "People usually shave at the sink, and shaving leaves behind discarded hair.",
+      "question_values": [
+        "James shaved, but this left a lot of hair where?",
+        "['arm', \"person's head\", 'floor', 'sink', 'moustache']"
+      ],
+      "processing_time": 0.888791561126709,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: Where are you likely to receive mouthwash in a little paper cup? \n\n Choices: ['bottle', 'drug store', \"dentist's office\", 'doctor office', 'bathroom']",
+      "response": "You are likely to receive mouthwash in a little paper cup at a drug store.",
+      "expected_output": "Dentists perform procedures in the mouth, and afterwards offer a small amount of mouthwash to clean out the patients' mouth.",
+      "question_values": [
+        "Where are you likely to receive mouthwash in a little paper cup?",
+        "['bottle', 'drug store', \"dentist's office\", 'doctor office', 'bathroom']"
+      ],
+      "processing_time": 0.5031208992004395,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: A cat can't talk, but a cat can what? \n\n Choices: ['sleep all day', 'meow', 'shed fur', 'see king', 'live many years']",
+      "response": "The correct answer is: a cat can meow.",
+      "expected_output": "A cat can meow as a way to vocalize.",
+      "question_values": [
+        "A cat can't talk, but a cat can what?",
+        "['sleep all day', 'meow', 'shed fur', 'see king', 'live many years']"
+      ],
+      "processing_time": 0.3353254795074463,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "Briefly explain in one sentence which choice is the correct answer to this question: \n\n\n Question: James and Ruth were getting a divorce.  It was amicable, but it wasn't happy.  There was a lot of what emotion? \n\n Choices: ['bitterness', 'sadness', 'depression', 'pain', 'anguish']",
+      "response": "The correct answer is that there was a lot of bitterness emotion.",
+      "expected_output": "Divorces are difficult, and even the amicable ones are sad as they signify the end of relationships.",
+      "question_values": [
+        "James and Ruth were getting a divorce.  It was amicable, but it wasn't happy.  There was a lot of what emotion?",
+        "['bitterness', 'sadness', 'depression', 'pain', 'anguish']"
+      ],
+      "processing_time": 0.39034247398376465,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "When someone talks on the phone, they may discuss various topics with their conversation partner, e.g., themselves, and what's going on in their lives.",
+    "A flute is a musical instrument, and it's therefore plausable that one could buy one at a musical instrument store.",
+    "Informational pamphlets can contain lots of types of information, e.g., about medical information, local attractions, advertisements, etc.; various types of these pamphlets could be available at a library.",
+    "Teachers are usually employed at schools, and most people work during weekdays.",
+    "An altar is likely to be located at a temple, and so if a person was standing next to an alter, they could likely be in a temple.",
+    "Malls sometimes have sales, e.g., on black friday, when they offer good deals; however, the items are sometimes in limited supply, which can cause altercations between folks, each trying to buy the same item.",
+    "Telephone directories can be found in phone booths because people often want to look up numbers before making calls; phone booths are accessible to the public.",
+    "Smoking cannabis frequently causes people to feel hungry, and it wouldn't be uncommon to see people smoking outside of a convinence store like the quick stop.",
+    "Most  bars that serve alcohol are inside of buildings, and so, usually, hanging out at a bar is an activity that could only be done inside. Exceptions to the \"bars are inside\" rule include: rooftop bars, and oceanside bars on beaches.",
+    "An indoor space (with heaters, blankets, and warm showers) is likely to be warmer than this outdoor one, where the person became cold and wet.",
+    "The expression \"flight or fight\" comes from animal behavior when faced with a threat. To fight for one's life means to face the threat head-on.",
+    "If you are oblidged to do something, you might have made a professional, personal, or legal promise to do it, which, by definition, makes it not optional.",
+    "Corvettes are very fast cars. Because cars are more lightweight than battleships, they are faster.",
+    "If plants were to exist on a planet, they would be on the surface.",
+    "Corner shops often are run out of buildings on street corners.",
+    "21 is the legal age to buy alcohol in the US",
+    "The only context in which an entire county road could be represented meaningfully as a single line would be on a map, e.g., a map of roads in the county, or a GPS application on a smartphone.",
+    "Florida is to the south of Ohio, and you need to drive north to go from Florida to Ohio.",
+    "When one drives away the enemy, the goal is to keep them from advancing forward and claiming more land, instead sending them back the way they came.",
+    "People worship at churches, synagoges, mosques, and shrines; so, if the power went out at one of these locations, the lights might go off, which would make it difficult to read scriptures, or pray.",
+    "A warehouse is generally used to store goods, which can be heavy and be stacked on high shelves. Forklifts can assist humans at lifting heavy objects, especially to high places.",
+    "An avalanche occurs when pieces of ice or snow go rolling down the side of a mountain in great force. This can be caused by snow becoming heavy, because gravity will pull the snow downward.",
+    "Animal populations get depleted via hunting by humans for sport, however conservationist efforts over multiple years can reverse this process to ensure that the populations are restored.",
+    "Human bodies are usually covered using clothes, which can be found for sale at clothing stores.",
+    "Snare drums are instruments that can be played by members of orchestras, and if an orchestra was performing, it might be inside a theatre. So, a musician in an orchestra might be playing a snare drum in a theatre.",
+    "Payments are collected to improve the condition of the toll roads. This is done through road repairs.",
+    "One needs money to be able to live well in America. ",
+    "Department stores usually sell kitchen equipments, and a frying pan is a kitchen equipment.",
+    "Large meetings are often called conferences, and conferences can take place in conference halls, conference rooms, etc.",
+    "Water in the sky falls from rain clouds, where moisture in the air is collected.",
+    "Well water is a type of water extracted from a deep hole in the ground, i.e., a well. Thus, well water ultimately comes from the grond.",
+    "Being honest is synonymous with being sincere.",
+    "Hotels are places where people sleep for a few nights when they are travelling, and so it's often the case that hotel guests would be unfamiliar with their room. Given that travellers are unfamiliar with the location, losing items, for example in a night stand, might be more common.",
+    "Winter is a very cold part of the year in many places, and winter weather might make people feel cold.",
+    "An airplane is a place with very close contact with other passengers, and it is where you might transmit germs to others, when you have a cold. John might need a tissue from the tissue holder to blow his nose for his cold to prevent transmitting germs.",
+    "If a pool is too shallow, it might be difficult to swim in it; a common example of a shallow pool is a kiddie pool, which may be fun for children but not for adults.",
+    "st.paul is a city in minnesota",
+    "Sick and injured people are often suffering because of medical problems. To solve these problems, they might see a doctor at a hospital.",
+    "Front yards face the street, and usually have lawns.",
+    "James' house wasn't large enough for him to subdivide an existing room to serve as a playroom. To have enough room, he had to construct the playroom in a different, unattached building, like a garage.",
+    "A math problem is usually posed as a question that requires some operation such as subtraction or addition to answer.",
+    "Popcorn and cotton candy is frequently sold at fairs, and people accidentally leave them behind on the ground as they are distracted by the fair. Fairs are held in large open spaces where the ground is grassy.",
+    "most lakes are fresh water, sharks normally live in saltwater.",
+    "Inexperience with a language comes from lack of exposure to it, e.g., through a class or from living in a contry where the language is widely spoken. So, it might be difficult to learn French without being exposed to it (by studying, or living in a French-speaking country).",
+    "If one was to toss garbage from a moving car, because the car is likely to be driving along a road, the trash would likely end up a few feet away on the road side.",
+    "Being stuck indoors all day, e.g., at an office, tends to make people feel stuffy. This stuffy feeling can be reduced by going outside for refreshing, fresh air.",
+    "People often consider writings to be a way to preserve one's history. People can live on in the memories of future people reading the words they wrote.",
+    "If one was stranded on a desert island after a boat crash, one of the things that you would probably seek out is shelter; things like trees and caves could provide cover from the rain.",
+    "Remebering a past tradedy can resurface feelings that arose in response to that tragedy. Because tradgedies are not positive events, it's possible that sadness and depression could arise from remembering it.",
+    "Ambitious employees are likely to work hard and take leadership roles in a project, and this initiative is typically recognized by their bosses and rewarded by letting them be in charge of projects.",
+    "Kissing is a sign of showing affection, commonly used among lovers.",
+    "Switzerland is a country known for its high-quality chocolate production; it's likely that high-quality Swiss chocolate could be made from special dairy farms in Switzerland.",
+    "Record albums are also called vinyls. One must own a record album in order to listen to vinyl.",
+    "Football, a game often played at football stadiums, is a contact-heavy sport that requires the players (who are usually large men) to wear significant protective padding.",
+    "Curiosity is satisfied with information, and news provides information, and a newcomer usually carries with them some news.",
+    "Families often live in houses, and houses have floors that can be carpeted.",
+    "A marching band is a band that plays brass instruments while marching. Due to moving, members of the band must carry their instruments.",
+    "Factory work involves producing goods, and him liking the factory work indicates he might like producing goods.",
+    "American Idol is a singing competition.",
+    "the term bride and groom is mostly associated with a marriage ceremony",
+    "Not listening to a teacher's orders is usually considered a sign of lack of discipline and obedience, as a remedy to which teachers often give out punishments to discourage similar behavior in the future.",
+    "Bars are often patronized by a mix of locals, travellers, etc. Thus, if you are bored and sociable, meeting interesting people is a good reason to go to one.",
+    "When people travel for work, it's often the case that their companies will pay for their accomodations, like hotel rooms, meals, etc. It's common for companies to pay for fancy accomodations, e.g., at resorts, to keep their employees happy.",
+    "Especially during warmer times of the year, it's common for kids to go to pools to cool off, becuase swimming at a pool can cool down the body.",
+    "A cup can hold liquids, and drinks are always liquids.",
+    "Cities sometimes feature big fountains, which require large sums of money for construction, and this money usually comes from grants.",
+    "In terms of international travel, freeways in a country generally could only provide access to neighboring countries, rather than those seperated by a large body of water. Because the USA boarders Canada, a highway could exist that connect them. ",
+    "Teachers' main profession is to teach children. This is what they are trained for, and likely enjoy doing if they have chosen the job.",
+    "A residential area is where cats often roam around, especially if they are thrown out.",
+    "The sea can be a quiet place: for example, if you sail on a boat alone, or if you are living by yourself in a quiet beach community. By moving to the sea, Lily escaped her current, noiser living situation.",
+    "One reason to pay your telephone bill is that you are legally obligated to. The telephone company can send a debt collector after you if you do not pay it.",
+    "A police officer reports his work by filing a case.",
+    "Playing a violin is a way of making music, and if someone begins an activity at a young age, they probably have a passion for that activity.",
+    "Often, the goal of therapy is to better understand and manage the people and problems in one's life; a step towards that understanding often involves exploring and accepting one's self.",
+    "Unlike apartments or most condominiums, larger houses are likely to have yards behind the house, and these yards are likely to have gardens (i.e., \"back\" gardens).",
+    "Meadows are usually not human-owned or attended, and tend to have wildflowers.",
+    "Washington is a state in the United States which is located on the Pacific ocean coast, and if the beaver is on the pacific beach, it is very likely to be in Washington.",
+    "bums are well known to take up residence under bridges.",
+    "Humans go to a ticket office to buy tickets. They are often walking forward while waiting in line to buy the tickets.",
+    "When consumed, food provides energy and satisfies the greed for it.",
+    "Hamburgers often contain cheese or other toppings. Someone who is very hungry may not want those extra toppings so that they can eat the hamburger as soon as possible.",
+    "Injuries cause the body to send pain signals to the brain, which focuses attention on the injury so that it can be healed.",
+    "Resturants will often have deep friers, which are appliances that require cooking oil; if the restaurant is busy, the oil in the frier may require frequent replacement.",
+    "Motorbikes are propelled by a chain that extends from the engine to the wheel, thus, enabling the bike to move forward when throttled.",
+    "Wind often makes a sea choppy, the opposite of calm. Sails fill with wind. ",
+    "Reproduction involves giving birth to new members of the same species, and therefore ensures continuation of the species.",
+    "Universities commonly offer a \"communications\" major, and because students need to take relevant classes to complete their major, many classes on the subject take place at universities.",
+    "Humans, unlike animals, cannot drive cars.",
+    "A sentence is a set of words which cohesively form a syntactic unit. This generally requires a subject in the form of a noun, and a verb.",
+    "Running is a physically demanding activity, and aftering doing such an activity, most people would feel tired.",
+    "it is very common for people to always wear shoes and socks.",
+    "The question insinuates that Dan was away from work on medical leave, since he had a treatment during this time. One common reason to have a medical treatment is to relieve pain. ",
+    "Illnesses can be cured via medications and care, which is provided by doctors and nurses who operate out of the doctor's office.",
+    "Grapes are sometimes a topping for desserts, e.g., fruit tarts.",
+    "Mail orders are an efficient way to sell things to customers, because a company simply has to pack up and mail the items to a customer, rather than paying and setting up a brick-and-mortar store. A postal service can perform delivery, saving the company time and resources.",
+    "A bruise is caused when a person is hit by an object forcefully --- such an action would be quite painful to the person, and people often yell when they are caused pain.",
+    "People usually shave at the sink, and shaving leaves behind discarded hair.",
+    "Dentists perform procedures in the mouth, and afterwards offer a small amount of mouthwash to clean out the patients' mouth.",
+    "A cat can meow as a way to vocalize.",
+    "Divorces are difficult, and even the amicable ones are sad as they signify the end of relationships."
+  ],
+  "processing_stats": {
+    "total_time": 62.06067395210266,
+    "avg_time": 0.6206067395210266,
+    "min_time": 0.2227034568786621,
+    "max_time": 1.748155117034912,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

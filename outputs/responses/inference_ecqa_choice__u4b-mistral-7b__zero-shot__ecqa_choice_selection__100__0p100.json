@@ -1,0 +1,1879 @@
+{
+  "experiment_name": "ecqa_choice__u4b-mistral-7b__zero-shot__ecqa_choice_selection__100__0p100",
+  "experiment_config": {
+    "model": "u4b-mistral-7b",
+    "setup": "ecqa_choice",
+    "prompt": "ecqa_choice_selection",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-23T20:03:12.339672",
+  "dataset_info": {
+    "name": "ecqa_choice",
+    "original_size": 7598,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 7598,
+    "sampled_size": 100,
+    "columns": [
+      "Unnamed: 0",
+      "q_no",
+      "q_concept",
+      "q_text",
+      "q_op1",
+      "q_op2",
+      "q_op3",
+      "q_op4",
+      "q_op5",
+      "q_ans",
+      "taskA_pos",
+      "taskA_neg",
+      "taskB"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 7598,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+    "description": "Mistral 7B parameter model (4-bit quantized with Unsloth) - Small",
+    "parameters": "7B",
+    "size_category": "small",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_choice",
+    "template": "You will be given a question in the topic of {} and multiple possible answers.\n\nQuestion:\n{}\n\nChoices:\n{}, {}, {}, {}, {}\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+    "description": "LLM must select exactly one choice from the provided options using commonsense"
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a question in the topic of playing football and multiple possible answers.\n\nQuestion:\nJohn was playing football when he suffered a concussion.  He was really worried about the possible consequences of his sport, but the concussion was less scary than what?\n\nChoices:\nhead injuries, having fun, being sick, death, getting hurt\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "death",
+      "expected_output": "death",
+      "question_values": [
+        "playing football",
+        "John was playing football when he suffered a concussion.  He was really worried about the possible consequences of his sport, but the concussion was less scary than what?",
+        "head injuries",
+        "having fun",
+        "being sick",
+        "death",
+        "getting hurt"
+      ],
+      "processing_time": 0.11618471145629883,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of republic and multiple possible answers.\n\nQuestion:\nWhat is part of a republic like the USA?\n\nChoices:\nstate, democratic, kingdom, democracy, dictatorship\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "democracy",
+      "expected_output": "state",
+      "question_values": [
+        "republic",
+        "What is part of a republic like the USA?",
+        "state",
+        "democratic",
+        "kingdom",
+        "democracy",
+        "dictatorship"
+      ],
+      "processing_time": 0.13919997215270996,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of leader and multiple possible answers.\n\nQuestion:\nJames wasn't much of a leader, because he had nothing to lead.  And a leader without something to lead, no matter how skilled, is useless.  What did James need?\n\nChoices:\nbattle, army, company, organization, school\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "James needed an organization or a group of people to lead. A leader is someone who guides, directs, or inspires others, and without a group to lead, they cannot demonstrate their leadership skills. While a battle, army, company, or school could potentially be what James leads, an organization is a more general term that encompasses all of these and more. Therefore, the best choice is \"organization.\"",
+      "expected_output": "army",
+      "question_values": [
+        "leader",
+        "James wasn't much of a leader, because he had nothing to lead.  And a leader without something to lead, no matter how skilled, is useless.  What did James need?",
+        "battle",
+        "army",
+        "company",
+        "organization",
+        "school"
+      ],
+      "processing_time": 2.6285269260406494,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of actor and multiple possible answers.\n\nQuestion:\nWhat does an actor in a musical do?\n\nChoices:\nbranch out, vocals, pretend, wear costume, sing songs\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The actor in a musical does sing songs.",
+      "expected_output": "sing songs",
+      "question_values": [
+        "actor",
+        "What does an actor in a musical do?",
+        "branch out",
+        "vocals",
+        "pretend",
+        "wear costume",
+        "sing songs"
+      ],
+      "processing_time": 0.34926533699035645,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of starting fire and multiple possible answers.\n\nQuestion:\nA natural starting fire from lighting raged on for the second week, the governor declared it the biggest what he had seen?\n\nChoices:\nnews report, unpredictable, disaster, explosion, burns\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "disaster",
+      "expected_output": "disaster",
+      "question_values": [
+        "starting fire",
+        "A natural starting fire from lighting raged on for the second week, the governor declared it the biggest what he had seen?",
+        "news report",
+        "unpredictable",
+        "disaster",
+        "explosion",
+        "burns"
+      ],
+      "processing_time": 0.11263442039489746,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of theory and multiple possible answers.\n\nQuestion:\nThey had a theory of what they could do in t he big game, so over and over they would what?\n\nChoices:\npark, practice, fact, practical, practise\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "They would practise their theory over and over.",
+      "expected_output": "practice",
+      "question_values": [
+        "theory",
+        "They had a theory of what they could do in t he big game, so over and over they would what?",
+        "park",
+        "practice",
+        "fact",
+        "practical",
+        "practise"
+      ],
+      "processing_time": 0.3808927536010742,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of write and multiple possible answers.\n\nQuestion:\nWhat do you need to write a letter?\n\nChoices:\nhave paper, literate, not give up, move fingers, to keep warm\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The single best choice based on commonsense reasoning is \"have paper.\" This is because writing a letter requires a medium to write on, and paper is the most common medium used for writing letters. The other choices do not directly relate to the act of writing a letter. \"Literate\" refers to someone who can read and write, \"not give up\" is a mindset, \"move fingers\" is related to typing, and \"to keep warm\" is not related to writing a letter.",
+      "expected_output": "have paper",
+      "question_values": [
+        "write",
+        "What do you need to write a letter?",
+        "have paper",
+        "literate",
+        "not give up",
+        "move fingers",
+        "to keep warm"
+      ],
+      "processing_time": 3.091625213623047,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of eating breakfast and multiple possible answers.\n\nQuestion:\nWhy does someone make sure they are eating breakfast?\n\nChoices:\nfullness, have energy, better day, full stomach, indulge\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"have energy\". Eating breakfast provides the body with the necessary nutrients and energy to start the day, helping individuals to feel more alert and focused throughout the day.",
+      "expected_output": "have energy",
+      "question_values": [
+        "eating breakfast",
+        "Why does someone make sure they are eating breakfast?",
+        "fullness",
+        "have energy",
+        "better day",
+        "full stomach",
+        "indulge"
+      ],
+      "processing_time": 1.4116487503051758,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of shopping bag and multiple possible answers.\n\nQuestion:\nWhat type of place has stopped giving out plastic shopping bags?\n\nChoices:\nretail store, restaurant, mini mart, grocery store, home\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "grocery store",
+      "expected_output": "grocery store",
+      "question_values": [
+        "shopping bag",
+        "What type of place has stopped giving out plastic shopping bags?",
+        "retail store",
+        "restaurant",
+        "mini mart",
+        "grocery store",
+        "home"
+      ],
+      "processing_time": 0.13954496383666992,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of beginning work and multiple possible answers.\n\nQuestion:\nWhat is someone beginning work they really want to do likely to feel?\n\nChoices:\nworking, stress, excitement, confusion, panic\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "excitement",
+      "expected_output": "excitement",
+      "question_values": [
+        "beginning work",
+        "What is someone beginning work they really want to do likely to feel?",
+        "working",
+        "stress",
+        "excitement",
+        "confusion",
+        "panic"
+      ],
+      "processing_time": 0.10884714126586914,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of highlighter and multiple possible answers.\n\nQuestion:\nWhere in your office would you store a highlight that you don't use often?\n\nChoices:\noffice supply store, case, desk drawer, campus book store, lamp\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be a case. This is because a case is a suitable storage solution for items that are not frequently used, such as a highlighter. Office supply stores, desk drawers, campus book stores, and lamps are not typically used for storing office supplies like highlighters.",
+      "expected_output": "desk drawer",
+      "question_values": [
+        "highlighter",
+        "Where in your office would you store a highlight that you don't use often?",
+        "office supply store",
+        "case",
+        "desk drawer",
+        "campus book store",
+        "lamp"
+      ],
+      "processing_time": 1.903257131576538,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of storm and multiple possible answers.\n\nQuestion:\nThe meteorologist said that there was a storm coming.  This forced John to delay his trip to what location?\n\nChoices:\ntropical seas, cuba, tropics, caribbean, weather report\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be the Caribbean, as it is a location in the tropics, which is where storms are more likely to occur, especially if the meteorologist predicted a storm. The Caribbean Sea is also located in the tropics. The other choices (tropical seas, Cuba, and weather report) do not directly relate to John's travel plans being delayed due to a storm.",
+      "expected_output": "caribbean",
+      "question_values": [
+        "storm",
+        "The meteorologist said that there was a storm coming.  This forced John to delay his trip to what location?",
+        "tropical seas",
+        "cuba",
+        "tropics",
+        "caribbean",
+        "weather report"
+      ],
+      "processing_time": 2.692530393600464,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of toothpaste and multiple possible answers.\n\nQuestion:\nHe packed his toothpaste and brush in a small bag then stuffed it with his clothes into a what?\n\nChoices:\nbathroom, suitcase, mouth, drug store, squirrel\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is suitcase. The question mentions packing toothpaste and a toothbrush, which are personal hygiene items, and then stuffing them with clothes. A suitcase is a common container for travel items, including clothing and personal hygiene items. The other choices (bathroom, mouth, drug store, squirrel) do not make sense in this context.",
+      "expected_output": "suitcase",
+      "question_values": [
+        "toothpaste",
+        "He packed his toothpaste and brush in a small bag then stuffed it with his clothes into a what?",
+        "bathroom",
+        "suitcase",
+        "mouth",
+        "drug store",
+        "squirrel"
+      ],
+      "processing_time": 2.659836769104004,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of crab and multiple possible answers.\n\nQuestion:\nThe crab was being shipped to be eaten, where was he heading?\n\nChoices:\ngulf of mexico, north sea, fish market, picnic basket, grocery store\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The crab was heading to a fish market.",
+      "expected_output": "grocery store",
+      "question_values": [
+        "crab",
+        "The crab was being shipped to be eaten, where was he heading?",
+        "gulf of mexico",
+        "north sea",
+        "fish market",
+        "picnic basket",
+        "grocery store"
+      ],
+      "processing_time": 0.378706693649292,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of getting divorce and multiple possible answers.\n\nQuestion:\nWhat always happens to someone after he or she finishes getting divorce?\n\nChoices:\nno spouse, lot of grief, freedom, children suffer, party time\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "Freedom",
+      "expected_output": "no spouse",
+      "question_values": [
+        "getting divorce",
+        "What always happens to someone after he or she finishes getting divorce?",
+        "no spouse",
+        "lot of grief",
+        "freedom",
+        "children suffer",
+        "party time"
+      ],
+      "processing_time": 0.11048460006713867,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of people and multiple possible answers.\n\nQuestion:\nWhat do people feel in the winter?\n\nChoices:\nuse money, sick, pay bills, feel cold, become old\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "People feel cold in the winter.",
+      "expected_output": "feel cold",
+      "question_values": [
+        "people",
+        "What do people feel in the winter?",
+        "use money",
+        "sick",
+        "pay bills",
+        "feel cold",
+        "become old"
+      ],
+      "processing_time": 0.28555727005004883,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of killing people and multiple possible answers.\n\nQuestion:\nIf you started killing people for no reason, what are you likely to lack?\n\nChoices:\nprison sentence, going to jail, feelings of guilt, die, hunger\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "feelings of guilt",
+      "expected_output": "feelings of guilt",
+      "question_values": [
+        "killing people",
+        "If you started killing people for no reason, what are you likely to lack?",
+        "prison sentence",
+        "going to jail",
+        "feelings of guilt",
+        "die",
+        "hunger"
+      ],
+      "processing_time": 0.17144131660461426,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of money and multiple possible answers.\n\nQuestion:\nWhere do people keep money that is not in their wallet?\n\nChoices:\nbank account, outside, art show, casino, race track\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "bank account",
+      "expected_output": "bank account",
+      "question_values": [
+        "money",
+        "Where do people keep money that is not in their wallet?",
+        "bank account",
+        "outside",
+        "art show",
+        "casino",
+        "race track"
+      ],
+      "processing_time": 0.1386244297027588,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of trash can and multiple possible answers.\n\nQuestion:\nwhere do you typically find a trash can in the city?\n\nChoices:\npark, motel, corner, bus stop, store front\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be \"park\" or \"store front\". In a city, trash cans are commonly found in parks for public use and also at store fronts for disposal of shopping waste. Bus stops might have trash cans but they are not as common as parks or store fronts. Motels are not typically associated with public trash cans.",
+      "expected_output": "corner",
+      "question_values": [
+        "trash can",
+        "where do you typically find a trash can in the city?",
+        "park",
+        "motel",
+        "corner",
+        "bus stop",
+        "store front"
+      ],
+      "processing_time": 2.2366106510162354,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of washcloth and multiple possible answers.\n\nQuestion:\nWhere would you get a washcloth if you do not have one?\n\nChoices:\nbathing, bathroom sink, garage, linen closet, walmart\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be the linen closet. A washcloth is a type of linen used for cleaning the body, and it is typically stored in a linen closet or drawer. The other options do not directly relate to obtaining a washcloth.",
+      "expected_output": "walmart",
+      "question_values": [
+        "washcloth",
+        "Where would you get a washcloth if you do not have one?",
+        "bathing",
+        "bathroom sink",
+        "garage",
+        "linen closet",
+        "walmart"
+      ],
+      "processing_time": 1.6453392505645752,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of metal rod and multiple possible answers.\n\nQuestion:\nWhere would you find a metal rod in most people's preferred method of transportation?\n\nChoices:\nairplane, construction site, shops, engine, broken bone\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The metal rod is most likely to be found in an engine, as engines in various types of vehicles (cars, motorcycles, bicycles, etc.) often contain metal rods as part of their mechanical components. However, it's important to note that metal rods can also be found in airplanes, construction sites, and shops, but they are not typically found in broken bones. So, while the engine is the most common place for a metal rod in most people's preferred method of transportation, the other options are not incorrect in a broader context.",
+      "expected_output": "engine",
+      "question_values": [
+        "metal rod",
+        "Where would you find a metal rod in most people's preferred method of transportation?",
+        "airplane",
+        "construction site",
+        "shops",
+        "engine",
+        "broken bone"
+      ],
+      "processing_time": 3.526745080947876,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of human and multiple possible answers.\n\nQuestion:\nShe was a human in America who wanted to live well, what was a given for her situation?\n\nChoices:\nthink critically, need money, say hello, think critically, drink tea\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The given for a human in America who wants to live well is to need money. While all the other choices (think critically, say hello, drink tea) are possible actions, they are not necessarily given for the situation of wanting to live well, as they are not directly related to financial stability. Money is a crucial factor in ensuring a good standard of living in most societies, including America.",
+      "expected_output": "need money",
+      "question_values": [
+        "human",
+        "She was a human in America who wanted to live well, what was a given for her situation?",
+        "think critically",
+        "need money",
+        "say hello",
+        "think critically",
+        "drink tea"
+      ],
+      "processing_time": 2.485306739807129,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of bad and multiple possible answers.\n\nQuestion:\nIt was dumb luck, his bad move had actually put him in an what position?\n\nChoices:\nvirtuous, advantageous, excellent, adventurous, exceptional\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"advantageous\". The question suggests that his bad move unexpectedly led to a favorable outcome, which is the definition of an advantageous position. The other choices do not fit the context as well.",
+      "expected_output": "advantageous",
+      "question_values": [
+        "bad",
+        "It was dumb luck, his bad move had actually put him in an what position?",
+        "virtuous",
+        "advantageous",
+        "excellent",
+        "adventurous",
+        "exceptional"
+      ],
+      "processing_time": 1.6471421718597412,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of cow and multiple possible answers.\n\nQuestion:\nWhere would you be most likely to see a cow?\n\nChoices:\nroad, slaughter house, ranch, switzerland, tennessee\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The most likely place to see a cow would be on a ranch. Cows are domesticated animals and are typically raised on ranches for milk, meat, or as dairy cattle. The other options (road, slaughterhouse, Switzerland, Tennessee) are less likely as they do not directly relate to the natural habitat or common location for cows. While cows may be found in Switzerland, which is known for its dairy farming, and Tennessee, which has a significant cattle industry, the question asks for the most likely place to see a cow, and a ranch would be the most general and appropriate answer.",
+      "expected_output": "ranch",
+      "question_values": [
+        "cow",
+        "Where would you be most likely to see a cow?",
+        "road",
+        "slaughter house",
+        "ranch",
+        "switzerland",
+        "tennessee"
+      ],
+      "processing_time": 3.76876163482666,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of hand and multiple possible answers.\n\nQuestion:\nWhat is a hand?\n\nChoices:\nbody part, foot, handglide, feet, help\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "body part",
+      "expected_output": "body part",
+      "question_values": [
+        "hand",
+        "What is a hand?",
+        "body part",
+        "foot",
+        "handglide",
+        "feet",
+        "help"
+      ],
+      "processing_time": 0.14061617851257324,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of animals and multiple possible answers.\n\nQuestion:\nThe animals all knew the importants of fluids.  They also knew what was safe to do what?\n\nChoices:\ndrink, feel pain, bite, fly, gay\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"drink\". Animals need to drink fluids to survive, and this is a common behavior among all animals. The other choices (feel pain, bite, fly, gay) do not relate to the topic of animals and fluids.",
+      "expected_output": "drink",
+      "question_values": [
+        "animals",
+        "The animals all knew the importants of fluids.  They also knew what was safe to do what?",
+        "drink",
+        "feel pain",
+        "bite",
+        "fly",
+        "gay"
+      ],
+      "processing_time": 1.8479516506195068,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of text and multiple possible answers.\n\nQuestion:\nWhere is someone likely to find a huge amount of text?\n\nChoices:\nnewspaper, writer's brain, own home, library, book store\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "library",
+      "expected_output": "library",
+      "question_values": [
+        "text",
+        "Where is someone likely to find a huge amount of text?",
+        "newspaper",
+        "writer's brain",
+        "own home",
+        "library",
+        "book store"
+      ],
+      "processing_time": 0.11029195785522461,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of going somewhere and multiple possible answers.\n\nQuestion:\nWhat is the process of going somewhere?\n\nChoices:\nfire, energy, car, transporting, staying in place\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"transporting\". This choice is most appropriate because going somewhere typically involves moving from one location to another, which is what transporting refers to. The other choices do not directly relate to the process of going somewhere. Fire, energy, and staying in place are not processes of movement, and a car is a means of transportation, but not the process itself.",
+      "expected_output": "transporting",
+      "question_values": [
+        "going somewhere",
+        "What is the process of going somewhere?",
+        "fire",
+        "energy",
+        "car",
+        "transporting",
+        "staying in place"
+      ],
+      "processing_time": 2.48982310295105,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of learning and multiple possible answers.\n\nQuestion:\nWhat negative emotions or feelings can learning cause?\n\nChoices:\ngaining knowledge, effectiveness, distress, dysfunction, happiness\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "distress",
+      "expected_output": "distress",
+      "question_values": [
+        "learning",
+        "What negative emotions or feelings can learning cause?",
+        "gaining knowledge",
+        "effectiveness",
+        "distress",
+        "dysfunction",
+        "happiness"
+      ],
+      "processing_time": 0.11172008514404297,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of back yard and multiple possible answers.\n\nQuestion:\nIn the city the family didn't have a back yard, but now they did since they lived in a what?\n\nChoices:\nfarm, suburb, property, neighborhood, yards\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be \"suburb\". In a city, it's less common to have a back yard due to the urban environment. However, in a suburb, houses often have back yards as they are typically more residential and less densely populated than a city. The other options like farm, property, neighborhood, and yards could also potentially have back yards, but suburbs are more likely for a family to move into specifically for the purpose of having a back yard.",
+      "expected_output": "suburb",
+      "question_values": [
+        "back yard",
+        "In the city the family didn't have a back yard, but now they did since they lived in a what?",
+        "farm",
+        "suburb",
+        "property",
+        "neighborhood",
+        "yards"
+      ],
+      "processing_time": 2.948566198348999,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of getting and multiple possible answers.\n\nQuestion:\nIf you believe something but then you begin getting and understanding new information you may come to a what?\n\nChoices:\ndisappointment, new realization, heat wave, joy, wanting more\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "new realization",
+      "expected_output": "new realization",
+      "question_values": [
+        "getting",
+        "If you believe something but then you begin getting and understanding new information you may come to a what?",
+        "disappointment",
+        "new realization",
+        "heat wave",
+        "joy",
+        "wanting more"
+      ],
+      "processing_time": 0.1397390365600586,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of kooky and multiple possible answers.\n\nQuestion:\nAll the kooky kids enjoyed each other's company, to them their behavior was perfectly what?\n\nChoices:\nordinary, straight, normal, cool, mainstream\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "normal",
+      "expected_output": "normal",
+      "question_values": [
+        "kooky",
+        "All the kooky kids enjoyed each other's company, to them their behavior was perfectly what?",
+        "ordinary",
+        "straight",
+        "normal",
+        "cool",
+        "mainstream"
+      ],
+      "processing_time": 0.11159944534301758,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of pond and multiple possible answers.\n\nQuestion:\nIf there is a pond with nobody nearby, where is it likely located?\n\nChoices:\nrural area, meadow, forest side, countryside, forest\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "rural area",
+      "expected_output": "countryside",
+      "question_values": [
+        "pond",
+        "If there is a pond with nobody nearby, where is it likely located?",
+        "rural area",
+        "meadow",
+        "forest side",
+        "countryside",
+        "forest"
+      ],
+      "processing_time": 0.13945460319519043,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of food and multiple possible answers.\n\nQuestion:\nWhat do you do when you need to get food?\n\nChoices:\ntable, disneyland, refrigerators, pantry, shop\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"shop\". This is because shopping is the most common way to obtain food, whether it's from a grocery store, market, or online. The other options (table, disneyland, refrigerators, pantry) are not typically used to acquire food. A table is a piece of furniture, Disneyland is a theme park, refrigerators are appliances used to store food, and a pantry is a room or area where food is stored.",
+      "expected_output": "shop",
+      "question_values": [
+        "food",
+        "What do you do when you need to get food?",
+        "table",
+        "disneyland",
+        "refrigerators",
+        "pantry",
+        "shop"
+      ],
+      "processing_time": 3.1110446453094482,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of reaching advantage and multiple possible answers.\n\nQuestion:\nA reaching advantage can help a boxer achieve what?\n\nChoices:\nbeing ahead, fall, speed., victory, new option\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The single best choice based on commonsense reasoning is \"victory\". A reaching advantage in boxing typically refers to a strategic position or move that gives a boxer an advantage over their opponent, potentially leading to victory. The other choices do not directly relate to the concept of a reaching advantage in boxing.",
+      "expected_output": "victory",
+      "question_values": [
+        "reaching advantage",
+        "A reaching advantage can help a boxer achieve what?",
+        "being ahead",
+        "fall",
+        "speed.",
+        "victory",
+        "new option"
+      ],
+      "processing_time": 1.9761466979980469,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of person and multiple possible answers.\n\nQuestion:\nIf a person is complimentary and making trivial physical contact what are they trying to do?\n\nChoices:\nget laid, acknowledgment, accomplish goals, marry, talk about themselves\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"acknowledgment\". Trivial physical contact, such as a pat on the back or a hug, is often used as a form of acknowledgment or affirmation of someone's actions, feelings, or presence. The other choices do not align as well with the given scenario.",
+      "expected_output": "get laid",
+      "question_values": [
+        "person",
+        "If a person is complimentary and making trivial physical contact what are they trying to do?",
+        "get laid",
+        "acknowledgment",
+        "accomplish goals",
+        "marry",
+        "talk about themselves"
+      ],
+      "processing_time": 2.177377939224243,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of lazy and multiple possible answers.\n\nQuestion:\nThe man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?\n\nChoices:\nrestless, active, lazybutt, productive, hard work\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"productive\". The man in the white suit was described as lazy and did nothing useful, while the man in the blue put in effort. Therefore, the man in the blue would be considered active or busy, and the opposite of lazy is productive.",
+      "expected_output": "productive",
+      "question_values": [
+        "lazy",
+        "The man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?",
+        "restless",
+        "active",
+        "lazybutt",
+        "productive",
+        "hard work"
+      ],
+      "processing_time": 1.910470724105835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of ferret and multiple possible answers.\n\nQuestion:\nWhat does a ferret like to crawl up?\n\nChoices:\ngreat britain, mother's hair, petting zoo, building, trouser leg\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice is \"building\" or \"trouser leg\" as ferrets are known to climb up walls, fences, and even people's legs. However, since the question asks what a ferret likes to crawl up, \"trouser leg\" would be a more appropriate answer as it implies a more comfortable and preferred choice for the ferret. \"Great Britain\" and \"mother's hair\" are not suitable answers in this context. A \"petting zoo\" is a place where ferrets might be found, but it doesn't answer the question about what a ferret likes to crawl up.",
+      "expected_output": "trouser leg",
+      "question_values": [
+        "ferret",
+        "What does a ferret like to crawl up?",
+        "great britain",
+        "mother's hair",
+        "petting zoo",
+        "building",
+        "trouser leg"
+      ],
+      "processing_time": 3.9428048133850098,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of cashier and multiple possible answers.\n\nQuestion:\nSam spent most of his time standing up.  His job was hectic and he never got any rest. But he was the best cashier at his workplace.    Where might he work?\n\nChoices:\nbookstore, count till, supermarket, shop, preschool\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be supermarket, as it is a common place where cashiers work, and the description of the job being hectic and standing most of the time fits well with this environment. The other options like bookstore, count till, shop, and preschool do not typically require cashiers to stand most of the time or have a hectic work environment like a supermarket.",
+      "expected_output": "supermarket",
+      "question_values": [
+        "cashier",
+        "Sam spent most of his time standing up.  His job was hectic and he never got any rest. But he was the best cashier at his workplace.    Where might he work?",
+        "bookstore",
+        "count till",
+        "supermarket",
+        "shop",
+        "preschool"
+      ],
+      "processing_time": 2.431777000427246,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of reception desk and multiple possible answers.\n\nQuestion:\nJohn walked up to the reception desk and rang a bell.  He waited for five minutes and told the reception person that he had a reservation. Where might he be?\n\nChoices:\nlobby, office park, at hotel, large office, real estate office\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be \"at hotel\". A reception desk is typically found in a hotel, and John's action of ringing a bell and having a reservation suggests he is in a place where such a desk would be found, which is a hotel. The other options (lobby, office park, large office, real estate office) are less likely as they do not typically have a reception desk or a bell to ring.",
+      "expected_output": "at hotel",
+      "question_values": [
+        "reception desk",
+        "John walked up to the reception desk and rang a bell.  He waited for five minutes and told the reception person that he had a reservation. Where might he be?",
+        "lobby",
+        "office park",
+        "at hotel",
+        "large office",
+        "real estate office"
+      ],
+      "processing_time": 2.6603777408599854,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of snake and multiple possible answers.\n\nQuestion:\nWhere can you see snakes at a public zoological park?\n\nChoices:\nkew gardens, tree, terrarium, thick forest, field\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be a public zoological park, as snakes are not typically found in kew gardens, trees, thick forests, or fields (unless it's a wild snake, but that's not the context of the question). A zoological park is the most appropriate place to see snakes in a controlled and safe environment.",
+      "expected_output": "terrarium",
+      "question_values": [
+        "snake",
+        "Where can you see snakes at a public zoological park?",
+        "kew gardens",
+        "tree",
+        "terrarium",
+        "thick forest",
+        "field"
+      ],
+      "processing_time": 2.2991812229156494,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of bar and multiple possible answers.\n\nQuestion:\nJohn was working late at night in a Casino.  When he got off work, he looked for a bar but couldn't find one.  Where might he go instead?\n\nChoices:\nrestaurant, nightclub, las vegas, atlantic city, new york city\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "restaurant",
+      "expected_output": "nightclub",
+      "question_values": [
+        "bar",
+        "John was working late at night in a Casino.  When he got off work, he looked for a bar but couldn't find one.  Where might he go instead?",
+        "restaurant",
+        "nightclub",
+        "las vegas",
+        "atlantic city",
+        "new york city"
+      ],
+      "processing_time": 0.11169219017028809,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of slight and multiple possible answers.\n\nQuestion:\nSomeone who's belief in a philosophy is not slight but extreme is what?\n\nChoices:\nsignificant, important, radical, radical, essencial\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"radical\". This term is often used to describe someone who holds extreme beliefs, especially in the context of philosophy or politics. The other choices do not accurately convey the level of intensity or extremity that the question asks for.",
+      "expected_output": "radical",
+      "question_values": [
+        "slight",
+        "Someone who's belief in a philosophy is not slight but extreme is what?",
+        "significant",
+        "important",
+        "radical",
+        "radical",
+        "essencial"
+      ],
+      "processing_time": 1.770554780960083,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of lizard and multiple possible answers.\n\nQuestion:\nIf a lizard is fed by people every day, what has happened to it?\n\nChoices:\ndocumentary, costa rica, garden, encouragement, captivity\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The lizard has been placed in captivity.",
+      "expected_output": "captivity",
+      "question_values": [
+        "lizard",
+        "If a lizard is fed by people every day, what has happened to it?",
+        "documentary",
+        "costa rica",
+        "garden",
+        "encouragement",
+        "captivity"
+      ],
+      "processing_time": 0.3788292407989502,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of hole and multiple possible answers.\n\nQuestion:\nWhere would you usually find a hole made by an animal?\n\nChoices:\ntrap, golf course, wall, ground, swiss cheese\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be the ground. Animals typically dig holes in the ground for various reasons such as burrowing, hiding, or creating a den. The other options like trap, golf course, wall, and swiss cheese are not typically associated with holes made by animals.",
+      "expected_output": "ground",
+      "question_values": [
+        "hole",
+        "Where would you usually find a hole made by an animal?",
+        "trap",
+        "golf course",
+        "wall",
+        "ground",
+        "swiss cheese"
+      ],
+      "processing_time": 1.9407176971435547,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of cat and multiple possible answers.\n\nQuestion:\nThe cat saw animal control approaching her, what did she decide to do?\n\nChoices:\nsleep all day, cast shadow, run away, bark like a dog, see at night\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The cat, being a feline, does not bark like a dog. Also, cats do not see in the day but rather are more active at night. So, the most likely action for a cat in this situation would be to run away.",
+      "expected_output": "run away",
+      "question_values": [
+        "cat",
+        "The cat saw animal control approaching her, what did she decide to do?",
+        "sleep all day",
+        "cast shadow",
+        "run away",
+        "bark like a dog",
+        "see at night"
+      ],
+      "processing_time": 1.5474567413330078,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of person and multiple possible answers.\n\nQuestion:\nThe person was stood up on a date, what was his reaction?\n\nChoices:\ncross street, machine part, regret, selling things, feel resentful\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"feel resentful\". A person who is stood up on a date might feel disappointed, hurt, and possibly resentful towards the person who did not show up.",
+      "expected_output": "feel resentful",
+      "question_values": [
+        "person",
+        "The person was stood up on a date, what was his reaction?",
+        "cross street",
+        "machine part",
+        "regret",
+        "selling things",
+        "feel resentful"
+      ],
+      "processing_time": 1.4122035503387451,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of conquer opponent and multiple possible answers.\n\nQuestion:\nThe board game instructed that you must conquer opponent, only the what would come out on top?\n\nChoices:\ntop piece, strong, win, total domination, best\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be \"total domination\". This term is often used to describe a situation where one side has complete control over another, which is most fitting for a scenario where you must conquer an opponent in a game. The other choices, while they can be related to the game, do not fully capture the idea of complete control or victory over the opponent.",
+      "expected_output": "best",
+      "question_values": [
+        "conquer opponent",
+        "The board game instructed that you must conquer opponent, only the what would come out on top?",
+        "top piece",
+        "strong",
+        "win",
+        "total domination",
+        "best"
+      ],
+      "processing_time": 2.265031099319458,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of government and multiple possible answers.\n\nQuestion:\nWhere can you find the U.S. federal government?\n\nChoices:\nwashington d.c, canada, country, capitol building, democracy\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "Washington D.C.",
+      "expected_output": "washington d.c",
+      "question_values": [
+        "government",
+        "Where can you find the U.S. federal government?",
+        "washington d.c",
+        "canada",
+        "country",
+        "capitol building",
+        "democracy"
+      ],
+      "processing_time": 0.23035573959350586,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of going jogging and multiple possible answers.\n\nQuestion:\nWhat is a positive feeling that you might get after going jogging?\n\nChoices:\nheart rate increases, heart attacks, sweating, sore feet, feel pride\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "feel pride",
+      "expected_output": "feel pride",
+      "question_values": [
+        "going jogging",
+        "What is a positive feeling that you might get after going jogging?",
+        "heart rate increases",
+        "heart attacks",
+        "sweating",
+        "sore feet",
+        "feel pride"
+      ],
+      "processing_time": 0.1404891014099121,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of going to market and multiple possible answers.\n\nQuestion:\nWhat do you do when you're going to market?\n\nChoices:\nbuy food, see other people, buying vegetables, buy a fat pig, traveling\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The single best choice based on commonsense reasoning is \"buying food.\" Going to the market typically involves purchasing goods, and food is a common item that people buy at a market. The other options, while they could potentially be things one might encounter at a market, are not as directly associated with the act of going to the market as buying food.",
+      "expected_output": "buy food",
+      "question_values": [
+        "going to market",
+        "What do you do when you're going to market?",
+        "buy food",
+        "see other people",
+        "buying vegetables",
+        "buy a fat pig",
+        "traveling"
+      ],
+      "processing_time": 2.207787036895752,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of chair and multiple possible answers.\n\nQuestion:\nWhere would there be many people sitting in chair and listening to religious speech?\n\nChoices:\nauditorium, office, synagogue, confession, church\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "church",
+      "expected_output": "synagogue",
+      "question_values": [
+        "chair",
+        "Where would there be many people sitting in chair and listening to religious speech?",
+        "auditorium",
+        "office",
+        "synagogue",
+        "confession",
+        "church"
+      ],
+      "processing_time": 0.11139631271362305,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of government and multiple possible answers.\n\nQuestion:\nWhat is a corrupt government likely to lead to?\n\nChoices:\ncivilization, money, city, control, trouble\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "trouble",
+      "expected_output": "trouble",
+      "question_values": [
+        "government",
+        "What is a corrupt government likely to lead to?",
+        "civilization",
+        "money",
+        "city",
+        "control",
+        "trouble"
+      ],
+      "processing_time": 0.11021900177001953,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of person and multiple possible answers.\n\nQuestion:\nWhat does a person who is a gardener have?\n\nChoices:\nown house, contribution to society, food, ride horses, green thumb\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"green thumb\". A gardener has a green thumb, which means they have a talent for growing plants successfully. The other choices (own house, contribution to society, food, ride horses) are not necessarily related to the occupation of a gardener.",
+      "expected_output": "green thumb",
+      "question_values": [
+        "person",
+        "What does a person who is a gardener have?",
+        "own house",
+        "contribution to society",
+        "food",
+        "ride horses",
+        "green thumb"
+      ],
+      "processing_time": 1.892047643661499,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of seaweed and multiple possible answers.\n\nQuestion:\nwhere is seaweed from?\n\nChoices:\nbeach, sea, ocean, water, sea plant\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "sea plant",
+      "expected_output": "ocean",
+      "question_values": [
+        "seaweed",
+        "where is seaweed from?",
+        "beach",
+        "sea",
+        "ocean",
+        "water",
+        "sea plant"
+      ],
+      "processing_time": 0.14263200759887695,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of cable and multiple possible answers.\n\nQuestion:\nWhat is a place that has large cable hanging overhead?\n\nChoices:\nradio shack, electrical device, shower, substation, television\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is a substation. A substation is an electrical facility that transmits or distributes electrical power. It is common for large cables to hang overhead in a substation. The other choices (radio shack, electrical device, shower, television) do not typically have large cables hanging overhead.",
+      "expected_output": "substation",
+      "question_values": [
+        "cable",
+        "What is a place that has large cable hanging overhead?",
+        "radio shack",
+        "electrical device",
+        "shower",
+        "substation",
+        "television"
+      ],
+      "processing_time": 2.1483097076416016,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of rotor and multiple possible answers.\n\nQuestion:\nGeorge checked the rotor of the Apache, which wasn't powered by internal combustion, but by what?\n\nChoices:\njet engine, helicopter, electric motor, rotator, electrical circuit\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The rotor of an Apache helicopter is typically powered by a gas turbine engine, not a jet engine. However, since the question specifies that the rotor is not powered by an internal combustion engine, the correct answer would be an electric motor.",
+      "expected_output": "jet engine",
+      "question_values": [
+        "rotor",
+        "George checked the rotor of the Apache, which wasn't powered by internal combustion, but by what?",
+        "jet engine",
+        "helicopter",
+        "electric motor",
+        "rotator",
+        "electrical circuit"
+      ],
+      "processing_time": 1.6761891841888428,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of food and multiple possible answers.\n\nQuestion:\nWhere is a good place to get food for most people?\n\nChoices:\nfridge, oven, supermarket, kitchen, table\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "supermarket",
+      "expected_output": "supermarket",
+      "question_values": [
+        "food",
+        "Where is a good place to get food for most people?",
+        "fridge",
+        "oven",
+        "supermarket",
+        "kitchen",
+        "table"
+      ],
+      "processing_time": 0.14087629318237305,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of dirty dishes and multiple possible answers.\n\nQuestion:\nWhat do you have to clean up after a party?\n\nChoices:\nson's room, dishwasher, party, dish washer, dining room\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"dishwasher\" or \"dining room\" as these are the areas where dishes are typically found and would need to be cleaned up after a party. However, since the question is asking for what you have to clean up, it would be more accurate to choose \"dishwasher\" as it is the appliance used to clean dishes, not the dining room itself. So the best choice would be \"dishwasher\".",
+      "expected_output": "party",
+      "question_values": [
+        "dirty dishes",
+        "What do you have to clean up after a party?",
+        "son's room",
+        "dishwasher",
+        "party",
+        "dish washer",
+        "dining room"
+      ],
+      "processing_time": 3.0523548126220703,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of servant and multiple possible answers.\n\nQuestion:\nThe servant was asked where to put the flowers, what was his status at the wedding?\n\nChoices:\nfree person, celebrity, boss, in charge, rich person\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The servant was not a free person, celebrity, boss, or rich person. Based on the context, the most likely answer is that the servant was \"in charge\" of certain tasks at the wedding, such as arranging the flowers.",
+      "expected_output": "in charge",
+      "question_values": [
+        "servant",
+        "The servant was asked where to put the flowers, what was his status at the wedding?",
+        "free person",
+        "celebrity",
+        "boss",
+        "in charge",
+        "rich person"
+      ],
+      "processing_time": 1.539660930633545,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of play games and multiple possible answers.\n\nQuestion:\nThe competitive guy liked to play games, what was his goal?\n\nChoices:\nentertaining, dice, win, bored, relax\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"win\". Since the question mentions that the person is competitive, it is likely that his goal when playing games is to win.",
+      "expected_output": "win",
+      "question_values": [
+        "play games",
+        "The competitive guy liked to play games, what was his goal?",
+        "entertaining",
+        "dice",
+        "win",
+        "bored",
+        "relax"
+      ],
+      "processing_time": 1.2201530933380127,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of beer and multiple possible answers.\n\nQuestion:\nWhere do people get beer after a bit of gambling?\n\nChoices:\nbottle, grocery store, casino, spaceship, hockey game\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "casino",
+      "expected_output": "casino",
+      "question_values": [
+        "beer",
+        "Where do people get beer after a bit of gambling?",
+        "bottle",
+        "grocery store",
+        "casino",
+        "spaceship",
+        "hockey game"
+      ],
+      "processing_time": 0.11571812629699707,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of washing machine and multiple possible answers.\n\nQuestion:\nWhere is a personal washing machine likely to be found?\n\nChoices:\nclean dishes, laundromat, streets, cellar, house\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The personal washing machine is likely to be found in a house.",
+      "expected_output": "house",
+      "question_values": [
+        "washing machine",
+        "Where is a personal washing machine likely to be found?",
+        "clean dishes",
+        "laundromat",
+        "streets",
+        "cellar",
+        "house"
+      ],
+      "processing_time": 0.4712333679199219,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of world and multiple possible answers.\n\nQuestion:\nWhere is the world known to be a part of?\n\nChoices:\na fraud, countries, universe, galaxy, thought\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The world is a part of countries, universe, and galaxy. However, the question asks for the single best choice, so the answer would be \"countries\". While the world is also a part of the universe and galaxy, it is more commonly understood as a part of countries due to the political and geographical divisions of the Earth.",
+      "expected_output": "universe",
+      "question_values": [
+        "world",
+        "Where is the world known to be a part of?",
+        "a fraud",
+        "countries",
+        "universe",
+        "galaxy",
+        "thought"
+      ],
+      "processing_time": 2.1051454544067383,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of weasel and multiple possible answers.\n\nQuestion:\nThe weasel was sifting through garbage, where did it look for it?\n\nChoices:\nchicken coop, law office, dog house, hollow log, backyards\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "hollow log",
+      "expected_output": "backyards",
+      "question_values": [
+        "weasel",
+        "The weasel was sifting through garbage, where did it look for it?",
+        "chicken coop",
+        "law office",
+        "dog house",
+        "hollow log",
+        "backyards"
+      ],
+      "processing_time": 0.1424269676208496,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of think and multiple possible answers.\n\nQuestion:\nIf you sit back and think about nice memories you will be able to?\n\nChoices:\nsit quietly, concentrate, wake up, stay focused, relax\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "relax",
+      "expected_output": "relax",
+      "question_values": [
+        "think",
+        "If you sit back and think about nice memories you will be able to?",
+        "sit quietly",
+        "concentrate",
+        "wake up",
+        "stay focused",
+        "relax"
+      ],
+      "processing_time": 0.11173105239868164,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of science and multiple possible answers.\n\nQuestion:\nWhat type of college do you learn science at?\n\nChoices:\nspace lab, a state college, school, nanotechnology, university\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"university\". Universities are typically the institutions where one would learn science, including a wide range of subjects such as physics, chemistry, biology, and more. While a \"space lab\" could be a part of a university, it's not the name of the institution itself. \"School\" is a broad term that can refer to various educational institutions, but universities are the most common place to study science at a higher level. \"A state college\" is also a type of university, but it's more specific and not everyone may recognize it as the answer to the question. \"Nanotechnology\" is a field of science, not a type of college.",
+      "expected_output": "university",
+      "question_values": [
+        "science",
+        "What type of college do you learn science at?",
+        "space lab",
+        "a state college",
+        "school",
+        "nanotechnology",
+        "university"
+      ],
+      "processing_time": 4.5679967403411865,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of steel cable and multiple possible answers.\n\nQuestion:\nYou want strong steel cable in your what if you're going to be off road driving?\n\nChoices:\nground, ship, construction site, winch, tool box\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice for strong steel cable in off-road driving would be a winch. A winch is a mechanical device used to pull or haul in a cable or rope, and it is often used in off-road driving to recover a vehicle that is stuck or to pull heavy objects. The cable used in a winch is typically strong steel cable. The other options (ground, ship, construction site, tool box) do not directly relate to the use of strong steel cable in off-road driving.",
+      "expected_output": "winch",
+      "question_values": [
+        "steel cable",
+        "You want strong steel cable in your what if you're going to be off road driving?",
+        "ground",
+        "ship",
+        "construction site",
+        "winch",
+        "tool box"
+      ],
+      "processing_time": 3.1329760551452637,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of eating breakfast and multiple possible answers.\n\nQuestion:\nIf you've been in a rut and busy, taking the time and eating breakfast could help you have a what?\n\nChoices:\ndirty dishes, gain energy, bad breath, better day, gas\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "better day",
+      "expected_output": "better day",
+      "question_values": [
+        "eating breakfast",
+        "If you've been in a rut and busy, taking the time and eating breakfast could help you have a what?",
+        "dirty dishes",
+        "gain energy",
+        "bad breath",
+        "better day",
+        "gas"
+      ],
+      "processing_time": 0.13984942436218262,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of footprints and multiple possible answers.\n\nQuestion:\nWhere would you see footprints that happen due to dirt being left behind inside?\n\nChoices:\nroof, ground, rug, surface of earth, floorboards\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "floorboards",
+      "expected_output": "rug",
+      "question_values": [
+        "footprints",
+        "Where would you see footprints that happen due to dirt being left behind inside?",
+        "roof",
+        "ground",
+        "rug",
+        "surface of earth",
+        "floorboards"
+      ],
+      "processing_time": 0.1412370204925537,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of garbage and multiple possible answers.\n\nQuestion:\nWhere is garbage brought to by garbagemen?\n\nChoices:\ntrashcan, landfill, television, computer, dumpster\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice is landfill. Garbagemen bring garbage to a landfill, which is a designated area for the disposal of waste materials. The other choices (trashcan, television, computer, dumpster) are not the final destinations for garbage, but rather places where garbage is temporarily stored before being taken to a landfill.",
+      "expected_output": "landfill",
+      "question_values": [
+        "garbage",
+        "Where is garbage brought to by garbagemen?",
+        "trashcan",
+        "landfill",
+        "television",
+        "computer",
+        "dumpster"
+      ],
+      "processing_time": 2.1354596614837646,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of armchair and multiple possible answers.\n\nQuestion:\nWhere would you go if you need an armchair?\n\nChoices:\nfurniture store, study, livin room, grocery store, hospital\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The single best choice based on commonsense reasoning would be a furniture store. An armchair is a type of furniture, so it would be most logical to find one in a place where furniture is sold, such as a furniture store.",
+      "expected_output": "furniture store",
+      "question_values": [
+        "armchair",
+        "Where would you go if you need an armchair?",
+        "furniture store",
+        "study",
+        "livin room",
+        "grocery store",
+        "hospital"
+      ],
+      "processing_time": 1.493513822555542,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of telephone directory and multiple possible answers.\n\nQuestion:\nWhere would you find a telephone directory in public?\n\nChoices:\noffice, house, phone booth, kitchen, amusement park\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be \"office\" or \"public library\". Telephone directories are typically found in offices or public libraries, as they provide a means for people to find phone numbers of businesses and individuals within a specific area. Phone booths, houses, and amusement parks are not common locations for telephone directories.",
+      "expected_output": "phone booth",
+      "question_values": [
+        "telephone directory",
+        "Where would you find a telephone directory in public?",
+        "office",
+        "house",
+        "phone booth",
+        "kitchen",
+        "amusement park"
+      ],
+      "processing_time": 2.0171334743499756,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of committing perjury and multiple possible answers.\n\nQuestion:\nWhat does someone committing perjury likely to have?\n\nChoices:\nmiscarriage of justice, guilt, testify, lies, truth\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "Lies",
+      "expected_output": "guilt",
+      "question_values": [
+        "committing perjury",
+        "What does someone committing perjury likely to have?",
+        "miscarriage of justice",
+        "guilt",
+        "testify",
+        "lies",
+        "truth"
+      ],
+      "processing_time": 0.1402292251586914,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of create art and multiple possible answers.\n\nQuestion:\nWhy do you create art?\n\nChoices:\ncreative, express yourself, inspires, feeling of accomplishment, have fun\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "express yourself",
+      "expected_output": "express yourself",
+      "question_values": [
+        "create art",
+        "Why do you create art?",
+        "creative",
+        "express yourself",
+        "inspires",
+        "feeling of accomplishment",
+        "have fun"
+      ],
+      "processing_time": 0.14377474784851074,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of waging war and multiple possible answers.\n\nQuestion:\nWhat can be the end result of waging war?\n\nChoices:\npeople dying, heartache, killing people, evil, suffering\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "suffering",
+      "expected_output": "people dying",
+      "question_values": [
+        "waging war",
+        "What can be the end result of waging war?",
+        "people dying",
+        "heartache",
+        "killing people",
+        "evil",
+        "suffering"
+      ],
+      "processing_time": 0.11199665069580078,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of light source and multiple possible answers.\n\nQuestion:\nBob's only light source was a small bulb.  There were four walls, if there was a door he couldn't see it.  What was Bob in?\n\nChoices:\nclosed room, sky, dard, his grave, house\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"house\". Since Bob had a light source (small bulb) and there were four walls he couldn't see through, it is most likely that he was in a room or a house. The other options like sky, dard, and his grave do not fit the given scenario.",
+      "expected_output": "closed room",
+      "question_values": [
+        "light source",
+        "Bob's only light source was a small bulb.  There were four walls, if there was a door he couldn't see it.  What was Bob in?",
+        "closed room",
+        "sky",
+        "dard",
+        "his grave",
+        "house"
+      ],
+      "processing_time": 2.1377451419830322,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of people and multiple possible answers.\n\nQuestion:\nWhat would people do if they need money badly?\n\nChoices:\npart company, go swimming, criminal, commit crimes, believe in god\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "commit crimes or believe in god (depending on the individual's moral compass and circumstances)",
+      "expected_output": "commit crimes",
+      "question_values": [
+        "people",
+        "What would people do if they need money badly?",
+        "part company",
+        "go swimming",
+        "criminal",
+        "commit crimes",
+        "believe in god"
+      ],
+      "processing_time": 0.6406505107879639,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of sensitive and multiple possible answers.\n\nQuestion:\nSarah was sensitive to sunlight, so she wore thick sunscreen to make herself waht?\n\nChoices:\nuncaring, resistant, non sensitive, sun-resistant, stoic\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "sun-resistant",
+      "expected_output": "resistant",
+      "question_values": [
+        "sensitive",
+        "Sarah was sensitive to sunlight, so she wore thick sunscreen to make herself waht?",
+        "uncaring",
+        "resistant",
+        "non sensitive",
+        "sun-resistant",
+        "stoic"
+      ],
+      "processing_time": 0.1993544101715088,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of change and multiple possible answers.\n\nQuestion:\nWhere would you put your change if you plan to use it soon and you are a man?\n\nChoices:\nbackseat of car, purse, pocket, jar, wallet\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice would be \"pocket\". As a man, it is common to carry change in one's pockets. The other options like purse, jar, and wallet are more commonly associated with women or specific situations (like a jar for saving change). The backseat of a car is not a common place to keep change that one plans to use soon.",
+      "expected_output": "pocket",
+      "question_values": [
+        "change",
+        "Where would you put your change if you plan to use it soon and you are a man?",
+        "backseat of car",
+        "purse",
+        "pocket",
+        "jar",
+        "wallet"
+      ],
+      "processing_time": 2.299088716506958,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of person and multiple possible answers.\n\nQuestion:\nA homeless person asked Jim for advice.  Jim wasn't religious, but he told the person something that he remembered.  What might he have told the person?\n\nChoices:\nhospital, street corner, synagogue, fairy tale, advice\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "Jim might have told the person about a hospital, as it is a practical and relevant advice for a homeless person, providing them with medical care and shelter. The other choices (street corner, synagogue, fairy tale, advice) are less likely in this context, as they do not directly address the immediate needs of a homeless person.",
+      "expected_output": "fairy tale",
+      "question_values": [
+        "person",
+        "A homeless person asked Jim for advice.  Jim wasn't religious, but he told the person something that he remembered.  What might he have told the person?",
+        "hospital",
+        "street corner",
+        "synagogue",
+        "fairy tale",
+        "advice"
+      ],
+      "processing_time": 2.1451828479766846,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of making grow and multiple possible answers.\n\nQuestion:\nA fertilizer is making a flower grow, what is likely to happen next?\n\nChoices:\nmore of, flowering, leaves, harvesting, blooms\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "blooms",
+      "expected_output": "blooms",
+      "question_values": [
+        "making grow",
+        "A fertilizer is making a flower grow, what is likely to happen next?",
+        "more of",
+        "flowering",
+        "leaves",
+        "harvesting",
+        "blooms"
+      ],
+      "processing_time": 0.14003610610961914,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of standing up and multiple possible answers.\n\nQuestion:\nAfter standing up I had to sit right back down, why would I feel like this?\n\nChoices:\ntrain, effort, balance, feet, muscles\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "balance",
+      "expected_output": "balance",
+      "question_values": [
+        "standing up",
+        "After standing up I had to sit right back down, why would I feel like this?",
+        "train",
+        "effort",
+        "balance",
+        "feet",
+        "muscles"
+      ],
+      "processing_time": 0.10916662216186523,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of cannon and multiple possible answers.\n\nQuestion:\nJames used the cannon to shoot at something while seeking lunch. It was overkill.  What did he shoot at?\n\nChoices:\nbody armor, ungulate, bomber, kill people, animal\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "animal",
+      "expected_output": "ungulate",
+      "question_values": [
+        "cannon",
+        "James used the cannon to shoot at something while seeking lunch. It was overkill.  What did he shoot at?",
+        "body armor",
+        "ungulate",
+        "bomber",
+        "kill people",
+        "animal"
+      ],
+      "processing_time": 0.1103508472442627,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of first violin and multiple possible answers.\n\nQuestion:\nJohn just made first violin.  This is  is a position on what?\n\nChoices:\nviolin case, symphony orchestra, class, learning to play violin, music store\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The correct answer is \"learning to play violin\". John just made a first violin, which implies that he is learning to play it, as the first violin is the instrument played by the concertmaster in an orchestra, and it is not typically made by the player themselves. The other options do not directly relate to John learning to play the first violin he made.",
+      "expected_output": "symphony orchestra",
+      "question_values": [
+        "first violin",
+        "John just made first violin.  This is  is a position on what?",
+        "violin case",
+        "symphony orchestra",
+        "class",
+        "learning to play violin",
+        "music store"
+      ],
+      "processing_time": 2.350703716278076,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of getting drunk and multiple possible answers.\n\nQuestion:\nwhat is another word for getting drunk?\n\nChoices:\nintoxication, blazed, vomiting, hangover, being sick\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"intoxication\". This term is commonly used to describe the state of being under the influence of alcohol or drugs, which is another way to say \"getting drunk\". The other choices do not directly refer to the state of being drunk, but rather symptoms or related experiences (vomiting, hangover, being sick) or slang terms (blazed, which is typically used to describe being high on marijuana).",
+      "expected_output": "intoxication",
+      "question_values": [
+        "getting drunk",
+        "what is another word for getting drunk?",
+        "intoxication",
+        "blazed",
+        "vomiting",
+        "hangover",
+        "being sick"
+      ],
+      "processing_time": 2.873838424682617,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of knowledge and multiple possible answers.\n\nQuestion:\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their what?\n\nChoices:\nbook store, university, meeting, class, encyclopedia\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "university",
+      "expected_output": "university",
+      "question_values": [
+        "knowledge",
+        "They prided themselves on being a wealth of knowledge, and that's why many chose to attend their what?",
+        "book store",
+        "university",
+        "meeting",
+        "class",
+        "encyclopedia"
+      ],
+      "processing_time": 0.11241340637207031,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of condominium and multiple possible answers.\n\nQuestion:\nThe condominium has public recreational areas, what was the purpose of these?\n\nChoices:\npark cars, complex, florida, washington, community\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"community\". Public recreational areas in a condominium are typically designed for the residents to socialize, relax, and engage in recreational activities, fostering a sense of community among the residents. The other choices (park cars, complex, florida, washington) do not directly relate to recreational areas.",
+      "expected_output": "community",
+      "question_values": [
+        "condominium",
+        "The condominium has public recreational areas, what was the purpose of these?",
+        "park cars",
+        "complex",
+        "florida",
+        "washington",
+        "community"
+      ],
+      "processing_time": 2.4669578075408936,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of move and multiple possible answers.\n\nQuestion:\nGeorge couldn't move without being killed, so he put in effort to do what?\n\nChoices:\nnot die, lay still, stationary, staying put, be still\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "staying put",
+      "expected_output": "be still",
+      "question_values": [
+        "move",
+        "George couldn't move without being killed, so he put in effort to do what?",
+        "not die",
+        "lay still",
+        "stationary",
+        "staying put",
+        "be still"
+      ],
+      "processing_time": 0.140946626663208,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of canned goods and multiple possible answers.\n\nQuestion:\nWhat type of closet are canned goods likely to be in?\n\nChoices:\ncupboard, pantry, shelf, cabinet, drower\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice is pantry. A pantry is a room or closet used for storing food, including canned goods. While cupboard, shelf, and cabinet can be used to store canned goods, a pantry is specifically designed for food storage. A drawer is not typically used for storing canned goods due to their size and weight.",
+      "expected_output": "pantry",
+      "question_values": [
+        "canned goods",
+        "What type of closet are canned goods likely to be in?",
+        "cupboard",
+        "pantry",
+        "shelf",
+        "cabinet",
+        "drower"
+      ],
+      "processing_time": 2.2171900272369385,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of boundary and multiple possible answers.\n\nQuestion:\nThe ball was hit over a boundary and struck an audience member.  What kind of game were they playing?\n\nChoices:\nsporting event, sporting, basketball, society, ranch country\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be a \"sporting event\" as the question mentions a ball being hit over a boundary, which is a common characteristic in various sports. The specific sport isn't specified, so we can't narrow it down to basketball or any other specific sport. The other choices (society, ranch country) don't seem to fit the scenario described.",
+      "expected_output": "sporting event",
+      "question_values": [
+        "boundary",
+        "The ball was hit over a boundary and struck an audience member.  What kind of game were they playing?",
+        "sporting event",
+        "sporting",
+        "basketball",
+        "society",
+        "ranch country"
+      ],
+      "processing_time": 2.563513994216919,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of driving to work and multiple possible answers.\n\nQuestion:\nDriving to work can be monotonous, she would play her favorite music and just what along with it?\n\nChoices:\nsing, listen to radio, listen to music, speed, head bang\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "sing",
+      "expected_output": "sing",
+      "question_values": [
+        "driving to work",
+        "Driving to work can be monotonous, she would play her favorite music and just what along with it?",
+        "sing",
+        "listen to radio",
+        "listen to music",
+        "speed",
+        "head bang"
+      ],
+      "processing_time": 0.11026382446289062,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of mosquitoes and multiple possible answers.\n\nQuestion:\nWhat would you be building if you designed a place for an annoying critter to stay?\n\nChoices:\nspread disease, swamp, fly away, cat condo, bug campers\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The question seems to be a playful way of asking about a place for mosquitoes to live, given that they are considered annoying critters. The best choice among the given options would be a \"swamp\", as mosquitoes breed in standing water, particularly in swamps or marshy areas. However, it's important to note that mosquitoes are not only a nuisance but also carriers of various diseases, such as malaria, dengue, and Zika virus.",
+      "expected_output": "bug campers",
+      "question_values": [
+        "mosquitoes",
+        "What would you be building if you designed a place for an annoying critter to stay?",
+        "spread disease",
+        "swamp",
+        "fly away",
+        "cat condo",
+        "bug campers"
+      ],
+      "processing_time": 3.232750654220581,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of boredom and multiple possible answers.\n\nQuestion:\nBoredom and hunger led to a wandering waste of time and a cart full of unhealthy snacks during her trip to where?\n\nChoices:\nnew moon, play cards, read book, see art, grocery shop\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning is \"groccery shop\". Boredom and hunger often lead to a person seeking food, and a cart full of unhealthy snacks suggests a shopping trip, particularly at a grocery store. The other options do not directly relate to the scenario described.",
+      "expected_output": "grocery shop",
+      "question_values": [
+        "boredom",
+        "Boredom and hunger led to a wandering waste of time and a cart full of unhealthy snacks during her trip to where?",
+        "new moon",
+        "play cards",
+        "read book",
+        "see art",
+        "grocery shop"
+      ],
+      "processing_time": 1.913675308227539,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of idiots and multiple possible answers.\n\nQuestion:\nSome idiots die of dehydration because they spend too much time playing games.  Where might someone play games so much?\n\nChoices:\nbar, sporting event, hockey game, baseball field, internet cafe\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "internet cafe",
+      "expected_output": "internet cafe",
+      "question_values": [
+        "idiots",
+        "Some idiots die of dehydration because they spend too much time playing games.  Where might someone play games so much?",
+        "bar",
+        "sporting event",
+        "hockey game",
+        "baseball field",
+        "internet cafe"
+      ],
+      "processing_time": 0.17163991928100586,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of ticket office and multiple possible answers.\n\nQuestion:\nThe lady had her specialized looking glasses and gown ready for the evening, she sent her butler to the ticket office of the what?\n\nChoices:\ntrain station, end of line, arena, hero show, opera house\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "opera house",
+      "expected_output": "opera house",
+      "question_values": [
+        "ticket office",
+        "The lady had her specialized looking glasses and gown ready for the evening, she sent her butler to the ticket office of the what?",
+        "train station",
+        "end of line",
+        "arena",
+        "hero show",
+        "opera house"
+      ],
+      "processing_time": 0.1392822265625,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of learn and multiple possible answers.\n\nQuestion:\nTo learn must have the right book, to work efficiently what must one have?\n\nChoices:\nimprove yourself, become knowledgeable, have tools, persistence, have more knowledge\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "To work efficiently, one must have tools.",
+      "expected_output": "have tools",
+      "question_values": [
+        "learn",
+        "To learn must have the right book, to work efficiently what must one have?",
+        "improve yourself",
+        "become knowledgeable",
+        "have tools",
+        "persistence",
+        "have more knowledge"
+      ],
+      "processing_time": 0.348829984664917,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of human and multiple possible answers.\n\nQuestion:\nWhere are humans kept in large amounts in small spaces?\n\nChoices:\nsolar system, school, prison, apartment building, bus\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "prison",
+      "expected_output": "apartment building",
+      "question_values": [
+        "human",
+        "Where are humans kept in large amounts in small spaces?",
+        "solar system",
+        "school",
+        "prison",
+        "apartment building",
+        "bus"
+      ],
+      "processing_time": 0.1100928783416748,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of second floor and multiple possible answers.\n\nQuestion:\nHe had a hard time finding the room on his schedule, it was on the second floor and he got lost in the very large what?\n\nChoices:\nschool, office building, house, hotel, centre\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"office building\" or \"school\" as these are the most common places where one might find multiple floors, including a second floor, and where one could potentially get lost due to its size. However, the term \"centre\" could also be used in some contexts, but it's less common for a center to have multiple floors. So, the most fitting answer would be \"office building\" or \"school\".",
+      "expected_output": "school",
+      "question_values": [
+        "second floor",
+        "He had a hard time finding the room on his schedule, it was on the second floor and he got lost in the very large what?",
+        "school",
+        "office building",
+        "house",
+        "hotel",
+        "centre"
+      ],
+      "processing_time": 3.000807046890259,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question in the topic of wood and multiple possible answers.\n\nQuestion:\nThe man and the woman chipped the wood for their garden and then did what to it?\n\nChoices:\nwarp, sanded, composted, petrify, feel rough\n\nSelect the single best choice based on commonsense reasoning and return that choice.",
+      "response": "The best choice based on commonsense reasoning would be \"sanded\". Chipping wood would create rough surfaces, so it makes sense that after chipping, they would sand the wood to make it smooth. The other options like warping, composting, petrifying, and feeling rough don't seem to be the logical next steps after chipping the wood for a garden.",
+      "expected_output": "composted",
+      "question_values": [
+        "wood",
+        "The man and the woman chipped the wood for their garden and then did what to it?",
+        "warp",
+        "sanded",
+        "composted",
+        "petrify",
+        "feel rough"
+      ],
+      "processing_time": 2.4083423614501953,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "death",
+    "state",
+    "army",
+    "sing songs",
+    "disaster",
+    "practice",
+    "have paper",
+    "have energy",
+    "grocery store",
+    "excitement",
+    "desk drawer",
+    "caribbean",
+    "suitcase",
+    "grocery store",
+    "no spouse",
+    "feel cold",
+    "feelings of guilt",
+    "bank account",
+    "corner",
+    "walmart",
+    "engine",
+    "need money",
+    "advantageous",
+    "ranch",
+    "body part",
+    "drink",
+    "library",
+    "transporting",
+    "distress",
+    "suburb",
+    "new realization",
+    "normal",
+    "countryside",
+    "shop",
+    "victory",
+    "get laid",
+    "productive",
+    "trouser leg",
+    "supermarket",
+    "at hotel",
+    "terrarium",
+    "nightclub",
+    "radical",
+    "captivity",
+    "ground",
+    "run away",
+    "feel resentful",
+    "best",
+    "washington d.c",
+    "feel pride",
+    "buy food",
+    "synagogue",
+    "trouble",
+    "green thumb",
+    "ocean",
+    "substation",
+    "jet engine",
+    "supermarket",
+    "party",
+    "in charge",
+    "win",
+    "casino",
+    "house",
+    "universe",
+    "backyards",
+    "relax",
+    "university",
+    "winch",
+    "better day",
+    "rug",
+    "landfill",
+    "furniture store",
+    "phone booth",
+    "guilt",
+    "express yourself",
+    "people dying",
+    "closed room",
+    "commit crimes",
+    "resistant",
+    "pocket",
+    "fairy tale",
+    "blooms",
+    "balance",
+    "ungulate",
+    "symphony orchestra",
+    "intoxication",
+    "university",
+    "community",
+    "be still",
+    "pantry",
+    "sporting event",
+    "sing",
+    "bug campers",
+    "grocery shop",
+    "internet cafe",
+    "opera house",
+    "have tools",
+    "apartment building",
+    "school",
+    "composted"
+  ],
+  "processing_stats": {
+    "total_time": 133.6298587322235,
+    "avg_time": 1.336298587322235,
+    "min_time": 0.10884714126586914,
+    "max_time": 4.5679967403411865,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

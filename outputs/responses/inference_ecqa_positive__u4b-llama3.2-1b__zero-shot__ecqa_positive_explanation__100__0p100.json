@@ -1,0 +1,1879 @@
+{
+  "experiment_name": "ecqa_positive__u4b-llama3.2-1b__zero-shot__ecqa_positive_explanation__100__0p100",
+  "experiment_config": {
+    "model": "u4b-llama3.2-1b",
+    "setup": "ecqa_positive",
+    "prompt": "ecqa_positive_explanation",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-23T16:47:49.707813",
+  "dataset_info": {
+    "name": "ecqa_positive",
+    "original_size": 7598,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 7598,
+    "sampled_size": 100,
+    "columns": [
+      "Unnamed: 0",
+      "q_no",
+      "q_concept",
+      "q_text",
+      "q_op1",
+      "q_op2",
+      "q_op3",
+      "q_op4",
+      "q_op5",
+      "q_ans",
+      "taskA_pos",
+      "taskA_neg",
+      "taskB"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 7598,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "unsloth/llama-3.2-1b-instruct-bnb-4bit",
+    "description": "Llama 3.2 1B parameter model (4-bit quantized with Unsloth) - Small",
+    "parameters": "1B",
+    "size_category": "small",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecqa_positive",
+    "template": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\n{}\n\nAnswer choices:\n{}, {}, {}, {}, {}\n\nCorrect answer:\n{}\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+    "description": "LLM generates atomic positive properties supporting the correct answer"
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn was playing football when he suffered a concussion.  He was really worried about the possible consequences of his sport, but the concussion was less scary than what?\n\nAnswer choices:\nhead injuries, having fun, being sick, death, getting hurt\n\nCorrect answer:\ndeath\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"death\". This is because a concussion is a type of traumatic brain injury that can cause severe and potentially life-threatening symptoms, including loss of consciousness, memory loss, and even death.",
+      "expected_output": "Death means end of life which is very scary\nOne can get back from consussion but not from death",
+      "question_values": [
+        "John was playing football when he suffered a concussion.  He was really worried about the possible consequences of his sport, but the concussion was less scary than what?",
+        "head injuries",
+        "having fun",
+        "being sick",
+        "death",
+        "getting hurt",
+        "death"
+      ],
+      "processing_time": 0.7183501720428467,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is part of a republic like the USA?\n\nAnswer choices:\nstate, democratic, kingdom, democracy, dictatorship\n\nCorrect answer:\nstate\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"state\" because a republic is a form of government where power is held by the people, either directly or through elected representatives, and is limited by a constitution or set of laws. In a state, the people have the right to participate in the decision-making process, and the government is accountable to the people. This is in contrast to a kingdom, where power is held by a monarch or ruler, and a dictatorship, where power is held by a single individual or group.",
+      "expected_output": "States are a part of USA\nRepublic have states",
+      "question_values": [
+        "What is part of a republic like the USA?",
+        "state",
+        "democratic",
+        "kingdom",
+        "democracy",
+        "dictatorship",
+        "state"
+      ],
+      "processing_time": 1.6764640808105469,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJames wasn't much of a leader, because he had nothing to lead.  And a leader without something to lead, no matter how skilled, is useless.  What did James need?\n\nAnswer choices:\nbattle, army, company, organization, school\n\nCorrect answer:\narmy\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "James needed an army.",
+      "expected_output": "Army is an organised military force equipped for fighting on land.\nJames wasn't much of a leader, because he had nothing to lead. And a leader without something to lead, no matter how skilled, is useless. James need army.",
+      "question_values": [
+        "James wasn't much of a leader, because he had nothing to lead.  And a leader without something to lead, no matter how skilled, is useless.  What did James need?",
+        "battle",
+        "army",
+        "company",
+        "organization",
+        "school",
+        "army"
+      ],
+      "processing_time": 0.12577176094055176,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does an actor in a musical do?\n\nAnswer choices:\nbranch out, vocals, pretend, wear costume, sing songs\n\nCorrect answer:\nsing songs\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"sing songs\" because singing is a fundamental aspect of acting in a musical, as it is a primary means of storytelling and performance.",
+      "expected_output": "Musicals is a type of play.\nPeople sing songs in musical play.",
+      "question_values": [
+        "What does an actor in a musical do?",
+        "branch out",
+        "vocals",
+        "pretend",
+        "wear costume",
+        "sing songs",
+        "sing songs"
+      ],
+      "processing_time": 0.5354950428009033,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA natural starting fire from lighting raged on for the second week, the governor declared it the biggest what he had seen?\n\nAnswer choices:\nnews report, unpredictable, disaster, explosion, burns\n\nCorrect answer:\ndisaster\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"disaster\". The reason is that the fire was a natural starting fire, which implies a sudden and unexpected event, not a planned or deliberate one.",
+      "expected_output": "A natural starting fire from lighting is a disaster.\nThe governor declared the lighting raged on for the second week from natural starting fire to be the biggest disaster he had seen.",
+      "question_values": [
+        "A natural starting fire from lighting raged on for the second week, the governor declared it the biggest what he had seen?",
+        "news report",
+        "unpredictable",
+        "disaster",
+        "explosion",
+        "burns",
+        "disaster"
+      ],
+      "processing_time": 0.6459438800811768,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThey had a theory of what they could do in t he big game, so over and over they would what?\n\nAnswer choices:\npark, practice, fact, practical, practise\n\nCorrect answer:\npractice\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"practice\". The question states that they had a theory of what they could do in the big game, so over and over they would practice. This implies that they would repeatedly try out their plan or strategy in order to perfect it, which is the definition of practicing.",
+      "expected_output": "Practice is required in every big game.\nIf they had a theory of practice than only they would over and over practice.",
+      "question_values": [
+        "They had a theory of what they could do in t he big game, so over and over they would what?",
+        "park",
+        "practice",
+        "fact",
+        "practical",
+        "practise",
+        "practice"
+      ],
+      "processing_time": 0.9674515724182129,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you need to write a letter?\n\nAnswer choices:\nhave paper, literate, not give up, move fingers, to keep warm\n\nCorrect answer:\nhave paper\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "To write a letter, you need to have paper.",
+      "expected_output": "Letter is to be written on a paper.\nYou need to have paper to write a letter.",
+      "question_values": [
+        "What do you need to write a letter?",
+        "have paper",
+        "literate",
+        "not give up",
+        "move fingers",
+        "to keep warm",
+        "have paper"
+      ],
+      "processing_time": 0.2156217098236084,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhy does someone make sure they are eating breakfast?\n\nAnswer choices:\nfullness, have energy, better day, full stomach, indulge\n\nCorrect answer:\nhave energy\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"have energy\". This is because eating breakfast helps to increase energy levels, which is essential for the body to function properly throughout the day.",
+      "expected_output": "Breakfast is important as it give energy for the day.",
+      "question_values": [
+        "Why does someone make sure they are eating breakfast?",
+        "fullness",
+        "have energy",
+        "better day",
+        "full stomach",
+        "indulge",
+        "have energy"
+      ],
+      "processing_time": 0.5486247539520264,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat type of place has stopped giving out plastic shopping bags?\n\nAnswer choices:\nretail store, restaurant, mini mart, grocery store, home\n\nCorrect answer:\ngrocery store\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is a grocery store because it is the most likely place to have stopped giving out plastic shopping bags due to growing concerns about plastic waste and the environmental impact of single-use plastic bags.",
+      "expected_output": "Grocery stores have nowadays stopped giving plastic bags\nPlastic shopping bags were most common to find at a grocery store",
+      "question_values": [
+        "What type of place has stopped giving out plastic shopping bags?",
+        "retail store",
+        "restaurant",
+        "mini mart",
+        "grocery store",
+        "home",
+        "grocery store"
+      ],
+      "processing_time": 0.6617498397827148,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is someone beginning work they really want to do likely to feel?\n\nAnswer choices:\nworking, stress, excitement, confusion, panic\n\nCorrect answer:\nexcitement\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "Someone beginning work they really want to do is likely to feel excitement. This is because excitement is a positive emotion that is often associated with anticipation, enthusiasm, and eagerness, which are all feelings that people typically experience when they are about to embark on a task they are passionate about.",
+      "expected_output": "Excitement is a strong feeling of happiness.\nDoing what one likes makes one happy.",
+      "question_values": [
+        "What is someone beginning work they really want to do likely to feel?",
+        "working",
+        "stress",
+        "excitement",
+        "confusion",
+        "panic",
+        "excitement"
+      ],
+      "processing_time": 0.9422965049743652,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere in your office would you store a highlight that you don't use often?\n\nAnswer choices:\noffice supply store, case, desk drawer, campus book store, lamp\n\nCorrect answer:\ndesk drawer\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "This answer choice is correct because a desk drawer is a convenient and accessible location for storing items that are used infrequently, such as a highlighter that you don't use often.",
+      "expected_output": "Desk drawer is a slidable storage place under a table.\nTable is a furniture.\nOffice generally has furniture.",
+      "question_values": [
+        "Where in your office would you store a highlight that you don't use often?",
+        "office supply store",
+        "case",
+        "desk drawer",
+        "campus book store",
+        "lamp",
+        "desk drawer"
+      ],
+      "processing_time": 0.6128787994384766,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe meteorologist said that there was a storm coming.  This forced John to delay his trip to what location?\n\nAnswer choices:\ntropical seas, cuba, tropics, caribbean, weather report\n\nCorrect answer:\ncaribbean\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"caribbean\" because the meteorologist mentioned a storm, which is a severe weather condition that affects tropical regions. The Caribbean region is a tropical region, and a storm is a common occurrence in this area.",
+      "expected_output": "The storm was coming from caribbean.\nJohn was forced to delay his trip to caribbean as meteorologist said that a storm was coming.",
+      "question_values": [
+        "The meteorologist said that there was a storm coming.  This forced John to delay his trip to what location?",
+        "tropical seas",
+        "cuba",
+        "tropics",
+        "caribbean",
+        "weather report",
+        "caribbean"
+      ],
+      "processing_time": 0.7712457180023193,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nHe packed his toothpaste and brush in a small bag then stuffed it with his clothes into a what?\n\nAnswer choices:\nbathroom, suitcase, mouth, drug store, squirrel\n\nCorrect answer:\nsuitcase\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"suitcase\". This is because the question asks what the toothpaste and brush were packed into, and the most logical and common place to store these items would be a suitcase, which is a common container used for carrying personal belongings.",
+      "expected_output": "Packed items are been kept in a suitcase.\nHe packed his toothpaste and brush in a small bag for keeping them into a suitcase and then stuffed them with his clothes.",
+      "question_values": [
+        "He packed his toothpaste and brush in a small bag then stuffed it with his clothes into a what?",
+        "bathroom",
+        "suitcase",
+        "mouth",
+        "drug store",
+        "squirrel",
+        "suitcase"
+      ],
+      "processing_time": 0.8503067493438721,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe crab was being shipped to be eaten, where was he heading?\n\nAnswer choices:\ngulf of mexico, north sea, fish market, picnic basket, grocery store\n\nCorrect answer:\ngrocery store\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"grocery store\" because crabs are commonly sold in grocery stores, where they are typically purchased and then taken home to be consumed.",
+      "expected_output": "Grocery store is a retail shop that primarily sells food, either fresh or preserved.\nThe crab was being shipped to be eaten, he was heading to grocery store.",
+      "question_values": [
+        "The crab was being shipped to be eaten, where was he heading?",
+        "gulf of mexico",
+        "north sea",
+        "fish market",
+        "picnic basket",
+        "grocery store",
+        "grocery store"
+      ],
+      "processing_time": 0.549034595489502,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat always happens to someone after he or she finishes getting divorce?\n\nAnswer choices:\nno spouse, lot of grief, freedom, children suffer, party time\n\nCorrect answer:\nno spouse\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"no spouse\". This is because, after a person gets a divorce, they typically do not remarry or get married again.",
+      "expected_output": "A divorce happens after a husband and wife decide they no longer want to be married.\nSpouse is person in a marriage relationship.\nThere will be no spouse after a divorce.",
+      "question_values": [
+        "What always happens to someone after he or she finishes getting divorce?",
+        "no spouse",
+        "lot of grief",
+        "freedom",
+        "children suffer",
+        "party time",
+        "no spouse"
+      ],
+      "processing_time": 0.5172891616821289,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do people feel in the winter?\n\nAnswer choices:\nuse money, sick, pay bills, feel cold, become old\n\nCorrect answer:\nfeel cold\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "People typically feel cold in the winter due to the decrease in sunlight and the shorter days, which result in lower temperatures.",
+      "expected_output": "Winter season always means cold weather\nPeople usually feel cold during cold weather",
+      "question_values": [
+        "What do people feel in the winter?",
+        "use money",
+        "sick",
+        "pay bills",
+        "feel cold",
+        "become old",
+        "feel cold"
+      ],
+      "processing_time": 0.4220569133758545,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you started killing people for no reason, what are you likely to lack?\n\nAnswer choices:\nprison sentence, going to jail, feelings of guilt, die, hunger\n\nCorrect answer:\nfeelings of guilt\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "If you started killing people for no reason, you would likely lack feelings of guilt. This is because the act of killing someone without a reason would be a violation of their basic human rights and would likely lead to feelings of remorse, regret, and remorse, which are the opposite of guilt.",
+      "expected_output": "Feeling of guilt means a feeling of worry or unhappiness that you have because you have done something wrong, such as causing harm to another person.\nIf you started killing people for no reason, you are likely to lack feelings of guilt.",
+      "question_values": [
+        "If you started killing people for no reason, what are you likely to lack?",
+        "prison sentence",
+        "going to jail",
+        "feelings of guilt",
+        "die",
+        "hunger",
+        "feelings of guilt"
+      ],
+      "processing_time": 0.9601068496704102,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere do people keep money that is not in their wallet?\n\nAnswer choices:\nbank account, outside, art show, casino, race track\n\nCorrect answer:\nbank account\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "People keep money that is not in their wallet in a bank account.",
+      "expected_output": "Bank account is personal account of a person\nBank account can have money",
+      "question_values": [
+        "Where do people keep money that is not in their wallet?",
+        "bank account",
+        "outside",
+        "art show",
+        "casino",
+        "race track",
+        "bank account"
+      ],
+      "processing_time": 0.26601266860961914,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nwhere do you typically find a trash can in the city?\n\nAnswer choices:\npark, motel, corner, bus stop, store front\n\nCorrect answer:\ncorner\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "You typically find a trash can in the corner of a city.",
+      "expected_output": "A trash can is typically found in corner of the city.",
+      "question_values": [
+        "where do you typically find a trash can in the city?",
+        "park",
+        "motel",
+        "corner",
+        "bus stop",
+        "store front",
+        "corner"
+      ],
+      "processing_time": 0.24733638763427734,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you get a washcloth if you do not have one?\n\nAnswer choices:\nbathing, bathroom sink, garage, linen closet, walmart\n\nCorrect answer:\nwalmart\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is Walmart. A washcloth is a type of absorbent cloth used for cleaning, and Walmart is a retail store where people typically go to buy household items, including cleaning supplies.",
+      "expected_output": "You would get a washcloth at Walmart.\nWalmart is a place where you can go and buy a washcloth.",
+      "question_values": [
+        "Where would you get a washcloth if you do not have one?",
+        "bathing",
+        "bathroom sink",
+        "garage",
+        "linen closet",
+        "walmart",
+        "walmart"
+      ],
+      "processing_time": 0.6641860008239746,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you find a metal rod in most people's preferred method of transportation?\n\nAnswer choices:\nairplane, construction site, shops, engine, broken bone\n\nCorrect answer:\nengine\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"engine\" because most people would not typically find a metal rod in a construction site, shops, or a broken bone. However, they would likely find an engine in a vehicle, such as an airplane.",
+      "expected_output": "Engine is one of the most prefferd mode of transportation\nEngines have rods in them as they are heavily made of metals",
+      "question_values": [
+        "Where would you find a metal rod in most people's preferred method of transportation?",
+        "airplane",
+        "construction site",
+        "shops",
+        "engine",
+        "broken bone",
+        "engine"
+      ],
+      "processing_time": 0.7742500305175781,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nShe was a human in America who wanted to live well, what was a given for her situation?\n\nAnswer choices:\nthink critically, need money, say hello, think critically, drink tea\n\nCorrect answer:\nneed money\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"need money\" because the question asks what was a given for her situation, implying that she was already in a difficult or challenging situation. The other options do not necessarily imply a difficult or challenging situation, and therefore are not relevant to her current circumstances.",
+      "expected_output": "Money is a current medium of exchange in the form of coins and banknotes. Money is anything that people use to buy goods and services.\nShe was a human in America who wanted to live well and she need money for the situation.",
+      "question_values": [
+        "She was a human in America who wanted to live well, what was a given for her situation?",
+        "think critically",
+        "need money",
+        "say hello",
+        "think critically",
+        "drink tea",
+        "need money"
+      ],
+      "processing_time": 0.9170441627502441,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIt was dumb luck, his bad move had actually put him in an what position?\n\nAnswer choices:\nvirtuous, advantageous, excellent, adventurous, exceptional\n\nCorrect answer:\nadvantageous\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"advantageous\" because it implies that the person's bad move led to a positive outcome, which is the opposite of what the question is asking. The question asks about a position that was put in by the bad move, implying that the bad move was a disadvantage. Therefore, the correct answer is \"advantageous\", as it suggests that the bad move was actually beneficial.",
+      "expected_output": "Advantageous means favourable.\nLuck means fortunate.\nFortunate moments change bad moves into advantageous positions.",
+      "question_values": [
+        "It was dumb luck, his bad move had actually put him in an what position?",
+        "virtuous",
+        "advantageous",
+        "excellent",
+        "adventurous",
+        "exceptional",
+        "advantageous"
+      ],
+      "processing_time": 1.3424513339996338,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you be most likely to see a cow?\n\nAnswer choices:\nroad, slaughter house, ranch, switzerland, tennessee\n\nCorrect answer:\nranch\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "You would be most likely to see a cow on a ranch. This is because a ranch is typically a large area of land used for grazing livestock, including cows.",
+      "expected_output": "Ranch is a large farm, where cattle or other animals are bred.\nWe would be most likely to see a cow in a ranch.",
+      "question_values": [
+        "Where would you be most likely to see a cow?",
+        "road",
+        "slaughter house",
+        "ranch",
+        "switzerland",
+        "tennessee",
+        "ranch"
+      ],
+      "processing_time": 0.5769145488739014,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a hand?\n\nAnswer choices:\nbody part, foot, handglide, feet, help\n\nCorrect answer:\nbody part\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"body part\" because a hand is a part of the human body, specifically a limb that is used for grasping, manipulating objects, and performing various functions.",
+      "expected_output": "Hand is the end of an arm of the body.\nArm is a body part.",
+      "question_values": [
+        "What is a hand?",
+        "body part",
+        "foot",
+        "handglide",
+        "feet",
+        "help",
+        "body part"
+      ],
+      "processing_time": 0.6446752548217773,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe animals all knew the importants of fluids.  They also knew what was safe to do what?\n\nAnswer choices:\ndrink, feel pain, bite, fly, gay\n\nCorrect answer:\ndrink\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The animals knew that drinking was safe because it was essential for their survival.",
+      "expected_output": "All animals drink water to hydrate themselves.\nWater is a fluid.",
+      "question_values": [
+        "The animals all knew the importants of fluids.  They also knew what was safe to do what?",
+        "drink",
+        "feel pain",
+        "bite",
+        "fly",
+        "gay",
+        "drink"
+      ],
+      "processing_time": 0.287980318069458,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is someone likely to find a huge amount of text?\n\nAnswer choices:\nnewspaper, writer's brain, own home, library, book store\n\nCorrect answer:\nlibrary\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "A person is likely to find a huge amount of text in a library.",
+      "expected_output": "library contains a lots of books having texts written in it.\nSomeone finds a huge amount of texts in a library.",
+      "question_values": [
+        "Where is someone likely to find a huge amount of text?",
+        "newspaper",
+        "writer's brain",
+        "own home",
+        "library",
+        "book store",
+        "library"
+      ],
+      "processing_time": 0.28995251655578613,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is the process of going somewhere?\n\nAnswer choices:\nfire, energy, car, transporting, staying in place\n\nCorrect answer:\ntransporting\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"transporting\" because it is the process of moving from one place to another, which is the fundamental concept of transportation.",
+      "expected_output": "Transporting means to take or carry people or goods from one place to another by means of a vehicle, aircraft, or ship.\nThe process of going somewhere means people going from one place to another by means of a vehicle, aircraft, or ship.",
+      "question_values": [
+        "What is the process of going somewhere?",
+        "fire",
+        "energy",
+        "car",
+        "transporting",
+        "staying in place",
+        "transporting"
+      ],
+      "processing_time": 0.5170884132385254,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat negative emotions or feelings can learning cause?\n\nAnswer choices:\ngaining knowledge, effectiveness, distress, dysfunction, happiness\n\nCorrect answer:\ndistress\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"distress\".\n\nLearning can cause distress because it often involves confronting and overcoming challenges, which can lead to feelings of anxiety, frustration, and discomfort. This can be particularly true for individuals who are new to a new subject or situation, or those who struggle with the material. The process of learning can be emotionally taxing, causing individuals to feel overwhelmed, anxious, or even distressed.",
+      "expected_output": "Distress is extreme anxiety, sorrow or pain.\nNegative emotions or feelings can learning cause is Distress.",
+      "question_values": [
+        "What negative emotions or feelings can learning cause?",
+        "gaining knowledge",
+        "effectiveness",
+        "distress",
+        "dysfunction",
+        "happiness",
+        "distress"
+      ],
+      "processing_time": 1.333143711090088,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIn the city the family didn't have a back yard, but now they did since they lived in a what?\n\nAnswer choices:\nfarm, suburb, property, neighborhood, yards\n\nCorrect answer:\nsuburb\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The family didn't have a backyard, but now they do because they moved to a suburb. This is correct because a suburb is a type of residential area that is typically located outside of a city, often with a mix of single-family homes, apartments, and commercial properties.",
+      "expected_output": "Suburb is an outlying district of a city.\nHouses in the outlying district has more space than the houses in the city.\nHaving more space around a house means one can have a back yard.",
+      "question_values": [
+        "In the city the family didn't have a back yard, but now they did since they lived in a what?",
+        "farm",
+        "suburb",
+        "property",
+        "neighborhood",
+        "yards",
+        "suburb"
+      ],
+      "processing_time": 0.9163088798522949,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you believe something but then you begin getting and understanding new information you may come to a what?\n\nAnswer choices:\ndisappointment, new realization, heat wave, joy, wanting more\n\nCorrect answer:\nnew realization\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"new realization\". \n\nWhen you initially believe something, it's often based on incomplete or inaccurate information. As new information becomes available, it can challenge your initial understanding, leading to a new realization that your initial belief was incorrect. This process of questioning and re-evaluation is a natural part of learning and growth.",
+      "expected_output": "Realization is an act of becoming fully aware of something as a fact.\nWe become fully aware of something as a fact when we get new information.",
+      "question_values": [
+        "If you believe something but then you begin getting and understanding new information you may come to a what?",
+        "disappointment",
+        "new realization",
+        "heat wave",
+        "joy",
+        "wanting more",
+        "new realization"
+      ],
+      "processing_time": 1.107475757598877,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nAll the kooky kids enjoyed each other's company, to them their behavior was perfectly what?\n\nAnswer choices:\nordinary, straight, normal, cool, mainstream\n\nCorrect answer:\nnormal\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"normal\". This is because the question describes a situation where all the kids are enjoying each other's company, which implies a sense of comfort, familiarity, and acceptance. The fact that they are all behaving in a \"normal\" way suggests that they are not trying to be anything extraordinary or unusual, but rather, they are simply being themselves and enjoying each other's company.",
+      "expected_output": "Kooky means strange or eccentric.\nNormal means confirming to a standard, usual, typical or expected.\nAll the kooky kids enjoyed each other's company, to them their behaviour was perfectly normal.",
+      "question_values": [
+        "All the kooky kids enjoyed each other's company, to them their behavior was perfectly what?",
+        "ordinary",
+        "straight",
+        "normal",
+        "cool",
+        "mainstream",
+        "normal"
+      ],
+      "processing_time": 1.298666000366211,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf there is a pond with nobody nearby, where is it likely located?\n\nAnswer choices:\nrural area, meadow, forest side, countryside, forest\n\nCorrect answer:\ncountryside\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"countryside\" because a pond is typically located in a rural area, away from human settlements and urban development.",
+      "expected_output": "Countryside has ponds\nCountryside does not have many people living there\nPonds in countryside have no one near them as people do not live there",
+      "question_values": [
+        "If there is a pond with nobody nearby, where is it likely located?",
+        "rural area",
+        "meadow",
+        "forest side",
+        "countryside",
+        "forest",
+        "countryside"
+      ],
+      "processing_time": 0.4884624481201172,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you do when you need to get food?\n\nAnswer choices:\ntable, disneyland, refrigerators, pantry, shop\n\nCorrect answer:\nshop\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"shop\" because it is the most logical and practical choice for getting food. A shop is a place where food is sold, making it the most convenient and accessible option for obtaining food.",
+      "expected_output": "Perosn shop the food when he need the food.\nShopping is the activity that person do to get food.",
+      "question_values": [
+        "What do you do when you need to get food?",
+        "table",
+        "disneyland",
+        "refrigerators",
+        "pantry",
+        "shop",
+        "shop"
+      ],
+      "processing_time": 0.7222409248352051,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA reaching advantage can help a boxer achieve what?\n\nAnswer choices:\nbeing ahead, fall, speed., victory, new option\n\nCorrect answer:\nvictory\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"victory\".\n\nA reaching advantage refers to the physical advantage gained by a boxer through proper technique and positioning, allowing them to reach their opponent's head and body more effectively. This can lead to a stronger, more effective strike, ultimately resulting in a victory for the boxer.",
+      "expected_output": "A boxer can achieve victory with help of a reaching advantage.",
+      "question_values": [
+        "A reaching advantage can help a boxer achieve what?",
+        "being ahead",
+        "fall",
+        "speed.",
+        "victory",
+        "new option",
+        "victory"
+      ],
+      "processing_time": 0.9808063507080078,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf a person is complimentary and making trivial physical contact what are they trying to do?\n\nAnswer choices:\nget laid, acknowledgment, accomplish goals, marry, talk about themselves\n\nCorrect answer:\nget laid\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The person is trying to get laid. \n\nThis answer choice is correct because making trivial physical contact, such as touching someone's arm or patting them on the back, is a common way for people to initiate intimate contact, which is a key aspect of sexual activity.",
+      "expected_output": "Being complimentary and making trivial physical contact are signs of flirting\nPeople flirt with someone when they intend to get laid with that someone",
+      "question_values": [
+        "If a person is complimentary and making trivial physical contact what are they trying to do?",
+        "get laid",
+        "acknowledgment",
+        "accomplish goals",
+        "marry",
+        "talk about themselves",
+        "get laid"
+      ],
+      "processing_time": 0.9034252166748047,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?\n\nAnswer choices:\nrestless, active, lazybutt, productive, hard work\n\nCorrect answer:\nproductive\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"productive\". The man in the white suit is described as \"very lazy\", which implies that he is not putting in effort or making an effort to achieve something. In contrast, the ban in the blue is described as \"put in effort and was very productive\", which suggests that it is actively working towards a goal.",
+      "expected_output": "Productive means producing or able to produce large amounts of goods, crops or other commodities.\nThe man in the white suit was very lazy. He did nothing useful. Meanwhile, the man in the blue had put in effort and was very productive.",
+      "question_values": [
+        "The man in the white suit was very lazy.  He did nothing useful.  Meanwhile, the ban in the blue had put in effort and was very what?",
+        "restless",
+        "active",
+        "lazybutt",
+        "productive",
+        "hard work",
+        "productive"
+      ],
+      "processing_time": 1.124518632888794,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does a ferret like to crawl up?\n\nAnswer choices:\ngreat britain, mother's hair, petting zoo, building, trouser leg\n\nCorrect answer:\ntrouser leg\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"trouser leg\" because ferrets are known to be attracted to the smell of their owner's clothing, particularly the scent of trousers.",
+      "expected_output": "Ferret legging is game where contestants take live ferrets and shove them down their trouser.\nFerret crawl up trouser leg in ferret legging.",
+      "question_values": [
+        "What does a ferret like to crawl up?",
+        "great britain",
+        "mother's hair",
+        "petting zoo",
+        "building",
+        "trouser leg",
+        "trouser leg"
+      ],
+      "processing_time": 0.5542583465576172,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSam spent most of his time standing up.  His job was hectic and he never got any rest. But he was the best cashier at his workplace.    Where might he work?\n\nAnswer choices:\nbookstore, count till, supermarket, shop, preschool\n\nCorrect answer:\nsupermarket\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "Sam's job as a cashier at a supermarket is the most suitable option because it involves standing for long periods of time, which is consistent with his description of spending most of his time standing up.",
+      "expected_output": "Supermarket has cashiers\nWorkers in a supermarket spend most of their time standing up\nWorkers of a supermarket do not get any rest\nSupermarket is a building",
+      "question_values": [
+        "Sam spent most of his time standing up.  His job was hectic and he never got any rest. But he was the best cashier at his workplace.    Where might he work?",
+        "bookstore",
+        "count till",
+        "supermarket",
+        "shop",
+        "preschool",
+        "supermarket"
+      ],
+      "processing_time": 0.664771556854248,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn walked up to the reception desk and rang a bell.  He waited for five minutes and told the reception person that he had a reservation. Where might he be?\n\nAnswer choices:\nlobby, office park, at hotel, large office, real estate office\n\nCorrect answer:\nat hotel\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "John is at the hotel because he has a reservation, which is a common term used in hotels to indicate that a guest has booked a room for a specific period of time.",
+      "expected_output": "Reception desk is there at a hotel\nPerson telling that he is having a reservation means it is reservation of a room of hotel.",
+      "question_values": [
+        "John walked up to the reception desk and rang a bell.  He waited for five minutes and told the reception person that he had a reservation. Where might he be?",
+        "lobby",
+        "office park",
+        "at hotel",
+        "large office",
+        "real estate office",
+        "at hotel"
+      ],
+      "processing_time": 0.6008083820343018,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere can you see snakes at a public zoological park?\n\nAnswer choices:\nkew gardens, tree, terrarium, thick forest, field\n\nCorrect answer:\nterrarium\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is terrarium because it is a controlled environment that is designed to mimic a natural habitat for certain animals, such as snakes. A terrarium is a self-sustaining ecosystem that is typically a glass or plastic container with a small opening, allowing for air exchange and moisture retention. This setup allows snakes to thrive in a naturalistic environment, providing them with the space and resources they need to live comfortably.",
+      "expected_output": "You can see snakes in a terrarium.\nTerrarium is at a public zoological park.",
+      "question_values": [
+        "Where can you see snakes at a public zoological park?",
+        "kew gardens",
+        "tree",
+        "terrarium",
+        "thick forest",
+        "field",
+        "terrarium"
+      ],
+      "processing_time": 1.3880772590637207,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn was working late at night in a Casino.  When he got off work, he looked for a bar but couldn't find one.  Where might he go instead?\n\nAnswer choices:\nrestaurant, nightclub, las vegas, atlantic city, new york city\n\nCorrect answer:\nnightclub\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is nightclub. The question states that John was working late at night, which implies that he was likely in a public place. Nightclubs are typically open late at night, making them a suitable alternative to a bar.",
+      "expected_output": "Nightclub is an entertainment venue which is open throughout the night.\nEntertainment venues generally have bars.",
+      "question_values": [
+        "John was working late at night in a Casino.  When he got off work, he looked for a bar but couldn't find one.  Where might he go instead?",
+        "restaurant",
+        "nightclub",
+        "las vegas",
+        "atlantic city",
+        "new york city",
+        "nightclub"
+      ],
+      "processing_time": 0.7778527736663818,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSomeone who's belief in a philosophy is not slight but extreme is what?\n\nAnswer choices:\nsignificant, important, radical, radical, essencial\n\nCorrect answer:\nradical\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"radical\". A radical belief is not just a slight or minor variation, but a fundamental and extreme stance that challenges the status quo and goes to the heart of the matter.",
+      "expected_output": "A philosophy is radical.\nSomeone's belief in philosophy is extreme radical and not slight.",
+      "question_values": [
+        "Someone who's belief in a philosophy is not slight but extreme is what?",
+        "significant",
+        "important",
+        "radical",
+        "radical",
+        "essencial",
+        "radical"
+      ],
+      "processing_time": 0.6798491477966309,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf a lizard is fed by people every day, what has happened to it?\n\nAnswer choices:\ndocumentary, costa rica, garden, encouragement, captivity\n\nCorrect answer:\ncaptivity\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"captivity\" because if a lizard is fed by people every day, it implies that the lizard is being kept in captivity, which is a controlled environment where it is not free to roam or live as it would in its natural habitat.",
+      "expected_output": "Lizards find their food by their own\nLizards who are kept captive are fed by its people",
+      "question_values": [
+        "If a lizard is fed by people every day, what has happened to it?",
+        "documentary",
+        "costa rica",
+        "garden",
+        "encouragement",
+        "captivity",
+        "captivity"
+      ],
+      "processing_time": 0.8727834224700928,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you usually find a hole made by an animal?\n\nAnswer choices:\ntrap, golf course, wall, ground, swiss cheese\n\nCorrect answer:\nground\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"ground\". This is because a hole is typically found in the ground, as opposed to other options like a trap, golf course, wall, or Swiss cheese, which are not typically associated with holes.",
+      "expected_output": "Few species of animals make hole in ground.\nSome animals live under the ground. They make hole unto the ground to live in it.",
+      "question_values": [
+        "Where would you usually find a hole made by an animal?",
+        "trap",
+        "golf course",
+        "wall",
+        "ground",
+        "swiss cheese",
+        "ground"
+      ],
+      "processing_time": 0.761732816696167,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe cat saw animal control approaching her, what did she decide to do?\n\nAnswer choices:\nsleep all day, cast shadow, run away, bark like a dog, see at night\n\nCorrect answer:\nrun away\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The cat decided to run away because it is a natural instinct for cats to flee from perceived threats, and animal control is a threat to the cat's safety and well-being.",
+      "expected_output": "Cats run away from animal control\nCats can decide to run away\nRunning away refers to going far away",
+      "question_values": [
+        "The cat saw animal control approaching her, what did she decide to do?",
+        "sleep all day",
+        "cast shadow",
+        "run away",
+        "bark like a dog",
+        "see at night",
+        "run away"
+      ],
+      "processing_time": 0.6037845611572266,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe person was stood up on a date, what was his reaction?\n\nAnswer choices:\ncross street, machine part, regret, selling things, feel resentful\n\nCorrect answer:\nfeel resentful\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The person was stood up on a date, which means they were deceived or deceived someone they trusted. This situation typically leads to feelings of betrayal, hurt, and resentment. Therefore, the correct answer is \"feel resentful\".",
+      "expected_output": "People feel betrayed and disrespected when they are stood up on a date\nFeeling bitterness at having been treated unfairly means feeling resentful",
+      "question_values": [
+        "The person was stood up on a date, what was his reaction?",
+        "cross street",
+        "machine part",
+        "regret",
+        "selling things",
+        "feel resentful",
+        "feel resentful"
+      ],
+      "processing_time": 0.7754669189453125,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe board game instructed that you must conquer opponent, only the what would come out on top?\n\nAnswer choices:\ntop piece, strong, win, total domination, best\n\nCorrect answer:\nbest\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"best\". This is because in the context of board games, \"best\" typically refers to the highest quality or superiority, which is what you strive for in a game. Conquering the opponent is a key objective, and the best outcome is the one that achieves this goal.",
+      "expected_output": "Only the best which means highest quality player would come on top in the board game.",
+      "question_values": [
+        "The board game instructed that you must conquer opponent, only the what would come out on top?",
+        "top piece",
+        "strong",
+        "win",
+        "total domination",
+        "best",
+        "best"
+      ],
+      "processing_time": 1.038703441619873,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere can you find the U.S. federal government?\n\nAnswer choices:\nwashington d.c, canada, country, capitol building, democracy\n\nCorrect answer:\nwashington d.c\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The U.S. federal government is located in Washington D.C. because it is the capital city of the United States, where the legislative, executive, and judicial branches of the federal government are housed.",
+      "expected_output": "The U.S. federal government houses in the capitol building.\nThe capitol building is located in washington d.c.",
+      "question_values": [
+        "Where can you find the U.S. federal government?",
+        "washington d.c",
+        "canada",
+        "country",
+        "capitol building",
+        "democracy",
+        "washington d.c"
+      ],
+      "processing_time": 0.6981055736541748,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a positive feeling that you might get after going jogging?\n\nAnswer choices:\nheart rate increases, heart attacks, sweating, sore feet, feel pride\n\nCorrect answer:\nfeel pride\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"feel pride\". This is because going jogging is a physical activity that releases endorphins, also known as \"feel-good\" hormones, which can give you a sense of accomplishment and pride in your physical fitness.",
+      "expected_output": "Jogging is the exercise of running at a steady and gentle pace.\nOne might feel pride after achieving goals of exercise to keep fit.\nPride is a positive feeling.",
+      "question_values": [
+        "What is a positive feeling that you might get after going jogging?",
+        "heart rate increases",
+        "heart attacks",
+        "sweating",
+        "sore feet",
+        "feel pride",
+        "feel pride"
+      ],
+      "processing_time": 0.7986814975738525,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you do when you're going to market?\n\nAnswer choices:\nbuy food, see other people, buying vegetables, buy a fat pig, traveling\n\nCorrect answer:\nbuy food\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "When you're going to market, the most logical and practical answer is to buy food. This is because markets are typically places where people gather to buy and sell goods, and food is a fundamental necessity for human sustenance.",
+      "expected_output": "Market is a place where various things are sold.\nFood is sold in a market.\nPeople buy what they want from market.",
+      "question_values": [
+        "What do you do when you're going to market?",
+        "buy food",
+        "see other people",
+        "buying vegetables",
+        "buy a fat pig",
+        "traveling",
+        "buy food"
+      ],
+      "processing_time": 0.7619471549987793,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would there be many people sitting in chair and listening to religious speech?\n\nAnswer choices:\nauditorium, office, synagogue, confession, church\n\nCorrect answer:\nsynagogue\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is synagogue because it is a place where people gather for religious services, and the primary purpose is to listen to and participate in religious speech.",
+      "expected_output": "Synagogue is a place of worship\nJews pray in a Synagogue",
+      "question_values": [
+        "Where would there be many people sitting in chair and listening to religious speech?",
+        "auditorium",
+        "office",
+        "synagogue",
+        "confession",
+        "church",
+        "synagogue"
+      ],
+      "processing_time": 0.5365152359008789,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a corrupt government likely to lead to?\n\nAnswer choices:\ncivilization, money, city, control, trouble\n\nCorrect answer:\ntrouble\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "A corrupt government typically leads to trouble, as it often results in the abuse of power, exploitation of citizens, and disregard for the rule of law, ultimately causing social unrest, economic instability, and conflict.",
+      "expected_output": "Trouble means difficulty or problems.\nA corrupt government causes difficulties and problems to it's people.",
+      "question_values": [
+        "What is a corrupt government likely to lead to?",
+        "civilization",
+        "money",
+        "city",
+        "control",
+        "trouble",
+        "trouble"
+      ],
+      "processing_time": 0.7115893363952637,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does a person who is a gardener have?\n\nAnswer choices:\nown house, contribution to society, food, ride horses, green thumb\n\nCorrect answer:\ngreen thumb\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "A person who is a gardener has a green thumb because they have the ability to nurture and care for plants, which requires a green thumb.",
+      "expected_output": "Gardners are said to be experts in growing plants\nPeople who have a knack for growing plants well are said to have a green thumb",
+      "question_values": [
+        "What does a person who is a gardener have?",
+        "own house",
+        "contribution to society",
+        "food",
+        "ride horses",
+        "green thumb",
+        "green thumb"
+      ],
+      "processing_time": 0.5129437446594238,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nwhere is seaweed from?\n\nAnswer choices:\nbeach, sea, ocean, water, sea plant\n\nCorrect answer:\nocean\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"ocean\". This is because seaweed is a type of marine plant that grows in the ocean, where it is exposed to sunlight, water, and nutrients.",
+      "expected_output": "Seaweeds are there in ocean",
+      "question_values": [
+        "where is seaweed from?",
+        "beach",
+        "sea",
+        "ocean",
+        "water",
+        "sea plant",
+        "ocean"
+      ],
+      "processing_time": 0.6453497409820557,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat is a place that has large cable hanging overhead?\n\nAnswer choices:\nradio shack, electrical device, shower, substation, television\n\nCorrect answer:\nsubstation\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is a substation. A substation is a place where large cables are hung overhead to facilitate the transmission and distribution of electricity.",
+      "expected_output": "A substation has several cables\nSubstation is a place\nSubstation regulates power",
+      "question_values": [
+        "What is a place that has large cable hanging overhead?",
+        "radio shack",
+        "electrical device",
+        "shower",
+        "substation",
+        "television",
+        "substation"
+      ],
+      "processing_time": 0.5138077735900879,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nGeorge checked the rotor of the Apache, which wasn't powered by internal combustion, but by what?\n\nAnswer choices:\njet engine, helicopter, electric motor, rotator, electrical circuit\n\nCorrect answer:\njet engine\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"jet engine\" because the Apache helicopter is a military aircraft that uses a jet engine to generate power. The term \"jet engine\" refers to the fact that the aircraft's rotor blades are designed to produce a high-speed jet of air, which is then converted into mechanical energy to power the aircraft.",
+      "expected_output": "A rotor can be powered by a jet engine.\nJet engine has electric motor fitted in whih helps to power up the rotor.",
+      "question_values": [
+        "George checked the rotor of the Apache, which wasn't powered by internal combustion, but by what?",
+        "jet engine",
+        "helicopter",
+        "electric motor",
+        "rotator",
+        "electrical circuit",
+        "jet engine"
+      ],
+      "processing_time": 1.0889637470245361,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is a good place to get food for most people?\n\nAnswer choices:\nfridge, oven, supermarket, kitchen, table\n\nCorrect answer:\nsupermarket\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"supermarket\" because it is the most convenient and widely available place to buy food for most people, as it typically offers a wide variety of pre-packaged and pre-prepared food items, as well as fresh produce and other essentials.",
+      "expected_output": "Supermarket have variety of food for sale so people can get food from supermarket.",
+      "question_values": [
+        "Where is a good place to get food for most people?",
+        "fridge",
+        "oven",
+        "supermarket",
+        "kitchen",
+        "table",
+        "supermarket"
+      ],
+      "processing_time": 0.891096830368042,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat do you have to clean up after a party?\n\nAnswer choices:\nson's room, dishwasher, party, dish washer, dining room\n\nCorrect answer:\nparty\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"party\" because a party is a social gathering where food and drinks are consumed, and it's common for guests to leave behind dishes and utensils that need to be cleaned.",
+      "expected_output": "Dishwasher is a machine for washing dishes automatically.\nYou will have to clean up a dishwasher after a party.",
+      "question_values": [
+        "What do you have to clean up after a party?",
+        "son's room",
+        "dishwasher",
+        "party",
+        "dish washer",
+        "dining room",
+        "party"
+      ],
+      "processing_time": 0.6951253414154053,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe servant was asked where to put the flowers, what was his status at the wedding?\n\nAnswer choices:\nfree person, celebrity, boss, in charge, rich person\n\nCorrect answer:\nin charge\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The servant was asked where to put the flowers, and the correct answer is \"in charge\". This is because the servant is in charge of the wedding, and the flowers are a part of the wedding ceremony. Therefore, the servant is the one in charge of arranging the flowers.",
+      "expected_output": "An incharge is asked for placement of flowers.\nServant may be the incharge at the wedding.",
+      "question_values": [
+        "The servant was asked where to put the flowers, what was his status at the wedding?",
+        "free person",
+        "celebrity",
+        "boss",
+        "in charge",
+        "rich person",
+        "in charge"
+      ],
+      "processing_time": 0.9559273719787598,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe competitive guy liked to play games, what was his goal?\n\nAnswer choices:\nentertaining, dice, win, bored, relax\n\nCorrect answer:\nwin\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"win\". The question asks what the competitive guy liked to play games for, and the answer \"win\" is the most logical and fitting choice. It implies that the guy enjoys playing games because he wants to win, which is a common motivation for competitive individuals.",
+      "expected_output": "Winning is the aim of compititive people as they always aim at winning\nWin can be a goal of playing for many",
+      "question_values": [
+        "The competitive guy liked to play games, what was his goal?",
+        "entertaining",
+        "dice",
+        "win",
+        "bored",
+        "relax",
+        "win"
+      ],
+      "processing_time": 0.9732034206390381,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere do people get beer after a bit of gambling?\n\nAnswer choices:\nbottle, grocery store, casino, spaceship, hockey game\n\nCorrect answer:\ncasino\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"casino\". This is because a casino is a place where people often gamble, and as a result, they may purchase beer or other beverages to drink after a game.",
+      "expected_output": "Casino is a large building which has bar and gambling games.\nBar sells beer.",
+      "question_values": [
+        "Where do people get beer after a bit of gambling?",
+        "bottle",
+        "grocery store",
+        "casino",
+        "spaceship",
+        "hockey game",
+        "casino"
+      ],
+      "processing_time": 0.6752684116363525,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is a personal washing machine likely to be found?\n\nAnswer choices:\nclean dishes, laundromat, streets, cellar, house\n\nCorrect answer:\nhouse\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"house\". This is because a personal washing machine is typically found in a household, as it is a common appliance used for washing clothes and other household items.",
+      "expected_output": "Our house is our personal property.\nA personal washing machine is likely to be found in a house.",
+      "question_values": [
+        "Where is a personal washing machine likely to be found?",
+        "clean dishes",
+        "laundromat",
+        "streets",
+        "cellar",
+        "house",
+        "house"
+      ],
+      "processing_time": 0.630779504776001,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is the world known to be a part of?\n\nAnswer choices:\na fraud, countries, universe, galaxy, thought\n\nCorrect answer:\nuniverse\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"universe\".\n\nThe universe is the world we know and experience, encompassing all matter and energy that exists. It is the totality of all things that have mass and energy, and it is the fundamental concept that underlies all of existence.",
+      "expected_output": "In universe, the world is known to be a part of it.",
+      "question_values": [
+        "Where is the world known to be a part of?",
+        "a fraud",
+        "countries",
+        "universe",
+        "galaxy",
+        "thought",
+        "universe"
+      ],
+      "processing_time": 0.9233970642089844,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe weasel was sifting through garbage, where did it look for it?\n\nAnswer choices:\nchicken coop, law office, dog house, hollow log, backyards\n\nCorrect answer:\nbackyards\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The weasel was sifting through garbage, and the most logical place to look for garbage is in backyards, as it is a common location for animals to find food and shelter.",
+      "expected_output": "The weasel look for it in backyards while it was sifting through garbage.",
+      "question_values": [
+        "The weasel was sifting through garbage, where did it look for it?",
+        "chicken coop",
+        "law office",
+        "dog house",
+        "hollow log",
+        "backyards",
+        "backyards"
+      ],
+      "processing_time": 0.6444244384765625,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you sit back and think about nice memories you will be able to?\n\nAnswer choices:\nsit quietly, concentrate, wake up, stay focused, relax\n\nCorrect answer:\nrelax\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "Relax is the correct answer because sitting back and thinking about nice memories allows you to unwind and calm your mind, which is a natural response to positive thoughts and emotions.",
+      "expected_output": "You will feel relax by remembering memoreies.\nIf you sit back and think about nice memories you will be able to feel relax.",
+      "question_values": [
+        "If you sit back and think about nice memories you will be able to?",
+        "sit quietly",
+        "concentrate",
+        "wake up",
+        "stay focused",
+        "relax",
+        "relax"
+      ],
+      "processing_time": 0.5883302688598633,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat type of college do you learn science at?\n\nAnswer choices:\nspace lab, a state college, school, nanotechnology, university\n\nCorrect answer:\nuniversity\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"university\". This is because universities are typically institutions of higher learning that offer a wide range of academic programs, including science, which is a fundamental subject that is often studied at the university level.",
+      "expected_output": "University is a type of college.\nScience is learnt at university.",
+      "question_values": [
+        "What type of college do you learn science at?",
+        "space lab",
+        "a state college",
+        "school",
+        "nanotechnology",
+        "university",
+        "university"
+      ],
+      "processing_time": 0.7496685981750488,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nYou want strong steel cable in your what if you're going to be off road driving?\n\nAnswer choices:\nground, ship, construction site, winch, tool box\n\nCorrect answer:\nwinch\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"winch\". A winch is a device used to lift or pull heavy loads, and it is typically used in situations where a strong cable is required for off-road driving, such as in construction or rescue situations.",
+      "expected_output": "Winch is made of a strong steel cable.\nYou want strong steel cable in your winch if you're going to be off road driving.",
+      "question_values": [
+        "You want strong steel cable in your what if you're going to be off road driving?",
+        "ground",
+        "ship",
+        "construction site",
+        "winch",
+        "tool box",
+        "winch"
+      ],
+      "processing_time": 0.8250691890716553,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nIf you've been in a rut and busy, taking the time and eating breakfast could help you have a what?\n\nAnswer choices:\ndirty dishes, gain energy, bad breath, better day, gas\n\nCorrect answer:\nbetter day\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"better day\". This is because eating breakfast can help increase blood sugar levels, which can give you a boost of energy and help you feel more alert and awake, making it easier to tackle the day.",
+      "expected_output": "Breakfast is important meal of the day as it gives you energy and removes your dullness.\nBreakfast can turn your day a better one.",
+      "question_values": [
+        "If you've been in a rut and busy, taking the time and eating breakfast could help you have a what?",
+        "dirty dishes",
+        "gain energy",
+        "bad breath",
+        "better day",
+        "gas",
+        "better day"
+      ],
+      "processing_time": 0.7763857841491699,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you see footprints that happen due to dirt being left behind inside?\n\nAnswer choices:\nroof, ground, rug, surface of earth, floorboards\n\nCorrect answer:\nrug\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"rug\". This is because rugs are typically made of materials like wool, silk, or synthetic fibers that are designed to be walked upon, leaving behind impressions of the footprints. These impressions are then absorbed into the rug, creating a permanent record of the footprints.",
+      "expected_output": "Footrpints on rugs can be seen only when foot left behind the dirt on rug.\nPeple walk on rug usually.",
+      "question_values": [
+        "Where would you see footprints that happen due to dirt being left behind inside?",
+        "roof",
+        "ground",
+        "rug",
+        "surface of earth",
+        "floorboards",
+        "rug"
+      ],
+      "processing_time": 0.9873530864715576,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere is garbage brought to by garbagemen?\n\nAnswer choices:\ntrashcan, landfill, television, computer, dumpster\n\nCorrect answer:\nlandfill\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is landfill. Landfills are specifically designed to collect and store waste, including garbage, for long-term disposal. Garbage is brought to landfills by garbagemen, who collect and transport the waste to the landfill for disposal.",
+      "expected_output": "A landfill is an area of land where large amounts of waste material are buried.",
+      "question_values": [
+        "Where is garbage brought to by garbagemen?",
+        "trashcan",
+        "landfill",
+        "television",
+        "computer",
+        "dumpster",
+        "landfill"
+      ],
+      "processing_time": 0.8610568046569824,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you go if you need an armchair?\n\nAnswer choices:\nfurniture store, study, livin room, grocery store, hospital\n\nCorrect answer:\nfurniture store\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "I would go to a furniture store because it is the only answer choice that makes sense in the context of needing an armchair.",
+      "expected_output": "Armchair is a large furniture used to sit and relax.\nFurniture is sold in a furniture store.",
+      "question_values": [
+        "Where would you go if you need an armchair?",
+        "furniture store",
+        "study",
+        "livin room",
+        "grocery store",
+        "hospital",
+        "furniture store"
+      ],
+      "processing_time": 0.47092509269714355,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you find a telephone directory in public?\n\nAnswer choices:\noffice, house, phone booth, kitchen, amusement park\n\nCorrect answer:\nphone booth\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"phone booth\" because phone booths are typically found in public places where people can use their phones to make or receive calls, such as in shopping malls, train stations, or other areas where people congregate.",
+      "expected_output": "Telephone directory is kept in a phone booth\nPhone booths are present at public places.",
+      "question_values": [
+        "Where would you find a telephone directory in public?",
+        "office",
+        "house",
+        "phone booth",
+        "kitchen",
+        "amusement park",
+        "phone booth"
+      ],
+      "processing_time": 0.7909624576568604,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat does someone committing perjury likely to have?\n\nAnswer choices:\nmiscarriage of justice, guilt, testify, lies, truth\n\nCorrect answer:\nguilt\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "Someone committing perjury is likely to have guilt because perjury is the act of lying under oath, which implies a breach of trust and a false statement, leading to a sense of guilt and remorse.",
+      "expected_output": "Someone committing perjury is likely to have guilt and regret for not being truthful in a court of law.",
+      "question_values": [
+        "What does someone committing perjury likely to have?",
+        "miscarriage of justice",
+        "guilt",
+        "testify",
+        "lies",
+        "truth",
+        "guilt"
+      ],
+      "processing_time": 0.697237491607666,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhy do you create art?\n\nAnswer choices:\ncreative, express yourself, inspires, feeling of accomplishment, have fun\n\nCorrect answer:\nexpress yourself\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"express yourself\" because creating art is a fundamental human need that allows individuals to express their thoughts, emotions, and experiences in a unique and meaningful way, providing a sense of fulfillment and self-actualization.",
+      "expected_output": "Artist create art to express themselves.",
+      "question_values": [
+        "Why do you create art?",
+        "creative",
+        "express yourself",
+        "inspires",
+        "feeling of accomplishment",
+        "have fun",
+        "express yourself"
+      ],
+      "processing_time": 0.7912251949310303,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat can be the end result of waging war?\n\nAnswer choices:\npeople dying, heartache, killing people, evil, suffering\n\nCorrect answer:\npeople dying\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"people dying\". This is because war is a violent and destructive conflict that inevitably results in the loss of human life. The use of force, violence, and destruction in war leads to the death of individuals, making it a direct consequence of waging war.",
+      "expected_output": "War leads to the death.\nThe end result of waging war can be people dying.",
+      "question_values": [
+        "What can be the end result of waging war?",
+        "people dying",
+        "heartache",
+        "killing people",
+        "evil",
+        "suffering",
+        "people dying"
+      ],
+      "processing_time": 0.9556088447570801,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nBob's only light source was a small bulb.  There were four walls, if there was a door he couldn't see it.  What was Bob in?\n\nAnswer choices:\nclosed room, sky, dard, his grave, house\n\nCorrect answer:\nclosed room\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"closed room\".\n\nThe reason is that a \"closed room\" is a room that is completely enclosed and has no visible entrance or exit, which is the case with Bob's only light source being a small bulb.",
+      "expected_output": "Closed room is a protected space enclosed by walls, floors and ceiling with the doors and windows closed.\nBob's only light source was a small bulb.  There were four walls, if there was a door, he couldn't see it. Bob was in closed room.",
+      "question_values": [
+        "Bob's only light source was a small bulb.  There were four walls, if there was a door he couldn't see it.  What was Bob in?",
+        "closed room",
+        "sky",
+        "dard",
+        "his grave",
+        "house",
+        "closed room"
+      ],
+      "processing_time": 0.8090901374816895,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat would people do if they need money badly?\n\nAnswer choices:\npart company, go swimming, criminal, commit crimes, believe in god\n\nCorrect answer:\ncommit crimes\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "People would not commit crimes if they need money badly. This is because the correct answer is \"believe in God\", which is a fundamental aspect of many religions, including Christianity, Islam, and others. In these faiths, people often turn to their deity for financial support or guidance, and believing in God is a key aspect of their spiritual practice. Therefore, if people need money badly, they would likely turn to their faith for help, rather than resorting to more negative or destructive actions.",
+      "expected_output": "People tend to go to extreme heights when they are desperate\nCommiting crimes is an extremity some people go to, to get money",
+      "question_values": [
+        "What would people do if they need money badly?",
+        "part company",
+        "go swimming",
+        "criminal",
+        "commit crimes",
+        "believe in god",
+        "commit crimes"
+      ],
+      "processing_time": 1.6749205589294434,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSarah was sensitive to sunlight, so she wore thick sunscreen to make herself waht?\n\nAnswer choices:\nuncaring, resistant, non sensitive, sun-resistant, stoic\n\nCorrect answer:\nresistant\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"resistant\". This is because the question asks why Sarah wore thick sunscreen to make herself \"waht\", which is a playful and whimsical term for something. The word \"waht\" is not a real word, but it's a colloquialism that is often used to describe something that is unusual or unexpected. Therefore, the correct answer is \"resistant\", which means being able to withstand or endure something, in this case, the sun's rays.",
+      "expected_output": "Sunscreen makes people resistant to sunlight.\nSunscreen is a good resistant for the one who is sensitive to sunlight.",
+      "question_values": [
+        "Sarah was sensitive to sunlight, so she wore thick sunscreen to make herself waht?",
+        "uncaring",
+        "resistant",
+        "non sensitive",
+        "sun-resistant",
+        "stoic",
+        "resistant"
+      ],
+      "processing_time": 1.6436364650726318,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere would you put your change if you plan to use it soon and you are a man?\n\nAnswer choices:\nbackseat of car, purse, pocket, jar, wallet\n\nCorrect answer:\npocket\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"pocket\" because it is the most convenient and practical place to put your change, as it is easily accessible and can be easily carried with you.",
+      "expected_output": "Men have pockets\nChange can be put in the pocket\nThings can be used soon from the pocket",
+      "question_values": [
+        "Where would you put your change if you plan to use it soon and you are a man?",
+        "backseat of car",
+        "purse",
+        "pocket",
+        "jar",
+        "wallet",
+        "pocket"
+      ],
+      "processing_time": 0.609424352645874,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA homeless person asked Jim for advice.  Jim wasn't religious, but he told the person something that he remembered.  What might he have told the person?\n\nAnswer choices:\nhospital, street corner, synagogue, fairy tale, advice\n\nCorrect answer:\nfairy tale\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"fairy tale\" because Jim told the homeless person that he remembered a \"fairy tale\" that he had heard as a child. This is a reference to a classic fairy tale, such as Cinderella or Sleeping Beauty, which is a well-known and relatable story that Jim might have shared with the homeless person.",
+      "expected_output": "People who are not religious, often believe that all the stories about god are fairy tales\nThey tend to tell people stories about gods which they believe are fairy tales",
+      "question_values": [
+        "A homeless person asked Jim for advice.  Jim wasn't religious, but he told the person something that he remembered.  What might he have told the person?",
+        "hospital",
+        "street corner",
+        "synagogue",
+        "fairy tale",
+        "advice",
+        "fairy tale"
+      ],
+      "processing_time": 1.13789963722229,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nA fertilizer is making a flower grow, what is likely to happen next?\n\nAnswer choices:\nmore of, flowering, leaves, harvesting, blooms\n\nCorrect answer:\nblooms\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"blooms\" because fertilizers are typically added to soil to promote plant growth, and the process of photosynthesis occurs in the leaves of plants, resulting in the production of flowers.",
+      "expected_output": "Fertilizers have nutrients which are required by all parts of plant to grow.\nOnce the flower gets enough nutrients it blooms.",
+      "question_values": [
+        "A fertilizer is making a flower grow, what is likely to happen next?",
+        "more of",
+        "flowering",
+        "leaves",
+        "harvesting",
+        "blooms",
+        "blooms"
+      ],
+      "processing_time": 0.6999168395996094,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nAfter standing up I had to sit right back down, why would I feel like this?\n\nAnswer choices:\ntrain, effort, balance, feet, muscles\n\nCorrect answer:\nbalance\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"balance\". This is because standing up requires a significant amount of effort, which can cause a person to feel unbalanced. This is especially true if the person is not used to standing up or is not in a stable environment.",
+      "expected_output": "After standing up a person had to sit right back down because they would feel like to have balance.",
+      "question_values": [
+        "After standing up I had to sit right back down, why would I feel like this?",
+        "train",
+        "effort",
+        "balance",
+        "feet",
+        "muscles",
+        "balance"
+      ],
+      "processing_time": 0.8385708332061768,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJames used the cannon to shoot at something while seeking lunch. It was overkill.  What did he shoot at?\n\nAnswer choices:\nbody armor, ungulate, bomber, kill people, animal\n\nCorrect answer:\nungulate\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"ungulate\". \n\nThis is correct because an ungulate is a type of mammal, which is a class of animals that includes horses, deer, and many others. The term \"ungulate\" is derived from the Latin word \"ungula\", meaning \"hoof\". Therefore, it is a type of animal that has hooves, which are characteristic features of ungulates.",
+      "expected_output": "Ungulate is a hoofed animal\nShooting at an ungulate is an overkill",
+      "question_values": [
+        "James used the cannon to shoot at something while seeking lunch. It was overkill.  What did he shoot at?",
+        "body armor",
+        "ungulate",
+        "bomber",
+        "kill people",
+        "animal",
+        "ungulate"
+      ],
+      "processing_time": 1.340893030166626,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nJohn just made first violin.  This is  is a position on what?\n\nAnswer choices:\nviolin case, symphony orchestra, class, learning to play violin, music store\n\nCorrect answer:\nsymphony orchestra\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"symphony orchestra\" because a symphony orchestra is a large ensemble of musicians who play together to perform classical music, and the term \"violin\" is a specific instrument within that orchestra.",
+      "expected_output": "An symphony orchestra has voilin\nOne can have a position on the symphony orchestra",
+      "question_values": [
+        "John just made first violin.  This is  is a position on what?",
+        "violin case",
+        "symphony orchestra",
+        "class",
+        "learning to play violin",
+        "music store",
+        "symphony orchestra"
+      ],
+      "processing_time": 0.7383384704589844,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nwhat is another word for getting drunk?\n\nAnswer choices:\nintoxication, blazed, vomiting, hangover, being sick\n\nCorrect answer:\nintoxication\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"intoxication\". \n\nIntoxication is another word for getting drunk, as it refers to the state of being intoxicated or inebriated, often due to the consumption of alcohol.",
+      "expected_output": "Intoxication is a state of being affected by alcohol.\nIntoxication means losing control over body and mind.\nDrinking alcohol means getting drunk.",
+      "question_values": [
+        "what is another word for getting drunk?",
+        "intoxication",
+        "blazed",
+        "vomiting",
+        "hangover",
+        "being sick",
+        "intoxication"
+      ],
+      "processing_time": 0.740962028503418,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their what?\n\nAnswer choices:\nbook store, university, meeting, class, encyclopedia\n\nCorrect answer:\nuniversity\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"university\". The question states that the institution prided themselves on being a \"wealth of knowledge\", implying that they were known for their vast and extensive knowledge, which is why many chose to attend their university.",
+      "expected_output": "University is an institution of higher education and research, which awards academic degrees in various academic disciplines.\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their university.",
+      "question_values": [
+        "They prided themselves on being a wealth of knowledge, and that's why many chose to attend their what?",
+        "book store",
+        "university",
+        "meeting",
+        "class",
+        "encyclopedia",
+        "university"
+      ],
+      "processing_time": 0.806955099105835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe condominium has public recreational areas, what was the purpose of these?\n\nAnswer choices:\npark cars, complex, florida, washington, community\n\nCorrect answer:\ncommunity\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"community\". The public recreational areas in a condominium are typically designed for the benefit and enjoyment of its residents, providing spaces for socializing, relaxation, and leisure activities.",
+      "expected_output": "The purpose is for members of the community to do fun activities and relax.",
+      "question_values": [
+        "The condominium has public recreational areas, what was the purpose of these?",
+        "park cars",
+        "complex",
+        "florida",
+        "washington",
+        "community",
+        "community"
+      ],
+      "processing_time": 0.6619553565979004,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nGeorge couldn't move without being killed, so he put in effort to do what?\n\nAnswer choices:\nnot die, lay still, stationary, staying put, be still\n\nCorrect answer:\nbe still\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"be still\" because George's inability to move indicates that he is unable to exert any physical force or energy, which is a fundamental requirement for movement. By choosing to be still, George is essentially saying that he is unable to exert any force, which is the opposite of what he needs to do to move.",
+      "expected_output": "If john moved, he would be killed hence he had",
+      "question_values": [
+        "George couldn't move without being killed, so he put in effort to do what?",
+        "not die",
+        "lay still",
+        "stationary",
+        "staying put",
+        "be still",
+        "be still"
+      ],
+      "processing_time": 1.1340954303741455,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat type of closet are canned goods likely to be in?\n\nAnswer choices:\ncupboard, pantry, shelf, cabinet, drower\n\nCorrect answer:\npantry\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is pantry. This is because a pantry is a type of closet that is typically used for storing dry goods such as canned goods, grains, and other non-perishable items, making it the most logical choice among the given options.",
+      "expected_output": "Pantry is a type of closet\nCanned goods can be kept in a pantry",
+      "question_values": [
+        "What type of closet are canned goods likely to be in?",
+        "cupboard",
+        "pantry",
+        "shelf",
+        "cabinet",
+        "drower",
+        "pantry"
+      ],
+      "processing_time": 0.8531231880187988,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe ball was hit over a boundary and struck an audience member.  What kind of game were they playing?\n\nAnswer choices:\nsporting event, sporting, basketball, society, ranch country\n\nCorrect answer:\nsporting event\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"sporting event\" because the question describes a situation where a ball was hit over a boundary, which is a characteristic of a sport.",
+      "expected_output": "Audience are present in a sporting event\nA sporting event could involve a ball\nA sporting event can be any game",
+      "question_values": [
+        "The ball was hit over a boundary and struck an audience member.  What kind of game were they playing?",
+        "sporting event",
+        "sporting",
+        "basketball",
+        "society",
+        "ranch country",
+        "sporting event"
+      ],
+      "processing_time": 0.5551331043243408,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nDriving to work can be monotonous, she would play her favorite music and just what along with it?\n\nAnswer choices:\nsing, listen to radio, listen to music, speed, head bang\n\nCorrect answer:\nsing\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"sing\". Singing is a form of music that is typically played while driving, as it allows the driver to enjoy their favorite music without being distracted by the radio or other external stimuli.",
+      "expected_output": "Doing something you like makes you cheered and things interesting even though you are doing tideous thing.\nplaying music and singing your favourite song makes you cheered when driving",
+      "question_values": [
+        "Driving to work can be monotonous, she would play her favorite music and just what along with it?",
+        "sing",
+        "listen to radio",
+        "listen to music",
+        "speed",
+        "head bang",
+        "sing"
+      ],
+      "processing_time": 0.7176499366760254,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhat would you be building if you designed a place for an annoying critter to stay?\n\nAnswer choices:\nspread disease, swamp, fly away, cat condo, bug campers\n\nCorrect answer:\nbug campers\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"bug campers\" because it is the only option that suggests a place for an annoying critter to stay, implying a cozy and welcoming environment for the critter to rest and thrive.",
+      "expected_output": "Bug campers can be built\nBug campers are campers that can repel annoying critters",
+      "question_values": [
+        "What would you be building if you designed a place for an annoying critter to stay?",
+        "spread disease",
+        "swamp",
+        "fly away",
+        "cat condo",
+        "bug campers",
+        "bug campers"
+      ],
+      "processing_time": 0.7105047702789307,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nBoredom and hunger led to a wandering waste of time and a cart full of unhealthy snacks during her trip to where?\n\nAnswer choices:\nnew moon, play cards, read book, see art, grocery shop\n\nCorrect answer:\ngrocery shop\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is grocery shop because boredom and hunger led to a wandering waste of time, implying that the person was looking for something to eat, and the grocery shop was the most convenient and accessible option.",
+      "expected_output": "People go grocery shopping when they are bored\nGrocery shopping leads to waste of time\nUnhealthy snacks are eaten on the way to the grocery shop\nGrocery shop is a store",
+      "question_values": [
+        "Boredom and hunger led to a wandering waste of time and a cart full of unhealthy snacks during her trip to where?",
+        "new moon",
+        "play cards",
+        "read book",
+        "see art",
+        "grocery shop",
+        "grocery shop"
+      ],
+      "processing_time": 0.7004678249359131,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nSome idiots die of dehydration because they spend too much time playing games.  Where might someone play games so much?\n\nAnswer choices:\nbar, sporting event, hockey game, baseball field, internet cafe\n\nCorrect answer:\ninternet cafe\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is an internet cafe because it is a place where people can play games on a computer or other electronic device, which can lead to dehydration if not enough water is consumed.",
+      "expected_output": "Some are engrossed so much in playing games that they forget to drink water timely. This may result into dehydration.\nInternet caf\u00e9 is such a place where someone might play so much.",
+      "question_values": [
+        "Some idiots die of dehydration because they spend too much time playing games.  Where might someone play games so much?",
+        "bar",
+        "sporting event",
+        "hockey game",
+        "baseball field",
+        "internet cafe",
+        "internet cafe"
+      ],
+      "processing_time": 0.6379373073577881,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe lady had her specialized looking glasses and gown ready for the evening, she sent her butler to the ticket office of the what?\n\nAnswer choices:\ntrain station, end of line, arena, hero show, opera house\n\nCorrect answer:\nopera house\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The lady sent her butler to the opera house because it was a night event, implying that the lady was attending a performance of some sort.",
+      "expected_output": "By having her specialized looking glasses and gown ready for the evening, lady sent her butler to the ticket office of opera house.",
+      "question_values": [
+        "The lady had her specialized looking glasses and gown ready for the evening, she sent her butler to the ticket office of the what?",
+        "train station",
+        "end of line",
+        "arena",
+        "hero show",
+        "opera house",
+        "opera house"
+      ],
+      "processing_time": 0.5025591850280762,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nTo learn must have the right book, to work efficiently what must one have?\n\nAnswer choices:\nimprove yourself, become knowledgeable, have tools, persistence, have more knowledge\n\nCorrect answer:\nhave tools\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "To learn must have the right book, to work efficiently what must one have? \n\nThe correct answer is: have tools.\n\nHaving the right book is essential for learning, as it provides the necessary knowledge and information to understand the subject matter. However, having the right book alone is not enough to ensure efficient learning. To learn effectively, one must also have the right tools, such as a comfortable and quiet workspace, a reliable internet connection, and a device to access the book.",
+      "expected_output": "Have tools means to have any instrument or simple piece of equipment that you hold in your hands and use to do a particular kind of work.\nTo learn must have the right book, to work efficiently one must have tools.",
+      "question_values": [
+        "To learn must have the right book, to work efficiently what must one have?",
+        "improve yourself",
+        "become knowledgeable",
+        "have tools",
+        "persistence",
+        "have more knowledge",
+        "have tools"
+      ],
+      "processing_time": 1.573751449584961,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nWhere are humans kept in large amounts in small spaces?\n\nAnswer choices:\nsolar system, school, prison, apartment building, bus\n\nCorrect answer:\napartment building\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "Humans are typically kept in large amounts in small spaces in apartment buildings due to the physical constraints of the space.",
+      "expected_output": "Apartment buildings are a block of apartments.\nApartment buildings are highly populated because of more number of apartments.",
+      "question_values": [
+        "Where are humans kept in large amounts in small spaces?",
+        "solar system",
+        "school",
+        "prison",
+        "apartment building",
+        "bus",
+        "apartment building"
+      ],
+      "processing_time": 0.4032289981842041,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nHe had a hard time finding the room on his schedule, it was on the second floor and he got lost in the very large what?\n\nAnswer choices:\nschool, office building, house, hotel, centre\n\nCorrect answer:\nschool\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The correct answer is \"school\" because the question states that the person had a hard time finding the room on his schedule, which implies that the room is located in a building or establishment that is typically associated with education, such as a school.",
+      "expected_output": "Classrooms are there in a school.\nRoom on schedule is found in a large school.",
+      "question_values": [
+        "He had a hard time finding the room on his schedule, it was on the second floor and he got lost in the very large what?",
+        "school",
+        "office building",
+        "house",
+        "hotel",
+        "centre",
+        "school"
+      ],
+      "processing_time": 0.8383200168609619,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a question, answer choices, and the correct answer.\n\nQuestion:\nThe man and the woman chipped the wood for their garden and then did what to it?\n\nAnswer choices:\nwarp, sanded, composted, petrify, feel rough\n\nCorrect answer:\ncomposted\n\nJustify in a simple, atomic sentence why this answer choice is correct.",
+      "response": "The man and the woman chipped the wood for their garden, and then composted it. \n\nComposting is a natural process that breaks down organic materials, such as wood, into a nutrient-rich soil amendment. In this case, the wood was likely being chipped, which is a mechanical process that breaks down the wood into smaller pieces. Composting is a natural and environmentally friendly way to recycle organic materials, and it is a key step in creating a healthy and fertile garden soil.",
+      "expected_output": "The man and the woman chipped the wood for their garden and then composted it.",
+      "question_values": [
+        "The man and the woman chipped the wood for their garden and then did what to it?",
+        "warp",
+        "sanded",
+        "composted",
+        "petrify",
+        "feel rough",
+        "composted"
+      ],
+      "processing_time": 1.638951301574707,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "Death means end of life which is very scary\nOne can get back from consussion but not from death",
+    "States are a part of USA\nRepublic have states",
+    "Army is an organised military force equipped for fighting on land.\nJames wasn't much of a leader, because he had nothing to lead. And a leader without something to lead, no matter how skilled, is useless. James need army.",
+    "Musicals is a type of play.\nPeople sing songs in musical play.",
+    "A natural starting fire from lighting is a disaster.\nThe governor declared the lighting raged on for the second week from natural starting fire to be the biggest disaster he had seen.",
+    "Practice is required in every big game.\nIf they had a theory of practice than only they would over and over practice.",
+    "Letter is to be written on a paper.\nYou need to have paper to write a letter.",
+    "Breakfast is important as it give energy for the day.",
+    "Grocery stores have nowadays stopped giving plastic bags\nPlastic shopping bags were most common to find at a grocery store",
+    "Excitement is a strong feeling of happiness.\nDoing what one likes makes one happy.",
+    "Desk drawer is a slidable storage place under a table.\nTable is a furniture.\nOffice generally has furniture.",
+    "The storm was coming from caribbean.\nJohn was forced to delay his trip to caribbean as meteorologist said that a storm was coming.",
+    "Packed items are been kept in a suitcase.\nHe packed his toothpaste and brush in a small bag for keeping them into a suitcase and then stuffed them with his clothes.",
+    "Grocery store is a retail shop that primarily sells food, either fresh or preserved.\nThe crab was being shipped to be eaten, he was heading to grocery store.",
+    "A divorce happens after a husband and wife decide they no longer want to be married.\nSpouse is person in a marriage relationship.\nThere will be no spouse after a divorce.",
+    "Winter season always means cold weather\nPeople usually feel cold during cold weather",
+    "Feeling of guilt means a feeling of worry or unhappiness that you have because you have done something wrong, such as causing harm to another person.\nIf you started killing people for no reason, you are likely to lack feelings of guilt.",
+    "Bank account is personal account of a person\nBank account can have money",
+    "A trash can is typically found in corner of the city.",
+    "You would get a washcloth at Walmart.\nWalmart is a place where you can go and buy a washcloth.",
+    "Engine is one of the most prefferd mode of transportation\nEngines have rods in them as they are heavily made of metals",
+    "Money is a current medium of exchange in the form of coins and banknotes. Money is anything that people use to buy goods and services.\nShe was a human in America who wanted to live well and she need money for the situation.",
+    "Advantageous means favourable.\nLuck means fortunate.\nFortunate moments change bad moves into advantageous positions.",
+    "Ranch is a large farm, where cattle or other animals are bred.\nWe would be most likely to see a cow in a ranch.",
+    "Hand is the end of an arm of the body.\nArm is a body part.",
+    "All animals drink water to hydrate themselves.\nWater is a fluid.",
+    "library contains a lots of books having texts written in it.\nSomeone finds a huge amount of texts in a library.",
+    "Transporting means to take or carry people or goods from one place to another by means of a vehicle, aircraft, or ship.\nThe process of going somewhere means people going from one place to another by means of a vehicle, aircraft, or ship.",
+    "Distress is extreme anxiety, sorrow or pain.\nNegative emotions or feelings can learning cause is Distress.",
+    "Suburb is an outlying district of a city.\nHouses in the outlying district has more space than the houses in the city.\nHaving more space around a house means one can have a back yard.",
+    "Realization is an act of becoming fully aware of something as a fact.\nWe become fully aware of something as a fact when we get new information.",
+    "Kooky means strange or eccentric.\nNormal means confirming to a standard, usual, typical or expected.\nAll the kooky kids enjoyed each other's company, to them their behaviour was perfectly normal.",
+    "Countryside has ponds\nCountryside does not have many people living there\nPonds in countryside have no one near them as people do not live there",
+    "Perosn shop the food when he need the food.\nShopping is the activity that person do to get food.",
+    "A boxer can achieve victory with help of a reaching advantage.",
+    "Being complimentary and making trivial physical contact are signs of flirting\nPeople flirt with someone when they intend to get laid with that someone",
+    "Productive means producing or able to produce large amounts of goods, crops or other commodities.\nThe man in the white suit was very lazy. He did nothing useful. Meanwhile, the man in the blue had put in effort and was very productive.",
+    "Ferret legging is game where contestants take live ferrets and shove them down their trouser.\nFerret crawl up trouser leg in ferret legging.",
+    "Supermarket has cashiers\nWorkers in a supermarket spend most of their time standing up\nWorkers of a supermarket do not get any rest\nSupermarket is a building",
+    "Reception desk is there at a hotel\nPerson telling that he is having a reservation means it is reservation of a room of hotel.",
+    "You can see snakes in a terrarium.\nTerrarium is at a public zoological park.",
+    "Nightclub is an entertainment venue which is open throughout the night.\nEntertainment venues generally have bars.",
+    "A philosophy is radical.\nSomeone's belief in philosophy is extreme radical and not slight.",
+    "Lizards find their food by their own\nLizards who are kept captive are fed by its people",
+    "Few species of animals make hole in ground.\nSome animals live under the ground. They make hole unto the ground to live in it.",
+    "Cats run away from animal control\nCats can decide to run away\nRunning away refers to going far away",
+    "People feel betrayed and disrespected when they are stood up on a date\nFeeling bitterness at having been treated unfairly means feeling resentful",
+    "Only the best which means highest quality player would come on top in the board game.",
+    "The U.S. federal government houses in the capitol building.\nThe capitol building is located in washington d.c.",
+    "Jogging is the exercise of running at a steady and gentle pace.\nOne might feel pride after achieving goals of exercise to keep fit.\nPride is a positive feeling.",
+    "Market is a place where various things are sold.\nFood is sold in a market.\nPeople buy what they want from market.",
+    "Synagogue is a place of worship\nJews pray in a Synagogue",
+    "Trouble means difficulty or problems.\nA corrupt government causes difficulties and problems to it's people.",
+    "Gardners are said to be experts in growing plants\nPeople who have a knack for growing plants well are said to have a green thumb",
+    "Seaweeds are there in ocean",
+    "A substation has several cables\nSubstation is a place\nSubstation regulates power",
+    "A rotor can be powered by a jet engine.\nJet engine has electric motor fitted in whih helps to power up the rotor.",
+    "Supermarket have variety of food for sale so people can get food from supermarket.",
+    "Dishwasher is a machine for washing dishes automatically.\nYou will have to clean up a dishwasher after a party.",
+    "An incharge is asked for placement of flowers.\nServant may be the incharge at the wedding.",
+    "Winning is the aim of compititive people as they always aim at winning\nWin can be a goal of playing for many",
+    "Casino is a large building which has bar and gambling games.\nBar sells beer.",
+    "Our house is our personal property.\nA personal washing machine is likely to be found in a house.",
+    "In universe, the world is known to be a part of it.",
+    "The weasel look for it in backyards while it was sifting through garbage.",
+    "You will feel relax by remembering memoreies.\nIf you sit back and think about nice memories you will be able to feel relax.",
+    "University is a type of college.\nScience is learnt at university.",
+    "Winch is made of a strong steel cable.\nYou want strong steel cable in your winch if you're going to be off road driving.",
+    "Breakfast is important meal of the day as it gives you energy and removes your dullness.\nBreakfast can turn your day a better one.",
+    "Footrpints on rugs can be seen only when foot left behind the dirt on rug.\nPeple walk on rug usually.",
+    "A landfill is an area of land where large amounts of waste material are buried.",
+    "Armchair is a large furniture used to sit and relax.\nFurniture is sold in a furniture store.",
+    "Telephone directory is kept in a phone booth\nPhone booths are present at public places.",
+    "Someone committing perjury is likely to have guilt and regret for not being truthful in a court of law.",
+    "Artist create art to express themselves.",
+    "War leads to the death.\nThe end result of waging war can be people dying.",
+    "Closed room is a protected space enclosed by walls, floors and ceiling with the doors and windows closed.\nBob's only light source was a small bulb.  There were four walls, if there was a door, he couldn't see it. Bob was in closed room.",
+    "People tend to go to extreme heights when they are desperate\nCommiting crimes is an extremity some people go to, to get money",
+    "Sunscreen makes people resistant to sunlight.\nSunscreen is a good resistant for the one who is sensitive to sunlight.",
+    "Men have pockets\nChange can be put in the pocket\nThings can be used soon from the pocket",
+    "People who are not religious, often believe that all the stories about god are fairy tales\nThey tend to tell people stories about gods which they believe are fairy tales",
+    "Fertilizers have nutrients which are required by all parts of plant to grow.\nOnce the flower gets enough nutrients it blooms.",
+    "After standing up a person had to sit right back down because they would feel like to have balance.",
+    "Ungulate is a hoofed animal\nShooting at an ungulate is an overkill",
+    "An symphony orchestra has voilin\nOne can have a position on the symphony orchestra",
+    "Intoxication is a state of being affected by alcohol.\nIntoxication means losing control over body and mind.\nDrinking alcohol means getting drunk.",
+    "University is an institution of higher education and research, which awards academic degrees in various academic disciplines.\nThey prided themselves on being a wealth of knowledge, and that's why many chose to attend their university.",
+    "The purpose is for members of the community to do fun activities and relax.",
+    "If john moved, he would be killed hence he had",
+    "Pantry is a type of closet\nCanned goods can be kept in a pantry",
+    "Audience are present in a sporting event\nA sporting event could involve a ball\nA sporting event can be any game",
+    "Doing something you like makes you cheered and things interesting even though you are doing tideous thing.\nplaying music and singing your favourite song makes you cheered when driving",
+    "Bug campers can be built\nBug campers are campers that can repel annoying critters",
+    "People go grocery shopping when they are bored\nGrocery shopping leads to waste of time\nUnhealthy snacks are eaten on the way to the grocery shop\nGrocery shop is a store",
+    "Some are engrossed so much in playing games that they forget to drink water timely. This may result into dehydration.\nInternet caf\u00e9 is such a place where someone might play so much.",
+    "By having her specialized looking glasses and gown ready for the evening, lady sent her butler to the ticket office of opera house.",
+    "Have tools means to have any instrument or simple piece of equipment that you hold in your hands and use to do a particular kind of work.\nTo learn must have the right book, to work efficiently one must have tools.",
+    "Apartment buildings are a block of apartments.\nApartment buildings are highly populated because of more number of apartments.",
+    "Classrooms are there in a school.\nRoom on schedule is found in a large school.",
+    "The man and the woman chipped the wood for their garden and then composted it."
+  ],
+  "processing_stats": {
+    "total_time": 78.96095061302185,
+    "avg_time": 0.7896095061302185,
+    "min_time": 0.12577176094055176,
+    "max_time": 1.6764640808105469,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}
