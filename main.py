@@ -36,6 +36,7 @@ from evaluator_runner import EvaluationRunner
 from plotter import PlottingRunner
 from dataset_manager import DatasetManager
 from prompt_manager import PromptManager
+from finetune_manager import FinetuneManager
 
 # =============================================================================
 # INTELLIGENT ARGUMENT RESOLVER
@@ -1548,6 +1549,211 @@ def dataset_validate_command(args):
         return False
 
 # =============================================================================
+# FINETUNE COMMAND HANDLERS
+# =============================================================================
+
+def finetune_command(args):
+    """Run model finetuning using existing system infrastructure"""
+    logger.info("Starting model finetuning...")
+    
+    # Initialize finetune manager
+    try:
+        finetune_manager = FinetuneManager()
+    except Exception as e:
+        logger.error(f"Failed to initialize FinetuneManager: {e}")
+        return False
+    
+    if args.finetune_command == 'run':
+        return run_finetune_command(args, finetune_manager)
+    elif args.finetune_command == 'list':
+        return list_finetune_command(args, finetune_manager)
+    elif args.finetune_command == 'models':
+        return list_finetuned_models_command(args, finetune_manager)
+    else:
+        print("Unknown finetune subcommand. Use 'python main.py help' for help.")
+        return False
+
+def run_finetune_command(args, finetune_manager):
+    """Run finetuning for a specific model and configuration"""
+    if not args.model:
+        logger.error("Model name is required for finetuning")
+        return False
+    
+    if not args.tune:
+        logger.error("Finetune configuration name is required")
+        return False
+    
+    # Validate model is local
+    try:
+        models_config = Config.load_models_config()
+        if args.model not in models_config:
+            logger.error(f"Unknown model: {args.model}")
+            logger.info(f"Available models: {list(models_config.keys())}")
+            return False
+        
+        model_config = models_config[args.model]
+        if model_config.get('type') != 'local':
+            logger.error(f"Can only finetune local models, but {args.model} is type: {model_config.get('type')}")
+            logger.info("Available local models:")
+            local_models = [name for name, config in models_config.items() if config.get('type') == 'local']
+            for model_name in local_models:
+                logger.info(f"  - {model_name}")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Error loading models configuration: {e}")
+        return False
+    
+    # Show pre-training information
+    logger.info(f"Preparing to finetune model: {args.model}")
+    logger.info(f"Using finetune configuration: {args.tune}")
+    if args.max_samples:
+        logger.info(f"Limiting to {args.max_samples} training samples")
+    
+    # Get training info for confirmation
+    try:
+        finetune_configs = finetune_manager.list_finetune_configurations()
+        if args.tune not in finetune_configs:
+            logger.error(f"Unknown finetune configuration: {args.tune}")
+            logger.info(f"Available configurations: {list(finetune_configs.keys())}")
+            return False
+        
+        config_info = finetune_configs[args.tune]
+        logger.info(f"Configuration details:")
+        logger.info(f"  Setup: {config_info['setup']}")
+        logger.info(f"  Prompt: {config_info['prompt']}")
+        logger.info(f"  Description: {config_info['description']}")
+        
+        training_config = config_info.get('training_config', {})
+        max_samples = training_config.get('max_samples', 'unlimited')
+        if args.max_samples and max_samples != 'unlimited':
+            effective_max = min(args.max_samples, max_samples)
+            logger.info(f"  Max samples: {effective_max} (limited by --max-samples)")
+        else:
+            logger.info(f"  Max samples: {args.max_samples or max_samples}")
+        
+    except Exception as e:
+        logger.error(f"Error getting finetune configuration: {e}")
+        return False
+    
+    # Ask for confirmation unless forced
+    if not args.force:
+        print(f"\nAbout to start finetuning. This will:")
+        print(f"  - Load and prepare training data from '{config_info['setup']}' setup")
+        print(f"  - Train model '{args.model}' using '{args.tune}' configuration")
+        print(f"  - Save finetuned model to ./finetuned_models/")
+        print(f"  - Register the model for use in experiments")
+        print(f"\nThis process may take 30 minutes to several hours depending on your hardware.")
+        
+        response = input("\nProceed with finetuning? (y/N): ")
+        if response.lower() != 'y':
+            print("Cancelled by user")
+            return False
+    
+    # Run finetuning
+    try:
+        success = finetune_manager.run_finetune(args.model, args.tune, args.max_samples)
+        
+        if success:
+            finetuned_model_name = f"{args.model}_ft_{args.tune}"
+            logger.info("=" * 60)
+            logger.info("FINETUNING COMPLETED SUCCESSFULLY")
+            logger.info(f"Finetuned model name: {finetuned_model_name}")
+            logger.info("The model has been registered and is ready for use in experiments.")
+            logger.info(f"Example usage:")
+            logger.info(f"  python main.py run-experiment --model {finetuned_model_name} --setup {config_info['setup']}")
+            logger.info("=" * 60)
+            return True
+        else:
+            logger.error("Finetuning failed")
+            return False
+            
+    except Exception as e:
+        logger.error(f"Error during finetuning: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return False
+
+def list_finetune_command(args, finetune_manager):
+    """List all available finetune configurations"""
+    logger.info("Listing available finetune configurations...")
+    
+    try:
+        configurations = finetune_manager.list_finetune_configurations()
+        
+        if not configurations:
+            print("No finetune configurations found.")
+            print("Check that configs/finetunes.json exists and contains valid configurations.")
+            return True
+        
+        print(f"\n=== AVAILABLE FINETUNE CONFIGURATIONS ({len(configurations)}) ===")
+        
+        for tune_name, config in configurations.items():
+            print(f"\n{tune_name}:")
+            print(f"  Description: {config['description']}")
+            print(f"  Setup: {config['setup']}")
+            print(f"  Prompt: {config['prompt']}")
+            
+            if args.details:
+                training_config = config.get('training_config', {})
+                hyperparams = config.get('hyperparameters', {})
+                
+                print(f"  Training Configuration:")
+                print(f"    Max samples: {training_config.get('max_samples', 'unlimited')}")
+                print(f"    Train/test split: {training_config.get('train_test_split', 0.8)}")
+                print(f"    Validation split: {training_config.get('validation_split', 0.1)}")
+                
+                print(f"  Hyperparameters:")
+                print(f"    Learning rate: {hyperparams.get('learning_rate', 'default')}")
+                print(f"    Epochs: {hyperparams.get('num_epochs', 'default')}")
+                print(f"    Batch size: {hyperparams.get('batch_size', 'default')}")
+                print(f"    LoRA rank: {hyperparams.get('lora_r', 'default')}")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error listing finetune configurations: {e}")
+        return False
+
+def list_finetuned_models_command(args, finetune_manager):
+    """List all finetuned models in the system"""
+    logger.info("Listing finetuned models...")
+    
+    try:
+        finetuned_models = finetune_manager.list_finetuned_models()
+        
+        if not finetuned_models:
+            print("No finetuned models found.")
+            print("Use 'python main.py finetune run' to create finetuned models.")
+            return True
+        
+        print(f"\n=== FINETUNED MODELS ({len(finetuned_models)}) ===")
+        
+        for model_name, info in finetuned_models.items():
+            print(f"\n{model_name}:")
+            print(f"  Description: {info['description']}")
+            print(f"  Base Model: {info['base_model']}")
+            print(f"  Tune Configuration: {info['tune_name']}")
+            print(f"  Model Path: {info['model_path']}")
+            
+            training_info = info.get('training_info', {})
+            if training_info:
+                print(f"  Training Details:")
+                print(f"    Setup: {training_info.get('setup_name')}")
+                print(f"    Prompt: {training_info.get('prompt_name')}")
+                print(f"    Train samples: {training_info.get('train_size')}")
+                print(f"    Validation samples: {training_info.get('val_size')}")
+                print(f"    Timestamp: {training_info.get('timestamp', 'Unknown')}")
+        
+        print(f"\nUse these model names with 'python main.py run-experiment --model <model_name>'")
+        
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error listing finetuned models: {e}")
+        return False
+
+# =============================================================================
 # ENHANCED SYSTEM INFORMATION COMMANDS
 # =============================================================================
 
@@ -1781,67 +1987,81 @@ def list_commands_command():
     print("     • Mode filtering only uses prompts that support the specified mode")
     print("     • Multiple values supported: space-separated or comma-separated")
     
-    print("\n2. evaluate")
+    print("\n2. finetune")
+    print("   Description: Finetune local models using specified configurations")
+    print("   Subcommands:")
+    print("     run                      Run finetuning for a specific model and configuration")
+    print("     Arguments ( for run ):")
+    print("       --model MODEL_NAME       Name of the local model to finetune (required for 'run')")
+    print("       --tune TUNE_NAME         Name of the finetune configuration to use (required for 'run')")
+    print("       --max-samples N          Limit to N training samples (optional for 'run')")
+    print("      --force                  Skip confirmation prompt (optional for 'run')")
+    print("     list                     List all available finetune configurations")
+    print("     models                   List all finetuned models in the system")
+    
+
+
+    print("\n3. evaluate")
     print("   Description: Evaluate experiment results using various metrics")
     print("   Arguments:")
     print("     --experiment NAMES       Specific experiment(s) to evaluate (comma-separated)")
     
-    print("\n3. plot")
+    print("\n4. plot")
     print("   Description: Generate plots and visualizations from evaluation results")
     print("   Arguments:")
     print("     --experiment NAMES       Specific experiment(s) to plot (comma-separated)")
     print("     --compare               Generate comparison plots instead of individual")
     
-    print("\n4. show-prompt")
+    print("\n5. show-prompt")
     print("   Description: Display a populated prompt template with field path validation")
     print("   Arguments:")
     print("     --prompt PROMPT_NAME     Name of prompt template to show (required)")
     print("     --row ROW_NUMBER         Specific row number to use from dataset (0-based, optional)")
     print("                              If not specified, uses a random row")
     
-    print("\n5. validate-prompts")
+    print("\n6. validate-prompts")
     print("   Description: Validate prompt configurations and field path resolution")
     print("   Arguments:")
     print("     --prompt PROMPTS         Specific prompt(s) to validate (comma-separated, optional)")
     
-    print("\n6. list-prompts")
+    print("\n7. list-prompts")
     print("   Description: List available prompts with detailed information")
     print("   Arguments:")
     print("     --mode MODE              Filter by prompting mode (zero-shot or few-shot)")
     print("     --details                Show detailed field path and template information")
     
-    print("\n7. inspect-prompt")
+    print("\n8. inspect-prompt")
     print("   Description: Inspect a specific prompt's configuration and test field paths")
     print("   Arguments:")
     print("     --prompt PROMPT_NAME     Name of prompt to inspect (required)")
     
-    print("\n8. download-datasets")
+    print("\n9. download-datasets")
     print("   Description: Download specified datasets from configured sources")
     print("   Arguments:")
     print("     --setup SETUPS           Setup(s) to download (space-separated or 'all')")
     
-    print("\n9. dataset")
+    print("\n10. dataset")
     print("   Description: Dataset management and information commands")
     print("   Subcommands:")
     print("     list                     List all configured datasets with details")
     print("     status                   Show download status summary")
     print("     validate                 Validate field structure of downloaded datasets")
     
-    print("\n10. cleanup")
+    print("\n11. cleanup")
     print("   Description: Clean up system files and directories")
     print("   Arguments:")
     print("     --target TARGETS         What to clean: datasets, logs, results, cache, finetuned, all")
     print("     --dry-run               Show what would be cleaned without actually cleaning")
     
-    print("\n11. list-options")
+    print("\n12. list-options")
     print("   Description: List available models, setups, prompts with download status")
     print("   Arguments: None")
     
-    print("\n12. list-commands / help / show-commands")
+    print("\n13. list-commands / help / show-commands")
     print("   Description: Show this help message with all commands and their arguments")
     print("   Arguments: None")
     
-    print("\n13. status")
+    print("\n14. status")
     print("   Description: Check system status including datasets, configurations, and API keys")
     print("   Arguments: None")
     
@@ -1957,7 +2177,7 @@ def main():
     show_prompt_parser.add_argument('--row', type=int,
                                    help='Specific row number to use from dataset (0-based, uses random if not specified)')
     
-    # NEW: Prompt validation commands
+    # Prompt validation commands
     validate_prompt_parser = subparsers.add_parser('validate-prompts', 
                                                    help='Validate prompt configurations and field paths')
     validate_prompt_parser.add_argument('--prompt', type=str,
@@ -1995,7 +2215,22 @@ def main():
                                help='What to clean: datasets, logs, results, cache, finetuned, all')
     cleanup_parser.add_argument('--dry-run', action='store_true',
                                help='Show what would be cleaned without actually cleaning')
-    
+
+    # Finetune command
+    finetune_parser = subparsers.add_parser('finetune', help='Finetune local models using specified configurations')
+    finetune_subparsers = finetune_parser.add_subparsers(dest='finetune_command', help='Finetune subcommands')
+    finetune_run_parser = finetune_subparsers.add_parser('run', help='Run finetuning for a specific model and configuration')
+    finetune_run_parser.add_argument('--model', type=str, required=True,
+                                    help='Name of the local model to finetune (required)')
+    finetune_run_parser.add_argument('--tune', type=str, required=True,
+                                    help='Name of the finetune configuration to use (required)')
+    finetune_run_parser.add_argument('--max-samples', type=int,
+                                    help='Limit to N training samples (optional)')
+    finetune_run_parser.add_argument('--force', action='store_true',
+                                    help='Skip confirmation prompt (optional)')
+    finetune_subparsers.add_parser('list', help='List all available finetune configurations')
+    finetune_subparsers.add_parser('models', help='List all finetuned models in the system')
+        
     # Utility commands
     list_parser = subparsers.add_parser('list-options', help='List available models, setups, and prompts')
     list_commands_parser = subparsers.add_parser('list-commands', help='List all available commands and their arguments')
@@ -2014,6 +2249,8 @@ def main():
     try:
         if args.command == 'run-experiment':
             success = run_experiment_command(args)
+        elif args.command == 'finetune':
+            success = finetune_command(args)
         elif args.command == 'evaluate':
             success = evaluate_command(args)
         elif args.command == 'plot':

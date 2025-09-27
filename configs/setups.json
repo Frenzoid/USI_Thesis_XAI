@@ -1,5 +1,5 @@
 {
-  "gmeg_paper": {
+  "gmeg": {
     "description": "LLM explanation generation benchmark based on Grammarly's My Edit Graph (GMEG) dataset, which includes human-annotated explanations for text revisions.",
     "dataset": {
       "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
@@ -19,12 +19,16 @@
     }
   },
   "gmeg_ours": {
-    "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
-    "download_path": "DS_GMEG_EXP",
-    "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv",
-    "question_fields": ["original", "revised"],
-    "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable",
     "description": "A Dataset of Human and LLM-Generated Explanations of Grammatical and Fluency Edits",
+    "dataset": {
+      "download_link": "https://github.com/grammarly/gmeg-exp/archive/refs/heads/main.zip",
+      "download_path": "DS_GMEG_EXP",
+      "csv_file": "gmeg-exp-main/data/3_annotated_data/full-scale_data/full_scale_annotated_full.csv"
+    },
+    "prompt_fields": {
+      "question_fields": ["original", "revised"],
+      "answer_field": "please_explain_the_revisions_write_na_if_not_annotatable"
+    },
     "prune_row": {
       "please_explain_the_revisions_write_na_if_not_annotatable": [""]
     },

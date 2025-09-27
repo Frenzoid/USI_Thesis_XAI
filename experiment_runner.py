@@ -208,6 +208,10 @@ class ExperimentRunner:
             file_path = dataset_config['csv_file']
         elif 'parquet_file' in dataset_config:
             file_path = dataset_config['parquet_file']
+        elif 'json_file' in dataset_config:
+            file_path = dataset_config['json_file']
+        elif 'jsonl_file' in dataset_config:
+            file_path = dataset_config['jsonl_file']
         else:
             raise ValueError(f"Setup '{setup_name}' dataset config must specify either 'csv_file' or 'parquet_file'")
         

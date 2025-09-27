@@ -1,0 +1,133 @@
+{
+    "gmeg_explanation_ft": {
+      "description": "Finetune model to generate grammar revision explanations following human annotator patterns",
+      "setup": "gmeg",
+      "prompt": "gmeg_explaination",
+      "hyperparameters": {
+        "learning_rate": 2e-4,
+        "num_epochs": 3,
+        "batch_size": 4,
+        "gradient_accumulation_steps": 4,
+        "max_seq_length": 512,
+        "warmup_steps": 100,
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.1
+      },
+      "training_config": {
+        "max_samples": 1000,
+        "train_test_split": 0.8,
+        "validation_split": 0.1
+      }
+    },
+    
+    "cose_explanation_ft": {
+      "description": "Finetune model to generate explanations for commonsense reasoning questions",
+      "setup": "RHAI_cose_explanation",
+      "prompt": "cose_explanation",
+      "hyperparameters": {
+        "learning_rate": 1e-4,
+        "num_epochs": 2,
+        "batch_size": 4,
+        "gradient_accumulation_steps": 4,
+        "max_seq_length": 512,
+        "warmup_steps": 50,
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.1
+      },
+      "training_config": {
+        "max_samples": 500,
+        "train_test_split": 0.8,
+        "validation_split": 0.1
+      }
+    },
+  
+    "ecqa_positive_ft": {
+      "description": "Finetune model to generate positive properties explaining correct answers",
+      "setup": "ecqa_positive",
+      "prompt": "ecqa_positive_explanation",
+      "hyperparameters": {
+        "learning_rate": 2e-4,
+        "num_epochs": 3,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 8,
+        "max_seq_length": 768,
+        "warmup_steps": 100,
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.1
+      },
+      "training_config": {
+        "max_samples": 2000,
+        "train_test_split": 0.85,
+        "validation_split": 0.1
+      }
+    },
+  
+    "ecqa_negative_ft": {
+      "description": "Finetune model to generate negative properties explaining why incorrect choices are wrong",
+      "setup": "ecqa_negative",
+      "prompt": "ecqa_negative_explanation",
+      "hyperparameters": {
+        "learning_rate": 2e-4,
+        "num_epochs": 3,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 8,
+        "max_seq_length": 768,
+        "warmup_steps": 100,
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.1
+      },
+      "training_config": {
+        "max_samples": 2000,
+        "train_test_split": 0.85,
+        "validation_split": 0.1
+      }
+    },
+  
+    "ecqa_freeflow_ft": {
+      "description": "Finetune model to generate comprehensive free-form explanations",
+      "setup": "ecqa_freeflow",
+      "prompt": "ecqa_freeflow_explanation",
+      "hyperparameters": {
+        "learning_rate": 1e-4,
+        "num_epochs": 2,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 8,
+        "max_seq_length": 1024,
+        "warmup_steps": 150,
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.1
+      },
+      "training_config": {
+        "max_samples": 1500,
+        "train_test_split": 0.85,
+        "validation_split": 0.1
+      }
+    },
+  
+    "pubmedqa_reasoning_ft": {
+      "description": "Finetune model for medical reasoning without access to study conclusions",
+      "setup": "pubmedqa_reasoning_required",
+      "prompt": "pubmedqa_reasoning_required",
+      "hyperparameters": {
+        "learning_rate": 1e-4,
+        "num_epochs": 2,
+        "batch_size": 2,
+        "gradient_accumulation_steps": 8,
+        "max_seq_length": 1024,
+        "warmup_steps": 100,
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.1
+      },
+      "training_config": {
+        "max_samples": 800,
+        "train_test_split": 0.8,
+        "validation_split": 0.15
+      }
+    }
+  }

@@ -345,6 +345,10 @@ class PromptManager:
         
         question_field_paths = prompt_fields_config.get('question_fields', [])
         answer_field_path = prompt_fields_config.get('answer_field', '')
+
+        if not question_field_paths or answer_field_path is None:
+            raise ValueError(f"Setup '{setup_name}' missing required question_fields or answer_field configuration")
+
         
         all_field_paths = question_field_paths + ([answer_field_path] if answer_field_path else [])
         
@@ -479,7 +483,7 @@ class PromptManager:
         setup_name = prompt_config.get('compatible_setup', '')
         
         if not setup_name or setup_name not in self.setups_config:
-            return {'error': f"Prompt '{prompt_name}' has invalid or missing compatible_setup"}
+            raise ValueError(f"Prompt '{prompt_name}' has invalid or missing compatible_setup")
         
         setup_config = self.setups_config[setup_name]
         prompt_fields_config = setup_config.get('prompt_fields', {})
