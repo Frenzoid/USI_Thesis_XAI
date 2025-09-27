@@ -1,0 +1,1398 @@
+{
+  "experiment_name": "gmeg_ours__hf-mistral-nemo-12b__zero-shot__gmeg_basic__100__0p100",
+  "experiment_config": {
+    "model": "hf-mistral-nemo-12b",
+    "setup": "gmeg_ours",
+    "prompt": "gmeg_basic",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-27T17:45:05.156490",
+  "dataset_info": {
+    "name": "gmeg_ours",
+    "original_size": 2536,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 2536,
+    "sampled_size": 100,
+    "columns": [
+      "_unit_id",
+      "_created_at",
+      "_id",
+      "_started_at",
+      "_tainted",
+      "_channel",
+      "_trust",
+      "_worker_id",
+      "_country",
+      "_region",
+      "_city",
+      "_ip",
+      "comments",
+      "describe_why_this_is_not_annotatable",
+      "not_annotatable",
+      "please_explain_the_revisions_write_na_if_not_annotatable",
+      "aligned",
+      "id",
+      "original",
+      "revised"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 2536,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "mistralai/Mistral-Nemo-Instruct-2407",
+    "description": "Mistral Nemo 12B parameter model with 128k context - Medium",
+    "parameters": "12B",
+    "size_category": "medium",
+    "max_tokens": 512,
+    "context_length": "128k",
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "generation_config": {
+      "temperature": 0.3,
+      "top_p": 0.8,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "prompt_info": {
+    "type": "gmeg_ours",
+    "mode": "zero-shot",
+    "compatible_setup": "gmeg_ours",
+    "template": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\n{}\n\nRevised Text:\n{}\n\n",
+    "description": "Basic correction explanation prompt"
+  },
+  "responses": [
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThat was not your advertisement had shown .\n\nRevised Text:\nThat was not what your advertisement had shown .\n\n",
+      "response": "- **Correction 1:** Replaced \"your advertisement had shown\" with \"what your advertisement had shown\"\n  - **Description:** Added \"what\" to clarify the object of \"shown\". The original sentence could be interpreted as \"your advertisement had shown not\", which is grammatically incorrect.",
+      "expected_output": "- \"What\" was inserted to link \"that\" and \"the advertisement had shown.\"",
+      "question_values": [
+        "That was not your advertisement had shown .",
+        "That was not what your advertisement had shown ."
+      ],
+      "processing_time": 2.233858823776245,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHad Tilly not gone into labour , Cotton and Topsy would have succeded in killing Castro .\n\nRevised Text:\nHad Tilly not gone into labor , Cotton and Topsy would have succeeded in killing Castro .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Corrected \"labour\" to \"labor\"**: In American English, \"labor\" is the preferred spelling for the noun meaning \"childbirth.\" In British English, it's \"labour.\" Since the text seems to be in American English, \"labor\" is the correct spelling here.\n- **Added a comma after \"labor\"**: This comma is necessary to separate the independent clause (\"Had Tilly not gone into labor\") from the dependent clause (\"Cotton and Topsy would have succeeded in killing Castro\"). This change improves the sentence's clarity and readability.",
+      "expected_output": "- The spelling of the word \"labor\" was corrected to conform to American English spelling.\r\n- A spelling error was corrected. The correct spelling is \"succeeded.\"",
+      "question_values": [
+        "Had Tilly not gone into labour , Cotton and Topsy would have succeded in killing Castro .",
+        "Had Tilly not gone into labor , Cotton and Topsy would have succeeded in killing Castro ."
+      ],
+      "processing_time": 4.722611665725708,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWe have n't asked for any special clothes so I would wear casual and comfortable clothes , although you can come well-dressed , if you feel better .\n\nRevised Text:\nWe have n't asked for any special clothes , so I would wear casual and comfortable clothes , although you can come well dressed if you feel that would be better .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"well-dressed\" to \"well dressed\"**: The correction removed the hyphen in \"well-dressed\", as \"well dressed\" is the correct phrasing without a hyphen.\n- **Added \"that\" after \"feel\"**: The phrase \"if you feel that would be better\" was added to complete the sentence and make it grammatically correct. The original text had \"if you feel better\", which is incomplete.",
+      "expected_output": "- Comma added before \"so\" to introduce new clause.\r\n- Unnecessary hyphen removed in \"well dressed.\" Unless it is before a noun, a compound adjective doesn't usually need a hyphen.\r\n- Unnecessary comma removed after \"well dressed.\"\r\n-NA",
+      "question_values": [
+        "We have n't asked for any special clothes so I would wear casual and comfortable clothes , although you can come well-dressed , if you feel better .",
+        "We have n't asked for any special clothes , so I would wear casual and comfortable clothes , although you can come well dressed if you feel that would be better ."
+      ],
+      "processing_time": 3.792161464691162,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nTake the 67 route and it will take you just in front of The Royal Hall .\n\nRevised Text:\nTake the 67 route , and it will take you right in front of The Royal Hall .\n\n",
+      "response": "- Added a comma after \"route\" to separate the independent clauses \"Take the 67 route\" and \"it will take you right in front of The Royal Hall\".\n- Changed \"just\" to \"right\" for clarity and to better convey the intended meaning of \"directly in front of\".",
+      "expected_output": "- A comma was inserted as the two phrases are complete and could be independent.\r\n- \"Just\" was replaced with \"right\" as it is more commonly used with the phrase \"in front of.\"",
+      "question_values": [
+        "Take the 67 route and it will take you just in front of The Royal Hall .",
+        "Take the 67 route , and it will take you right in front of The Royal Hall ."
+      ],
+      "processing_time": 2.2627055644989014,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI would like to travel in July because during that period I will be free from work , my current post finishes at the end of June but I will start another job at the beginning of August .\n\nRevised Text:\nI would like to travel in July because during that period I will be free from work . My current post finishes at the end of June , but I will start another job at the beginning of August .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"June\" in the first sentence**: This change improves readability by separating the independent clauses \"my current post finishes at the end of June\" and \"but I will start another job at the beginning of August\" with a comma and a coordinating conjunction (\"but\").",
+      "expected_output": "- The comma was changed to a period in order to separate two sentences. \"My\" was capitalized since it is at the beginning of a sentence.\r\n-  A comma was added after \"June\" because \"but\" is separating two independent clauses.",
+      "question_values": [
+        "I would like to travel in July because during that period I will be free from work , my current post finishes at the end of June but I will start another job at the beginning of August .",
+        "I would like to travel in July because during that period I will be free from work . My current post finishes at the end of June , but I will start another job at the beginning of August ."
+      ],
+      "processing_time": 2.520822286605835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI was very surprised , when I saw that singers are n't so sophisticated and self-confident as they are written in the newspapers .\n\nRevised Text:\nI was very surprised when I saw that singers are n't so sophisticated and self-confident as they are written about in the newspapers .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"surprised\"**: This is a punctuation correction to improve readability and clarify the sentence structure.\n  - Original: \"I was very surprised, when I saw...\"\n  - Revised: \"I was very surprised, when I saw...\"\n\n- **Changed \"written\" to \"written about\"**: This correction provides more clarity and specificity to the sentence. It makes it clear that singers are not written about in newspapers in the way the speaker expected.\n  - Original: \"...as they are written in the newspapers\"\n  - Revised: \"...as they are written about in the newspapers\"",
+      "expected_output": "- The comma before \"when\" was deleted \" because there is no comma when the dependent clause comes after the main clause.\r\n- The preposition \"about\" was added after the verb \"written\" because \"about\" carries the meaning of \"on the subject of.\"",
+      "question_values": [
+        "I was very surprised , when I saw that singers are n't so sophisticated and self-confident as they are written in the newspapers .",
+        "I was very surprised when I saw that singers are n't so sophisticated and self-confident as they are written about in the newspapers ."
+      ],
+      "processing_time": 4.990037202835083,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI would be grateful if you could put me into the tent side of accomodation because I have had all holidays with my parents in luxury hotels before .\n\nRevised Text:\nI would be grateful if you could put me into the tent side of accommodation because I have had all vacations with my parents in luxury hotels .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Correction 1:** Changed \"holidays\" to \"vacations\"\n  - Description: The word \"holidays\" is more commonly used in British English, while \"vacations\" is more common in American English. The revised text uses \"vacations\" for consistency with American English.\n\n- **Correction 2:** Removed the extra \"e\" from \"accomodation\"\n  - Description: The word \"accommodation\" is misspelled in the original text. The revised text corrects the spelling by removing the extra \"e\".",
+      "expected_output": "- \"accommodation\" fixes a spelling error.\r\n- \"vacations\" is the American English term.",
+      "question_values": [
+        "I would be grateful if you could put me into the tent side of accomodation because I have had all holidays with my parents in luxury hotels before .",
+        "I would be grateful if you could put me into the tent side of accommodation because I have had all vacations with my parents in luxury hotels ."
+      ],
+      "processing_time": 4.736364364624023,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space seen most often after right hemisphere brain injury .\n\nRevised Text:\nHemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space , seen most often after right hemisphere brain injury .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added a comma after \"space\"**: The revised text adds a comma after \"space\" to separate the independent clauses \"is a deficit in attention to the left side of space\" and \"seen most often after right hemisphere brain injury\". This improves readability and clarity.\n  - Original: \"is a deficit in attention to the left side of space seen most often after right hemisphere brain injury\"\n  - Revised: \"is a deficit in attention to the left side of space, seen most often after right hemisphere brain injury\"",
+      "expected_output": "",
+      "question_values": [
+        "Hemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space seen most often after right hemisphere brain injury .",
+        "Hemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space , seen most often after right hemisphere brain injury ."
+      ],
+      "processing_time": 4.556710243225098,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBut this was also the moment when my nightmare started to come alive .\n\nRevised Text:\nBut , this was also the moment when my nightmare started to come alive .\n\n",
+      "response": "- Added a comma after \"But\" to separate the introductory phrase from the main clause.",
+      "expected_output": "",
+      "question_values": [
+        "But this was also the moment when my nightmare started to come alive .",
+        "But , this was also the moment when my nightmare started to come alive ."
+      ],
+      "processing_time": 0.6989057064056396,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nEven when precise maps are available , the length measurement is not always clear .\n\nRevised Text:\nEven when precise maps are available , the distance measurement is not always clear .\n\n",
+      "response": "- **Correction 1:** Replaced \"length\" with \"distance\"\n  - **Description:** The original text uses \"length\" which is more related to one-dimensional measurements, while \"distance\" is more appropriate for maps as it refers to the space between two points.",
+      "expected_output": "",
+      "question_values": [
+        "Even when precise maps are available , the length measurement is not always clear .",
+        "Even when precise maps are available , the distance measurement is not always clear ."
+      ],
+      "processing_time": 2.0790061950683594,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nEndless imagination and development of technology will lead us to future fashion .\n\nRevised Text:\nEndless imagination and the development of technology will lead us to future fashion .\n\n",
+      "response": "- Added \"the\" before \"development\" to specify which development is being referred to.",
+      "expected_output": "-The determiner is added to improve fluency.",
+      "question_values": [
+        "Endless imagination and development of technology will lead us to future fashion .",
+        "Endless imagination and the development of technology will lead us to future fashion ."
+      ],
+      "processing_time": 0.699002742767334,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn popular culture , including films such as Rosemary 's Baby , , The Exorcism of Emily Rose , The Devil Inside and The Omen , inverted crosses are often displayed to represent Satan .\n\nRevised Text:\nIn popular culture , including films such as Rosemary 's Baby , The Exorcism of Emily Rose , The Devil Inside , and The Omen , inverted crosses are often displayed to represent Satan .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- Added a comma after \"Emily Rose\":\n  - Original: \"The Exorcism of Emily Rose, The Devil Inside\"\n  - Revised: \"The Exorcism of Emily Rose, The Devil Inside, and The Omen\"\n  - Description: A comma was added after \"Emily Rose\" to separate the three film titles properly.",
+      "expected_output": "- The extra comma was removed to avoid two consecutive commas.\r\n- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+      "question_values": [
+        "In popular culture , including films such as Rosemary 's Baby , , The Exorcism of Emily Rose , The Devil Inside and The Omen , inverted crosses are often displayed to represent Satan .",
+        "In popular culture , including films such as Rosemary 's Baby , The Exorcism of Emily Rose , The Devil Inside , and The Omen , inverted crosses are often displayed to represent Satan ."
+      ],
+      "processing_time": 2.956913709640503,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHe was also surgeon in chief of a division in the Fifteenth Army Corps and of the district of Memphis .\n\nRevised Text:\nHe was also surgeon-in-chief of a division in the Fifteenth Army Corps and of the district of Memphis .\n\n",
+      "response": "- **Correction 1:** Added a hyphen in \"surgeon-in-chief\"\n  - **Description:** The original text has \"surgeon in chief\" as two separate words, but it should be hyphenated as \"surgeon-in-chief\" to indicate that it's a compound adjective.",
+      "expected_output": "- The phrase \"surgeon-in-chief\" was hyphenated. In American English, many occupations are hyphenated to show that all the included words are related to the same job title.",
+      "question_values": [
+        "He was also surgeon in chief of a division in the Fifteenth Army Corps and of the district of Memphis .",
+        "He was also surgeon-in-chief of a division in the Fifteenth Army Corps and of the district of Memphis ."
+      ],
+      "processing_time": 2.262472152709961,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI would rather type some coursework up than hand-write it .\n\nRevised Text:\nI would rather type some coursework up than to hand-write it .\n\n",
+      "response": "- Added \"to\" after \"than\" to correct the sentence structure:\n  - Original: \"than hand-write it\"\n  - Revised: \"than to hand-write it\"",
+      "expected_output": "-The infinitive should not be used here but instead the verb conjugated for the first person singular.",
+      "question_values": [
+        "I would rather type some coursework up than hand-write it .",
+        "I would rather type some coursework up than to hand-write it ."
+      ],
+      "processing_time": 1.3881065845489502,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBut on July 17 , 1999 the band did the biggest concert to date , infront of a home crowed of 45,000 people at Lansdowne Road .\n\nRevised Text:\nBut on July 17 , 1999 , the band did the biggest concert to date , in front of a home crowd of 45,000 people at Lansdowne Road .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- Added a comma after \"1999\":\n  - Original: \"But on July 17, 1999\"\n  - Revised: \"But on July 17, 1999,\"\n\n- Replaced \"infront\" with \"in front of\":\n  - Original: \"infront of a home crowed\"\n  - Revised: \"in front of a home crowd\"\n\n- Capitalized \"Crowd\":\n  - Original: \"home crowed\"\n  - Revised: \"home crowd\"",
+      "expected_output": "-A comma is inserted because it is needed after an introductory phrase.\r\n-The correct spelling is \"in front.\"\r\n-The correct spelling is \"crowd.\"",
+      "question_values": [
+        "But on July 17 , 1999 the band did the biggest concert to date , infront of a home crowed of 45,000 people at Lansdowne Road .",
+        "But on July 17 , 1999 , the band did the biggest concert to date , in front of a home crowd of 45,000 people at Lansdowne Road ."
+      ],
+      "processing_time": 4.561947584152222,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI look to hearing from you soon .\n\nRevised Text:\nI look forward to hearing from you soon .\n\n",
+      "response": "- **Correction 1:** Changed \"hearing\" to \"hearing from\"\n  - Description: Added \"from\" to clarify the source of the communication expected.\n- **Correction 2:** Changed \"look to\" to \"look forward to\"\n  - Description: Replaced \"look to\" with \"look forward to\" to express anticipation more clearly.",
+      "expected_output": "- \"forward\" was added because of the high collocation with \"look.\" This edit increases the readability and fluency of the sentence.",
+      "question_values": [
+        "I look to hearing from you soon .",
+        "I look forward to hearing from you soon ."
+      ],
+      "processing_time": 2.7655985355377197,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn 2009 , Tenet pay $ 85 million USD in a class action settlement for not paying overtime after a change in California law entitled them to overtime .\n\nRevised Text:\nIn 2009 , Tenet paid $ 85 million USD in a class action settlement for not paying overtime after a change in California law .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions:\n\n- **Corrected:** \"Tenet pay\" to \"Tenet paid\"\n  - **Description:** Changed the verb tense from present to past, as the action happened in the past (2009).\n\n- **Corrected:** \"entitled them to overtime\" to \"entitled to overtime\"\n  - **Description:** Removed \"them\" as it was redundant and not necessary in this context. The sentence implies that Tenet was entitled to overtime, not \"them\" (an unspecified group).",
+      "expected_output": "- \"Pay\" was changed to \"paid\" to match the past tense implied by the prepositional phrase \"in 2009.\"\r\n- \"Entitled them to overtime\" was deleted to avoid redundancy and improve conciseness.",
+      "question_values": [
+        "In 2009 , Tenet pay $ 85 million USD in a class action settlement for not paying overtime after a change in California law entitled them to overtime .",
+        "In 2009 , Tenet paid $ 85 million USD in a class action settlement for not paying overtime after a change in California law ."
+      ],
+      "processing_time": 4.445104122161865,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nPost source decay is a process specific to MALDI ( LDI ) process where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) .\n\nRevised Text:\nPost source decay is a process specific to MALDI ( LDI ) , where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"MALDI ( LDI )\"**: This change improves readability by separating the parenthetical phrase from the rest of the sentence.\n  - Original: \"Post source decay is a process specific to MALDI ( LDI ) process where...\"\n  - Revised: \"Post source decay is a process specific to MALDI ( LDI ), where...\"\n\n- **Removed the extra space after the comma**: This is a minor formatting correction to ensure consistency in punctuation spacing.\n  - Original: \"Post source decay is a process specific to MALDI ( LDI ),  where...\"\n  - Revised: \"Post source decay is a process specific to MALDI ( LDI ), where...\"",
+      "expected_output": "",
+      "question_values": [
+        "Post source decay is a process specific to MALDI ( LDI ) process where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) .",
+        "Post source decay is a process specific to MALDI ( LDI ) , where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) ."
+      ],
+      "processing_time": 5.791647672653198,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBut to solve this problem , we may think first about its origin ...\n\nRevised Text:\nBut to solve this problem , we should think first about its origin .\n\n",
+      "response": "- Changed \"may think\" to \"should think\" to make the sentence more assertive and direct.",
+      "expected_output": "- NA\r\n- Unnecessary ellipsis replaced with single period.",
+      "question_values": [
+        "But to solve this problem , we may think first about its origin ...",
+        "But to solve this problem , we should think first about its origin ."
+      ],
+      "processing_time": 0.8079423904418945,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nMITs investigate cases of murder , manslaughter , attempted murder where the evidence of intent is unambiguous , or where a risk assesment identifies substantative risk to life .\n\nRevised Text:\nMIT investigates cases of murder , manslaughter , and attempted murder where the evidence of intent is unambiguous , or where a risk assessment identifies substantive risk to life .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Correction 1:** \"MITs\" to \"MIT\"\n  - Description: Changed the plural form of \"MIT\" (Major Incident Team) to its singular form, as it's referring to a single team.\n\n- **Correction 2:** Added \"and\" after \"manslaughter\"\n  - Description: Added a conjunction to improve the flow and clarity of the list of cases investigated by MIT.\n\n- **Correction 3:** \"assesment\" to \"assessment\"\n  - Description: Corrected the spelling of \"assessment\" to ensure accurate representation of the term used in risk management.",
+      "expected_output": "- An \"and\" was added to adhere to the correct grammar for lists.\r\n- \"assessment\" is the correct spelling.\r\n- \"substantive\" is the correct spelling.",
+      "question_values": [
+        "MITs investigate cases of murder , manslaughter , attempted murder where the evidence of intent is unambiguous , or where a risk assesment identifies substantative risk to life .",
+        "MIT investigates cases of murder , manslaughter , and attempted murder where the evidence of intent is unambiguous , or where a risk assessment identifies substantive risk to life ."
+      ],
+      "processing_time": 5.247320890426636,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nMendel Palace , originally released in Japan as , is a 1989 action / puzzle arcade game developed by KID and published by Namco .\n\nRevised Text:\n\" Mendel Palace , \" originally released in Japan as \"Quinty , \" is a 1989 action / puzzle arcade game developed by KID and published by Namco .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- Added quotation marks around \"Mendel Palace\":\n  - Original: Mendel Palace\n  - Revised: \"Mendel Palace\"\n  - Description: Added quotation marks to indicate the title of the game.\n\n- Added quotation marks around \"Quinty\":\n  - Original: originally released in Japan as\n  - Revised: originally released in Japan as \"Quinty\"\n  - Description: Added quotation marks to indicate the Japanese title of the game.",
+      "expected_output": "-These quotation marks are added because what is within them is the title of something.\r\n-These quotation marks are added because what is within them is the title of something.",
+      "question_values": [
+        "Mendel Palace , originally released in Japan as , is a 1989 action / puzzle arcade game developed by KID and published by Namco .",
+        "\" Mendel Palace , \" originally released in Japan as \"Quinty , \" is a 1989 action / puzzle arcade game developed by KID and published by Namco ."
+      ],
+      "processing_time": 4.157244920730591,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWhen the Los Alamos lab was first being organised a descision was made by Oppenheimer to not compartmentalize the technical information among different departments .\n\nRevised Text:\nWhen the Los Alamos lab was first being organized , a decision was made by Oppenheimer to not compartmentalize the technical information among different departments .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Correction 1:** \"organised\" to \"organized\"\n  - Description: Changed the British spelling \"organised\" to the American spelling \"organized\".\n\n- **Correction 2:** Added a comma after \"organized\"\n  - Description: Added a comma after \"organized\" to improve readability and clarify the sentence structure.\n\nSo, the changes can be summarized as follows:\n\n- Changed \"organised\" to \"organized\"\n- Added a comma after \"organized\"",
+      "expected_output": "-\"Organised\" was substituted for \"organized\" to follow American English spelling conventions.\r\n-The correct spelling is \"decision.\"",
+      "question_values": [
+        "When the Los Alamos lab was first being organised a descision was made by Oppenheimer to not compartmentalize the technical information among different departments .",
+        "When the Los Alamos lab was first being organized , a decision was made by Oppenheimer to not compartmentalize the technical information among different departments ."
+      ],
+      "processing_time": 4.154838562011719,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAmong all these the theatre restaurant was closed , because the shef and the waiters where on holiday .\n\nRevised Text:\nAmong all these , the theater restaurant was closed because the chef and the waiters were on vacation .\n\n",
+      "response": "- **Correction 1:** \"theatre\" to \"theater\"\n  - Description: Changed British English spelling to American English spelling.\n- **Correction 2:** \"shef\" to \"chef\"\n  - Description: Corrected the spelling of \"chef\".\n- **Correction 3:** \"waiters where\" to \"waiters were\"\n  - Description: Changed \"where\" to \"were\" to correct the verb tense for plural subjects.",
+      "expected_output": "- A comma was added after the introductory phrase to improve the clarity of the sentence.\r\n- \"theater\" is the American English spelling of \"theatre.\"\r\n- A comma was removed before \"because\" since the subordinating clause comes after the main clause. A comma might be used if the sentence becomes ambiguous otherwise or if the subordinating clause provides an explanation for the content in the main clause.\r\n- \"shef\" is a misspelling of \"chef.\"\r\n- \"where\" is a misspelling of \"were.\"\r\n- \"vacation\" is preferred in American English over \"holiday.\"",
+      "question_values": [
+        "Among all these the theatre restaurant was closed , because the shef and the waiters where on holiday .",
+        "Among all these , the theater restaurant was closed because the chef and the waiters were on vacation ."
+      ],
+      "processing_time": 3.4978139400482178,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\n\" aired on TBS Superstation in the 1990s after it was cancelled , and was also added to the ABC Family Channel line-up in the late 1990s / early 2000s .\n\nRevised Text:\nIt aired on TBS Superstation in the 1990s after it was canceled and was also added to the ABC Family Channel lineup in the late 1990s / early 2000s .\n\n",
+      "response": "- **Correction 1:** Changed \"aired\" to \"It aired\"\n  - Description: Added \"It\" at the beginning of the sentence for better flow and clarity.\n- **Correction 2:** Changed \"cancelled\" to \"canceled\"\n  - Description: Corrected the spelling of \"cancelled\" to the more common American English spelling \"canceled\".\n- **Correction 3:** Changed \"line-up\" to \"lineup\"\n  - Description: Removed the hyphen in \"line-up\" to follow the more common spelling of \"lineup\".",
+      "expected_output": "- The quote was changed to \"It\" to create a complete clause.\r\n- \"Cancelled\" was changed to \"canceled\" to reflect the version used more often in American English.\r\n- \"Line-up\" was corrected to the standard \"lineup.\"",
+      "question_values": [
+        "\" aired on TBS Superstation in the 1990s after it was cancelled , and was also added to the ABC Family Channel line-up in the late 1990s / early 2000s .",
+        "It aired on TBS Superstation in the 1990s after it was canceled and was also added to the ABC Family Channel lineup in the late 1990s / early 2000s ."
+      ],
+      "processing_time": 4.377135992050171,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAlso , I belonged to golf club when I went to university in Japan .\n\nRevised Text:\nAlso , I belonged to a golf club when I was in university in Japan .\n\n",
+      "response": "- Added \"a\" before \"golf club\" to indicate a specific golf club.\n- Changed \"went to\" to \"was in\" for a more natural phrasing to describe the duration of time spent at university.",
+      "expected_output": "- An article was added because the noun it quantifies is a countable noun, which requires an article if it is singular, but it can be omitted if it is plural.",
+      "question_values": [
+        "Also , I belonged to golf club when I went to university in Japan .",
+        "Also , I belonged to a golf club when I was in university in Japan ."
+      ],
+      "processing_time": 1.6792967319488525,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWood 's name is inscribed in one of the base stones of The Sloat Monument erected at the Presidio in Monterey , California in commemoration of the US Navy 's Pacific Fleet taking posession of California in 1846 .\n\nRevised Text:\nWood 's name is inscribed in one of the base stones of The Sloat Monument , erected at the Presidio in Monterey , California , in commemoration of the US Navy 's Pacific Fleet taking possession of California in 1846 .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"Monument\"**: This comma is added to separate the independent clause \"The Sloat Monument is erected at the Presidio\" from the dependent clause \"in commemoration of the US Navy's Pacific Fleet taking possession of California in 1846\". This change improves the readability and clarity of the sentence.\n- **Changed \"taking posession\" to \"taking possession\"**: The correction involves adding an \"i\" to \"possession\". This change is necessary to correctly spell the word \"possession\".",
+      "expected_output": "- 'Possession' is the correct spelling of 'posession.'\r\n- A comma was inserted after 'California.' When a city and state combination is presented in the middle of a sentence, the state must be surrounded by commas.",
+      "question_values": [
+        "Wood 's name is inscribed in one of the base stones of The Sloat Monument erected at the Presidio in Monterey , California in commemoration of the US Navy 's Pacific Fleet taking posession of California in 1846 .",
+        "Wood 's name is inscribed in one of the base stones of The Sloat Monument , erected at the Presidio in Monterey , California , in commemoration of the US Navy 's Pacific Fleet taking possession of California in 1846 ."
+      ],
+      "processing_time": 4.487292289733887,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThere xere importants rugby matches in the Stadium .\n\nRevised Text:\nThere were important rugby matches in the Stadium .\n\n",
+      "response": "- **Correction:** \"xere\" to \"were\"\n  - **Description:** Changed the verb to agree with the plural subject \"matches\". \"There\" is used to introduce a statement about a situation or thing, and in this case, it's followed by a plural subject, so the verb should also be plural.",
+      "expected_output": "- Corrected misspellings of \"were\" and \"important.\"",
+      "question_values": [
+        "There xere importants rugby matches in the Stadium .",
+        "There were important rugby matches in the Stadium ."
+      ],
+      "processing_time": 2.4399468898773193,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nMax talked to her and took Lauren to get her ears peirced for accepting Bradley .\n\nRevised Text:\nMax talked to her and took Lauren to get her ears pierced for accepting Bradley .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Correction 1:** \"peirced\" to \"pierced\"\n  - Description: Changed the spelling of the word \"pierced\" to the correct form.",
+      "expected_output": "-This edit corrects the spelling to 'pierced.'",
+      "question_values": [
+        "Max talked to her and took Lauren to get her ears peirced for accepting Bradley .",
+        "Max talked to her and took Lauren to get her ears pierced for accepting Bradley ."
+      ],
+      "processing_time": 1.7165517807006836,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents and narco-armies since the country gain it 's independance from Great Britain .\n\nRevised Text:\nThe \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents , and narco-armies since the country gained its independence from Great Britain .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"dissidents\"**: This correction improves the readability and clarity of the sentence by separating the different groups that the Tatmadaw has been battling.\n- **Changed \"gain it's independance\" to \"gained its independence\"**: The original text has a possessive apostrophe (it's) instead of the contraction of \"have\" (its). This correction ensures the sentence accurately conveys that the country has achieved its independence.",
+      "expected_output": "-  A comma was introduced after 'dissidents' because commas must separate every time in a list in American English.\r\n- \"Gain\" was written in its past tense form because the event already occurred.\r\n- \"It's\" was changed to \"its\" to indicate possession as opposed to the contraction \"it is.\"",
+      "question_values": [
+        "The \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents and narco-armies since the country gain it 's independance from Great Britain .",
+        "The \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents , and narco-armies since the country gained its independence from Great Britain ."
+      ],
+      "processing_time": 3.9057230949401855,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI find shopping is the most time consuming .\n\nRevised Text:\nI find shopping to be the most time-consuming .\n\n",
+      "response": "- Added \"to be\" after \"find\" to form a correct sentence structure with the verb \"find\" and the -ing form \"shopping\".",
+      "expected_output": "-\"Is\" was changed to \"to be\" because that is the collocation that is often used in \"find + something + adjective\" form.\r\n-A hyphen is added to time consuming when we use the term \"time-consuming\" the adjective in a sentence.",
+      "question_values": [
+        "I find shopping is the most time consuming .",
+        "I find shopping to be the most time-consuming ."
+      ],
+      "processing_time": 1.1712405681610107,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAt first I felt really annoyed and disappointed so I run to my brother in order to explain him what I had seen .\n\nRevised Text:\nAt first I felt really annoyed and disappointed , so I ran to my brother to explain to him what I had seen .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Corrected \"I run\" to \"I ran\"**: Changed the verb tense from present to past, as the action happened in the past.\n- **Added a comma after \"disappointed\"**: This comma is necessary to separate the independent clauses \"I felt really annoyed and disappointed\" and \"so I ran to my brother\".\n- **Corrected \"in order to explain him\" to \"to explain to him\"**: The correct preposition to use here is \"to\", not \"in order to\". Additionally, \"him\" should be \"he\" to match the subject \"I\".",
+      "expected_output": "- A comma was inserted before \"so\" because \"so\" functions as a coordinating conjunction combining two independent clauses.\r\n-The verb tense was changed from present tense \"run\" to past tense \"ran\" to maintain the same verb tense throughout the sentence.\r\n- The phrase \"in order\" was deleted to maintain conciseness. \r\n- The preposition \"to\" was added because it is needed before the object \"him.\"",
+      "question_values": [
+        "At first I felt really annoyed and disappointed so I run to my brother in order to explain him what I had seen .",
+        "At first I felt really annoyed and disappointed , so I ran to my brother to explain to him what I had seen ."
+      ],
+      "processing_time": 4.915589809417725,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI would like to suggest a change in the programme by giving up shopping and going to the London Fashion and Leisure Show .\n\nRevised Text:\nI would like to suggest a change in the program by giving up shopping and going to the London Fashion and Leisure Show .\n\n",
+      "response": "- **Correction 1:** Changed \"programme\" to \"program\"\n  - Description: \"programme\" is a British English spelling, while \"program\" is more common in American English. The revised text uses the American English spelling for consistency.",
+      "expected_output": "-\"Programme\" is substituted for \"program\" to follow American English spelling conventions.",
+      "question_values": [
+        "I would like to suggest a change in the programme by giving up shopping and going to the London Fashion and Leisure Show .",
+        "I would like to suggest a change in the program by giving up shopping and going to the London Fashion and Leisure Show ."
+      ],
+      "processing_time": 1.9351897239685059,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nNow the only think I have to do is to go to computer room and turn on the computer .\n\nRevised Text:\nNow the only thing I have to do is to go to the computer room and turn on the computer .\n\n",
+      "response": "- \"think\" changed to \"thing\" (corrected spelling)\n- Added \"the\" before \"computer room\" (grammatical correction)",
+      "expected_output": "-The word that fits this context and is likely intended by the author is 'thing.'\r\n-Common nouns like 'computer room' require articles in English if they are singular, so 'the' is added.",
+      "question_values": [
+        "Now the only think I have to do is to go to computer room and turn on the computer .",
+        "Now the only thing I have to do is to go to the computer room and turn on the computer ."
+      ],
+      "processing_time": 1.1717891693115234,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn the winter you 'll freeze .\n\nRevised Text:\nIn the winter , you 'll freeze .\n\n",
+      "response": "- Added a comma after \"winter\" to separate the introductory phrase from the main clause.",
+      "expected_output": "",
+      "question_values": [
+        "In the winter you 'll freeze .",
+        "In the winter , you 'll freeze ."
+      ],
+      "processing_time": 0.7339346408843994,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAs with GI Joe , during the 60s , Action Man had a : Image : AMfootlockerLid.JPGwooden footlocker ( Kit locker box ) to store his accessories in .\n\nRevised Text:\nAs with GI Joe , during the 60s , Action Man had a wooden footlocker ( Kit locker box ) to store his accessories in .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Removal of extra space after the comma**: In the original text, there was an extra space after the comma following \"60s\". This has been removed in the revised text.\n  - Original: \"As with GI Joe, during the 60s, Action Man...\"\n  - Revised: \"As with GI Joe, during the 60s, Action Man...\"\n\n- **Removal of extra colon**: The original text had an extra colon after \"Image\". This has been removed in the revised text.\n  - Original: \"As with GI Joe, during the 60s, Action Man had a : Image : AMfootlockerLid.JPGwooden footlocker ( Kit locker box ) to store his accessories in.\"\n  - Revised: \"As with GI Joe, during the 60s, Action Man had a wooden footlocker ( Kit locker box ) to store his accessories in.\"",
+      "expected_output": "- The phrase is replaced with \"wooden\" to improve conciseness.",
+      "question_values": [
+        "As with GI Joe , during the 60s , Action Man had a : Image : AMfootlockerLid.JPGwooden footlocker ( Kit locker box ) to store his accessories in .",
+        "As with GI Joe , during the 60s , Action Man had a wooden footlocker ( Kit locker box ) to store his accessories in ."
+      ],
+      "processing_time": 7.5024659633636475,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThere are many historical buildings remain .\n\nRevised Text:\nThere are many historical buildings .\n\n",
+      "response": "- **Correction 1:** Removed \"remain\"\n  - **Description:** The word \"remain\" is not necessary in this context. The sentence is making a statement about the existence of many historical buildings, not their persistence or endurance.",
+      "expected_output": "- The verb \"remain\" is deleted because the sentence already has the auxiliary verb \"are.\" However, if \"remain\" refers to the noun \"remains,\" as in \"remains of historical buildings,\" then this revision is incorrect.",
+      "question_values": [
+        "There are many historical buildings remain .",
+        "There are many historical buildings ."
+      ],
+      "processing_time": 1.8949201107025146,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHe appears only in the sidestory Saint Seiya Lost Canvas not authored by Masami Kurumada , which status as canon is unknown ..\n\nRevised Text:\nHe appears only in the side story ,\" Saint Seiya : The Lost Canvas,\" not authored by Masami Kurumada , the status of which as canon is unknown .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added commas after \"story\" and \"Canvas\":**\n  - Original: \"He appears only in the sidestory Saint Seiya Lost Canvas\"\n  - Revised: \"He appears only in the side story, Saint Seiya : The Lost Canvas,\"\n  - Change: Added commas to improve readability and clarify the sentence structure.\n\n- **Added a colon after \"Canvas\":**\n  - Original: \"not authored by Masami Kurumada, which status as canon is unknown.\"\n  - Revised: \"not authored by Masami Kurumada, the status of which as canon is unknown.\"\n  - Change: Added a colon to introduce the independent clause that follows, improving the sentence's flow.\n\n- **Corrected \"status\" to \"status of\":**\n  - Original: \"which status as canon is unknown.\"\n  - Revised: \"the status of which as canon is unknown.\"\n  - Change: Corrected the phrasing to \"the status of which\" to make the sentence grammatically correct.",
+      "expected_output": "- \"Sidestory\" was separated to two words: \"side\" and \"story.\"\r\n- A comma and quotation mark was added on either end of the title name. Short story titles should be surrounded by quotation marks. The commas confirm that, while relevant, the story title is not mandatory to include. \r\n- The phrase \"which status\" was restructured to read \"the status of which.\" This change elevates the writing by improving flow and academic quality.\r\n- A pair of periods was reduced to just one period, as is normal.",
+      "question_values": [
+        "He appears only in the sidestory Saint Seiya Lost Canvas not authored by Masami Kurumada , which status as canon is unknown ..",
+        "He appears only in the side story ,\" Saint Seiya : The Lost Canvas,\" not authored by Masami Kurumada , the status of which as canon is unknown ."
+      ],
+      "processing_time": 8.555076599121094,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nTherefore we should try to educate ourselves so as to respect altrui in his privacy .\n\nRevised Text:\nTherefore , we should try to educate ourselves and respect everyone 's privacy .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added a comma after \"Therefore\"**: This is a minor punctuation correction to improve readability and clarity.\n- **Changed \"so as to\" to \"and\"**: The phrase \"so as to\" is often used to introduce an infinitive verb, but in this context, it's not necessary. Changing it to \"and\" simplifies the sentence structure.\n- **Added an apostrophe to \"everyone's\"**: This correction is to indicate possession, as \"everyone's\" is a contraction of \"everyone is\" or \"everyone has\".\n- **Changed \"altrui\" to \"privacy\"**: \"Altrui\" is not a standard English word. It's likely a misspelling or typo. The correct word here is \"privacy\".",
+      "expected_output": "- A comma was added after \"therefore\" as is typically required when it is at the beginning of a sentence.\r\n- \"So as to\" was changed to \"and\" to make the phrase more concise and improve fluency.",
+      "question_values": [
+        "Therefore we should try to educate ourselves so as to respect altrui in his privacy .",
+        "Therefore , we should try to educate ourselves and respect everyone 's privacy ."
+      ],
+      "processing_time": 6.520952939987183,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti & Somalia , where they made notable geographical explorations and natural history discoveries .\n\nRevised Text:\nThe Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti , & Somalia , where they made notable geographical explorations and natural history discoveries .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Correction 1:** Added a comma after \"Djibouti\"\n  - **Description:** In the original text, there was no comma after \"Djibouti\", which caused a slight pause to be missing before the conjunction \"and\". Adding a comma here improves the readability and flow of the sentence.\n\n- **Correction 2:** Removed the apostrophe from \"today's\"\n  - **Description:** In the original text, \"today's\" was written with an apostrophe, which is incorrect. \"Today's\" is a possessive form, and it should not have an apostrophe. The correct form is \"today's\".",
+      "expected_output": "-A comma was added before a conjunction joining two clauses.",
+      "question_values": [
+        "The Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti & Somalia , where they made notable geographical explorations and natural history discoveries .",
+        "The Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti , & Somalia , where they made notable geographical explorations and natural history discoveries ."
+      ],
+      "processing_time": 5.386925458908081,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nTo sum up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group .\n\nRevised Text:\nTo sum it up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Correction 1:** \"To sum up\" changed to \"To sum it up\"\n  - **Description:** Added \"it\" to make the sentence grammatically correct. The phrase \"to sum up\" means to give a final summary, and \"it\" refers to the topic that has been discussed.",
+      "expected_output": "-\"It\" is inserted because an object is needed for the verb \"to sum.\"",
+      "question_values": [
+        "To sum up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group .",
+        "To sum it up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group ."
+      ],
+      "processing_time": 2.7707583904266357,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn addition , it would be nice if you could send me an address which I am going to stay , so that I can keep in touch with my friends and family .\n\nRevised Text:\nIn addition , it would be nice if you could send me an address where I am going to stay , so that I can keep in touch with my friends and family .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Corrected \"which\" to \"where\"**: In the original text, \"which\" is used to introduce a relative clause that defines the noun \"address\". However, since \"address\" is the object of the preposition \"at\", it's more appropriate to use \"where\" instead of \"which\". This change makes the sentence grammatically correct and clearer.\n- **Added a comma after \"stay\"**: In the revised text, a comma is added after \"stay\" to separate the independent clause \"I am going to stay\" from the dependent clause that follows it. This addition improves the sentence's readability and flow.",
+      "expected_output": "-The determiner was changed because \"where\" is used for location.",
+      "question_values": [
+        "In addition , it would be nice if you could send me an address which I am going to stay , so that I can keep in touch with my friends and family .",
+        "In addition , it would be nice if you could send me an address where I am going to stay , so that I can keep in touch with my friends and family ."
+      ],
+      "processing_time": 5.191271781921387,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nCreative Directors rise to become Executive Creative Directors , a position with executive reponsibility for the entire creative department .\n\nRevised Text:\nCreative Directors rise to become Executive Creative Directors , a position with executive responsibility for the entire creative department .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Correction 1:** Added a comma after \"Directors\" in \"Creative Directors\"\n  - Description: Added punctuation to improve readability and clarity.\n\n- **Correction 2:** Changed \"reponsibility\" to \"responsibility\"\n  - Description: Corrected a spelling error in \"executive responsibility\".",
+      "expected_output": "-A spelling error was corrected. The correct spelling is \"responsibility.\"",
+      "question_values": [
+        "Creative Directors rise to become Executive Creative Directors , a position with executive reponsibility for the entire creative department .",
+        "Creative Directors rise to become Executive Creative Directors , a position with executive responsibility for the entire creative department ."
+      ],
+      "processing_time": 2.929203748703003,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nOn the other hand I would like to request all details of accommodation and if you could specifie what this trip includes , since I need to know how much money I have to take .\n\nRevised Text:\nOn the other hand , I would like to request all details of the accommodation and if you could specify what this trip includes , since I need to know how much money to bring .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added a comma after \"hand\"**: This is a minor punctuation correction to improve readability.\n  - Original: \"On the other hand I would like\"\n  - Revised: \"On the other hand, I would like\"\n\n- **Changed \"specifie\" to \"specify\"**: The original text had a typo in the word \"specify\".\n  - Original: \"if you could specifie\"\n  - Revised: \"if you could specify\"\n\n- **Changed \"have to take\" to \"to bring\"**: The original text had an awkward phrasing. The revised version uses a more natural and common phrasing.\n  - Original: \"how much money I have to take\"\n  - Revised: \"how much money to bring\"",
+      "expected_output": "- Comma added after \"On the other hand.\" A comma is usually  needed after transitional phrases like this.\r\n- \"The\" added before \"accommodation\" for clarity.\r\n- Spelling of \"specify\" corrected.\r\n- \"I have\" removed for conciseness.\r\n- NA",
+      "question_values": [
+        "On the other hand I would like to request all details of accommodation and if you could specifie what this trip includes , since I need to know how much money I have to take .",
+        "On the other hand , I would like to request all details of the accommodation and if you could specify what this trip includes , since I need to know how much money to bring ."
+      ],
+      "processing_time": 6.38660192489624,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nPsychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism in the academic community .\n\nRevised Text:\nPsychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism from the academic community .\n\n",
+      "response": "- Added \"from\" to clarify the source of the criticism.",
+      "expected_output": "",
+      "question_values": [
+        "Psychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism in the academic community .",
+        "Psychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism from the academic community ."
+      ],
+      "processing_time": 0.5196521282196045,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nFirst of all , the hotel booked for the group is the Palace Hotel , which is very impressive in terms of comfort and facilities .\n\nRevised Text:\nFirst of all , the hotel booked for the group is the Palace Hotel , which is impressive in terms of comfort and facilities .\n\n",
+      "response": "- Removed \"very\" before \"impressive\"",
+      "expected_output": "-\"Very\" was removed from the sentence for conciseness.",
+      "question_values": [
+        "First of all , the hotel booked for the group is the Palace Hotel , which is very impressive in terms of comfort and facilities .",
+        "First of all , the hotel booked for the group is the Palace Hotel , which is impressive in terms of comfort and facilities ."
+      ],
+      "processing_time": 0.446697473526001,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nDiscovery of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities and russian fiction became more entertaining .\n\nRevised Text:\nThe discovery of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities , and Russian fiction became more entertaining .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added a comma after \"War\"**: This correction improves the sentence's readability and grammar by separating the independent clauses \"Discovery of the 'ex-unreliable' foreign sci-fi and fantasy after the end of the Cold War\" and \"Russian fiction became more entertaining.\"\n  - Original: `Discovery of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities and russian fiction became more entertaining.`\n  - Revised: `The discovery of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities, and Russian fiction became more entertaining.`",
+      "expected_output": "-The determiner is inserted because \"discovery\" is a singular noun and a determiner is necessary with a singular noun. Due to the determiner being introduced, the capitalization has to change because it alters what word begins the sentence and needs to be capitalized.\r\n-The comma was inserted because it is needed before a conjunction and independent clause.\r\n-This is a capitalization error. \"Russian\" is an adjective based on the name of a country and should be capitalized.",
+      "question_values": [
+        "Discovery of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities and russian fiction became more entertaining .",
+        "The discovery of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities , and Russian fiction became more entertaining ."
+      ],
+      "processing_time": 5.430906534194946,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIt always happens with people , does n't ?\n\nRevised Text:\nIt always happens with people , does n't it ?\n\n",
+      "response": "- Added a question mark at the end of the sentence to indicate that it is a question.\n- Changed \"doesn't\" to \"doesn't\" to correct the apostrophe placement in the contraction of \"does not\".",
+      "expected_output": "-It was inserted at the end of the sentence because the tag question \"doesn't it\" is what we usually use.",
+      "question_values": [
+        "It always happens with people , does n't ?",
+        "It always happens with people , does n't it ?"
+      ],
+      "processing_time": 1.7169289588928223,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI went to the \" International Arts Festival \" on 21-22 November .\n\nRevised Text:\nI went to the \" International Arts Festival \" on November 21-22 .\n\n",
+      "response": "- **Correction 1:** Added a space after the comma in \"21-22 November\"\n  - Description: In the original text, there was no space after the comma, which is a common punctuation error. The revised text corrects this by adding a space, making it \"November 21-22\".",
+      "expected_output": "-This edit puts the month in front of the day because that is the convention in American English.",
+      "question_values": [
+        "I went to the \" International Arts Festival \" on 21-22 November .",
+        "I went to the \" International Arts Festival \" on November 21-22 ."
+      ],
+      "processing_time": 2.5517120361328125,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe restaurant should had been oppened when I came out , but it was closed because of the hour the show finished .\n\nRevised Text:\nThe restaurant should have been opened when I came out , but it was closed because of the hour the show finished .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Correction 1:** \"had been\" changed to \"have been\"\n  - Description: The original text uses the past perfect tense (\"had been\"), but since the action is in the past and there's no specific time given, the simple past tense (\"have been\") is more appropriate here.\n\n- **Correction 2:** Added a comma after \"out\"\n  - Description: A comma is needed after \"out\" to separate the independent clauses \"The restaurant should have been opened when I came out\" and \"but it was closed because of the hour the show finished.\"",
+      "expected_output": "- \"Opened\" is the correct spelling of \"oppened.\"\r\n- \"Have\" replaces \"had.\"",
+      "question_values": [
+        "The restaurant should had been oppened when I came out , but it was closed because of the hour the show finished .",
+        "The restaurant should have been opened when I came out , but it was closed because of the hour the show finished ."
+      ],
+      "processing_time": 4.735647439956665,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI understood everything he said and Sting said to me that I spoken very well English .\n\nRevised Text:\nI understood everything he said , and Sting told me that I spoke English very well .\n\n",
+      "response": "- **Correction 1:** \"Sting said\" changed to \"Sting told\"\n  - Description: Changed the verb to \"told\" to better fit the context of conveying information.\n- **Correction 2:** \"I spoken\" changed to \"I spoke\"\n  - Description: Corrected the tense from past participle to simple past.\n- **Correction 3:** Added a comma after \"said\"\n  - Description: Added a comma to improve readability and clarify the sentence structure.",
+      "expected_output": "- A comma should be used when a conjunction joins two clauses.\r\n-While \"said to me\" is acceptable, \"told\" is used more commonly in this context.\r\n-\"spoken\" is a participle, in this case, it should be in past tense, not participle form.\r\n-\"English\" should immediately follow \"spoke\" as it is the object of the verb.",
+      "question_values": [
+        "I understood everything he said and Sting said to me that I spoken very well English .",
+        "I understood everything he said , and Sting told me that I spoke English very well ."
+      ],
+      "processing_time": 3.8074989318847656,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked ever more German cities from 1942 until Germany surrendered .\n\nRevised Text:\nThe weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked even more German cities from 1942 until Germany surrendered .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Correction 1:** \"ever more\" was changed to \"even more\"\n  - **Description:** The original text uses \"ever more,\" which is grammatically incorrect. \"Even more\" is the correct phrase to indicate an increasing amount or degree.",
+      "expected_output": "- The word \"ever\" was replaced with \"even\" because the context shows that the sentence is referring to \"even more German cities.\"",
+      "question_values": [
+        "The weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked ever more German cities from 1942 until Germany surrendered .",
+        "The weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked even more German cities from 1942 until Germany surrendered ."
+      ],
+      "processing_time": 2.352400064468384,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAs well as touring Europe , Japan , and Australia , they toured with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer and Ozma .\n\nRevised Text:\nAs well as touring Europe , Japan , and Australia , they played with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer , and Ozma .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"toured with\" to \"played with\"**: The original text uses \"toured with\" which implies that they traveled together, while \"played with\" indicates that they performed together on the same stage or tour. This change clarifies the relationship between the bands during the tours.\n- **Added a comma after \"Weezer\"**: In the original text, there is no comma after \"Weezer\", which makes the list of bands less clear and easier to read. Adding a comma after \"Weezer\" improves the readability of the sentence by separating the last two items in the list.",
+      "expected_output": "- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+      "question_values": [
+        "As well as touring Europe , Japan , and Australia , they toured with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer and Ozma .",
+        "As well as touring Europe , Japan , and Australia , they played with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer , and Ozma ."
+      ],
+      "processing_time": 5.05713963508606,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nTherefore , if you want to learn something about the Olympic Games , it must be the best place for this .\n\nRevised Text:\nTherefore , if you want to learn something about the Olympic Games , it must be the best place for that .\n\n",
+      "response": "- Replaced \"this\" with \"that\" to match the object \"something about the Olympic Games\".",
+      "expected_output": "- The word \"this\" was replaced with \"that\" because \"that\" functions as a substitute for \"knowledge about the Olympic Games.\"",
+      "question_values": [
+        "Therefore , if you want to learn something about the Olympic Games , it must be the best place for this .",
+        "Therefore , if you want to learn something about the Olympic Games , it must be the best place for that ."
+      ],
+      "processing_time": 0.8163180351257324,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nRobert 's film \" Leave , \" a psychological thriller , starring Frank John , Hughes , Rick Gomez , Vinessa Shaw , Bryan Cranston and Ron Livingston is due out in 2010 .\n\nRevised Text:\nRobert 's film \" Leave , \" a psychological thriller starring Frank John , Hughes , Rick Gomez , Vanessa Shaw , Bryan Cranston , and Ron Livingston is due out in 2010 .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Corrected the actress's name:**\n  - Original: Vinessa Shaw\n  - Revised: Vanessa Shaw\n  - Description: The actress's name was corrected from \"Vinessa\" to \"Vanessa\".\n\n- **Added a comma after the last actor's name:**\n  - Original: Bryan Cranston and Ron Livingston\n  - Revised: Bryan Cranston, and Ron Livingston\n  - Description: A comma was added after \"Bryan Cranston\" to separate the last two actors in the list.",
+      "expected_output": "- A comma was removed after \"thriller\" as the following information is essential to the main clause.\r\n- The name \"Vinessa\" was corrected to \"Vanessa\" as this may have been a spelling error.\r\n- A comma was inserted as the list is a series of names.",
+      "question_values": [
+        "Robert 's film \" Leave , \" a psychological thriller , starring Frank John , Hughes , Rick Gomez , Vinessa Shaw , Bryan Cranston and Ron Livingston is due out in 2010 .",
+        "Robert 's film \" Leave , \" a psychological thriller starring Frank John , Hughes , Rick Gomez , Vanessa Shaw , Bryan Cranston , and Ron Livingston is due out in 2010 ."
+      ],
+      "processing_time": 4.438748359680176,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nPolish Brethren , Antitrinitians , Arians , or Socinians was the name of a Polish sect from 16th century .\n\nRevised Text:\nPolish Brethren , Antitrinitians , Arians , or Socinians were the names of a Polish sect from 16th century .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Changed \"was\" to \"were\"**\n  - Description: The original text used \"was\" to refer to the group as a singular entity, but since \"names\" is plural, it's more accurate to use \"were\" to agree with the plural subject.",
+      "expected_output": "-The verb was replaced with \"were\" to fulfill subject-verb agreement.\r\n-The noun was pluralized to fulfill number agreement with the listed, multiple names.",
+      "question_values": [
+        "Polish Brethren , Antitrinitians , Arians , or Socinians was the name of a Polish sect from 16th century .",
+        "Polish Brethren , Antitrinitians , Arians , or Socinians were the names of a Polish sect from 16th century ."
+      ],
+      "processing_time": 2.463656425476074,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHowever , some elements , such as iron , readily forms iron oxide , or rust , at standard conditions for temperature and pressure .\n\nRevised Text:\nHowever , some elements , such as iron , readily form iron oxide , or rust , at standard conditions with temperature and pressure .\n\n",
+      "response": "- Added \"with\" after \"conditions\" to clarify the phrase \"at standard conditions with temperature and pressure\".",
+      "expected_output": "-The verb form is changed to agree with the subject.\r\n-The preposition was changed. This is a stylistic edit.",
+      "question_values": [
+        "However , some elements , such as iron , readily forms iron oxide , or rust , at standard conditions for temperature and pressure .",
+        "However , some elements , such as iron , readily form iron oxide , or rust , at standard conditions with temperature and pressure ."
+      ],
+      "processing_time": 0.8561804294586182,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWill I be going out much , or just stay in Camp California all the time ?\n\nRevised Text:\nWill I be going out much , or just staying at Camp California the whole time ?\n\n",
+      "response": "- **Correction 1:** \"staying\" is added after \"just\"\n  - Description: The word \"staying\" is added to clarify the action of \"staying in\" and to make the sentence grammatically correct.\n- **Correction 2:** \"the whole time\" is added at the end\n  - Description: The phrase \"the whole time\" is added to specify the duration of the action, making the sentence clearer.",
+      "expected_output": "- \"Stay in\" was changed to \"staying at.\" The gerund form of the verb 'stay' was used to create parallelism with 'going out.' The prepositions 'in' and 'at' both refer to location, but 'in' is more general while 'at' is more specific.\r\n- The phrase \"all the time\" is changed to \"the whole time.\" This is an optional change, and the meanings are nearly identical in this context.",
+      "question_values": [
+        "Will I be going out much , or just stay in Camp California all the time ?",
+        "Will I be going out much , or just staying at Camp California the whole time ?"
+      ],
+      "processing_time": 3.5744614601135254,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBut , it 's not easy for workers , because the shops close their doors about 5.30 pm ( half past five ) .\n\nRevised Text:\nBut , it 's not easy for workers , because the shops close their doors at about 5 : 30 pm ( half past five ) .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"about\" before \"5.30 pm\" to \"at about\"**: The revised text uses \"at about\" to indicate the specific time when the shops close, making the sentence more precise.\n- **Added a colon (:) after \"5 : 30 pm\"**: The colon is used to introduce a phrase or clause that explains or illustrates the preceding independent clause. In this case, it separates the time from the explanation \"half past five.\"",
+      "expected_output": "- The preposition \"at\" was added because \"at\" is used to discuss a specific time frame.\r\n-To indicate time, the period was changed to a colon to separate hours and minutes.",
+      "question_values": [
+        "But , it 's not easy for workers , because the shops close their doors about 5.30 pm ( half past five ) .",
+        "But , it 's not easy for workers , because the shops close their doors at about 5 : 30 pm ( half past five ) ."
+      ],
+      "processing_time": 3.952399969100952,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn the 2008 summer Roberge signed for Greek side Aris Thessaloniki FC , penning a three-year contract .\n\nRevised Text:\nIn the summer of 2008 , Roberge signed for Greek club , Aris Thessaloniki FC , penning a three-year contract .\n\n",
+      "response": "- Added \"of\" after \"summer\" for better phrasing.\n- Changed \"side\" to \"club\" for more appropriate football terminology.\n- Added a comma after \"Aris Thessaloniki FC\" to improve readability and separate the team name from the following clause.",
+      "expected_output": "- \"Summer of\" was inserted before \"2008\" and \"summer\" was removed from after \"2008\" to produce the phrase, \"summer of 2008.\" This slight change improved the natural flow of the sentence.\r\n- A comma was inserted before \"Aris\" to separate a name.",
+      "question_values": [
+        "In the 2008 summer Roberge signed for Greek side Aris Thessaloniki FC , penning a three-year contract .",
+        "In the summer of 2008 , Roberge signed for Greek club , Aris Thessaloniki FC , penning a three-year contract ."
+      ],
+      "processing_time": 2.1062896251678467,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nddddddThe first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 .\n\nRevised Text:\nThe first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 .\n\n",
+      "response": "- **Correction 1:** Added a capital letter at the beginning of the sentence.\n  - Description: Changed \"dddddd\" to \"The\" to start the sentence with a capital letter.",
+      "expected_output": "-The correct spelling is \"The.\"",
+      "question_values": [
+        "ddddddThe first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 .",
+        "The first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 ."
+      ],
+      "processing_time": 1.558943271636963,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nFor spring 2009 they focused on touring Canada , while also playing some concerts in the north-eastern US .\n\nRevised Text:\nFor spring 2009 they focused on touring Canada , while also playing some concerts in the Northeastern US .\n\n",
+      "response": "- **Correction 1:** \"north-eastern\" to \"Northeastern\"\n  - Description: Capitalized the first letter of \"Northeastern\" to follow proper noun capitalization rules, as \"US\" is a proper noun.",
+      "expected_output": "- Changing \"north-eastern\" fixes a spelling error, and it is capitalized because it is referring to a well-known areas in the country.",
+      "question_values": [
+        "For spring 2009 they focused on touring Canada , while also playing some concerts in the north-eastern US .",
+        "For spring 2009 they focused on touring Canada , while also playing some concerts in the Northeastern US ."
+      ],
+      "processing_time": 1.9202218055725098,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBoth of them are my favorite sports and I 'm quite good .\n\nRevised Text:\nBoth of them are my favorite sports , and I 'm quite good .\n\n",
+      "response": "- Added a comma after \"sports\" to separate the independent clauses \"Both of them are my favorite sports\" and \"I'm quite good\" for better readability and grammar.",
+      "expected_output": "- A comma was added because \"and\" is separating two independent clauses.",
+      "question_values": [
+        "Both of them are my favorite sports and I 'm quite good .",
+        "Both of them are my favorite sports , and I 'm quite good ."
+      ],
+      "processing_time": 1.4124460220336914,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIf any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law and could be fined $ 2,500 for every download .\n\nRevised Text:\nIf any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law , and could be fined $ 2,500 for every download .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added a comma after \"law\"**: This correction improves readability by separating the independent clauses \"they are breaking California law\" and \"they could be fined $2,500 for every download\" with a comma and a conjunction (\"and\").",
+      "expected_output": "-Added a comma, which is necessary before a conjunction joining two independent clauses.",
+      "question_values": [
+        "If any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law and could be fined $ 2,500 for every download .",
+        "If any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law , and could be fined $ 2,500 for every download ."
+      ],
+      "processing_time": 2.5446653366088867,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAs well as this , the stars should n't complaint at any time about their fans and their lost of privacy .\n\nRevised Text:\nIn addition to this , the stars should n't complain at any time about their fans and their loss of privacy .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Changed \"lost\" to \"loss\"**: The original text used \"lost\" as a verb, but it should be used as a noun here to describe the stars' loss of privacy. So, it was corrected to \"loss\".\n- **Added a comma after \"this\"**: The revised text added a comma after \"this\" to improve readability and clarify the sentence structure.",
+      "expected_output": "- \"complaint\" was changed to \"complain\" because a verb is required after \"shouldn't.\"\r\n- \"lost\" was changed to \"loss\" because a noun is required after \"their.\"",
+      "question_values": [
+        "As well as this , the stars should n't complaint at any time about their fans and their lost of privacy .",
+        "In addition to this , the stars should n't complain at any time about their fans and their loss of privacy ."
+      ],
+      "processing_time": 3.310028076171875,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAlso Iternet has influence on my daily life , beause I can find there many interesting things , or I can meet with people from all over the world which is exciting for me .\n\nRevised Text:\nAlso the Internet has influence on my daily life , because I can find many interesting things , or I can meet with people from all over the world , which is exciting for me .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Corrected \"Iternet\" to \"Internet\"**: The original text had a typo where \"I\" was capitalized in \"Iternet\". The correct spelling is \"Internet\".\n- **Added a comma after \"life\"**: In the original text, there was no comma after \"life\". Adding a comma after \"life\" improves the sentence's readability and clarity: \"Also the Internet has influence on my daily life, because...\".\n- **Removed the extra space before \"which\"**: In the original text, there was an extra space before \"which\". Removing this space corrects the formatting: \"...which is exciting for me.\"",
+      "expected_output": "- \"The\" added before \"internet.\" The word usually appears with \"the.\"\r\n- Spelling of \"internet\" corrected.\r\n- Spelling of \"because\" corrected.\r\n- \"There\" removed for clarity and conciseness.\r\n- Comma added before \"which.\" A comma is frequently used to introduce this type of clause.",
+      "question_values": [
+        "Also Iternet has influence on my daily life , beause I can find there many interesting things , or I can meet with people from all over the world which is exciting for me .",
+        "Also the Internet has influence on my daily life , because I can find many interesting things , or I can meet with people from all over the world , which is exciting for me ."
+      ],
+      "processing_time": 5.258983850479126,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nMusic , sports , the theatre and other students activities help create a healthy and balanced environment .\n\nRevised Text:\nMusic , sports , theater , and other student activities help create a healthy and balanced environment .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Corrected \"the theatre\" to \"theater\"**: The original text uses the British English spelling \"theatre\", while the revised text uses the American English spelling \"theater\". This is a stylistic change to maintain consistency in spelling.\n- **Added a comma after \"sports\"**: In the original text, there is no comma after \"sports\". Adding a comma after \"sports\" improves readability and clarity by separating the items in the list.",
+      "expected_output": "- \"The theatre\" was changed to \"theater ,\" as the later is the standard American English spelling. \r\n- \"Students\" was changed to \"student\" as it is being used as to describe the noun \"activities.\"",
+      "question_values": [
+        "Music , sports , the theatre and other students activities help create a healthy and balanced environment .",
+        "Music , sports , theater , and other student activities help create a healthy and balanced environment ."
+      ],
+      "processing_time": 3.9678115844726562,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nNagase has dated J-Pop singer and former actress Ayumi Hamasaki since the beginning of both of their acting careers .\n\nRevised Text:\nNagase has dated J-Pop singer and former actress , Ayumi Hamasaki , since the beginning of both of their acting careers .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- Added a comma after \"actress\":\n  - Change: \"Nagase has dated J-Pop singer and former actress Ayumi Hamasaki\"\n  - To: \"Nagase has dated J-Pop singer and former actress, Ayumi Hamasaki\"\n\n- Added a comma after \"Hamasaki\":\n  - Change: \"since the beginning of both of their acting careers\"\n  - To: \"since the beginning of both of their acting careers.\"",
+      "expected_output": "-A comma was inserted before and after the name \"Ayumi Hamasaki\" to separate this nonessential phrase, which provides extra information, from the main clause.",
+      "question_values": [
+        "Nagase has dated J-Pop singer and former actress Ayumi Hamasaki since the beginning of both of their acting careers .",
+        "Nagase has dated J-Pop singer and former actress , Ayumi Hamasaki , since the beginning of both of their acting careers ."
+      ],
+      "processing_time": 3.863340377807617,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe intensity of the fighting had lead to a severe shortage of ammunition among the defenders , and attempts to resupply the Australians were plagued by heavy shelling .\n\nRevised Text:\nThe intensity of the fighting had lead to a severe shortage of ammunition among the defenders ; attempts to resupply the Australians were plagued by heavy shelling .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- Added a semicolon after \"defenders\":\n  - Change: `,` to `;`\n  - Description: A semicolon was added to separate the two independent clauses for better readability and to improve the flow of the sentence.\n\nNo other changes were made to the original text.",
+      "expected_output": "- The comma and coordinating conjunction were replaced with a semicolon. Both options of combining two independent clauses are acceptable.",
+      "question_values": [
+        "The intensity of the fighting had lead to a severe shortage of ammunition among the defenders , and attempts to resupply the Australians were plagued by heavy shelling .",
+        "The intensity of the fighting had lead to a severe shortage of ammunition among the defenders ; attempts to resupply the Australians were plagued by heavy shelling ."
+      ],
+      "processing_time": 2.6146042346954346,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , had their websites immediately stalled by web traffic immediately after the announcement .\n\nRevised Text:\nThe websites of the two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , immediately stalled due to web traffic immediately after the announcement .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added \"of the\" before \"two licensed stores\"**\n  - Change: `The two licensed stores` to `The websites of the two licensed stores`\n  - Reason: To clarify that it's the websites of the stores that stalled, not the stores themselves.\n\n- **Changed \"had their websites immediately stalled\" to \"immediately stalled due to web traffic\"**\n  - Change: `had their websites immediately stalled` to `immediately stalled due to web traffic`\n  - Reason: To make the sentence more concise and clear by removing the unnecessary \"had their websites\" and specifying the cause of the stalling.",
+      "expected_output": "-This stylistic edit makes the sentence active voice, which is often preferable.\r\n-This stylistic edit fits \"web traffic\" better because \"web traffic\" isn't an agent.",
+      "question_values": [
+        "The two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , had their websites immediately stalled by web traffic immediately after the announcement .",
+        "The websites of the two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , immediately stalled due to web traffic immediately after the announcement ."
+      ],
+      "processing_time": 5.367790937423706,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe PAL versions of the console looked identical to the Japanese Super Famicom , except for labelling .\n\nRevised Text:\nThe PAL versions of the console looked identical to the Japanese Super Famicom , except for the label .\n\n",
+      "response": "- **Correction 1:** \"labelling\" changed to \"label\"\n  - **Description:** The original text used \"labelling\" which implies the action of putting a label on something. The revised text uses \"label\" to refer to the label itself, making it more specific and accurate.",
+      "expected_output": "- \"Labelling\" was changed to \"label.\" First, \"labelling\" is not a spelling choice in American English. Secondly, the noun form of this word is a better choice. \"The\" was added as a determiner for this singular noun.",
+      "question_values": [
+        "The PAL versions of the console looked identical to the Japanese Super Famicom , except for labelling .",
+        "The PAL versions of the console looked identical to the Japanese Super Famicom , except for the label ."
+      ],
+      "processing_time": 2.29392147064209,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn the first two years of international competition , Cyprus have managed to only loss one match , an promotion / relegation playoff away to Israel .\n\nRevised Text:\nIn the first two years of international competition , Cyprus has managed to lose only one match and promotion / relegation playoff away to Israel .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Changed \"have\" to \"has\"**: The original text used \"have\" which is a plural verb. Since Cyprus is a singular entity, \"has\" is the correct verb to use.\n- **Changed \"loss\" to \"lose\"**: The original text used \"loss\" as a noun, but the intended meaning is that Cyprus lost a match, so \"lose\" is the correct verb form.\n- **Added \"and\" after \"match\"**: The original text is missing the conjunction \"and\" after \"match\". Adding \"and\" makes the sentence grammatically correct and clearer.",
+      "expected_output": "- \"Has\" replaces \"have\" because the noun to which it refers is singular. \r\n- The verb \"lose\" is inserted in place of the noun \"loss,\" as the verb is needed to state the purpose.\r\n- A comma is removed because the following phrase is dependent on the previous phrase.\r\n- \"And\" is the correct spelling of \"an.\"",
+      "question_values": [
+        "In the first two years of international competition , Cyprus have managed to only loss one match , an promotion / relegation playoff away to Israel .",
+        "In the first two years of international competition , Cyprus has managed to lose only one match and promotion / relegation playoff away to Israel ."
+      ],
+      "processing_time": 4.894515037536621,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHe was born in Brunswick Square , London in 1821 , his father Jonathan Dawson being Principal of the Baptist Seminary .\n\nRevised Text:\nHe was born in Brunswick Square , London in 1821 , his father Jonathan Dawson , being Principal of the Baptist Seminary .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Removed comma after \"Dawson\"**: In the original text, there is a comma after \"Dawson\" which is not necessary in this context. This comma has been removed in the revised text to improve sentence flow and grammar.\n  - Original: \"Jonathan Dawson,\"\n  - Revised: \"Jonathan Dawson\"",
+      "expected_output": "",
+      "question_values": [
+        "He was born in Brunswick Square , London in 1821 , his father Jonathan Dawson being Principal of the Baptist Seminary .",
+        "He was born in Brunswick Square , London in 1821 , his father Jonathan Dawson , being Principal of the Baptist Seminary ."
+      ],
+      "processing_time": 2.9048445224761963,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHowever \" Megamind \" won the weekend earning earning $ 30 million to \" Unstoppable \" 's $ 23.9 million .\n\nRevised Text:\nHowever \" Megamind \" won the weekend earning earning $ 30 million to \" Unstoppable's \" $ 23.9 million .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- Added an apostrophe to \"Unstoppable\" to indicate possession:\n  - Original: \"Unstoppable\"\n  - Revised: \"Unstoppable's\"",
+      "expected_output": "- The apostrophe \"'s\" outside the double quotation marks was placed inside the quotation marks because the possessive noun is formed by adding the apostrophe \"'s\" to the noun,  as in \"Unstoppable's.\"",
+      "question_values": [
+        "However \" Megamind \" won the weekend earning earning $ 30 million to \" Unstoppable \" 's $ 23.9 million .",
+        "However \" Megamind \" won the weekend earning earning $ 30 million to \" Unstoppable's \" $ 23.9 million ."
+      ],
+      "processing_time": 1.8109707832336426,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nwe do n't think that there is less of a hundred years , nothing of that existed .\n\nRevised Text:\nWe do n't think that , less than a hundred years ago , none of that existed .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Added a comma after \"that\"**: This correction improves the sentence's structure and readability by separating the independent clause \"We do not think that\" from the dependent clause \"less than a hundred years ago.\"\n  - Original: \"we don't think that there is less of a hundred years, nothing of that existed.\"\n  - Revised: \"We don't think that, less than a hundred years ago, none of that existed.\"\n\n- **Changed \"of\" to \"than\"**: The word \"of\" is incorrect in this context. \"Less than\" is used to indicate an amount that is smaller than a specified number or time period.\n  - Original: \"we don't think that there is less of a hundred years\"\n  - Revised: \"We don't think that, less than a hundred years ago\"\n\n- **Changed \"nothing\" to \"none\"**: \"Nothing\" is used to refer to the absence of anything, while \"none\" is used to refer to not any of a specific thing. In this context, \"none\" is more appropriate as it refers to \"that\" (the specific thing that existed).\n  - Original: \"nothing of that existed\"\n  - Revised: \"none of that existed\"",
+      "expected_output": "- The first word of the sentence was capitalized.\r\n- The phrase \"there is\" was removed and replaced with a comma to introduce a clause with extra detail about the main subject.\r\n- The preposition \"of\" was replaced with \"than.\" This construction gives a sense of comparison and emphasis.\r\n- The word \"ago\" was added to convey the sense of projection backward in time.",
+      "question_values": [
+        "we do n't think that there is less of a hundred years , nothing of that existed .",
+        "We do n't think that , less than a hundred years ago , none of that existed ."
+      ],
+      "processing_time": 10.259176254272461,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHome grown talent , like quarterbacks Tony Adams and Danny White quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys .\n\nRevised Text:\nHome-grown talent , like quarterbacks Tony Adams and Danny White , quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- Added a hyphen to \"home grown\" to make it \"home-grown\": This correction is to create a compound adjective, where two words work together to modify a noun. In this case, \"home\" and \"grown\" together modify \"talent\".\n- Changed \"bolted\" to \"bolted for the NFL\": This correction adds clarity by specifying where the talent \"bolted\". The original text could be interpreted as them bolting from something else, but this correction makes it clear they are leaving for the NFL.",
+      "expected_output": "- A hyphen was added to \"home-grown.\" Hyphens are required for compound adjectives when they are before a noun.\r\n- A comma was added after \"Danny White.\" It is generally required that there be commas on both sides of phrases starting with \"like\" when they give specifics in cases like this.",
+      "question_values": [
+        "Home grown talent , like quarterbacks Tony Adams and Danny White quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys .",
+        "Home-grown talent , like quarterbacks Tony Adams and Danny White , quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys ."
+      ],
+      "processing_time": 4.436001300811768,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThese officials then take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David .\n\nRevised Text:\nThese officials take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David .\n\n",
+      "response": "- Removed \"then\" for better flow and conciseness.",
+      "expected_output": "-\"Then\" was removed from the sentence since we usually use \"then\" to convey that this action happened after a previous action.",
+      "question_values": [
+        "These officials then take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David .",
+        "These officials take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David ."
+      ],
+      "processing_time": 0.6059970855712891,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIn my opinion , shopping is like relaxing .\n\nRevised Text:\nIn my opinion , shopping is relaxing .\n\n",
+      "response": "- Removed the comma after \"opinion\" to improve sentence flow and grammar.",
+      "expected_output": "-\"Like\" is deleted to improve conciseness.",
+      "question_values": [
+        "In my opinion , shopping is like relaxing .",
+        "In my opinion , shopping is relaxing ."
+      ],
+      "processing_time": 0.6676802635192871,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBenoni 's school is a recognised school for tourism located in the heart of Brussels , Belgium .\n\nRevised Text:\nBenoni 's school is a recognized school for tourism located in the heart of Brussels , Belgium .\n\n",
+      "response": "- Changed \"recognised\" to \"recognized\"",
+      "expected_output": "\"Recognized\" is the American English spelling of \"recognised.\"",
+      "question_values": [
+        "Benoni 's school is a recognised school for tourism located in the heart of Brussels , Belgium .",
+        "Benoni 's school is a recognized school for tourism located in the heart of Brussels , Belgium ."
+      ],
+      "processing_time": 0.4134366512298584,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWhether Schumann found it unnecessary to specify Metronome speeds for the second and fourth movements is unknown .\n\nRevised Text:\nWhether Schumann found it unnecessary to specify metronome speeds for the second and fourth movements is unknown .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"Metronome\" to \"metronome\"**\n  - Description: Capitalized the first letter of \"metronome\" to follow standard English capitalization rules for proper nouns.",
+      "expected_output": "- \"Metronome\" is used as a common noun. Common nouns do not need to be capitalized.",
+      "question_values": [
+        "Whether Schumann found it unnecessary to specify Metronome speeds for the second and fourth movements is unknown .",
+        "Whether Schumann found it unnecessary to specify metronome speeds for the second and fourth movements is unknown ."
+      ],
+      "processing_time": 1.9177935123443604,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nFirstly , I wanted to see DANN BLOCK playing as your advertisement already said , but there was a different actor instead of him at that evening .\n\nRevised Text:\nFirstly , I wanted to see DANN BLOCK playing , as your advertisement already said , but there was a different actor instead of him that evening .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Added a comma after \"playing\"**: This correction improves the sentence's readability and grammar by separating the independent clause \"I wanted to see DANN BLOCK playing\" from the dependent clause \"as your advertisement already said.\"\n  - Original: \"playing as your advertisement already said\"\n  - Revised: \"playing, as your advertisement already said\"\n\n- **Changed \"at that evening\" to \"that evening\"**: The correction removes the unnecessary preposition \"at\" before \"that evening,\" making the sentence more natural and grammatically correct.\n  - Original: \"at that evening\"\n  - Revised: \"that evening\"",
+      "expected_output": "-A comma is needed when a conjunction joins two clauses.\r\n-\"that evening\" is idiomatically acting as an adverb, so a preposition is not needed, and \"at\" has been removed.",
+      "question_values": [
+        "Firstly , I wanted to see DANN BLOCK playing as your advertisement already said , but there was a different actor instead of him at that evening .",
+        "Firstly , I wanted to see DANN BLOCK playing , as your advertisement already said , but there was a different actor instead of him that evening ."
+      ],
+      "processing_time": 5.329375267028809,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nLamson had learnt about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days .\n\nRevised Text:\nLamson had learned about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"learnt\" to \"learned\"**: The original text uses the British English spelling \"learnt\", while the revised text uses the American English spelling \"learned\". This is a spelling correction.\n- **Added a space after the comma following \"Christison\"**: In the original text, there is no space after the comma, which is a punctuation error. The revised text adds the necessary space.",
+      "expected_output": "- \"Learnt\" was changed to the American English Standard \"learned.\"",
+      "question_values": [
+        "Lamson had learnt about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days .",
+        "Lamson had learned about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days ."
+      ],
+      "processing_time": 3.563161611557007,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nPreviously , the city was the provincial capital of Arachosia and was ruled by the Achaemenid Empire .\n\nRevised Text:\nPreviously , the city was the provincial capital of Arachosia , and was ruled by the Achaemenid Empire .\n\n",
+      "response": "- Added a comma after \"Arachosia\" to improve readability and clarify the sentence structure.",
+      "expected_output": "",
+      "question_values": [
+        "Previously , the city was the provincial capital of Arachosia and was ruled by the Achaemenid Empire .",
+        "Previously , the city was the provincial capital of Arachosia , and was ruled by the Achaemenid Empire ."
+      ],
+      "processing_time": 0.7782931327819824,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nIt was the very last day of my trip and at that time I was in Kyoto .\n\nRevised Text:\nIt was the very last day of my trip , and at that time I was in Kyoto .\n\n",
+      "response": "- Added a comma after \"trip\" to separate the independent clauses \"It was the very last day of my trip\" and \"and at that time I was in Kyoto\". This correction improves the sentence's readability and grammar.",
+      "expected_output": "-A comma was inserted before the conjunction \"and.\" We use commas before conjunctions in order to join two independent clauses.",
+      "question_values": [
+        "It was the very last day of my trip and at that time I was in Kyoto .",
+        "It was the very last day of my trip , and at that time I was in Kyoto ."
+      ],
+      "processing_time": 1.728614330291748,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWe also would like to have a history on .\n\nRevised Text:\nWe would also like to have a history lesson .\n\n",
+      "response": "- Added \"lesson\" after \"history\" to clarify the meaning and make it grammatically correct.",
+      "expected_output": "- The word order was changed to improve the fluency and clarity of the sentence. So \"also would like\" was changed to \"would also like.\"\r\n- The preposition \"on\" was replaced with the noun \"lesson\" because the noun phrase needs to have a noun.",
+      "question_values": [
+        "We also would like to have a history on .",
+        "We would also like to have a history lesson ."
+      ],
+      "processing_time": 0.816925048828125,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHe was very out spoken on his views and known for self mutalation during live shows .\n\nRevised Text:\nHe was very outspoken on his views and known for self-mutilation during live shows .\n\n",
+      "response": "- Added a hyphen to \"self-mutilation\" to correctly form the compound adjective.",
+      "expected_output": "- The words \"out\" and \"spoken\" were combined to produce the correctly spelled \"outspoken.\"\r\n- The words \"self\" and \"mutalation\" were hyphenated to produce the correctly spelled \"self-mutilation.\"",
+      "question_values": [
+        "He was very out spoken on his views and known for self mutalation during live shows .",
+        "He was very outspoken on his views and known for self-mutilation during live shows ."
+      ],
+      "processing_time": 0.7407214641571045,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nHowever , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing along 38 of Shi Hu grandsons and the rest of the Shi clan .\n\nRevised Text:\nHowever , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing around 38 of Shi Hu's grandsons and the rest of the Shi clan .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"Shi Jian's\" to \"Shi Jian \u2019s\"**: Added an apostrophe to indicate possession.\n- **Changed \"Shi Hu grandsons\" to \"Shi Hu's grandsons\"**: Added an apostrophe and an's to indicate possession.\n- **Changed \"along\" to \"around\"**: \"Around\" is more appropriate in this context as it suggests an approximate number, while \"along\" is typically used to indicate a line or path.",
+      "expected_output": "-\"along\" was replaced with the more sensible \"around.\"\r\n-\"Hu\" was made into a possessive.",
+      "question_values": [
+        "However , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing along 38 of Shi Hu grandsons and the rest of the Shi clan .",
+        "However , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing around 38 of Shi Hu's grandsons and the rest of the Shi clan ."
+      ],
+      "processing_time": 4.111884593963623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThese tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they succeded .\n\nRevised Text:\nThese tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they succeeded .\n\n",
+      "response": "Here are the corrections made to the original text, with brief descriptions of each change:\n\n- **Correction 1:** \"succeded\" to \"succeeded\"\n  - Description: Changed the verb \"succeded\" to \"succeeded\" to correct the spelling and tense. \"Succeeded\" is the correct form of the verb \"succeed\" in this context, indicating that the tools were successful or followed the Oldowan industry.",
+      "expected_output": "- \"Succeeded\" is the correct spelling of \"succeded.\"",
+      "question_values": [
+        "These tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they succeded .",
+        "These tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they succeeded ."
+      ],
+      "processing_time": 3.4697108268737793,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nKuklinski was the chief of a planning division of the Polish army , and was a liason between the Polish army and the Russian military .\n\nRevised Text:\nKuklinski was the chief of a planning division of the Polish army and a liaison between the Polish army and the Russian military .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"army\"**: In the original text, there was no comma after \"army\" in the first part of the sentence. Adding a comma here improves readability by separating the two independent clauses connected by \"and\".\n  - Original: \"Kuklinski was the chief of a planning division of the Polish army and a liaison between the Polish army and the Russian military.\"\n  - Revised: \"Kuklinski was the chief of a planning division of the Polish army, and a liaison between the Polish army and the Russian military.\"\n\n- **Changed \"liason\" to \"liaison\"**: The original text had a spelling error. \"Liaison\" is the correct spelling for the word that means a person who acts as a communication link between two parties.\n  - Original: \"Kuklinski was the chief of a planning division of the Polish army, and was a liason between the Polish army and the Russian military.\"\n  - Revised: \"Kuklinski was the chief of a planning division of the Polish army and a liaison between the Polish army and the Russian military.\"",
+      "expected_output": "- The comma was removed because the second half of the sentence does not have a new subject.\r\n- \"Liaison\" is the correct spelling of \"liason.\"",
+      "question_values": [
+        "Kuklinski was the chief of a planning division of the Polish army , and was a liason between the Polish army and the Russian military .",
+        "Kuklinski was the chief of a planning division of the Polish army and a liaison between the Polish army and the Russian military ."
+      ],
+      "processing_time": 8.964876413345337,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nCovering an area of more than 2104 acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation Golf course and other features .\n\nRevised Text:\nCovering an area of more than 2,104 acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation golf course , and other features .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Changed \"2104\" to \"2,104\"**: Added commas to improve readability by separating every third digit from the right in numbers greater than 999.\n- **Added a comma after \"golf course\"**: This comma is part of the serial comma convention, which is used to separate the last two items in a list. It's not mandatory in all styles of writing, but it's common in many.",
+      "expected_output": "-This edit adds a comma to delineate the thousands place in this number.\r\n-This edit makes 'golf' lower case because it is a common noun.\r\n-This edit adds an Oxford comma because it is Grammarly's preferred convention.",
+      "question_values": [
+        "Covering an area of more than 2104 acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation Golf course and other features .",
+        "Covering an area of more than 2,104 acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation golf course , and other features ."
+      ],
+      "processing_time": 3.796457052230835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nK ' and Maxima are once again separated from their teammates , but are joined Whip who joins them after revealing her identity to K ' .\n\nRevised Text:\nK' and Maxima are once again separated from their teammates but are joined by Whip, who joins them after revealing her identity to K ' .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Correction 1:** Added a comma after \"teammates\"\n  - **Description:** Added a comma to improve readability and separate the independent clauses.\n\n- **Correction 2:** Changed \"who joins them\" to \"who joins them by\"\n  - **Description:** Added \"by\" to make the sentence grammatically correct and clear. The revised sentence indicates that Whip joins them in a specific way, which is revealing her identity to K'.\n\n- **Correction 3:** Added a comma after \"K'\"\n  - **Description:** Added a comma to separate the independent clauses and improve readability.",
+      "expected_output": "-An unnecessary space before an apostrophe has been removed.\r\n-A comma was added before a conjunction joining two clauses.\r\n-The preposition \"by\" was added since \"join\" can't take an object.",
+      "question_values": [
+        "K ' and Maxima are once again separated from their teammates , but are joined Whip who joins them after revealing her identity to K ' .",
+        "K' and Maxima are once again separated from their teammates but are joined by Whip, who joins them after revealing her identity to K ' ."
+      ],
+      "processing_time": 4.959459543228149,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe 4Music stage will also host loads of exclusive short sets from up and coming bands that they reckon are going to be huge this time next year .\n\nRevised Text:\nThe 4Music stage will also host loads of exclusive short sets from up-and-coming bands that they reckon are going to be huge this time next year .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Hyphen added in \"up-and-coming\"**: The revised text adds a hyphen to \"up-and-coming\" to indicate that it's a compound adjective modifying \"bands.\" This change improves readability and clarity.\n- **Period added at the end of the sentence**: The original text is missing a period at the end of the sentence. The revised text adds a period to indicate the end of the sentence, which is a crucial punctuation mark for proper grammar.",
+      "expected_output": "- As three words that come before the noun and function together as an adjective to describe \"bands,\" \"up and coming\" were combined and hyphenated to produce \"up-and-coming.\"",
+      "question_values": [
+        "The 4Music stage will also host loads of exclusive short sets from up and coming bands that they reckon are going to be huge this time next year .",
+        "The 4Music stage will also host loads of exclusive short sets from up-and-coming bands that they reckon are going to be huge this time next year ."
+      ],
+      "processing_time": 3.9036519527435303,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nI also wanted to know if I have to take some money to buy souvenirs and food or that will be paid for me , too ?\n\nRevised Text:\nI also wanted to know if I need to take some money to buy souvenirs and food , or will that be paid for , too ?\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Corrected \"have to\" to \"need to\"**: The phrase \"have to\" is often used to express obligation, while \"need to\" is more appropriate when expressing necessity or requirement. In this context, \"need to\" is more fitting as it indicates that the speaker requires money for souvenirs and food.\n- **Removed the comma after \"too\"**: In the original text, the comma after \"too\" is not necessary and can be omitted. The sentence is clear without it.",
+      "expected_output": "- A comma was inserted to separate two independent questions within the sentence.\r\n- \"That will\" was changed to \"will that\" because in English, the question word always comes first.",
+      "question_values": [
+        "I also wanted to know if I have to take some money to buy souvenirs and food or that will be paid for me , too ?",
+        "I also wanted to know if I need to take some money to buy souvenirs and food , or will that be paid for , too ?"
+      ],
+      "processing_time": 4.121448516845703,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nWith the help of some modern technology our daily life would not so difficult .\n\nRevised Text:\nWith the help of modern technology , our daily life will not be so difficult .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Added a comma after \"technology\"**: This is a basic punctuation correction to separate the introductory phrase from the main clause.\n  - Original: \"With the help of some modern technology our daily life would not so difficult.\"\n  - Revised: \"With the help of modern technology, our daily life will not be so difficult.\"\n\n- **Changed \"would not\" to \"will not\"**: The original text uses \"would not\" which is a modal verb used for hypothetical or unreal situations. However, the revised text is expressing a factual statement about the future, so \"will not\" is more appropriate.\n  - Original: \"our daily life would not so difficult\"\n  - Revised: \"our daily life will not be so difficult\"",
+      "expected_output": "- \"some\" was removed because it's not necessary and removing it improves the flow of the sentence.\r\n- A comma was added after technology because commas are added after introductory phrases in English. \r\n- \"be\" was added because a verb is needed to make the sentence grammatical.",
+      "question_values": [
+        "With the help of some modern technology our daily life would not so difficult .",
+        "With the help of modern technology , our daily life will not be so difficult ."
+      ],
+      "processing_time": 6.08125376701355,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThe Soviet view was that as efforts to ' surround ' Hitler failed , and as the western powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some accomodation had to be reached with Germany in order to buy time .\n\nRevised Text:\nThe Soviet view was that as efforts to \" surround \" Hitler failed , and as the Western powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some arrangement had to be reached with Germany in order to buy time .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Quotation Marks**: In the original text, the word'surround' is not enclosed in quotation marks, but in the revised text, it is. This change is likely to indicate that'surround' is a specific term or phrase being used in a particular context.\n- **Capitalization**: In the original text, \"western powers\" is not capitalized, but in the revised text, it is. This change is likely to indicate that \"Western powers\" is a specific political or geographical entity being referred to.\n- **Word Choice**: The original text uses \"accomodation\" which is likely a typo. The revised text corrects this to \"arrangement\". This change is likely to improve the clarity and accuracy of the sentence.",
+      "expected_output": "-These two edits replace the single quotes 'surround' had been in with full quotes because it is a direct quote.\r\n-'Western' is capitalized here because it is a proper noun.\r\n-This is an optional stylistic edit that chooses to use 'arrangement' here for unclear reasons.",
+      "question_values": [
+        "The Soviet view was that as efforts to ' surround ' Hitler failed , and as the western powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some accomodation had to be reached with Germany in order to buy time .",
+        "The Soviet view was that as efforts to \" surround \" Hitler failed , and as the Western powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some arrangement had to be reached with Germany in order to buy time ."
+      ],
+      "processing_time": 5.98149037361145,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nBourne is next seen on a train travelling from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand .\n\nRevised Text:\nBourne is next seen on a train , traveling from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"train\"**: This is a comma after a compound verb to separate the two actions \"travelling\" and \"from France to Switzerland\". It improves the readability and clarity of the sentence.\n- **Changed \"travelling\" to \"traveling\"**: This is a spelling correction. In American English, \"traveling\" is the preferred spelling, while in British English, it's \"travelling\". The revised text seems to follow American English conventions.",
+      "expected_output": "- \"Traveling\" is the American English standard of spelling for \"travelling.\"",
+      "question_values": [
+        "Bourne is next seen on a train travelling from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand .",
+        "Bourne is next seen on a train , traveling from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand ."
+      ],
+      "processing_time": 4.123003005981445,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nLemon grass is widely used as a herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking .\n\nRevised Text:\nLemongrass is a widely used herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking .\n\n",
+      "response": "- **Correction 1:** \"Lemon grass\" to \"Lemongrass\"\n  - Description: The word \"lemongrass\" was corrected to its proper spelling, removing the space between \"lemon\" and \"grass\".",
+      "expected_output": "- The unnecessary space between \"lemon\" and \"grass\" in the compound word \"lemongrass\" was removed.\r\n- The sentence was corrected for clarity. Instead of stating that it is \"widely used as a herb,\" the corrected form states that it is \"a widely used herb.\"",
+      "question_values": [
+        "Lemon grass is widely used as a herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking .",
+        "Lemongrass is a widely used herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking ."
+      ],
+      "processing_time": 1.9022867679595947,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nEddie Keith Bonine ( born June 6 , 1981 in Columbus , Georgia ) is Major League Baseball starting pitcher for the Detroit Tigers .\n\nRevised Text:\nEddie Keith Bonine ( born June 6 , 1981, in Columbus , Georgia ) is a Major League Baseball starting pitcher for the Detroit Tigers .\n\n",
+      "response": "Here are the corrections made to the original text:\n\n- **Added a comma after the birthdate:**\n  - Original: \"June 6, 1981\"\n  - Revised: \"June 6, 1981,\"\n  - Description: A comma was added after the birthdate to improve readability and separate the date from the location.\n\n- **Changed \"is\" to \"a\":**\n  - Original: \"is Major League Baseball starting pitcher\"\n  - Revised: \"a Major League Baseball starting pitcher\"\n  - Description: The word \"is\" was replaced with \"a\" to correctly describe Eddie Keith Bonine's role as a Major League Baseball starting pitcher. The original text implied that he is currently a starting pitcher for the Detroit Tigers, which might not be the case. Using \"a\" makes the sentence more accurate and less specific about his current status.",
+      "expected_output": "-A comma is added after the year because when using the month-date-year format, a comma is required after the year.\r\n- Indefinite article \"a\" is inserted before the singular noun \"Major League Baseball starting pitcher.\"",
+      "question_values": [
+        "Eddie Keith Bonine ( born June 6 , 1981 in Columbus , Georgia ) is Major League Baseball starting pitcher for the Detroit Tigers .",
+        "Eddie Keith Bonine ( born June 6 , 1981, in Columbus , Georgia ) is a Major League Baseball starting pitcher for the Detroit Tigers ."
+      ],
+      "processing_time": 6.707481384277344,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nTales about the Bakunawa say that it is the cause eclipses .\n\nRevised Text:\nTales about the Bakunawa say that it is the cause of eclipses .\n\n",
+      "response": "- Added \"of\" after \"cause\" to complete the phrase \"cause of eclipses\".",
+      "expected_output": "-This edit inserted a preposition to be grammatical.",
+      "question_values": [
+        "Tales about the Bakunawa say that it is the cause eclipses .",
+        "Tales about the Bakunawa say that it is the cause of eclipses ."
+      ],
+      "processing_time": 0.7726538181304932,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nAround 185 million people live in the catchment area of the rivers that flow into the North Sea encompassing some highly industrialized areas .\n\nRevised Text:\nAround 185 million people live in the catchment area of the rivers that flow into the North Sea , encompassing some highly industrialized areas .\n\n",
+      "response": "Here are the corrections made in the revised text:\n\n- **Added a comma after \"North Sea\"**: This comma is added to separate the independent clause \"Around 185 million people live in the catchment area of the rivers that flow into the North Sea\" from the dependent clause \"encompassing some highly industrialized areas\". This change improves the readability and clarity of the sentence.",
+      "expected_output": "- A comma is inserted before \"encompassing\" to mark the beginning of a nonrestrictive clause that includes nonessential information.",
+      "question_values": [
+        "Around 185 million people live in the catchment area of the rivers that flow into the North Sea encompassing some highly industrialized areas .",
+        "Around 185 million people live in the catchment area of the rivers that flow into the North Sea , encompassing some highly industrialized areas ."
+      ],
+      "processing_time": 2.9229202270507812,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given 2 texts, one original and one revised with corrections.\n\nIdentify each correction.\nFor each correction, provide a brief, clear description of the change\nPresent all changes as bullet points\n\nOriginal Text:\nThat time I met the magic world of computers .\n\nRevised Text:\nAt that time , I met the magic world of computers .\n\n",
+      "response": "- Added \"At\" before \"that time\" to improve sentence flow and clarity.",
+      "expected_output": "-The preposition \"at\" should be used to indicate that what follows happened during \"that time.\"\r\n-This is an introductory phrase, so it should be followed by a comma.",
+      "question_values": [
+        "That time I met the magic world of computers .",
+        "At that time , I met the magic world of computers ."
+      ],
+      "processing_time": 0.6621785163879395,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "- \"What\" was inserted to link \"that\" and \"the advertisement had shown.\"",
+    "- The spelling of the word \"labor\" was corrected to conform to American English spelling.\r\n- A spelling error was corrected. The correct spelling is \"succeeded.\"",
+    "- Comma added before \"so\" to introduce new clause.\r\n- Unnecessary hyphen removed in \"well dressed.\" Unless it is before a noun, a compound adjective doesn't usually need a hyphen.\r\n- Unnecessary comma removed after \"well dressed.\"\r\n-NA",
+    "- A comma was inserted as the two phrases are complete and could be independent.\r\n- \"Just\" was replaced with \"right\" as it is more commonly used with the phrase \"in front of.\"",
+    "- The comma was changed to a period in order to separate two sentences. \"My\" was capitalized since it is at the beginning of a sentence.\r\n-  A comma was added after \"June\" because \"but\" is separating two independent clauses.",
+    "- The comma before \"when\" was deleted \" because there is no comma when the dependent clause comes after the main clause.\r\n- The preposition \"about\" was added after the verb \"written\" because \"about\" carries the meaning of \"on the subject of.\"",
+    "- \"accommodation\" fixes a spelling error.\r\n- \"vacations\" is the American English term.",
+    "",
+    "",
+    "",
+    "-The determiner is added to improve fluency.",
+    "- The extra comma was removed to avoid two consecutive commas.\r\n- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+    "- The phrase \"surgeon-in-chief\" was hyphenated. In American English, many occupations are hyphenated to show that all the included words are related to the same job title.",
+    "-The infinitive should not be used here but instead the verb conjugated for the first person singular.",
+    "-A comma is inserted because it is needed after an introductory phrase.\r\n-The correct spelling is \"in front.\"\r\n-The correct spelling is \"crowd.\"",
+    "- \"forward\" was added because of the high collocation with \"look.\" This edit increases the readability and fluency of the sentence.",
+    "- \"Pay\" was changed to \"paid\" to match the past tense implied by the prepositional phrase \"in 2009.\"\r\n- \"Entitled them to overtime\" was deleted to avoid redundancy and improve conciseness.",
+    "",
+    "- NA\r\n- Unnecessary ellipsis replaced with single period.",
+    "- An \"and\" was added to adhere to the correct grammar for lists.\r\n- \"assessment\" is the correct spelling.\r\n- \"substantive\" is the correct spelling.",
+    "-These quotation marks are added because what is within them is the title of something.\r\n-These quotation marks are added because what is within them is the title of something.",
+    "-\"Organised\" was substituted for \"organized\" to follow American English spelling conventions.\r\n-The correct spelling is \"decision.\"",
+    "- A comma was added after the introductory phrase to improve the clarity of the sentence.\r\n- \"theater\" is the American English spelling of \"theatre.\"\r\n- A comma was removed before \"because\" since the subordinating clause comes after the main clause. A comma might be used if the sentence becomes ambiguous otherwise or if the subordinating clause provides an explanation for the content in the main clause.\r\n- \"shef\" is a misspelling of \"chef.\"\r\n- \"where\" is a misspelling of \"were.\"\r\n- \"vacation\" is preferred in American English over \"holiday.\"",
+    "- The quote was changed to \"It\" to create a complete clause.\r\n- \"Cancelled\" was changed to \"canceled\" to reflect the version used more often in American English.\r\n- \"Line-up\" was corrected to the standard \"lineup.\"",
+    "- An article was added because the noun it quantifies is a countable noun, which requires an article if it is singular, but it can be omitted if it is plural.",
+    "- 'Possession' is the correct spelling of 'posession.'\r\n- A comma was inserted after 'California.' When a city and state combination is presented in the middle of a sentence, the state must be surrounded by commas.",
+    "- Corrected misspellings of \"were\" and \"important.\"",
+    "-This edit corrects the spelling to 'pierced.'",
+    "-  A comma was introduced after 'dissidents' because commas must separate every time in a list in American English.\r\n- \"Gain\" was written in its past tense form because the event already occurred.\r\n- \"It's\" was changed to \"its\" to indicate possession as opposed to the contraction \"it is.\"",
+    "-\"Is\" was changed to \"to be\" because that is the collocation that is often used in \"find + something + adjective\" form.\r\n-A hyphen is added to time consuming when we use the term \"time-consuming\" the adjective in a sentence.",
+    "- A comma was inserted before \"so\" because \"so\" functions as a coordinating conjunction combining two independent clauses.\r\n-The verb tense was changed from present tense \"run\" to past tense \"ran\" to maintain the same verb tense throughout the sentence.\r\n- The phrase \"in order\" was deleted to maintain conciseness. \r\n- The preposition \"to\" was added because it is needed before the object \"him.\"",
+    "-\"Programme\" is substituted for \"program\" to follow American English spelling conventions.",
+    "-The word that fits this context and is likely intended by the author is 'thing.'\r\n-Common nouns like 'computer room' require articles in English if they are singular, so 'the' is added.",
+    "",
+    "- The phrase is replaced with \"wooden\" to improve conciseness.",
+    "- The verb \"remain\" is deleted because the sentence already has the auxiliary verb \"are.\" However, if \"remain\" refers to the noun \"remains,\" as in \"remains of historical buildings,\" then this revision is incorrect.",
+    "- \"Sidestory\" was separated to two words: \"side\" and \"story.\"\r\n- A comma and quotation mark was added on either end of the title name. Short story titles should be surrounded by quotation marks. The commas confirm that, while relevant, the story title is not mandatory to include. \r\n- The phrase \"which status\" was restructured to read \"the status of which.\" This change elevates the writing by improving flow and academic quality.\r\n- A pair of periods was reduced to just one period, as is normal.",
+    "- A comma was added after \"therefore\" as is typically required when it is at the beginning of a sentence.\r\n- \"So as to\" was changed to \"and\" to make the phrase more concise and improve fluency.",
+    "-A comma was added before a conjunction joining two clauses.",
+    "-\"It\" is inserted because an object is needed for the verb \"to sum.\"",
+    "-The determiner was changed because \"where\" is used for location.",
+    "-A spelling error was corrected. The correct spelling is \"responsibility.\"",
+    "- Comma added after \"On the other hand.\" A comma is usually  needed after transitional phrases like this.\r\n- \"The\" added before \"accommodation\" for clarity.\r\n- Spelling of \"specify\" corrected.\r\n- \"I have\" removed for conciseness.\r\n- NA",
+    "",
+    "-\"Very\" was removed from the sentence for conciseness.",
+    "-The determiner is inserted because \"discovery\" is a singular noun and a determiner is necessary with a singular noun. Due to the determiner being introduced, the capitalization has to change because it alters what word begins the sentence and needs to be capitalized.\r\n-The comma was inserted because it is needed before a conjunction and independent clause.\r\n-This is a capitalization error. \"Russian\" is an adjective based on the name of a country and should be capitalized.",
+    "-It was inserted at the end of the sentence because the tag question \"doesn't it\" is what we usually use.",
+    "-This edit puts the month in front of the day because that is the convention in American English.",
+    "- \"Opened\" is the correct spelling of \"oppened.\"\r\n- \"Have\" replaces \"had.\"",
+    "- A comma should be used when a conjunction joins two clauses.\r\n-While \"said to me\" is acceptable, \"told\" is used more commonly in this context.\r\n-\"spoken\" is a participle, in this case, it should be in past tense, not participle form.\r\n-\"English\" should immediately follow \"spoke\" as it is the object of the verb.",
+    "- The word \"ever\" was replaced with \"even\" because the context shows that the sentence is referring to \"even more German cities.\"",
+    "- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+    "- The word \"this\" was replaced with \"that\" because \"that\" functions as a substitute for \"knowledge about the Olympic Games.\"",
+    "- A comma was removed after \"thriller\" as the following information is essential to the main clause.\r\n- The name \"Vinessa\" was corrected to \"Vanessa\" as this may have been a spelling error.\r\n- A comma was inserted as the list is a series of names.",
+    "-The verb was replaced with \"were\" to fulfill subject-verb agreement.\r\n-The noun was pluralized to fulfill number agreement with the listed, multiple names.",
+    "-The verb form is changed to agree with the subject.\r\n-The preposition was changed. This is a stylistic edit.",
+    "- \"Stay in\" was changed to \"staying at.\" The gerund form of the verb 'stay' was used to create parallelism with 'going out.' The prepositions 'in' and 'at' both refer to location, but 'in' is more general while 'at' is more specific.\r\n- The phrase \"all the time\" is changed to \"the whole time.\" This is an optional change, and the meanings are nearly identical in this context.",
+    "- The preposition \"at\" was added because \"at\" is used to discuss a specific time frame.\r\n-To indicate time, the period was changed to a colon to separate hours and minutes.",
+    "- \"Summer of\" was inserted before \"2008\" and \"summer\" was removed from after \"2008\" to produce the phrase, \"summer of 2008.\" This slight change improved the natural flow of the sentence.\r\n- A comma was inserted before \"Aris\" to separate a name.",
+    "-The correct spelling is \"The.\"",
+    "- Changing \"north-eastern\" fixes a spelling error, and it is capitalized because it is referring to a well-known areas in the country.",
+    "- A comma was added because \"and\" is separating two independent clauses.",
+    "-Added a comma, which is necessary before a conjunction joining two independent clauses.",
+    "- \"complaint\" was changed to \"complain\" because a verb is required after \"shouldn't.\"\r\n- \"lost\" was changed to \"loss\" because a noun is required after \"their.\"",
+    "- \"The\" added before \"internet.\" The word usually appears with \"the.\"\r\n- Spelling of \"internet\" corrected.\r\n- Spelling of \"because\" corrected.\r\n- \"There\" removed for clarity and conciseness.\r\n- Comma added before \"which.\" A comma is frequently used to introduce this type of clause.",
+    "- \"The theatre\" was changed to \"theater ,\" as the later is the standard American English spelling. \r\n- \"Students\" was changed to \"student\" as it is being used as to describe the noun \"activities.\"",
+    "-A comma was inserted before and after the name \"Ayumi Hamasaki\" to separate this nonessential phrase, which provides extra information, from the main clause.",
+    "- The comma and coordinating conjunction were replaced with a semicolon. Both options of combining two independent clauses are acceptable.",
+    "-This stylistic edit makes the sentence active voice, which is often preferable.\r\n-This stylistic edit fits \"web traffic\" better because \"web traffic\" isn't an agent.",
+    "- \"Labelling\" was changed to \"label.\" First, \"labelling\" is not a spelling choice in American English. Secondly, the noun form of this word is a better choice. \"The\" was added as a determiner for this singular noun.",
+    "- \"Has\" replaces \"have\" because the noun to which it refers is singular. \r\n- The verb \"lose\" is inserted in place of the noun \"loss,\" as the verb is needed to state the purpose.\r\n- A comma is removed because the following phrase is dependent on the previous phrase.\r\n- \"And\" is the correct spelling of \"an.\"",
+    "",
+    "- The apostrophe \"'s\" outside the double quotation marks was placed inside the quotation marks because the possessive noun is formed by adding the apostrophe \"'s\" to the noun,  as in \"Unstoppable's.\"",
+    "- The first word of the sentence was capitalized.\r\n- The phrase \"there is\" was removed and replaced with a comma to introduce a clause with extra detail about the main subject.\r\n- The preposition \"of\" was replaced with \"than.\" This construction gives a sense of comparison and emphasis.\r\n- The word \"ago\" was added to convey the sense of projection backward in time.",
+    "- A hyphen was added to \"home-grown.\" Hyphens are required for compound adjectives when they are before a noun.\r\n- A comma was added after \"Danny White.\" It is generally required that there be commas on both sides of phrases starting with \"like\" when they give specifics in cases like this.",
+    "-\"Then\" was removed from the sentence since we usually use \"then\" to convey that this action happened after a previous action.",
+    "-\"Like\" is deleted to improve conciseness.",
+    "\"Recognized\" is the American English spelling of \"recognised.\"",
+    "- \"Metronome\" is used as a common noun. Common nouns do not need to be capitalized.",
+    "-A comma is needed when a conjunction joins two clauses.\r\n-\"that evening\" is idiomatically acting as an adverb, so a preposition is not needed, and \"at\" has been removed.",
+    "- \"Learnt\" was changed to the American English Standard \"learned.\"",
+    "",
+    "-A comma was inserted before the conjunction \"and.\" We use commas before conjunctions in order to join two independent clauses.",
+    "- The word order was changed to improve the fluency and clarity of the sentence. So \"also would like\" was changed to \"would also like.\"\r\n- The preposition \"on\" was replaced with the noun \"lesson\" because the noun phrase needs to have a noun.",
+    "- The words \"out\" and \"spoken\" were combined to produce the correctly spelled \"outspoken.\"\r\n- The words \"self\" and \"mutalation\" were hyphenated to produce the correctly spelled \"self-mutilation.\"",
+    "-\"along\" was replaced with the more sensible \"around.\"\r\n-\"Hu\" was made into a possessive.",
+    "- \"Succeeded\" is the correct spelling of \"succeded.\"",
+    "- The comma was removed because the second half of the sentence does not have a new subject.\r\n- \"Liaison\" is the correct spelling of \"liason.\"",
+    "-This edit adds a comma to delineate the thousands place in this number.\r\n-This edit makes 'golf' lower case because it is a common noun.\r\n-This edit adds an Oxford comma because it is Grammarly's preferred convention.",
+    "-An unnecessary space before an apostrophe has been removed.\r\n-A comma was added before a conjunction joining two clauses.\r\n-The preposition \"by\" was added since \"join\" can't take an object.",
+    "- As three words that come before the noun and function together as an adjective to describe \"bands,\" \"up and coming\" were combined and hyphenated to produce \"up-and-coming.\"",
+    "- A comma was inserted to separate two independent questions within the sentence.\r\n- \"That will\" was changed to \"will that\" because in English, the question word always comes first.",
+    "- \"some\" was removed because it's not necessary and removing it improves the flow of the sentence.\r\n- A comma was added after technology because commas are added after introductory phrases in English. \r\n- \"be\" was added because a verb is needed to make the sentence grammatical.",
+    "-These two edits replace the single quotes 'surround' had been in with full quotes because it is a direct quote.\r\n-'Western' is capitalized here because it is a proper noun.\r\n-This is an optional stylistic edit that chooses to use 'arrangement' here for unclear reasons.",
+    "- \"Traveling\" is the American English standard of spelling for \"travelling.\"",
+    "- The unnecessary space between \"lemon\" and \"grass\" in the compound word \"lemongrass\" was removed.\r\n- The sentence was corrected for clarity. Instead of stating that it is \"widely used as a herb,\" the corrected form states that it is \"a widely used herb.\"",
+    "-A comma is added after the year because when using the month-date-year format, a comma is required after the year.\r\n- Indefinite article \"a\" is inserted before the singular noun \"Major League Baseball starting pitcher.\"",
+    "-This edit inserted a preposition to be grammatical.",
+    "- A comma is inserted before \"encompassing\" to mark the beginning of a nonrestrictive clause that includes nonessential information.",
+    "-The preposition \"at\" should be used to indicate that what follows happened during \"that time.\"\r\n-This is an introductory phrase, so it should be followed by a comma."
+  ],
+  "processing_stats": {
+    "total_time": 333.28866243362427,
+    "avg_time": 3.3328866243362425,
+    "min_time": 0.4134366512298584,
+    "max_time": 10.259176254272461,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

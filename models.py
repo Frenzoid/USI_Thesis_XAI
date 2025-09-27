@@ -417,8 +417,9 @@ class ModelManager:
                 inputs = self.current_tokenizer(
                     formatted_prompt, 
                     return_tensors="pt",
-                    padding=True,
-                    truncation=True
+                    padding=Config.DEFAULT_PADDING,
+                    truncation=Config.DEFAULT_TRUNCATION,
+                    max_length=Config.DEFAULT_MAX_LENGTH
                 ).to(self.current_model.device)
                 
                 with torch.no_grad():
