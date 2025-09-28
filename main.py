@@ -438,6 +438,91 @@ class ArgumentResolver:
                 self.logger.info(f"  ... and {len(combinations) - sample_count} more")
 
 # =============================================================================
+# FEW-SHOT ROW DETERMINATION FOR SKIP CHECKING
+# =============================================================================
+
+def determine_few_shot_row_for_skip_check(setup_name: str, specified_few_shot_row: Optional[int]) -> Optional[int]:
+    """
+    Determine what few-shot row would be used for skip checking purposes.
+    This replicates the logic from experiment_runner.py without loading the full dataset.
+    
+    Args:
+        setup_name: Name of the setup
+        specified_few_shot_row: User-specified row, or None for random
+        
+    Returns:
+        int: The few-shot row that would be used, or None if not determinable
+    """
+    if specified_few_shot_row is not None:
+        return specified_few_shot_row
+    
+    # Need to determine what random row would be chosen
+    # This requires loading the dataset to get its size
+    try:
+        dataset_manager = DatasetManager()
+        
+        # Check if dataset is downloaded
+        if not dataset_manager.is_dataset_downloaded(setup_name):
+            logger.warning(f"Cannot determine few-shot row for {setup_name} - dataset not downloaded")
+            return None
+            
+        # Load the dataset to get its size (use original dataset for few-shot row selection)
+        df = dataset_manager.load_dataset(setup_name)
+        if df is None or len(df) == 0:
+            logger.warning(f"Cannot determine few-shot row for {setup_name} - dataset empty or failed to load")
+            return None
+        
+        # Replicate the random row selection logic from experiment_runner.py
+        # This must match exactly what happens in run_experiment()
+        import random
+        random.seed(Config.RANDOM_SEED)
+        random_row = random.randint(0, len(df) - 1)
+        
+        logger.debug(f"Determined few-shot row for {setup_name}: {random_row} (from {len(df)} total rows)")
+        return random_row
+        
+    except Exception as e:
+        logger.warning(f"Error determining few-shot row for {setup_name}: {e}")
+        return None
+
+def check_experiment_exists_with_few_shot_handling(combo: ExperimentCombination, 
+                                                  args, dataset_manager: DatasetManager) -> Tuple[bool, str, str]:
+    """
+    Check if an experiment exists, properly handling few-shot row determination.
+    
+    Args:
+        combo: Experiment combination to check
+        args: Command line arguments
+        dataset_manager: DatasetManager instance
+        
+    Returns:
+        Tuple[bool, str, str]: (exists, file_path, experiment_name)
+    """
+    # Determine the effective few-shot row
+    effective_few_shot_row = args.few_shot_row
+    
+    if combo.mode == 'few-shot' and args.few_shot_row is None:
+        # For few-shot experiments without specified row, determine what would be used
+        effective_few_shot_row = determine_few_shot_row_for_skip_check(
+            combo.setup, args.few_shot_row
+        )
+        if effective_few_shot_row is None:
+            # If we can't determine the row, assume it doesn't exist and run it
+            logger.debug(f"Cannot determine few-shot row for {combo.setup}, will not skip")
+            return False, "", ""
+    
+    # Generate experiment name with the correct few-shot row
+    experiment_name = Config.generate_experiment_name(
+        combo.setup, combo.model, combo.mode, combo.prompt, 
+        args.size, args.temperature, few_shot_row=effective_few_shot_row
+    )
+    file_paths = Config.generate_file_paths(experiment_name)
+    inference_file = file_paths['inference']
+    
+    exists = os.path.exists(inference_file)
+    return exists, inference_file, experiment_name
+
+# =============================================================================
 # OPTIMIZED EXECUTION ORDER FUNCTIONS
 # =============================================================================
 
@@ -665,6 +750,10 @@ def run_experiment_command(args):
     
     if args.skip:
         logger.info("Checking for existing experiment files...")
+        
+        # Initialize dataset manager for few-shot row determination
+        dataset_manager = DatasetManager()
+        
         total_combinations = 0
         skipped_count = 0
         
@@ -677,15 +766,12 @@ def run_experiment_command(args):
                 for combo in setup_combinations:
                     total_combinations += 1
                     
-                    # Generate experiment name and check if file exists
-                    experiment_name = Config.generate_experiment_name(
-                        combo.setup, combo.model, combo.mode, combo.prompt, 
-                        args.size, args.temperature, few_shot_row=args.few_shot_row
+                    # Use improved existence checking that handles few-shot rows correctly
+                    exists, inference_file, experiment_name = check_experiment_exists_with_few_shot_handling(
+                        combo, args, dataset_manager
                     )
-                    file_paths = Config.generate_file_paths(experiment_name)
-                    inference_file = file_paths['inference']
                     
-                    if os.path.exists(inference_file):
+                    if exists:
                         skipped_combinations.append((combo, experiment_name))
                         skipped_count += 1
                         logger.debug(f"Skipping existing experiment: {experiment_name}")

@@ -2,6 +2,7 @@ import os
 import time
 import json
 import pandas as pd
+import random
 from datetime import datetime
 from typing import Dict, List, Any, Optional, Tuple
 from tqdm import tqdm
@@ -23,6 +24,7 @@ class ExperimentRunner:
     2. Loads and queries models (local or API) with authentication handling
     3. Saves results with comprehensive metadata
     4. Supports skipping experiments where response files already exist
+    5. Ensures consistent few-shot row determination for reproducible results
     """
     
     def __init__(self):
@@ -174,6 +176,39 @@ class ExperimentRunner:
                 return False, f"Error checking accessibility: {e}"
         
         return False, f"Unknown model type: {model_config.get('type', 'unknown')}"
+    
+    def determine_few_shot_row(self, setup_name: str, specified_few_shot_row: Optional[int], 
+                              original_df: pd.DataFrame) -> int:
+        """
+        Determine the few-shot row to use, ensuring consistency with skip checking logic.
+        
+        This method replicates the exact logic used in main.py for skip checking to ensure
+        that the same few-shot row is always selected for a given setup when no specific
+        row is provided.
+        
+        Args:
+            setup_name: Name of the setup
+            specified_few_shot_row: User-specified row, or None for random selection
+            original_df: The original dataset (before pruning/sampling)
+            
+        Returns:
+            int: The few-shot row index to use
+            
+        Raises:
+            ValueError: If specified row is out of bounds
+        """
+        if specified_few_shot_row is not None:
+            # User specified a specific row
+            if specified_few_shot_row >= len(original_df):
+                raise ValueError(f"Few-shot row {specified_few_shot_row} out of bounds for dataset with {len(original_df)} rows")
+            logger.info(f"Using user-specified few-shot row: {specified_few_shot_row}")
+            return specified_few_shot_row
+        else:
+            # Use deterministic "random" selection based on fixed seed
+            random.seed(Config.RANDOM_SEED)
+            random_row = random.randint(0, len(original_df) - 1)
+            logger.info(f"Using deterministic random few-shot row: {random_row} (from {len(original_df)} total rows)")
+            return random_row
     
     def prepare_dataset(self, setup_name: str, size: int) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int, List[str]]:
         """
@@ -575,19 +610,16 @@ class ExperimentRunner:
 
             df_slice = sampled_df.head(config['size'])
             
-            # Step 2: Determine few-shot row
+            # Step 2: Determine few-shot row using consistent logic
             actual_few_shot_row = None
             if config['mode'] == 'few-shot':
-                if config.get('few_shot_row') is not None:
-                    if config['few_shot_row'] >= len(original_df):
-                        logger.error(f"Few-shot row {config['few_shot_row']} out of bounds")
-                        return None
-                    actual_few_shot_row = config['few_shot_row']
-                else:
-                    import random
-                    random.seed(Config.RANDOM_SEED)
-                    actual_few_shot_row = random.randint(0, len(original_df) - 1)
+                actual_few_shot_row = self.determine_few_shot_row(
+                    config['setup'], 
+                    config.get('few_shot_row'), 
+                    original_df
+                )
                 
+                # Update config with the determined row for consistent naming
                 config['few_shot_row'] = actual_few_shot_row
                 logger.info(f"Using few-shot row {actual_few_shot_row}")
             

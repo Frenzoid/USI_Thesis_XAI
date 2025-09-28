@@ -1,12 +1,12 @@
 import os
 import pandas as pd
 import subprocess
-import shutil
 import re
 import json
+import zipfile
+import urllib.request
 from typing import Dict, Optional, List, Tuple, Any, Union, Iterator
 from urllib.parse import urlparse
-
 from config import Config
 from utils import setup_logging
 from field_resolver import FieldPathResolver
@@ -506,7 +506,6 @@ class DatasetManager:
                     break
         
         try:
-            import urllib.request
             urllib.request.urlretrieve(url, output_path)
             logger.debug(f"Downloaded using urllib: {output_path}")
         except Exception as e:
@@ -522,7 +521,6 @@ class DatasetManager:
             logger.debug(f"Extracted using unzip: {zip_path}")
         except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
             logger.info("Using zipfile fallback for extraction")
-            import zipfile
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 zip_ref.extractall(extract_path)
             logger.debug(f"Extracted using zipfile: {zip_path}")
@@ -627,14 +625,14 @@ class DatasetManager:
             elif file_type == 'parquet':
                 try:
                     df = pd.read_parquet(dataset_path)
-                    return (df[i:i+chunk_size] for i in range(0, len(df), chunk_size))
+                    return (df.iloc[i:i+chunk_size] for i in range(0, len(df), chunk_size))
                 except ImportError:
                     raise ImportError("Parquet support requires pyarrow. Install with: pip install pyarrow")
             else:
                 logger.warning(f"Chunked loading not optimized for {file_type}, falling back to regular loading")
                 df = self.load_dataset(setup_name, ensure_download=False)
                 if df is not None:
-                    return (df[i:i+chunk_size] for i in range(0, len(df), chunk_size))
+                    return (pd.DataFrame(df.iloc[i:i+chunk_size]) for i in range(0, len(df), chunk_size))
                 return None
                 
         except Exception as e:
