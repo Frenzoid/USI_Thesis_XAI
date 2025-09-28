@@ -1,0 +1,1572 @@
+{
+  "experiment_name": "ecare_choice_selection__u4b-mistral-7b__zero-shot__ecare_choice_selection_expert_psychologist__100__0p100",
+  "experiment_config": {
+    "model": "u4b-mistral-7b",
+    "setup": "ecare_choice_selection",
+    "prompt": "ecare_choice_selection_expert_psychologist",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-28T18:35:31.886314",
+  "dataset_info": {
+    "name": "ecare_choice_selection",
+    "original_size": 14928,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 14928,
+    "sampled_size": 100,
+    "columns": [
+      "index",
+      "premise",
+      "ask-for",
+      "hypothesis1",
+      "hypothesis2",
+      "label"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 14928,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+    "description": "Mistral 7B parameter model (4-bit quantized with Unsloth) - Small",
+    "parameters": "7B",
+    "size_category": "small",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection",
+    "template": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+    "description": "Clinical psychologist selects correct causal hypothesis using psychological expertise"
+  },
+  "responses": [
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe saw its inner component.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man had contact with the source of wealth.\n\nHypothesis 2:\nTom opened the back cover of the TV.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Tom opened the back cover of the TV)\n\nExplanation: The phrase \"he saw its inner component\" is often used to describe an action of opening or revealing something hidden or internal. In this context, it is more likely that Tom opened the back cover of the TV (an inanimate object) rather than having contact with the source of wealth, which is a more abstract concept and less likely to be referred to as an \"inner component.\"",
+      "expected_output": "1",
+      "question_values": [
+        "He saw its inner component.",
+        "cause",
+        "The man had contact with the source of wealth.",
+        "Tom opened the back cover of the TV."
+      ],
+      "processing_time": 2.986345052719116,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe digs holes from the root to the top of the mountain to find the voles.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis Heron is fierce by nature.\n\nHypothesis 2:\nTom is assigned to capture all the voles living in a tall mountain near the sea.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Tom is assigned to capture all the voles living in a tall mountain near the sea)\n\nThe action described in the premise seems too specific and unusual for a heron, a bird known for its diet primarily consisting of fish, amphibians, and small reptiles. The behavior of digging holes from the root to the top of a mountain to find voles is not typical for a heron. On the other hand, this behavior could be explained if Tom, a human, is assigned to capture the voles, as it is a more plausible scenario for a human to undertake such an unusual task. Therefore, the more likely hypothesis is that Tom is assigned to capture all the voles living in a tall mountain near the sea.",
+      "expected_output": "1",
+      "question_values": [
+        "He digs holes from the root to the top of the mountain to find the voles.",
+        "cause",
+        "This Heron is fierce by nature.",
+        "Tom is assigned to capture all the voles living in a tall mountain near the sea."
+      ],
+      "processing_time": 4.927778005599976,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHis father took him to a neurologist.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom's brain was injured in a car accident.\n\nHypothesis 2:\nFrank was diagnosed with melanomas.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nWhile the given premise does not provide direct information about Tom's health or medical history, the context suggests a neurological issue due to the mention of a neurologist. A car accident could potentially lead to brain injuries, which would be more in line with a neurologist's expertise. However, it's important to note that this is a hypothesis based on the information provided, and further medical information would be needed for a definitive diagnosis.",
+      "expected_output": "0",
+      "question_values": [
+        "His father took him to a neurologist.",
+        "cause",
+        "Tom's brain was injured in a car accident.",
+        "Frank was diagnosed with melanomas."
+      ],
+      "processing_time": 3.2786548137664795,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nGrate the beans.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nStratification is formed.\n\nHypothesis 2:\nSoybeans precipitate to make tofu.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1, as there is no direct connection between the act of grating beans and the formation of stratification, which is a concept typically associated with social hierarchy or sedimentary layers in geology.\n\n1 for Hypothesis 2 is incorrect because the given instruction is to \"grate\" the beans, not to precipitate them to make tofu. The process of making tofu involves soaking, grinding, and coagulating soybeans, not just grating them. However, it's important to note that the act of grating beans could be a step in a larger process of making tofu, but the given instruction does not specify that.",
+      "expected_output": "1",
+      "question_values": [
+        "Grate the beans.",
+        "effect",
+        "Stratification is formed.",
+        "Soybeans precipitate to make tofu."
+      ],
+      "processing_time": 4.49062442779541,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIt was so long and with so many little fins.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe fisherman got a bluefin.\n\nHypothesis 2:\nThe Pahoehoe was presented in dark light.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation: The given premise does not provide any information about the nature of the scene, light conditions, or the context. However, the term \"fins\" is often associated with fish, and the phrase \"so long\" could suggest a large size. Therefore, the most plausible hypothesis based on the given information is that the fisherman caught a large fish, specifically a bluefin, which is known for its long fins. The second hypothesis about Pahoehoe (a type of basaltic lava flow) and dark light does not seem to be directly related to the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "It was so long and with so many little fins.",
+        "cause",
+        "The fisherman got a bluefin.",
+        "The Pahoehoe was presented in dark light."
+      ],
+      "processing_time": 4.052325487136841,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe finds a rarely known kind of bees called sawfly and conducts his experiment.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nMario wants to cultivate a new speices with wasps and butterflies.\n\nHypothesis 2:\nMario wants to cultivate a new species by hybridizing wasps and their relatives.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Based on the given premise, it is not possible to definitively determine Mario's intentions without more information. However, the mention of a rarely known kind of bees (sawfly) suggests that he might be interested in insects that are closely related to bees. Therefore, it is more likely that Mario wants to cultivate a new species by hybridizing wasps and their relatives (Hypothesis 2).\n\nIn terms of human psychology and behavior, this hypothesis aligns with the principle of human curiosity and the desire to explore and understand the natural world. The rarity of the sawfly makes it an intriguing subject for someone interested in insects, and the idea of cultivating a new species could be driven by a sense of achievement, creativity, and intellectual challenge.",
+      "expected_output": "1",
+      "question_values": [
+        "He finds a rarely known kind of bees called sawfly and conducts his experiment.",
+        "cause",
+        "Mario wants to cultivate a new speices with wasps and butterflies.",
+        "Mario wants to cultivate a new species by hybridizing wasps and their relatives."
+      ],
+      "processing_time": 5.046226501464844,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom didn't pay much attention about the question while he had a clear awareness of his owner gender.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom annoyed his girlfriend and he wanted to know where he was wrong.\n\nHypothesis 2:\nPeople were always curious about the gender of Tom.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) - People are generally curious about various aspects of a person, including their gender. This curiosity might have prompted Tom's girlfriend to ask the question, and Tom, being aware of his own gender, may not have paid much attention to the question because it was not a new or surprising piece of information for him. However, it's important to note that this is a hypothesis and the actual cause could be influenced by multiple factors, including Tom's relationship dynamics, communication style, and emotional state at the time. A thorough assessment would require more context and direct communication with Tom and his girlfriend.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom didn't pay much attention about the question while he had a clear awareness of his owner gender.",
+        "cause",
+        "Tom annoyed his girlfriend and he wanted to know where he was wrong.",
+        "People were always curious about the gender of Tom."
+      ],
+      "processing_time": 4.054093360900879,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHis math teacher advised him to use fractals.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom wanted some lahars.\n\nHypothesis 2:\nHe wanted to find a mathematical function that could represent a complex variable.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (He wanted to find a mathematical function that could represent a complex variable.)\n\nWhile it's possible that someone might find lahars (volcanic mudflows) interesting from a geological or environmental perspective, it's less likely that a student would ask for advice about lahars from a math teacher, unless there was a specific connection or context. The advice about fractals from the math teacher suggests that the student is interested in finding a mathematical function to represent complex variables, which is more in line with typical math curriculum.",
+      "expected_output": "1",
+      "question_values": [
+        "His math teacher advised him to use fractals.",
+        "cause",
+        "Tom wanted some lahars.",
+        "He wanted to find a mathematical function that could represent a complex variable."
+      ],
+      "processing_time": 3.505504846572876,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe tried to measure brightness.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe used nits.\n\nHypothesis 2:\nHe was failed.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nExplanation:\nWhile I'm not a physicist, I can infer that in the context of human behavior and cognitive processes, measuring brightness is typically associated with the use of various tools or methods, such as lux or nits. Therefore, it's more likely that he used nits to measure brightness. The second hypothesis, stating that he failed, is not necessarily implied by the given premise. However, it's important to note that success or failure in this context would depend on various factors, such as the accuracy of the measuring tool, the environment, and the individual's understanding of the measurement process.",
+      "expected_output": "0",
+      "question_values": [
+        "He tried to measure brightness.",
+        "effect",
+        "He used nits.",
+        "He was failed."
+      ],
+      "processing_time": 4.399860858917236,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nInactivity is a disease of the man.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nBread can satisfy him.\n\nHypothesis 2:\nThe man's health is as bad as those who smoke.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\nThe phrase \"Inactivity is a disease of the man\" suggests a metaphorical or symbolic interpretation, implying that inactivity leads to psychological or behavioral issues. Hypothesis 1, \"Bread can satisfy him,\" is a metaphorical statement that could be interpreted as suggesting that engaging in activities or finding purpose in life (represented by \"bread\") can help alleviate the psychological effects of inactivity. On the other hand, Hypothesis 2, \"The man's health is as bad as those who smoke,\" is not directly related to the psychological effects of inactivity and does not seem to be supported by the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "Inactivity is a disease of the man.",
+        "effect",
+        "Bread can satisfy him.",
+        "The man's health is as bad as those who smoke."
+      ],
+      "processing_time": 4.5778162479400635,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe returned his camp.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe soldier needs bigger sharks.\n\nHypothesis 2:\nThe soldier needs more facilities.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (The soldier needs more facilities)\n\nExplanation:\nWhile the phrase \"returned his camp\" does not provide specific details, it is more likely that a soldier returning to his camp would need improved facilities such as better shelter, food, medical supplies, or communication equipment to ensure his safety, comfort, and effectiveness in his duties. The need for bigger sharks (Hypothesis 1) is not a common psychological or behavioral need associated with soldiers or military personnel.",
+      "expected_output": "1",
+      "question_values": [
+        "He returned his camp.",
+        "cause",
+        "The soldier needs bigger sharks.",
+        "The soldier needs more facilities."
+      ],
+      "processing_time": 3.163494825363159,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe judge asked the witness to speak.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe described his experience.\n\nHypothesis 2:\nHe went into the field.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1) is the more likely scenario. It is reasonable to assume that the witness would describe his experience when asked by the judge, as this is a common expectation in a court setting. Going into the field (Hypothesis 2) is not directly related to the situation described.",
+      "expected_output": "0",
+      "question_values": [
+        "The judge asked the witness to speak.",
+        "effect",
+        "He described his experience.",
+        "He went into the field."
+      ],
+      "processing_time": 2.0620193481445312,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIt went out for food.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe potto was always hungry at night.\n\nHypothesis 2:\nThe foxhound would feel hungry.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The given premise does not specify the species of the subject, so it's not possible to make assumptions about its biological needs like hunger. However, if we were to make an educated guess based on human behavior, it would be more appropriate to consider the second hypothesis (Hypothesis 2) for a foxhound, as they are known to be active at night and may feel hungry during that time. But since the subject is not specified as a foxhound, the first hypothesis (Hypothesis 1) is not supported by the information provided.",
+      "expected_output": "0",
+      "question_values": [
+        "It went out for food.",
+        "cause",
+        "The potto was always hungry at night.",
+        "The foxhound would feel hungry."
+      ],
+      "processing_time": 4.151061534881592,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom has many patterns with different colors and shapes.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe can easily  put them into different boxs according to their colors and shapes.\n\nHypothesis 2:\nHe concluded some patterns to classify them.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\n\nFrom a psychological perspective, the ability to categorize and classify objects, such as Tom's patterns, is a fundamental cognitive process that allows individuals to make sense of their environment and reduce cognitive load. This process is often driven by the need for organization and understanding, which are key components of human motivation. Therefore, it is more likely that Tom has concluded some patterns to classify them (Hypothesis 2). While Hypothesis 1 is also possible, it assumes that Tom can easily categorize the patterns without any underlying thought process, which may not be the case for all individuals.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has many patterns with different colors and shapes.",
+        "effect",
+        "He can easily  put them into different boxs according to their colors and shapes.",
+        "He concluded some patterns to classify them."
+      ],
+      "processing_time": 4.058054208755493,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe asked me where to put the scraps.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nI said the wastebasket.\n\nHypothesis 2:\nHe puts all the needed elements into the advertisement.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1) is the more likely scenario based on the given premise. It is more psychologically plausible that the person would be asking about where to put the scraps, which would typically be disposed of in a wastebasket. The second hypothesis (Hypothesis 2) seems less likely, as there is no indication in the premise that the conversation was related to an advertisement or the need for \"needed elements.\" However, it's important to note that without more context, it's difficult to make a definitive conclusion.",
+      "expected_output": "0",
+      "question_values": [
+        "He asked me where to put the scraps.",
+        "effect",
+        "I said the wastebasket.",
+        "He puts all the needed elements into the advertisement."
+      ],
+      "processing_time": 3.7691268920898438,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nI happened to meet a dervish.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe was devoted to muslim.\n\nHypothesis 2:\nScientists find that this anglerfish glow to attract prey.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. The term \"dervish\" is often used to refer to a member of a Sufi Muslim order, but it doesn't necessarily imply that they are devoted to Islam. The term can also be used for individuals who practice a form of whirling dance, regardless of their religious beliefs.\n\n1 for Hypothesis 2 is not related to the situation described. The dervish in this context is a human, not an anglerfish, so the behavior of an anglerfish attracting prey is not applicable.",
+      "expected_output": "0",
+      "question_values": [
+        "I happened to meet a dervish.",
+        "effect",
+        "He was devoted to muslim.",
+        "Scientists find that this anglerfish glow to attract prey."
+      ],
+      "processing_time": 3.70503830909729,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe doctor checked the sick Guppies.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe said they had fatty livers.\n\nHypothesis 2:\nHe observed different symptoms on them.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) is more likely, as the symptoms observed in guppies would be more relevant to their physical health rather than cognitive processes or human behavior, which are the areas of focus in psychology. However, it's important to note that this question is about guppies, not humans.",
+      "expected_output": "0",
+      "question_values": [
+        "The doctor checked the sick Guppies.",
+        "effect",
+        "He said they had fatty livers.",
+        "He observed different symptoms on them."
+      ],
+      "processing_time": 2.1081790924072266,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nA magnet was pushed towards a coin.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey attached to each other.\n\nHypothesis 2:\nIt presence was indicated.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nWhile this scenario doesn't directly involve human psychology or behavior, the presence of the magnet is indicated by the action of pushing it towards the coin. However, it's important to note that this response is based on the physical interaction between the magnet and the coin, not on human behavior or cognitive processes.",
+      "expected_output": "0",
+      "question_values": [
+        "A magnet was pushed towards a coin.",
+        "effect",
+        "They attached to each other.",
+        "It presence was indicated."
+      ],
+      "processing_time": 2.301287889480591,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe went on walking.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHe wants to have a trip.\n\nHypothesis 2:\nHe wants to have a sleep.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\nWhile both hypotheses are possible, the action of \"going on walking\" is more suggestive of movement associated with travel or exercise, which could indicate a desire for a trip (e.g., sightseeing, hiking, etc.) rather than a desire for sleep, as the action of walking is not typically associated with preparing for sleep. However, it's important to note that this is a simplified analysis, and there could be many other factors at play, such as the time of day, the individual's usual routine, or specific contextual information. A more comprehensive understanding of the individual's behavior patterns and motivations would be necessary for a definitive conclusion.",
+      "expected_output": "0",
+      "question_values": [
+        "He went on walking.",
+        "cause",
+        "He wants to have a trip.",
+        "He wants to have a sleep."
+      ],
+      "processing_time": 4.629277944564819,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe man died.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis relatives attended his burial.\n\nHypothesis 2:\nThe latter didn't eat the mouse until the mouse died.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. The statement \"The man died\" does not provide information about his relatives or their actions. However, Hypothesis 2 is not directly related to human psychology or behavior, as it involves an animal (the mouse) and its death, not the man's death.",
+      "expected_output": "0",
+      "question_values": [
+        "The man died.",
+        "effect",
+        "His relatives attended his burial.",
+        "The latter didn't eat the mouse until the mouse died."
+      ],
+      "processing_time": 2.078185796737671,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe knows how to cultivate grapes.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom wants to produce wool.\n\nHypothesis 2:\nHe studied viniculture in university.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (He studied viniculture in university)\n\nWhile the given premise does not directly indicate Tom's current or past desires, it does suggest that he has acquired knowledge and skills related to grape cultivation. This could be due to various reasons, one of which is studying viniculture in university. This hypothesis is more psychologically plausible as it connects the knowledge of grape cultivation to formal education, which is a common pathway for acquiring such skills. The first hypothesis, Tom wanting to produce wool, seems less likely given the information provided.",
+      "expected_output": "1",
+      "question_values": [
+        "He knows how to cultivate grapes.",
+        "cause",
+        "Tom wants to produce wool.",
+        "He studied viniculture in university."
+      ],
+      "processing_time": 3.708765745162964,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nExcept for the food they get, they can also exercise they body and have family united during the harvest.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nPeople harvest their crops every autumn.\n\nHypothesis 2:\nFamilies living throughout temperate Eurasia like eating fresh vegetables.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1: People harvest their crops every autumn.\n\nExplanation:\nWhile the statement suggests that people are harvesting crops, it does not explicitly state that this occurs every autumn. However, the implication is that it is an annual event, which is a characteristic of crop harvesting in many temperate regions. Therefore, the statement supports the idea that people harvest their crops every autumn, but it does not provide enough information to definitively confirm this.\n\n1 for Hypothesis 2: Families living throughout temperate Eurasia like eating fresh vegetables.\n\nExplanation:\nThe statement implies that people are harvesting crops, which are likely vegetables, and that they are eating them. This suggests that they enjoy eating fresh vegetables, as they are taking the effort to grow and harvest them. However, it is important to note that this hypothesis is not as strongly supported as the first one, as the statement does not explicitly state that families like eating fresh vegetables. It only implies it.",
+      "expected_output": "0",
+      "question_values": [
+        "Except for the food they get, they can also exercise they body and have family united during the harvest.",
+        "cause",
+        "People harvest their crops every autumn.",
+        "Families living throughout temperate Eurasia like eating fresh vegetables."
+      ],
+      "processing_time": 6.6188764572143555,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThere are some people who believe in religions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey would go to the church and pay for pray.\n\nHypothesis 2:\nThese people were sincere.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\nWhile attending a place of worship and making financial contributions (paying for prayer) can be a common practice in some religions, it is not a definitive indicator of sincerity. Sincerity is a subjective and internal state that cannot be directly observed or measured. Therefore, it is more appropriate to focus on observable behaviors, such as attending religious services, rather than making assumptions about a person's sincerity based on their actions. However, it is important to note that attending religious services and making financial contributions can be motivated by a variety of factors, including personal beliefs, social pressure, cultural norms, and emotional needs, among others. Thus, while attending religious services and making financial contributions may be a common practice among people who believe in religions, it does not necessarily mean that they are sincere in their beliefs.",
+      "expected_output": "0",
+      "question_values": [
+        "There are some people who believe in religions.",
+        "effect",
+        "They would go to the church and pay for pray.",
+        "These people were sincere."
+      ],
+      "processing_time": 5.570088624954224,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nPhysicists have found that cohesion are related to the function of a single module and processing elements.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nGrazier wields his goad towards a herd of oxen.\n\nHypothesis 2:\nPhysicists are studying cohesion.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\n\nWhile the premise discusses cohesion in terms of physics, it does not directly relate to human behavior or cognitive processes. Hypothesis 1 describes a behavior involving a human (Grazier) and animals (oxen), which is more relevant to human psychology and behavior. However, Hypothesis 2 describes a situation where physicists are studying cohesion, which is more closely related to the principles of physics. Therefore, as a psychologist, I would select Hypothesis 2 as the more appropriate hypothesis based on my area of expertise.",
+      "expected_output": "1",
+      "question_values": [
+        "Physicists have found that cohesion are related to the function of a single module and processing elements.",
+        "cause",
+        "Grazier wields his goad towards a herd of oxen.",
+        "Physicists are studying cohesion."
+      ],
+      "processing_time": 4.182811260223389,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIn the zoo, the students saw a kangaroo chewing all the time without eating food.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe teacher explained that this is because of the function of ruminant stomaches.\n\nHypothesis 2:\nThe kangaroo is chewing gum.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) is more in line with human psychology and behavior, as it is more likely for a human to interpret the observed behavior as something unusual or out of the ordinary, such as a kangaroo chewing gum, rather than understanding the biological function of a ruminant stomach. However, it's important to note that this interpretation is based on the assumption that the observed behavior is not typical for kangaroos, which have a cecum, not a rumen, and do not ruminate like cows or other ruminants. In reality, the correct explanation would be Hypothesis 1, but from a psychological perspective, the observer might initially consider Hypothesis 2 due to the human-centric interpretation of the behavior.",
+      "expected_output": "0",
+      "question_values": [
+        "In the zoo, the students saw a kangaroo chewing all the time without eating food.",
+        "effect",
+        "The teacher explained that this is because of the function of ruminant stomaches.",
+        "The kangaroo is chewing gum."
+      ],
+      "processing_time": 5.095755100250244,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom came home to be disinfected.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom's flight has taken off.\n\nHypothesis 2:\nIt's a flu season recently.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (It's a flu season recently)\n\nExplanation: The phrase \"Tom came home to be disinfected\" suggests a concern for hygiene and cleanliness, which is often heightened during flu seasons when the risk of infection is higher. This behavior could be a proactive measure to prevent the spread of illness, especially if Tom has been in public places or around others who may be sick. The phrase \"Tom came home to be disinfected\" does not necessarily imply that Tom is about to travel (Hypothesis 1).",
+      "expected_output": "1",
+      "question_values": [
+        "Tom came home to be disinfected.",
+        "cause",
+        "Tom's flight has taken off.",
+        "It's a flu season recently."
+      ],
+      "processing_time": 3.6882545948028564,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThey opened the windows .\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe room was lack of oxygen.\n\nHypothesis 2:\nThe room was cold.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nThe opening of the windows could be a response to the room being too warm or stuffy, indicating a need for fresh air and ventilation. This action is often taken to alleviate discomfort caused by high temperatures or poor air quality, which aligns more with the second hypothesis that the room was cold. However, it's important to note that the actual cause could be a variety of factors, and this analysis is based on general psychological principles and human behavior tendencies.",
+      "expected_output": "0",
+      "question_values": [
+        "They opened the windows .",
+        "cause",
+        "The room was lack of oxygen.",
+        "The room was cold."
+      ],
+      "processing_time": 3.1355724334716797,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nEconomists got the value of efficiency.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nEconomists calculated the ratio of deposits to administrative expenses.\n\nHypothesis 2:\nMy mom considers the Efficiency when she deposits her money.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 for Hypothesis 2. As a psychologist, I would suggest that individuals, such as your mom, tend to consider efficiency in their decision-making processes, but not necessarily in the same quantitative or mathematical sense as economists. For instance, they might consider the ease of use, convenience, or time saved when making financial decisions, which are all aspects of efficiency from a human perspective. Economists, on the other hand, would calculate the ratio of deposits to administrative expenses in a more quantitative and systematic way.",
+      "expected_output": "0",
+      "question_values": [
+        "Economists got the value of efficiency.",
+        "cause",
+        "Economists calculated the ratio of deposits to administrative expenses.",
+        "My mom considers the Efficiency when she deposits her money."
+      ],
+      "processing_time": 3.442513942718506,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe should know the continuity of topology.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is a geographer.\n\nHypothesis 2:\nThe professor needs to answer student's all mathematical questions.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nThe statement \"He should know the continuity of topology\" suggests a mathematical or scientific context. Therefore, it is more likely that the professor needs to answer mathematical questions rather than a geographer knowing about topology. However, it's important to note that this is an assumption based on the given information, and further context could potentially support either hypothesis.",
+      "expected_output": "1",
+      "question_values": [
+        "He should know the continuity of topology.",
+        "cause",
+        "Tom is a geographer.",
+        "The professor needs to answer student's all mathematical questions."
+      ],
+      "processing_time": 2.6007258892059326,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nShe felt both emotional loss and physical loss.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLucy experienced Mastectomy.\n\nHypothesis 2:\nShe got a cataract.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Given the information provided, it's difficult to definitively determine the cause of Lucy's emotional and physical loss without additional context. However, the term \"mastectomy\" often involves both emotional (loss of a body part) and physical (surgical removal of breast tissue) loss, which aligns more closely with the given premise. Therefore, Hypothesis 1 (Lucy experienced Mastectomy) might be a more likely explanation, but it's essential to remember that this is speculative without further information.\n\nIn a clinical setting, it would be important to gather more details to provide accurate support and care. The physical loss could also be due to various medical conditions, not just a mastectomy, and the emotional loss could be due to various life events, not necessarily tied to a physical loss. A comprehensive assessment would be necessary to understand the specific circumstances.",
+      "expected_output": "0",
+      "question_values": [
+        "She felt both emotional loss and physical loss.",
+        "cause",
+        "Lucy experienced Mastectomy.",
+        "She got a cataract."
+      ],
+      "processing_time": 5.704169750213623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThis European hunter often caught small mammals.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHedgehogs are his most common aims.\n\nHypothesis 2:\nHe paid no effort to avoid the most dangerous vipers.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\n\nWhile I'm not an expert in hunting or wildlife behavior, I can make an educated guess based on human psychology and behavior. Hypothesis 1 suggests that the hunter consistently targets a specific species, hedgehogs, which could be inferred as a preference or habit. This is plausible as humans often develop routines and preferences in their actions.\n\nOn the other hand, Hypothesis 2 proposes that the hunter disregards danger, specifically from vipers. This is less likely, as humans generally have an innate fear response to dangerous situations, especially those involving venomous snakes. This fear response is a survival mechanism that has evolved over time. However, it's important to note that this is a generalization and there could be exceptions, such as professional snake handlers or individuals with specific cultural practices. But in the absence of additional context, it's more likely that the hunter would take precautions to avoid dangerous encounters.",
+      "expected_output": "0",
+      "question_values": [
+        "This European hunter often caught small mammals.",
+        "effect",
+        "Hedgehogs are his most common aims.",
+        "He paid no effort to avoid the most dangerous vipers."
+      ],
+      "processing_time": 6.649869203567505,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom cuts the silvery-white terbium.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe metal isn't cut apart.\n\nHypothesis 2:\nThe metal is cut into several pieces.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Given the information provided, it is not possible to determine the effect of Tom cutting the terbium based on psychological principles and human behavior. This is because the premise does not provide any information about human behavior or cognitive processes. The question is about a physical action (cutting a metal) and not about human psychology. Therefore, neither hypothesis can be selected as correct based on the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom cuts the silvery-white terbium.",
+        "effect",
+        "The metal isn't cut apart.",
+        "The metal is cut into several pieces."
+      ],
+      "processing_time": 2.547142744064331,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe can guarantee his basic life.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is an individual.\n\nHypothesis 2:\nHe lived in a capitalist country.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "To answer this question, I would need more context to make an informed decision. However, based on the general principles of human psychology and behavior, I would lean towards Hypothesis 2 (He lived in a capitalist country) as a more likely factor influencing his ability to guarantee his basic life. This is because capitalist systems often provide opportunities for individuals to earn a living and secure their basic needs through employment and economic activities. But it's important to note that this is a broad generalization and there are many exceptions. In a real-world scenario, both hypotheses could be true, as an individual living in a capitalist country would still be an individual.",
+      "expected_output": "0",
+      "question_values": [
+        "He can guarantee his basic life.",
+        "cause",
+        "Tom is an individual.",
+        "He lived in a capitalist country."
+      ],
+      "processing_time": 4.2694220542907715,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThis system of taxonomic hierarchies contributes to the accuracy of the study of animalia.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLinnaeus used his newly created \"double name nomenclature\" to name animals and plants uniformly.\n\nHypothesis 2:\nLinnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\n\nWhile Hypothesis 1 is partially correct as Linnaeus did indeed create a uniform nomenclature for naming animals and plants, it does not directly relate to the establishment of taxonomic hierarchies. However, Hypothesis 2 is more relevant to the question as it describes the creation of a system of taxonomic hierarchies, which is crucial for the accurate study of animalia. This system allows for a systematic organization and classification of animals, making it easier to understand their relationships and evolutionary history. This organization can be seen as a manifestation of human cognitive processes, such as the need for order, structure, and understanding of complex systems, which are fundamental aspects of human psychology.",
+      "expected_output": "1",
+      "question_values": [
+        "This system of taxonomic hierarchies contributes to the accuracy of the study of animalia.",
+        "cause",
+        "Linnaeus used his newly created \"double name nomenclature\" to name animals and plants uniformly.",
+        "Linnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes."
+      ],
+      "processing_time": 5.1554059982299805,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe is an abusor.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom always rejects the customary beliefs in morality or religion.\n\nHypothesis 2:\nMy father often mistreats my pet and other animals.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Based on the available information, it's not possible to definitively determine the cause of the abuser's behavior using the provided hypotheses. However, it's important to note that while a lack of moral or religious beliefs (Hypothesis 1) might contribute to certain antisocial behaviors, it's not a guarantee. Similarly, mistreatment of animals (Hypothesis 2) can be indicative of certain personality traits, but it's not a universal cause of abusive behavior towards humans.\n\nIn reality, the causes of abusive behavior are complex and multifaceted, often involving a combination of factors such as childhood trauma, mental health issues, lack of empathy, poor impulse control, and learned behavior from significant figures in their life. A thorough psychological assessment would be necessary to understand the specific causes in this individual's case.",
+      "expected_output": "1",
+      "question_values": [
+        "He is an abusor.",
+        "cause",
+        "Tom always rejects the customary beliefs in morality or religion.",
+        "My father often mistreats my pet and other animals."
+      ],
+      "processing_time": 5.582243204116821,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nFarmers are satisfied.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe factory processed a large  amount of zinc.\n\nHypothesis 2:\nThe government has given some explanation about the policy of the land.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nWhile both hypotheses are speculative, the satisfaction of farmers is more likely to be influenced by external factors such as government policies, market conditions, or financial support, rather than internal factors like the amount of zinc processed in a factory. However, it's important to note that this is a simplification and the actual cause could be a complex interplay of multiple factors. A thorough analysis would require more information and a multidisciplinary approach, including economic, political, and social factors.",
+      "expected_output": "1",
+      "question_values": [
+        "Farmers are satisfied.",
+        "cause",
+        "The factory processed a large  amount of zinc.",
+        "The government has given some explanation about the policy of the land."
+      ],
+      "processing_time": 3.250521183013916,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom's action was a sitimulation for the animal.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nUndesirable consequences made him regret.\n\nHypothesis 2:\nIt stood up and fought with toes.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1) - Undesirable consequences made him regret.\n\nIn human psychology, when an action leads to undesirable consequences, it often results in feelings of regret. This is due to the cognitive dissonance that arises when our actions conflict with our beliefs, values, or expectations. The second hypothesis (It stood up and fought with toes) does not align with human behavior as described in the premise. Humans do not physically fight with their toes.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's action was a sitimulation for the animal.",
+        "effect",
+        "Undesirable consequences made him regret.",
+        "It stood up and fought with toes."
+      ],
+      "processing_time": 3.1807327270507812,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom has bought some oats.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe got some viable seeds.\n\nHypothesis 2:\nHe has found tyrosine in them.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\nWhile the purchase of oats could potentially provide nutritional benefits, including tyrosine, the focus of psychology is on human behavior and cognitive processes, not the nutritional content of foods. The hypothesis about finding viable seeds is more related to the physical properties of the oats, which is a more tangible aspect that can be observed and verified. The presence of tyrosine, a nutrient, is not directly relevant to the study of human behavior and cognitive processes from a psychological perspective.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has bought some oats.",
+        "effect",
+        "He got some viable seeds.",
+        "He has found tyrosine in them."
+      ],
+      "processing_time": 3.4084978103637695,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom's motion had strong frictions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis motion was strongly resisted.\n\nHypothesis 2:\nBy analyzing the economic curve before the stock market disaster in the past, he successfully predicted the financial crisis in 2008.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\nThe given premise does not provide enough information to determine if Tom predicted a financial crisis or not. However, the phrase \"motion had strong frictions\" suggests resistance or opposition to Tom's actions, which aligns with the first hypothesis that his motion was strongly resisted. The second hypothesis is not directly related to the psychological principles of human behavior and cognitive processes.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's motion had strong frictions.",
+        "effect",
+        "His motion was strongly resisted.",
+        "By analyzing the economic curve before the stock market disaster in the past, he successfully predicted the financial crisis in 2008."
+      ],
+      "processing_time": 2.623929738998413,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHis family immediately took him to medical attention.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nBob felt some nausea.\n\nHypothesis 2:\nTom suffered from seizures.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Given the premise that his family took him to medical attention, it's more likely that Tom suffered from seizures (Hypothesis 2) as this condition would require immediate medical attention. Nausea, while a possible symptom, might not necessarily require immediate medical attention and could be managed at home in some cases. However, it's important to note that this is a hypothesis and the actual cause could be something else entirely, as I am not a medical professional and this analysis is based on psychological principles and human behavior.",
+      "expected_output": "0",
+      "question_values": [
+        "His family immediately took him to medical attention.",
+        "cause",
+        "Bob felt some nausea.",
+        "Tom suffered from seizures."
+      ],
+      "processing_time": 3.407846689224243,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nDisaccharides are added to food.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nOligosaccharides can be added to food in a certain amount as a health additive.\n\nHypothesis 2:\nOligosaccharides are sugar compounds.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) - Oligosaccharides are sugar compounds. As a psychologist, I don't have direct knowledge about food additives, but I can infer that oligosaccharides are often added to food for their nutritional benefits, which are related to human health. They are a type of carbohydrate, a category that includes sugars. However, it's important to note that this is an assumption based on the general understanding of food additives and their purposes, and not on specific knowledge about food science. For accurate information, I would recommend consulting a food scientist or nutritionist.",
+      "expected_output": "0",
+      "question_values": [
+        "Disaccharides are added to food.",
+        "cause",
+        "Oligosaccharides can be added to food in a certain amount as a health additive.",
+        "Oligosaccharides are sugar compounds."
+      ],
+      "processing_time": 4.276365041732788,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nLeah takes pictures in the daytime.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLeah thinks it's ideal to take pictures in the sunlight.\n\nHypothesis 2:\nLeah likes to take pictures.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nWhile both hypotheses could potentially be true, the choice leans towards Leah likes to take pictures. This is because the action of taking pictures is a behavior, and the time of day (daytime) is a circumstance that facilitates the behavior. The preference for daytime could be due to various reasons, such as better lighting conditions, but the fact that she takes pictures suggests a liking or interest in the activity itself. However, it's important to note that further information or observations would be necessary to confirm this hypothesis.",
+      "expected_output": "0",
+      "question_values": [
+        "Leah takes pictures in the daytime.",
+        "cause",
+        "Leah thinks it's ideal to take pictures in the sunlight.",
+        "Leah likes to take pictures."
+      ],
+      "processing_time": 3.7708945274353027,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIt reduces stress on my vital joints when jogging.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe bottom of my shoes are made of iron.\n\nHypothesis 2:\nThe bottom of my shoes are made of rubber.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2: The bottom of my shoes are made of rubber)\n\nWhile the premise mentions stress reduction on vital joints, it does not directly relate to the material of the shoes. However, considering the common materials used for jogging shoes, rubber is the most likely choice as it provides cushioning and shock absorption, which can help reduce stress on joints during running. The hypothesis about the shoes being made of iron would not explain the stress reduction on joints during jogging.",
+      "expected_output": "1",
+      "question_values": [
+        "It reduces stress on my vital joints when jogging.",
+        "cause",
+        "The bottom of my shoes are made of iron.",
+        "The bottom of my shoes are made of rubber."
+      ],
+      "processing_time": 3.347106456756592,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nSean likes to put more vinegar in cooking.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nSean's health counselor agrees with his behavior.\n\nHypothesis 2:\nSean's wife likes to eat the dishes he cooks.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\nWhile it's not directly related to psychology, the amount of vinegar in cooking can affect the taste of food, which could potentially influence whether Sean's wife likes the dishes he cooks. However, the health counselor's agreement with Sean's behavior is less likely, as excessive vinegar in cooking may not be considered healthy by nutritionists. Therefore, the choice is 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "Sean likes to put more vinegar in cooking.",
+        "effect",
+        "Sean's health counselor agrees with his behavior.",
+        "Sean's wife likes to eat the dishes he cooks."
+      ],
+      "processing_time": 2.998267889022827,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIn this society, we are involved into different competitions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThis leads to invagination.\n\nHypothesis 2:\nWe need to do our things without any hesitation.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\n\nWhile both hypotheses can be related to human behavior, the concept of \"invagination\" is not a widely recognized psychological term or concept. On the other hand, the idea of doing things without hesitation is more closely related to the concept of decisiveness, which is a key factor in achieving success in various competitions. This is because decisiveness can help individuals make quick and effective decisions, reducing the time spent on indecision and allowing them to focus on executing their actions. This is a common trait observed in high performers in competitive environments.",
+      "expected_output": "1",
+      "question_values": [
+        "In this society, we are involved into different competitions.",
+        "effect",
+        "This leads to invagination.",
+        "We need to do our things without any hesitation."
+      ],
+      "processing_time": 3.794543743133545,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom doesn't believe in any religion.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom thinks that all the moral and religious beliefs are meaningless.\n\nHypothesis 2:\nTom is a man of no principle.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. While it's possible that Tom might think that religious beliefs are meaningless, this doesn't necessarily mean he has no principles. It's more likely that his lack of religious belief is rooted in a specific philosophical or cognitive stance, rather than a lack of principles overall.\n\n1 for Hypothesis 2 is a misleading statement. Lack of religious belief does not equate to a lack of principles. People can have strong moral and ethical principles without adhering to religious beliefs. It's important to avoid making assumptions about a person's character based on their religious beliefs or lack thereof.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom doesn't believe in any religion.",
+        "cause",
+        "Tom thinks that all the moral and religious beliefs are meaningless.",
+        "Tom is a man of no principle."
+      ],
+      "processing_time": 4.262845516204834,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe is good at Biochemistry.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is an expert in maths.\n\nHypothesis 2:\nTom knows how to apply physical chemical principles to biological systems.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Tom knows how to apply physical chemical principles to biological systems)\n\nWhile there might be a correlation between success in biochemistry and maths, it's not necessarily a causal relationship. The ability to understand and apply physical chemical principles to biological systems requires a specific set of knowledge and skills that goes beyond just mathematical abilities. This includes understanding the structure and function of biological molecules, cellular processes, and the principles of chemistry as they apply to living organisms. Therefore, it's more likely that Tom's expertise in biochemistry is due to his knowledge of these specific areas rather than his mathematical skills alone.",
+      "expected_output": "1",
+      "question_values": [
+        "He is good at Biochemistry.",
+        "cause",
+        "Tom is an expert in maths.",
+        "Tom knows how to apply physical chemical principles to biological systems."
+      ],
+      "processing_time": 4.06836199760437,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe threw a lot of gypsum into it.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLuck checked the baseball in his hand.\n\nHypothesis 2:\nJohn wanted to increase the salt content of the lake.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (John wanted to increase the salt content of the lake)\n\nWhile the action of throwing gypsum into a lake could be a random event (Hypothesis 1), the choice of gypsum, a substance high in calcium and sulfur but low in salt, would not typically be used to increase the salt content of a lake. Instead, a substance rich in sodium, such as salt, would be more likely to be used for this purpose, as it aligns with the goal of increasing the salt content. Therefore, it is more psychologically plausible that John intended to increase the salt content of the lake (Hypothesis 2).",
+      "expected_output": "1",
+      "question_values": [
+        "He threw a lot of gypsum into it.",
+        "cause",
+        "Luck checked the baseball in his hand.",
+        "John wanted to increase the salt content of the lake."
+      ],
+      "processing_time": 4.340021133422852,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom got sunburn.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom saw the covers of his textbooks.\n\nHypothesis 2:\nTom was exposed under the strong sunshine.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Tom was exposed under the strong sunshine) is the more likely hypothesis, as it directly relates to the physical exposure to sunlight, which causes sunburn. The first hypothesis (Tom saw the covers of his textbooks) does not seem to be directly related to the cause of sunburn.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom got sunburn.",
+        "cause",
+        "Tom saw the covers of his textbooks.",
+        "Tom was exposed under the strong sunshine."
+      ],
+      "processing_time": 1.9537692070007324,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nI avoid intimacy with them.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nCustomers are hard to mess with.\n\nHypothesis 2:\nI dont want connect with boys.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1",
+      "expected_output": "1",
+      "question_values": [
+        "I avoid intimacy with them.",
+        "cause",
+        "Customers are hard to mess with.",
+        "I dont want connect with boys."
+      ],
+      "processing_time": 0.1437060832977295,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThere are many kinds of people in this world.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey have different characteristics.\n\nHypothesis 2:\nThey stretched themselves at the first step.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1: They have different characteristics. This hypothesis is more directly related to the premise and is supported by the vast body of research in psychology that identifies various personality traits, cognitive styles, and behavioral patterns among individuals.\n\nHypothesis 2: They stretched themselves at the first step. This hypothesis is less directly related to the premise, as it implies a specific action (stretching oneself) rather than a characteristic. While some individuals may exhibit a tendency to challenge themselves, this is not inherently related to the diversity of people in the world.",
+      "expected_output": "0",
+      "question_values": [
+        "There are many kinds of people in this world.",
+        "effect",
+        "They have different characteristics.",
+        "They stretched themselves at the first step."
+      ],
+      "processing_time": 3.8295135498046875,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nSam's sole is blackened.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nSam suffered from depression.\n\nHypothesis 2:\nSam walked on the street which has just been asphalted.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 for Hypothesis 2. The color of a sole does not directly relate to depression or any psychological condition. The blackening of a sole is more likely to be caused by walking on a newly asphalted street or other similar activities.",
+      "expected_output": "1",
+      "question_values": [
+        "Sam's sole is blackened.",
+        "cause",
+        "Sam suffered from depression.",
+        "Sam walked on the street which has just been asphalted."
+      ],
+      "processing_time": 1.6776304244995117,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nA lot carbon inside became part of my cell.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nI ate a lot rice containing carbohydrates.\n\nHypothesis 2:\nThe fire was a stimulus to my skin.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1) is the more likely explanation based on human psychology and behavior. Carbohydrates are a type of nutrient that humans consume, and when ingested, they are broken down into glucose and absorbed into the bloodstream, which then enters cells for energy or storage. This process is a fundamental part of human nutrition and metabolism. The other hypothesis (Hypothesis 2) does not align with the given premise, as carbon is not typically absorbed through the skin from external sources in a way that would become part of cells.",
+      "expected_output": "0",
+      "question_values": [
+        "A lot carbon inside became part of my cell.",
+        "cause",
+        "I ate a lot rice containing carbohydrates.",
+        "The fire was a stimulus to my skin."
+      ],
+      "processing_time": 3.7911016941070557,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe is certified as disabled and can live on government assistance.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHis leg was so badly injured that he could not carry out intensive work.\n\nHypothesis 2:\nJack is chronically malnourished.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Given the information provided, it's important to note that the premise does not provide enough details to definitively determine the cause of his disability or his current condition. However, based on the common understanding that government assistance is often provided for individuals with physical or mental disabilities, it's more likely that his disability is related to a physical condition (Hypothesis 1). Malnutrition, while a potential issue, is not typically the direct cause of a disability that would qualify someone for government assistance. That said, it's crucial to remember that this is a hypothetical situation and the actual cause could be a complex interplay of various factors. A thorough psychological and medical evaluation would be necessary to accurately determine the cause.",
+      "expected_output": "0",
+      "question_values": [
+        "He is certified as disabled and can live on government assistance.",
+        "cause",
+        "His leg was so badly injured that he could not carry out intensive work.",
+        "Jack is chronically malnourished."
+      ],
+      "processing_time": 4.671559572219849,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe scientist has collected some minerals.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe has found magnesium.\n\nHypothesis 2:\nShe has to collect data related to resource usage.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nWhile the presence of minerals could be a personal interest for the scientist, it's more likely that the collection of minerals is related to a research project or data collection, which aligns more closely with the principles of human motivation, particularly the intrinsic motivation to explore, learn, and contribute to scientific knowledge. However, without additional context, this is an educated guess and not a definitive conclusion.",
+      "expected_output": "0",
+      "question_values": [
+        "The scientist has collected some minerals.",
+        "effect",
+        "He has found magnesium.",
+        "She has to collect data related to resource usage."
+      ],
+      "processing_time": 2.908906936645508,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nAfter his election defeat, his fanaticism fans marched and rioted which caused many injuires.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTm drank a lot of alcohol.\n\nHypothesis 2:\nPeter is a charismatic politician who gained a large number of fanaticism fans.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Peter is a charismatic politician who gained a large number of fanaticism fans) seems to be a more plausible hypothesis based on the given premise. The behavior of the fans, marching and rioting after the election defeat, suggests a strong emotional attachment to the politician, which is often associated with charisma. Alcohol consumption would not typically lead to such organized and violent behavior unless it is a part of a larger pattern of behavior or the individual has a history of violent tendencies. However, it's important to note that this is a simplified analysis and real-world situations can be complex and influenced by multiple factors. A comprehensive psychological analysis would require more information and a deeper understanding of the individual and the context.",
+      "expected_output": "1",
+      "question_values": [
+        "After his election defeat, his fanaticism fans marched and rioted which caused many injuires.",
+        "cause",
+        "Tm drank a lot of alcohol.",
+        "Peter is a charismatic politician who gained a large number of fanaticism fans."
+      ],
+      "processing_time": 4.74196195602417,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe tried to escape from the tidal waves.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe swimmer noticed the earthquake.\n\nHypothesis 2:\nWhen Tom was sailing at sea, he felt that his ship was being slowly hit by something.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\n\nWhile both hypotheses are plausible, the choice is based on the assumption that the individual's behavior (trying to escape from tidal waves) is more likely to be triggered by a perceived threat in the immediate environment. In this case, feeling that the ship is being hit by something would be a more direct and immediate cause for action, as opposed to noticing an earthquake, which might not be as directly related to the tidal waves. However, it's important to note that this is a hypothetical scenario, and the actual cause could vary based on numerous factors.",
+      "expected_output": "0",
+      "question_values": [
+        "He tried to escape from the tidal waves.",
+        "cause",
+        "The swimmer noticed the earthquake.",
+        "When Tom was sailing at sea, he felt that his ship was being slowly hit by something."
+      ],
+      "processing_time": 4.298213005065918,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe magnet was heated in the oven.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nIt uses self-distraction.\n\nHypothesis 2:\nIt became non-magnetic.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) - The magnet, being a physical object, would not exhibit self-distraction. However, the heating process in the oven would likely cause the magnet to lose its magnetic properties, making it non-magnetic. This change in the magnet's state is a physical effect, not a psychological one.",
+      "expected_output": "1",
+      "question_values": [
+        "The magnet was heated in the oven.",
+        "effect",
+        "It uses self-distraction.",
+        "It became non-magnetic."
+      ],
+      "processing_time": 2.2043685913085938,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe wanted to know the density of this wood.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe calculated the weight per unit volume.\n\nHypothesis 2:\nHe found chromatids.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. The given premise does not suggest any action related to calculating weight per unit volume, which is typically associated with determining the density of a substance. The premise is about determining the density of wood, but there's no indication that he used a psychological approach or process to do so.\n\n1 for Hypothesis 2. Finding chromatids is a process related to genetics, not wood density, and it is not a typical action associated with determining the density of a material. Therefore, this hypothesis is less likely based on the provided premise. However, it's important to note that this hypothesis is not directly related to human psychology or behavior.",
+      "expected_output": "0",
+      "question_values": [
+        "He wanted to know the density of this wood.",
+        "effect",
+        "He calculated the weight per unit volume.",
+        "He found chromatids."
+      ],
+      "processing_time": 4.5437541007995605,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe project is divided into four stages equally.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe construction of this bridge is a twelve-year project.\n\nHypothesis 2:\nThis old couple intends to create a family.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\n\nHypothesis 1 is about a physical structure, a bridge, which is a non-human entity and does not involve human behavior or cognitive processes.\n\nHypothesis 2, on the other hand, is about human behavior, specifically the intention to create a family, which is a complex process involving human motivation, emotions, and relationships. As a psychologist, I am more equipped to analyze and make predictions about human behavior. Therefore, I would select Hypothesis 2 as it aligns with my area of expertise.",
+      "expected_output": "0",
+      "question_values": [
+        "The project is divided into four stages equally.",
+        "cause",
+        "The construction of this bridge is a twelve-year project.",
+        "This old couple intends to create a family."
+      ],
+      "processing_time": 3.7681288719177246,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nA hyena got lost in the forest.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nIt ate some leaves.\n\nHypothesis 2:\nIt was scard and wanted to found its partners.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nWhile hyenas are omnivores, their diet primarily consists of meat, not leaves. Therefore, it is more likely that the hyena, being a social animal, would be scared and wanting to find its pack, as this behavior is more in line with their social structure and survival instincts. However, it's important to note that this is an assumption based on human psychology principles applied to a non-human animal. In reality, the behavior of a hyena in this situation would be determined by its species-specific needs and instincts.",
+      "expected_output": "1",
+      "question_values": [
+        "A hyena got lost in the forest.",
+        "effect",
+        "It ate some leaves.",
+        "It was scard and wanted to found its partners."
+      ],
+      "processing_time": 3.8273022174835205,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe has good insight.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHe is used to observing other people's words and deeds.\n\nHypothesis 2:\nMike has talents in math.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\nThe given premise states that he has good insight, which typically implies self-awareness and understanding of one's own thoughts, feelings, and motivations. This insight is often developed through introspection and observation of one's own behavior and the behavior of others. Therefore, it is more likely that he is used to observing other people's words and deeds (Hypothesis 1) rather than having talents in math (Hypothesis 2). However, it's important to note that having good insight does not exclude the possibility of having talents in other areas, such as math. It simply suggests that his insight is a more prominent characteristic.",
+      "expected_output": "0",
+      "question_values": [
+        "He has good insight.",
+        "cause",
+        "He is used to observing other people's words and deeds.",
+        "Mike has talents in math."
+      ],
+      "processing_time": 4.515896558761597,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe fell down suddenly.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis knees were skinned.\n\nHypothesis 2:\nHe has gained a lot of profits.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nExplanation:\n\nGiven the premise that he fell down suddenly, it is more likely that he would have physical injuries such as skinned knees, bruises, or other related injuries. The second hypothesis about gaining a lot of profits is not directly related to the physical action of falling down. However, it's important to note that the psychological impact of falling down can vary greatly among individuals, and it could potentially lead to feelings of embarrassment, fear, or anxiety, but these are not physical effects.",
+      "expected_output": "0",
+      "question_values": [
+        "He fell down suddenly.",
+        "effect",
+        "His knees were skinned.",
+        "He has gained a lot of profits."
+      ],
+      "processing_time": 3.6321816444396973,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe went back his house and fell asleep.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom couldn't fall asleep because of whoop noise from upstair.\n\nHypothesis 2:\nThe miner was tired.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) - The miner was tired. This hypothesis is more likely based on the information provided, as falling asleep is typically a result of fatigue or rest. The presence of an external noise could potentially disrupt sleep, but it's not explicitly mentioned that the noise was the cause of his sleep. However, it's important to note that this is a simplified analysis and there could be other factors at play that aren't mentioned in the premise.",
+      "expected_output": "1",
+      "question_values": [
+        "He went back his house and fell asleep.",
+        "cause",
+        "Tom couldn't fall asleep because of whoop noise from upstair.",
+        "The miner was tired."
+      ],
+      "processing_time": 3.1110174655914307,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom has collected some bats in the laboratory.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey fly around.\n\nHypothesis 2:\nThere are no more insects.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nThe question is about bats, not humans, so human psychology and behavior are not directly applicable here. However, if we consider the behavior of bats in a laboratory setting, it's more likely that they would fly around (Hypothesis 1) as that is a natural behavior for bats. The presence of bats in a laboratory would not necessarily imply a lack of insects (Hypothesis 2), as bats can be kept in captivity with a controlled diet.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom has collected some bats in the laboratory.",
+        "effect",
+        "They fly around.",
+        "There are no more insects."
+      ],
+      "processing_time": 3.3036069869995117,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe physiotherapist opened the bright light.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe patient is treated with the phototherapy.\n\nHypothesis 2:\nTom was in shock from drinking too much wine.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nThe action of the physiotherapist opening the bright light could be a part of a treatment process, such as phototherapy, which is often used in various fields of medicine, including psychology. However, without additional context, it's difficult to definitively say that the patient is being treated with phototherapy.\n\nOn the other hand, Hypothesis 2 suggests that the patient is in shock due to excessive wine consumption. While this is a possibility, it's not directly related to the action of the physiotherapist opening the bright light. Therefore, without further information about the patient's behavior, emotional state, or the specific context, it's less likely that this hypothesis is the correct explanation.",
+      "expected_output": "0",
+      "question_values": [
+        "The physiotherapist opened the bright light.",
+        "cause",
+        "The patient is treated with the phototherapy.",
+        "Tom was in shock from drinking too much wine."
+      ],
+      "processing_time": 4.957689046859741,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe used chromatography.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom put the iguana in a fluid free environment.\n\nHypothesis 2:\nHe wanted to separate the substances that were dissolved in the liquid.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (He wanted to separate the substances that were dissolved in the liquid)\n\nWhile the first hypothesis is possible, it doesn't directly relate to the use of chromatography, which is a laboratory technique used to separate, identify, or quantify mixtures of substances. The process involves passing a liquid solution through a substance (often a stationary phase) that causes the components of the solution to separate into distinct bands, each containing one substance. This process is based on the differential solubility and affinity of the substances for the stationary phase and the solvent. Therefore, it seems more likely that the individual was using chromatography to separate substances in a liquid, as suggested in the second hypothesis. However, without additional context, this remains an educated guess.",
+      "expected_output": "1",
+      "question_values": [
+        "He used chromatography.",
+        "cause",
+        "Tom put the iguana in a fluid free environment.",
+        "He wanted to separate the substances that were dissolved in the liquid."
+      ],
+      "processing_time": 5.045673847198486,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nFood was provided for them.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe octopi was hungry.\n\nHypothesis 2:\nThe Bushbucks were locked in a cage.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nWhile it's important to note that I'm a text-based model and don't have the ability to observe or analyze non-human animals, I'm basing this answer on the assumption that the question refers to human behavior. In human psychology, food is typically associated with hunger, so it's a reasonable assumption that the subjects (people) were hungry if food was provided for them. However, in the case of octopi, food is not directly linked to hunger in the same way it is for humans. Bushbucks are antelope native to Africa, and if they were locked in a cage, it would be more likely that they were unable to access food naturally, which could lead to hunger. But since the question does not specify the species, I'm choosing Hypothesis 1 as the most likely answer based on the information provided.",
+      "expected_output": "1",
+      "question_values": [
+        "Food was provided for them.",
+        "cause",
+        "The octopi was hungry.",
+        "The Bushbucks were locked in a cage."
+      ],
+      "processing_time": 5.879255294799805,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom went to the library in his school.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nTom studed by himself quietly.\n\nHypothesis 2:\nHe finds a prodigious amount of documents concerning this topic.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\nWhile it's possible that Tom might have gone to the library to study, the premise does not provide enough information to confirm this. The presence at the library does not necessarily mean that Tom is studying. He could be there for various reasons such as research, browsing, or even taking a break. The hypothesis about finding a prodigious amount of documents concerning a specific topic is less likely, as the premise does not mention Tom's specific purpose or the nature of the documents he might find. However, it's important to note that this is a simplified analysis, and in real-world scenarios, a psychologist would need more information to make a more accurate prediction.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom went to the library in his school.",
+        "effect",
+        "Tom studed by himself quietly.",
+        "He finds a prodigious amount of documents concerning this topic."
+      ],
+      "processing_time": 4.591146945953369,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nA lady took her family to the shop.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nShe bought some snacks for her children.\n\nHypothesis 2:\nThey always went to the marsh.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\nWhile it's possible that she bought snacks for her children (Hypothesis 1), the statement does not provide enough information to confirm this. However, the statement does not suggest any pattern or regularity about their visits to the marsh (Hypothesis 2), so it's less likely that this is a regular occurrence. In analyzing human behavior, we often look for patterns, routines, or motivations that can help us understand the individual's actions. In this case, the statement does not provide enough information to support the idea that they always go to the marsh.",
+      "expected_output": "0",
+      "question_values": [
+        "A lady took her family to the shop.",
+        "effect",
+        "She bought some snacks for her children.",
+        "They always went to the marsh."
+      ],
+      "processing_time": 4.185482025146484,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom thought duchesses had beautiful eyes.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe cerebral cortex of his brain was damaged.\n\nHypothesis 2:\nTom thought duchesses had beautiful features.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Tom thought duchesses had beautiful features)\n\nExplanation: This hypothesis is more in line with the typical human perception of beauty, which is influenced by cultural, social, and personal factors. The assumption that duchesses have beautiful eyes could be a result of Tom associating the title with elegance, grace, or other attractive qualities, rather than a specific physical feature like eyes. The first hypothesis, while possible in certain contexts, is less likely as it would require a specific and unusual brain damage affecting Tom's perception of beauty.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom thought duchesses had beautiful eyes.",
+        "cause",
+        "The cerebral cortex of his brain was damaged.",
+        "Tom thought duchesses had beautiful features."
+      ],
+      "processing_time": 3.617889404296875,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHis parents scared him that if he doesn't sleep anymore, the dragon will come and eat him.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis boy was the only child of his parents.\n\nHypothesis 2:\nThe child doesn't sleep.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) seems more likely based on the information provided. The fear of a dragon eating him if he doesn't sleep suggests a sleep issue, which could be a symptom of anxiety or other psychological conditions. However, it's important to note that this is a hypothesis and further assessment would be needed to confirm it. The cause could also be rooted in various factors, such as family dynamics, the child's temperament, or environmental stressors, but the provided information primarily points towards the second hypothesis.",
+      "expected_output": "1",
+      "question_values": [
+        "His parents scared him that if he doesn't sleep anymore, the dragon will come and eat him.",
+        "cause",
+        "This boy was the only child of his parents.",
+        "The child doesn't sleep."
+      ],
+      "processing_time": 3.4687442779541016,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTwo cars were crashed.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThere will be hurricanes here every few days.\n\nHypothesis 2:\nOne of them can't be driven any more.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (One of them can't be driven any more)\n\nExplanation: The event described (two cars crashed) is a localized incident involving physical damage to the vehicles. This event does not have a direct correlation with weather patterns, such as hurricanes, which are large-scale atmospheric phenomena. Therefore, it is more likely that one of the cars involved in the crash is no longer drivable due to the damage sustained in the accident. This hypothesis is more grounded in the principles of human psychology and behavior, as it directly addresses the potential impact of the car crash on the individuals involved.",
+      "expected_output": "1",
+      "question_values": [
+        "Two cars were crashed.",
+        "effect",
+        "There will be hurricanes here every few days.",
+        "One of them can't be driven any more."
+      ],
+      "processing_time": 3.986739158630371,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIt is not dead.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nNew hair is found on this seemingly dead body.\n\nHypothesis 2:\nThe Myofibrils have different numbers of myofilaments.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. The presence of new hair growth would not be a typical psychological phenomenon associated with human behavior or cognitive processes. Hypothesis 2, on the other hand, refers to muscle structure and physiology, which is outside the scope of human psychology.",
+      "expected_output": "0",
+      "question_values": [
+        "It is not dead.",
+        "cause",
+        "New hair is found on this seemingly dead body.",
+        "The Myofibrils have different numbers of myofilaments."
+      ],
+      "processing_time": 1.938490867614746,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nScientists have tested the ingredients in feces.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe scientist found that the main composition was mineral calcite.\n\nHypothesis 2:\nScientists have discovered the zygote.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nExplanation:\n\nHuman feces are primarily composed of water, undigested food, bacteria, and waste products from the body. They do not contain zygotes, as these are cells that develop from the fertilized egg and are found in the uterus during pregnancy. The presence of zygotes in feces would be an abnormal and medically significant finding, and would not be a part of a study on the composition of feces. Therefore, the correct hypothesis is that the main composition was mineral calcite, which is not a typical component of human feces but could potentially be present if the feces were contaminated with certain minerals.",
+      "expected_output": "1",
+      "question_values": [
+        "Scientists have tested the ingredients in feces.",
+        "effect",
+        "The scientist found that the main composition was mineral calcite.",
+        "Scientists have discovered the zygote."
+      ],
+      "processing_time": 4.670153617858887,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThere is no chance of whistlers.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThere is no lightning strike in the area.\n\nHypothesis 2:\nThe power was out this morning.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "Given the premise that there is no chance of whistlers (which could be interpreted as a supernatural or extraordinary phenomenon), I would lean towards a more mundane explanation for the absence of whistlers.\n\nHypothesis 1 suggests that there is no lightning strike in the area, which could potentially create the conditions for whistlers to occur. This hypothesis seems plausible because lightning is a known natural phenomenon that can create electromagnetic disturbances in the atmosphere, which could potentially manifest as whistlers.\n\nOn the other hand, Hypothesis 2 suggests that the power was out this morning. While this doesn't directly explain the absence of whistlers, it could indirectly contribute by eliminating the possibility of electrical equipment creating interference that might mimic the characteristics of whistlers.\n\nHowever, it's important to note that this is a hypothetical scenario and the absence of whistlers could have numerous explanations, not limited to the two hypotheses provided. In a real-world scenario, additional information would be needed to make a more accurate determination.\n\nIn this case, I would tentatively select 0 for Hypothesis 1 as my answer, but with the understanding that this is",
+      "expected_output": "0",
+      "question_values": [
+        "There is no chance of whistlers.",
+        "cause",
+        "There is no lightning strike in the area.",
+        "The power was out this morning."
+      ],
+      "processing_time": 7.755504369735718,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom's sisters came gack home to celebrate the traditional festival.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis day is the Spring Festival.\n\nHypothesis 2:\nTom's family has a wheat field.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. The term \"traditional festival\" suggests a cultural or familial tradition, but the information provided does not indicate that it is the Spring Festival.\n\n1 for Hypothesis 2 is less likely based on the information provided, but it could be a possibility if Tom's family has a wheat field and the sisters coming home coincides with the wheat harvesting season or a related festival. However, the information about the festival being traditional and the sisters coming home does not provide enough evidence to confirm this hypothesis.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's sisters came gack home to celebrate the traditional festival.",
+        "cause",
+        "This day is the Spring Festival.",
+        "Tom's family has a wheat field."
+      ],
+      "processing_time": 3.568143129348755,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom wants to see his lymph nodes.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe got x-ray report via Lymphangiography.\n\nHypothesis 2:\nHe spent a lot of money.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\n\nIn the given premise, there is no information about Tom spending money. However, the most likely medical procedure to visualize lymph nodes would be an imaging test such as an ultrasound, CT scan, or MRI, which typically do not require a significant amount of money upfront. Therefore, it is more reasonable to assume that Tom received a report from a medical imaging test (Hypothesis 1).\n\nWhile it is possible that Tom might have spent money on other related expenses like consultation fees or additional tests, the premise does not provide enough information to support the assumption that he spent a lot of money (Hypothesis 2).",
+      "expected_output": "0",
+      "question_values": [
+        "Tom wants to see his lymph nodes.",
+        "effect",
+        "He got x-ray report via Lymphangiography.",
+        "He spent a lot of money."
+      ],
+      "processing_time": 4.588482856750488,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHenry lost his ability of perception.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe lost his consciousness.\n\nHypothesis 2:\nHis taste was damaged.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1\n\nExplanation:\n\nPerception is a fundamental aspect of consciousness, involving the interpretation of sensory information in order to identify and understand the world around us. If Henry lost his ability of perception, it would be more likely that he has lost consciousness rather than just his taste, as taste is a specific sensory function. However, it's important to note that the question does not specify the type of perception loss, so it's possible that Henry could have lost his ability to perceive only certain types of stimuli, such as visual or auditory perception, while retaining others, such as taste. In such a case, a more accurate hypothesis would be that Henry has lost specific sensory functions rather than consciousness as a whole. Nonetheless, the question as it stands seems to imply a broader loss of consciousness.",
+      "expected_output": "0",
+      "question_values": [
+        "Henry lost his ability of perception.",
+        "effect",
+        "He lost his consciousness.",
+        "His taste was damaged."
+      ],
+      "processing_time": 5.283525466918945,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThey reached the stage of puberty.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nTheir sleep-wake cycle changed.\n\nHypothesis 2:\nTheir mouths were dripping with saliva.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. While puberty can affect sleep patterns, it is more likely that the sleep-wake cycle changes subtly and may not be as noticeable as other physical or emotional changes during puberty.\n\n1 for Hypothesis 2 is not directly related to puberty. Salivation can be influenced by various factors such as stress, anxiety, or even eating habits, but it is not a typical symptom associated with puberty.",
+      "expected_output": "0",
+      "question_values": [
+        "They reached the stage of puberty.",
+        "effect",
+        "Their sleep-wake cycle changed.",
+        "Their mouths were dripping with saliva."
+      ],
+      "processing_time": 3.227370262145996,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe yelled due to pain from the bruise.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man with implants in his jawbone approached the metal detector.\n\nHypothesis 2:\nJerry stepped on a piece of gravel.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Jerry stepped on a piece of gravel)\n\nWhile the premise suggests that the man yelled due to pain from a bruise, it does not specify the cause of the bruise. The two hypotheses provided offer possible causes for the pain that could lead to yelling. The first hypothesis suggests a specific scenario involving a metal detector and jawbone implants, which seems less likely as a cause for a bruise. The second hypothesis, Jerry stepping on a piece of gravel, is a more common and plausible cause for a bruise, which aligns with the premise that he yelled due to pain. Therefore, I would select hypothesis 2 as the more likely cause.",
+      "expected_output": "1",
+      "question_values": [
+        "He yelled due to pain from the bruise.",
+        "cause",
+        "The man with implants in his jawbone approached the metal detector.",
+        "Jerry stepped on a piece of gravel."
+      ],
+      "processing_time": 4.459225416183472,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nJames accidentally swallowed a silver coin.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nJames was eventually poisoned.\n\nHypothesis 2:\nHe was electrocuted and taken to hospital.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1. Swallowing a silver coin is not typically poisonous, and the human body can pass most objects through the digestive system without significant harm.\n\n1 for Hypothesis 2 is not a likely outcome, as silver is not conductive enough to cause electrocution, and swallowing a coin does not usually lead to such a scenario. However, it's important to note that this is a hypothetical situation and there could be other factors involved that are not accounted for in this scenario. In reality, it's crucial for James to seek medical attention to ensure the coin passes safely through his digestive system.",
+      "expected_output": "0",
+      "question_values": [
+        "James accidentally swallowed a silver coin.",
+        "effect",
+        "James was eventually poisoned.",
+        "He was electrocuted and taken to hospital."
+      ],
+      "processing_time": 4.339067459106445,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe gardener trimmed the length of the willow branches neatly.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe yard was overgrown with weeds.\n\nHypothesis 2:\nThe branches of the willow tree are messy.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\nThe action of trimming the willow branches neatly suggests that the gardener perceived them as messy or disorganized before the action was taken. This action is a result of the gardener's motivation to maintain a visually pleasing and organized environment, which is a common human motivation related to aesthetics and self-expression. The premise does not provide information about the yard being overgrown with weeds, so Hypothesis 1 is not supported by the information given.",
+      "expected_output": "1",
+      "question_values": [
+        "The gardener trimmed the length of the willow branches neatly.",
+        "cause",
+        "The yard was overgrown with weeds.",
+        "The branches of the willow tree are messy."
+      ],
+      "processing_time": 3.6980741024017334,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nSloths haveslower metabolism than any other mammal.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nFewer muscles means slower metabolism.\n\nHypothesis 2:\nInnumerous metabolic processes generated heat in the body.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nWhile I am not a biologist, my understanding of the principles of metabolism suggests that the number of metabolic processes in an organism can significantly influence its metabolic rate. These processes generate heat in the body, which is a key factor in determining an organism's metabolism. In the case of sloths, their slow metabolism could be due to a reduced number of metabolic processes, but it might also be due to adaptations that minimize heat production, such as their slow movement and spending most of their lives in cool environments. However, to confirm this, one would need to consult a biologist or a specialist in animal physiology.",
+      "expected_output": "0",
+      "question_values": [
+        "Sloths haveslower metabolism than any other mammal.",
+        "cause",
+        "Fewer muscles means slower metabolism.",
+        "Innumerous metabolic processes generated heat in the body."
+      ],
+      "processing_time": 4.69680118560791,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHis rice didn't grow at all.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man planted rice on dry land.\n\nHypothesis 2:\nHis intestines do not function well sometimes.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nExplanation:\n\nAs a clinical psychologist, I would first consider the most logical and common cause for a rice crop failure, which is the environment in which the rice was planted. The human body is not directly involved in the farming process, so it is unlikely that the man's intestinal function would affect the growth of his rice. This hypothesis is more in line with the principles of agriculture and environmental factors that influence crop growth.",
+      "expected_output": "0",
+      "question_values": [
+        "His rice didn't grow at all.",
+        "cause",
+        "The man planted rice on dry land.",
+        "His intestines do not function well sometimes."
+      ],
+      "processing_time": 3.1999800205230713,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHost companies want to attract more customers.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey have invited a lot of people.\n\nHypothesis 2:\nThey decide to add Chinese language.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "To attract more customers, a host company could employ various strategies that leverage human psychology and behavior.\n\nHypothesis 1: Inviting a lot of people may create an impression of a popular event, which can attract more people due to the social proof principle. However, this strategy alone might not be enough to specifically target a new demographic, such as Chinese-speaking individuals.\n\nHypothesis 2: Adding the Chinese language can help to attract Chinese-speaking customers, as it addresses a specific language barrier that may prevent them from engaging with the event or the company. This strategy is more likely to target a specific demographic and cater to their needs, making them feel more included and comfortable.\n\nBased on the understanding of human psychology and behavior, the more effective strategy for attracting more customers, particularly Chinese-speaking customers, would be to add the Chinese language (Hypothesis 2). This strategy addresses a specific need and demonstrates cultural sensitivity, which can foster a sense of belonging and encourage engagement.",
+      "expected_output": "1",
+      "question_values": [
+        "Host companies want to attract more customers.",
+        "effect",
+        "They have invited a lot of people.",
+        "They decide to add Chinese language."
+      ],
+      "processing_time": 6.607348918914795,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIncontinence occurs.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nMany elderly people can't control their intestinal system.\n\nHypothesis 2:\nBladder pressure exceeds sphincter resistance.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Bladder pressure exceeds sphincter resistance) is the more appropriate hypothesis from a psychological perspective. While age can be a contributing factor to incontinence, the primary cause is physiological, specifically when bladder pressure exceeds the resistance of the sphincter. This imbalance is due to various factors such as muscle weakness, nerve damage, or certain medical conditions, rather than psychological factors. However, it's important to note that psychological factors can exacerbate or co-occur with physical conditions, affecting the management and treatment of incontinence.",
+      "expected_output": "1",
+      "question_values": [
+        "Incontinence occurs.",
+        "cause",
+        "Many elderly people can't control their intestinal system.",
+        "Bladder pressure exceeds sphincter resistance."
+      ],
+      "processing_time": 3.7815117835998535,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe amount of hemoglobin in Tom's blood has decreased.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe doctor advised Tom to add more nutrition.\n\nHypothesis 2:\nTom has anemia.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Tom has anemia)\n\nExplanation: The decrease in hemoglobin in Tom's blood suggests a medical condition, specifically anemia. While nutrition plays a role in maintaining healthy hemoglobin levels, the direct advice to add more nutrition would typically be a response to a diagnosis or suspicion of anemia. Therefore, it is more likely that Tom has anemia. However, it is essential to consult a medical professional for accurate diagnosis and treatment.",
+      "expected_output": "1",
+      "question_values": [
+        "The amount of hemoglobin in Tom's blood has decreased.",
+        "effect",
+        "The doctor advised Tom to add more nutrition.",
+        "Tom has anemia."
+      ],
+      "processing_time": 3.2122342586517334,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe shows compulsive behavior.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom has obsessive thoughts.\n\nHypothesis 2:\nSeniors in my family have been suffering from chronic diseases.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\nWhile both hypotheses could potentially contribute to compulsive behavior, the observed behavior is more likely to be associated with obsessive thoughts (Hypothesis 1) as it is a common cause of compulsive behavior. Chronic diseases in the family (Hypothesis 2) might indirectly influence behavior through stress or anxiety, but it is not directly related to compulsive behavior unless the diseases themselves or the stress/anxiety they cause manifest in this way. However, it is essential to gather more information and conduct a thorough assessment to confirm the cause of the compulsive behavior.",
+      "expected_output": "0",
+      "question_values": [
+        "He shows compulsive behavior.",
+        "cause",
+        "Tom has obsessive thoughts.",
+        "Seniors in my family have been suffering from chronic diseases."
+      ],
+      "processing_time": 4.127827882766724,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nIt died.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe cell was soaked in liquid containing Cytotoxins.\n\nHypothesis 2:\nHis neck artery was blocked by embolus.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (His neck artery was blocked by embolus). The phrase \"it died\" is not specific enough to suggest that it's about a cell, and the context does not indicate the presence of cytotoxins. The phrase \"neck artery\" suggests a biological organ or system, which aligns more with human anatomy rather than cellular structure. However, it's important to note that this is a hypothetical scenario and the actual cause could be something else entirely, as I am not a medical professional.",
+      "expected_output": "0",
+      "question_values": [
+        "It died.",
+        "cause",
+        "The cell was soaked in liquid containing Cytotoxins.",
+        "His neck artery was blocked by embolus."
+      ],
+      "processing_time": 3.4645626544952393,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHere, they dance together.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThey choose swing dance for their party.\n\nHypothesis 2:\nMark becomes a ventriloquist after years of training.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 (Hypothesis 1)\n\nExplanation:\nWhile both hypotheses are plausible, the given situation does not provide enough information to definitively conclude that Mark became a ventriloquist (Hypothesis 2). However, the act of dancing together (Hypothesis 1) is a more common social behavior and can be inferred from the given context. This inference is based on the understanding that dancing is a form of social interaction and expression, which aligns with human psychological principles such as the need for affiliation and the desire to communicate emotions.",
+      "expected_output": "0",
+      "question_values": [
+        "Here, they dance together.",
+        "cause",
+        "They choose swing dance for their party.",
+        "Mark becomes a ventriloquist after years of training."
+      ],
+      "processing_time": 3.8855841159820557,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom has acute sensation.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis recognizance of nerve vibration is sharp.\n\nHypothesis 2:\nTom has knowledge.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nWhile the first hypothesis (Tom has a sharp recognizance of nerve vibration) could be related to certain conditions such as hyperesthesia or hypersensitivity, it doesn't directly relate to the general principles of human psychology and behavior. On the other hand, having knowledge is a fundamental aspect of human psychology, as it involves cognitive processes like learning, memory, and understanding. Therefore, it is more likely that Tom has knowledge. However, to confirm this, more specific information about Tom's situation would be needed.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has acute sensation.",
+        "effect",
+        "His recognizance of nerve vibration is sharp.",
+        "Tom has knowledge."
+      ],
+      "processing_time": 3.7002134323120117,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nJohn realized the essense of their tyranny of truth.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe found that they were exposed.\n\nHypothesis 2:\nHe became the general against Totalitarianism.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1, as the phrase \"tyranny of truth\" often implies a struggle or oppression, and being exposed doesn't necessarily imply that struggle.\n\n1 for Hypothesis 2 is less direct but could be a metaphorical interpretation. The \"tyranny of truth\" might suggest a personal struggle with accepting or dealing with a truth, and becoming a \"general against Totalitarianism\" could symbolize John's resolve to fight against this internal struggle or external forces that impose a rigid or oppressive truth. However, this interpretation is speculative and not based on concrete evidence from the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "John realized the essense of their tyranny of truth.",
+        "effect",
+        "He found that they were exposed.",
+        "He became the general against Totalitarianism."
+      ],
+      "processing_time": 4.223172426223755,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe experimenter went to the fecal field to collect a large amount of feces.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe greenhouse cannot be completed this year.\n\nHypothesis 2:\nThe greenhouse needs a lot of methane as fuel.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0 for Hypothesis 1.\n\nWhile the premise does not directly involve humans, the actions described are unusual and unrelated to the construction of a greenhouse. However, the unusual nature of the premise could suggest that the greenhouse project is facing unforeseen challenges or delays. This is a more psychological interpretation, as it involves the human aspect of the project management and planning.\n\nHypothesis 2, on the other hand, does not seem to be directly related to human behavior or psychology, as it proposes a specific need for methane in the greenhouse construction, which is not suggested by the premise.",
+      "expected_output": "1",
+      "question_values": [
+        "The experimenter went to the fecal field to collect a large amount of feces.",
+        "cause",
+        "The greenhouse cannot be completed this year.",
+        "The greenhouse needs a lot of methane as fuel."
+      ],
+      "processing_time": 4.207940340042114,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nTom suffered from liver cancer.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe fortuneteller told Tom he had freckles.\n\nHypothesis 2:\nTom's face was like wax due to the accumulation of toxic.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\nThe premise states that Tom suffered from liver cancer, which is a serious health condition. The symptoms of liver cancer do not include freckles, which is the prediction made by the fortuneteller in Hypothesis 1. On the other hand, the accumulation of toxins due to liver dysfunction could potentially affect Tom's physical appearance, such as causing changes in his skin, which is suggested in Hypothesis 2. However, it's important to note that this is a hypothetical scenario and the actual symptoms would depend on the specific type and stage of the cancer, as well as individual factors. This example demonstrates how psychological principles can help analyze situations, but it's crucial to consider medical facts and evidence when dealing with health-related issues.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom suffered from liver cancer.",
+        "effect",
+        "The fortuneteller told Tom he had freckles.",
+        "Tom's face was like wax due to the accumulation of toxic."
+      ],
+      "processing_time": 5.551449775695801,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nJack wanted to find the most ancient of living creatures.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis friend recommended dinosaurs to him.\n\nHypothesis 2:\nHis friend recommended the dragonfly to him.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "To determine the most likely recommendation from Jack's friend, we can consider the factors that influence human motivation and the common knowledge that dinosaurs are extinct.\n\nHuman motivation is often driven by factors such as curiosity, knowledge, and the desire to achieve or discover something new. In this case, it is more likely that Jack's friend recommended a living creature, such as the dragonfly, which is one of the oldest living species on Earth.\n\nTherefore, the correct hypothesis is Hypothesis 2, with a value of 1. It is less likely that his friend would recommend extinct creatures, such as dinosaurs, as they are not living creatures.\n\nHowever, it is important to note that this is a simplified analysis and real-world behavior can be influenced by a multitude of factors, some of which may not be immediately apparent. A more comprehensive analysis would require additional information about Jack, his friend, and their shared interests and knowledge.",
+      "expected_output": "1",
+      "question_values": [
+        "Jack wanted to find the most ancient of living creatures.",
+        "effect",
+        "His friend recommended dinosaurs to him.",
+        "His friend recommended the dragonfly to him."
+      ],
+      "processing_time": 6.235563516616821,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nHe filtered the ink.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe found that there were bromine atoms in it.\n\nHypothesis 2:\nNo solid matter was filtered out.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Hypothesis 2) - As a psychologist, I don't have the expertise to determine the chemical composition of the ink. However, the action of \"filtering\" usually refers to separating solid particles from a liquid or gas, so it's more likely that no solid matter was filtered out, as stated in Hypothesis 2. This hypothesis is more general and doesn't require specific knowledge about the ink's chemical composition.",
+      "expected_output": "1",
+      "question_values": [
+        "He filtered the ink.",
+        "effect",
+        "He found that there were bromine atoms in it.",
+        "No solid matter was filtered out."
+      ],
+      "processing_time": 3.0445950031280518,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nExposion to chemicals had an impact on his heart.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe was injected with medicine containing toxin.\n\nHypothesis 2:\nHe was injected with medicine containing Amiodarone.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "As a psychologist, I don't have the medical expertise to definitively state which hypothesis is correct. However, I can say that the exposure to chemicals and its impact on the heart could be due to various substances, including but not limited to toxins or specific medications like Amiodarone. To determine the specific chemical, further medical investigation would be necessary. The choice between Hypothesis 1 and Hypothesis 2 would depend on additional information about the specific chemical involved and the context of the exposure.",
+      "expected_output": "1",
+      "question_values": [
+        "Exposion to chemicals had an impact on his heart.",
+        "effect",
+        "He was injected with medicine containing toxin.",
+        "He was injected with medicine containing Amiodarone."
+      ],
+      "processing_time": 3.3508243560791016,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nThe piano produced beautiful music.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe piano is an automatic music player.\n\nHypothesis 2:\nMark tapped the keyboard.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "1 (Mark tapped the keyboard)\n\nExplanation: While it's possible for a piano to produce music automatically, this scenario doesn't provide any information about the presence of an automatic music player. The statement only mentions the piano and the music it produced. Given the principles of human psychology and behavior, it's more likely that a human (or another living being) is involved in the production of the music. Therefore, the most plausible hypothesis is that Mark tapped the keyboard.",
+      "expected_output": "1",
+      "question_values": [
+        "The piano produced beautiful music.",
+        "cause",
+        "The piano is an automatic music player.",
+        "Mark tapped the keyboard."
+      ],
+      "processing_time": 3.3520750999450684,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a clinical psychologist with 15 years of experience in human behavior and cognitive processes. You analyze situations through the lens of psychological principles and human motivation.\n\nPremise:\nJack was shivering in the rain.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe went home and had a bowl of ginger soup.\n\nHypothesis 2:\nHe went home and ate a lot of cake.\n\nAs a psychologist, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your understanding of human psychology and behavior:",
+      "response": "0\n\nExplanation:\n\nGiven the situation described, it is more likely that Jack would seek to warm up and regulate his body temperature, which is more effectively achieved by consuming a warm, spicy food like ginger soup rather than a cold dessert like cake. This behavior aligns with the human tendency to seek homeostasis, or a state of balance, in response to environmental conditions.",
+      "expected_output": "0",
+      "question_values": [
+        "Jack was shivering in the rain.",
+        "effect",
+        "He went home and had a bowl of ginger soup.",
+        "He went home and ate a lot of cake."
+      ],
+      "processing_time": 2.7063472270965576,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "0",
+    "1",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "0"
+  ],
+  "processing_stats": {
+    "total_time": 393.55781531333923,
+    "avg_time": 3.935578153133392,
+    "min_time": 0.1437060832977295,
+    "max_time": 7.755504369735718,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

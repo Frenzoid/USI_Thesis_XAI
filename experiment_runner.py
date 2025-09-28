@@ -231,7 +231,12 @@ class ExperimentRunner:
             elif 'parquet_file' in dataset_config:
                 original_df = pd.read_parquet(dataset_path)
                 logger.info(f"Loaded Parquet dataset with {len(original_df)} rows")
-            
+            elif 'json_file' in dataset_config:
+                original_df = self.dataset_manager._load_json_dataset(dataset_path)
+                logger.info(f"Loaded JSON dataset with {len(original_df)} rows")
+            elif 'jsonl_file' in dataset_config:
+                original_df = self.dataset_manager._load_jsonl_dataset(dataset_path)
+                logger.info(f"Loaded JSONL dataset with {len(original_df)} rows")
             if not self.dataset_manager.validate_dataset_fields(setup_name):
                 raise ValueError(f"Dataset validation failed for setup {setup_name}")
 

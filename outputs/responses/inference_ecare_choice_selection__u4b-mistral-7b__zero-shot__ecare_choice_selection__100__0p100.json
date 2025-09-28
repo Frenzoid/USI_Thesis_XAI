@@ -1,0 +1,1572 @@
+{
+  "experiment_name": "ecare_choice_selection__u4b-mistral-7b__zero-shot__ecare_choice_selection__100__0p100",
+  "experiment_config": {
+    "model": "u4b-mistral-7b",
+    "setup": "ecare_choice_selection",
+    "prompt": "ecare_choice_selection",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-28T18:28:54.231233",
+  "dataset_info": {
+    "name": "ecare_choice_selection",
+    "original_size": 14928,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 14928,
+    "sampled_size": 100,
+    "columns": [
+      "index",
+      "premise",
+      "ask-for",
+      "hypothesis1",
+      "hypothesis2",
+      "label"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 14928,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+    "description": "Mistral 7B parameter model (4-bit quantized with Unsloth) - Small",
+    "parameters": "7B",
+    "size_category": "small",
+    "max_tokens": 256,
+    "finetuned": false,
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection",
+    "template": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+    "description": "LLM selects the correct causal hypothesis for a given premise"
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe saw its inner component.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man had contact with the source of wealth.\n\nHypothesis 2:\nTom opened the back cover of the TV.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Tom opened the back cover of the TV) is the correct hypothesis. The act of seeing an inner component typically implies opening or examining something, such as a device or object. In this case, it's more likely that Tom opened the back cover of the TV to see its inner component rather than having contact with the source of wealth. However, it's important to note that the premise doesn't provide enough information to definitively rule out the first hypothesis, as it's possible that the inner component of the TV could be related to the source of wealth.",
+      "expected_output": "1",
+      "question_values": [
+        "He saw its inner component.",
+        "cause",
+        "The man had contact with the source of wealth.",
+        "Tom opened the back cover of the TV."
+      ],
+      "processing_time": 3.720052719116211,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe digs holes from the root to the top of the mountain to find the voles.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis Heron is fierce by nature.\n\nHypothesis 2:\nTom is assigned to capture all the voles living in a tall mountain near the sea.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Tom is assigned to capture all the voles living in a tall mountain near the sea.)\n\nExplanation: The action described in the premise (digging holes from the root to the top of the mountain) is likely related to finding voles, which are small rodents. This suggests that someone is trying to capture or locate these voles, not that the person is fierce by nature. The premise does not provide information about the person's nature or the type of bird called \"Heron.\"",
+      "expected_output": "1",
+      "question_values": [
+        "He digs holes from the root to the top of the mountain to find the voles.",
+        "cause",
+        "This Heron is fierce by nature.",
+        "Tom is assigned to capture all the voles living in a tall mountain near the sea."
+      ],
+      "processing_time": 3.441166639328003,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHis father took him to a neurologist.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom's brain was injured in a car accident.\n\nHypothesis 2:\nFrank was diagnosed with melanomas.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "0",
+      "question_values": [
+        "His father took him to a neurologist.",
+        "cause",
+        "Tom's brain was injured in a car accident.",
+        "Frank was diagnosed with melanomas."
+      ],
+      "processing_time": 0.14452266693115234,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nGrate the beans.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nStratification is formed.\n\nHypothesis 2:\nSoybeans precipitate to make tofu.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "1",
+      "question_values": [
+        "Grate the beans.",
+        "effect",
+        "Stratification is formed.",
+        "Soybeans precipitate to make tofu."
+      ],
+      "processing_time": 0.14348435401916504,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIt was so long and with so many little fins.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe fisherman got a bluefin.\n\nHypothesis 2:\nThe Pahoehoe was presented in dark light.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The given premise describes a fish, specifically mentioning \"little fins,\" which is a characteristic of certain types of fish, such as a bluefin tuna. Therefore, the most likely cause for the situation described is that the fisherman caught a bluefin. The second hypothesis does not seem to be related to the description of the fish.",
+      "expected_output": "0",
+      "question_values": [
+        "It was so long and with so many little fins.",
+        "cause",
+        "The fisherman got a bluefin.",
+        "The Pahoehoe was presented in dark light."
+      ],
+      "processing_time": 2.7078518867492676,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe finds a rarely known kind of bees called sawfly and conducts his experiment.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nMario wants to cultivate a new speices with wasps and butterflies.\n\nHypothesis 2:\nMario wants to cultivate a new species by hybridizing wasps and their relatives.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. The experiment conducted by Mario is on a rarely known kind of bees called sawfly, which are relatives of wasps. Therefore, he wants to cultivate a new species by hybridizing wasps and their relatives.",
+      "expected_output": "1",
+      "question_values": [
+        "He finds a rarely known kind of bees called sawfly and conducts his experiment.",
+        "cause",
+        "Mario wants to cultivate a new speices with wasps and butterflies.",
+        "Mario wants to cultivate a new species by hybridizing wasps and their relatives."
+      ],
+      "processing_time": 1.8864948749542236,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom didn't pay much attention about the question while he had a clear awareness of his owner gender.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom annoyed his girlfriend and he wanted to know where he was wrong.\n\nHypothesis 2:\nPeople were always curious about the gender of Tom.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The given premise does not suggest any relationship between Tom's lack of attention to the question and his annoyance towards his girlfriend. The premise only mentions Tom's awareness of his own gender and his lack of attention to a question, which does not imply any causal relationship with his relationship with his girlfriend.\n\nOn the other hand, Hypothesis 2 (People were always curious about the gender of Tom) is not directly supported by the given premise, but it is a possible explanation for the question being asked. However, the premise does not provide enough information to confirm this hypothesis.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom didn't pay much attention about the question while he had a clear awareness of his owner gender.",
+        "cause",
+        "Tom annoyed his girlfriend and he wanted to know where he was wrong.",
+        "People were always curious about the gender of Tom."
+      ],
+      "processing_time": 4.42589545249939,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHis math teacher advised him to use fractals.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom wanted some lahars.\n\nHypothesis 2:\nHe wanted to find a mathematical function that could represent a complex variable.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (He wanted to find a mathematical function that could represent a complex variable)",
+      "expected_output": "1",
+      "question_values": [
+        "His math teacher advised him to use fractals.",
+        "cause",
+        "Tom wanted some lahars.",
+        "He wanted to find a mathematical function that could represent a complex variable."
+      ],
+      "processing_time": 0.6048285961151123,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe tried to measure brightness.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe used nits.\n\nHypothesis 2:\nHe was failed.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)",
+      "expected_output": "0",
+      "question_values": [
+        "He tried to measure brightness.",
+        "effect",
+        "He used nits.",
+        "He was failed."
+      ],
+      "processing_time": 0.3898615837097168,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nInactivity is a disease of the man.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nBread can satisfy him.\n\nHypothesis 2:\nThe man's health is as bad as those who smoke.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\nThe premise states that inactivity is a disease of the man, and the question asks for the effect of this disease. Hypothesis 1 suggests a cause-effect relationship that is not directly related to the disease of inactivity, while Hypothesis 2 suggests a potential effect of the disease (inactivity as a disease) on the man's health, which is more in line with the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "Inactivity is a disease of the man.",
+        "effect",
+        "Bread can satisfy him.",
+        "The man's health is as bad as those who smoke."
+      ],
+      "processing_time": 3.303469657897949,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe returned his camp.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe soldier needs bigger sharks.\n\nHypothesis 2:\nThe soldier needs more facilities.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (The soldier needs more facilities)\n\nExplanation: The act of returning to a camp suggests that the soldier is returning to a place where he has facilities, such as shelter, food, supplies, etc. Therefore, the soldier needs more facilities. The first hypothesis (The soldier needs bigger sharks) is not related to the action of returning to a camp.",
+      "expected_output": "1",
+      "question_values": [
+        "He returned his camp.",
+        "cause",
+        "The soldier needs bigger sharks.",
+        "The soldier needs more facilities."
+      ],
+      "processing_time": 2.4272119998931885,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe judge asked the witness to speak.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe described his experience.\n\nHypothesis 2:\nHe went into the field.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) is the correct hypothesis. The judge asking the witness to speak typically leads to the witness describing their experience, not going into the field.",
+      "expected_output": "0",
+      "question_values": [
+        "The judge asked the witness to speak.",
+        "effect",
+        "He described his experience.",
+        "He went into the field."
+      ],
+      "processing_time": 1.2256262302398682,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIt went out for food.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe potto was always hungry at night.\n\nHypothesis 2:\nThe foxhound would feel hungry.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 for Hypothesis 2. The action of going out for food implies that the entity (whatever it may be) is feeling hungry at that moment. However, the premise doesn't specify the identity of the entity, so we can't definitively say that it's a potto or a foxhound. But the action of going out for food is typically associated with feeling hungry, so Hypothesis 2 is more likely correct.",
+      "expected_output": "0",
+      "question_values": [
+        "It went out for food.",
+        "cause",
+        "The potto was always hungry at night.",
+        "The foxhound would feel hungry."
+      ],
+      "processing_time": 3.1233675479888916,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom has many patterns with different colors and shapes.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe can easily  put them into different boxs according to their colors and shapes.\n\nHypothesis 2:\nHe concluded some patterns to classify them.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has many patterns with different colors and shapes.",
+        "effect",
+        "He can easily  put them into different boxs according to their colors and shapes.",
+        "He concluded some patterns to classify them."
+      ],
+      "processing_time": 0.14461302757263184,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe asked me where to put the scraps.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nI said the wastebasket.\n\nHypothesis 2:\nHe puts all the needed elements into the advertisement.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "0",
+      "question_values": [
+        "He asked me where to put the scraps.",
+        "effect",
+        "I said the wastebasket.",
+        "He puts all the needed elements into the advertisement."
+      ],
+      "processing_time": 0.14574408531188965,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nI happened to meet a dervish.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe was devoted to muslim.\n\nHypothesis 2:\nScientists find that this anglerfish glow to attract prey.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The meeting of a dervish does not necessarily imply that they are devoted to Islam. While many dervishes are Muslim, not all are, and the premise does not provide enough information to make that assumption. The meeting of a dervish only indicates that the speaker encountered a dervish, not their religious beliefs.\n\nOn the other hand, the second hypothesis is not related to the premise, as the anglerfish's bioluminescence is not related to meeting a dervish.",
+      "expected_output": "0",
+      "question_values": [
+        "I happened to meet a dervish.",
+        "effect",
+        "He was devoted to muslim.",
+        "Scientists find that this anglerfish glow to attract prey."
+      ],
+      "processing_time": 3.8687901496887207,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe doctor checked the sick Guppies.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe said they had fatty livers.\n\nHypothesis 2:\nHe observed different symptoms on them.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. The action of the doctor checking the sick Guppies does not necessarily imply that they had fatty livers, but it does imply that he observed different symptoms on them, as checking sick animals usually involves observing their symptoms.",
+      "expected_output": "0",
+      "question_values": [
+        "The doctor checked the sick Guppies.",
+        "effect",
+        "He said they had fatty livers.",
+        "He observed different symptoms on them."
+      ],
+      "processing_time": 1.9384856224060059,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nA magnet was pushed towards a coin.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey attached to each other.\n\nHypothesis 2:\nIt presence was indicated.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "0",
+      "question_values": [
+        "A magnet was pushed towards a coin.",
+        "effect",
+        "They attached to each other.",
+        "It presence was indicated."
+      ],
+      "processing_time": 0.1420748233795166,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe went on walking.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHe wants to have a trip.\n\nHypothesis 2:\nHe wants to have a sleep.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (He wants to have a trip) is not a direct cause of him going on walking. The given premise does not provide any information about his intentions or destination.\n\nHypothesis 2 (He wants to have a sleep) is also not a direct cause of him going on walking. Walking is typically an action that is incompatible with sleeping.\n\nTherefore, we cannot determine the correct causal relationship based on the given premise. We would need additional information to make an informed guess. For example, if we knew he was walking to get to a place where he could sleep, then we could infer that his intention was to have a sleep. However, without this additional information, we cannot make a definitive conclusion.",
+      "expected_output": "0",
+      "question_values": [
+        "He went on walking.",
+        "cause",
+        "He wants to have a trip.",
+        "He wants to have a sleep."
+      ],
+      "processing_time": 4.789640665054321,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe man died.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis relatives attended his burial.\n\nHypothesis 2:\nThe latter didn't eat the mouse until the mouse died.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) is the correct answer. The death of the man is the effect in this scenario, and the attending of his burial by his relatives is a likely response or effect of his death. Hypothesis 2 (the latter didn't eat the mouse until the mouse died) is not directly related to the man's death.",
+      "expected_output": "0",
+      "question_values": [
+        "The man died.",
+        "effect",
+        "His relatives attended his burial.",
+        "The latter didn't eat the mouse until the mouse died."
+      ],
+      "processing_time": 2.4749364852905273,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe knows how to cultivate grapes.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom wants to produce wool.\n\nHypothesis 2:\nHe studied viniculture in university.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "1",
+      "question_values": [
+        "He knows how to cultivate grapes.",
+        "cause",
+        "Tom wants to produce wool.",
+        "He studied viniculture in university."
+      ],
+      "processing_time": 0.14377140998840332,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nExcept for the food they get, they can also exercise they body and have family united during the harvest.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nPeople harvest their crops every autumn.\n\nHypothesis 2:\nFamilies living throughout temperate Eurasia like eating fresh vegetables.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The given premise does not provide enough information to definitively say that people harvest their crops every autumn. However, it does suggest that during the harvest, people can eat food, exercise, and be united with their family. This implies that the harvest is an event that occurs, but it does not specify when or how often it happens. Therefore, the most reasonable assumption is that people harvest their crops at some point, which is the basis for Hypothesis 1. Hypothesis 2 is not directly supported by the given information.",
+      "expected_output": "0",
+      "question_values": [
+        "Except for the food they get, they can also exercise they body and have family united during the harvest.",
+        "cause",
+        "People harvest their crops every autumn.",
+        "Families living throughout temperate Eurasia like eating fresh vegetables."
+      ],
+      "processing_time": 3.9782192707061768,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThere are some people who believe in religions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey would go to the church and pay for pray.\n\nHypothesis 2:\nThese people were sincere.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) These people were sincere.\n\nThe given premise does not specify any action that these people take due to their belief in a religion. However, sincerity is a characteristic often associated with religious belief, so it is a more accurate causal relationship to infer from the premise. The action of going to church and paying for prayer is not necessarily a universal behavior for all people who believe in religions.",
+      "expected_output": "0",
+      "question_values": [
+        "There are some people who believe in religions.",
+        "effect",
+        "They would go to the church and pay for pray.",
+        "These people were sincere."
+      ],
+      "processing_time": 2.944474935531616,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nPhysicists have found that cohesion are related to the function of a single module and processing elements.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nGrazier wields his goad towards a herd of oxen.\n\nHypothesis 2:\nPhysicists are studying cohesion.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. The premise states that cohesion is related to the function of a single module and processing elements, which is a concept in physics. Therefore, physicists are studying cohesion, not a grazier wielding a goad towards a herd of oxen.",
+      "expected_output": "1",
+      "question_values": [
+        "Physicists have found that cohesion are related to the function of a single module and processing elements.",
+        "cause",
+        "Grazier wields his goad towards a herd of oxen.",
+        "Physicists are studying cohesion."
+      ],
+      "processing_time": 2.2842001914978027,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIn the zoo, the students saw a kangaroo chewing all the time without eating food.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe teacher explained that this is because of the function of ruminant stomaches.\n\nHypothesis 2:\nThe kangaroo is chewing gum.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. The behavior described in the premise is more likely to be the kangaroo chewing gum, rather than having a ruminant stomach that causes it to chew all the time without eating food. Ruminants, such as cows and sheep, have a complex digestive system that involves chewing their food multiple times to break it down and mix it with saliva. Kangaroos, while they do have a complex digestive system, do not have a ruminant stomach and do not chew their food in the same way.",
+      "expected_output": "0",
+      "question_values": [
+        "In the zoo, the students saw a kangaroo chewing all the time without eating food.",
+        "effect",
+        "The teacher explained that this is because of the function of ruminant stomaches.",
+        "The kangaroo is chewing gum."
+      ],
+      "processing_time": 4.021912336349487,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom came home to be disinfected.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom's flight has taken off.\n\nHypothesis 2:\nIt's a flu season recently.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "1",
+      "question_values": [
+        "Tom came home to be disinfected.",
+        "cause",
+        "Tom's flight has taken off.",
+        "It's a flu season recently."
+      ],
+      "processing_time": 0.14484620094299316,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThey opened the windows .\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe room was lack of oxygen.\n\nHypothesis 2:\nThe room was cold.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) is not the correct causal relationship. Opening the windows usually allows fresh air to enter, which increases the oxygen level in the room, not decreases it.\n\n1 (Hypothesis 2) is not the correct causal relationship either, as opening the windows allows for heat to escape, making the room potentially cooler, but this doesn't necessarily mean it becomes cold.\n\nThe correct causal relationship is not directly provided in the premise. Opening the windows can lead to various effects depending on factors such as the weather outside, the initial temperature and humidity of the room, and the number and size of the windows. For example, if it's a hot day outside, opening the windows could make the room cooler. If it's a cold day outside, opening the windows could make the room cooler as well, or it could make the room warmer if the outside temperature is warmer than the inside temperature. So, the correct causal relationship cannot be definitively determined based on the given premise alone.",
+      "expected_output": "0",
+      "question_values": [
+        "They opened the windows .",
+        "cause",
+        "The room was lack of oxygen.",
+        "The room was cold."
+      ],
+      "processing_time": 6.9713311195373535,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nEconomists got the value of efficiency.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nEconomists calculated the ratio of deposits to administrative expenses.\n\nHypothesis 2:\nMy mom considers the Efficiency when she deposits her money.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 for Hypothesis 1. The given premise does not indicate that economists calculated the ratio of deposits to administrative expenses. Instead, it suggests that they got the value of efficiency, which is a concept or understanding, not a calculation.\n\nHypothesis 2 is not directly related to the premise, as it involves a personal decision of a specific individual (the speaker's mom) and not a general statement about economists.",
+      "expected_output": "0",
+      "question_values": [
+        "Economists got the value of efficiency.",
+        "cause",
+        "Economists calculated the ratio of deposits to administrative expenses.",
+        "My mom considers the Efficiency when she deposits her money."
+      ],
+      "processing_time": 2.9907150268554688,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe should know the continuity of topology.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is a geographer.\n\nHypothesis 2:\nThe professor needs to answer student's all mathematical questions.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (The professor needs to answer student's all mathematical questions)\n\nExplanation: The continuity of topology is a concept in mathematics, specifically in the field of topology. Therefore, the cause for someone needing to know the continuity of topology is likely that they are a professor or teacher who needs to answer mathematical questions, or they are a student studying mathematics. Geography is not directly related to the continuity of topology.",
+      "expected_output": "1",
+      "question_values": [
+        "He should know the continuity of topology.",
+        "cause",
+        "Tom is a geographer.",
+        "The professor needs to answer student's all mathematical questions."
+      ],
+      "processing_time": 3.0158135890960693,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nShe felt both emotional loss and physical loss.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLucy experienced Mastectomy.\n\nHypothesis 2:\nShe got a cataract.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Lucy experienced Mastectomy) is a more likely cause for both emotional and physical loss. A mastectomy is a surgical procedure that involves the removal of all or part of the breast, which can lead to both emotional distress (due to changes in body image, sexuality, and self-esteem) and physical loss (due to the removal of the breast tissue). Cataract surgery, on the other hand, is a procedure to remove the cloudy lens from the eye and replace it with an artificial lens. While it can cause temporary emotional distress, it is not typically associated with physical loss in the same way a mastectomy is.",
+      "expected_output": "0",
+      "question_values": [
+        "She felt both emotional loss and physical loss.",
+        "cause",
+        "Lucy experienced Mastectomy.",
+        "She got a cataract."
+      ],
+      "processing_time": 4.315409421920776,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThis European hunter often caught small mammals.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHedgehogs are his most common aims.\n\nHypothesis 2:\nHe paid no effort to avoid the most dangerous vipers.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "0",
+      "question_values": [
+        "This European hunter often caught small mammals.",
+        "effect",
+        "Hedgehogs are his most common aims.",
+        "He paid no effort to avoid the most dangerous vipers."
+      ],
+      "processing_time": 0.14609050750732422,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom cuts the silvery-white terbium.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe metal isn't cut apart.\n\nHypothesis 2:\nThe metal is cut into several pieces.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (The metal is cut into several pieces) is the correct hypothesis. However, it's important to note that terbium is a metal, but it's not typically cut with a knife like Tom is using. It's usually processed in a laboratory using specialized equipment. The premise is not entirely accurate, but the question asks for the effect, and if the premise were accurate, the effect would be the metal being cut into several pieces.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom cuts the silvery-white terbium.",
+        "effect",
+        "The metal isn't cut apart.",
+        "The metal is cut into several pieces."
+      ],
+      "processing_time": 2.9859426021575928,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe can guarantee his basic life.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is an individual.\n\nHypothesis 2:\nHe lived in a capitalist country.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Tom being an individual does not guarantee his basic life)\n\nThe given premise does not provide information about the system or circumstances in which Tom lives, so it's not possible to determine if living in a capitalist country is the cause of him being able to guarantee his basic life. However, it's important to note that being an individual (Hypothesis 1) does not inherently guarantee one's basic life, as various factors such as access to resources, healthcare, and social support systems play a significant role in ensuring basic life needs are met.",
+      "expected_output": "0",
+      "question_values": [
+        "He can guarantee his basic life.",
+        "cause",
+        "Tom is an individual.",
+        "He lived in a capitalist country."
+      ],
+      "processing_time": 3.7459492683410645,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThis system of taxonomic hierarchies contributes to the accuracy of the study of animalia.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLinnaeus used his newly created \"double name nomenclature\" to name animals and plants uniformly.\n\nHypothesis 2:\nLinnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 for Hypothesis 2: Linnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes. This system contributes to the accuracy of the study of animalia. The double name nomenclature (Hypothesis 1) is a part of the taxonomic system, but it is not the cause of the accuracy in the study of animalia; rather, the system as a whole contributes to this accuracy.",
+      "expected_output": "1",
+      "question_values": [
+        "This system of taxonomic hierarchies contributes to the accuracy of the study of animalia.",
+        "cause",
+        "Linnaeus used his newly created \"double name nomenclature\" to name animals and plants uniformly.",
+        "Linnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes."
+      ],
+      "processing_time": 3.3585777282714844,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe is an abusor.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom always rejects the customary beliefs in morality or religion.\n\nHypothesis 2:\nMy father often mistreats my pet and other animals.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "1",
+      "question_values": [
+        "He is an abusor.",
+        "cause",
+        "Tom always rejects the customary beliefs in morality or religion.",
+        "My father often mistreats my pet and other animals."
+      ],
+      "processing_time": 0.14402437210083008,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nFarmers are satisfied.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe factory processed a large  amount of zinc.\n\nHypothesis 2:\nThe government has given some explanation about the policy of the land.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is more likely to be the cause of farmers being satisfied. The amount of zinc processed by a factory would not directly affect the satisfaction of farmers unless there is a specific connection between zinc and farming that is not provided in the premise. On the other hand, government policies regarding land can significantly impact farmers, such as providing support, regulating land use, or offering subsidies, which could lead to farmer satisfaction.",
+      "expected_output": "1",
+      "question_values": [
+        "Farmers are satisfied.",
+        "cause",
+        "The factory processed a large  amount of zinc.",
+        "The government has given some explanation about the policy of the land."
+      ],
+      "processing_time": 3.018739938735962,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom's action was a sitimulation for the animal.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nUndesirable consequences made him regret.\n\nHypothesis 2:\nIt stood up and fought with toes.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Undesirable consequences made him regret) is the correct hypothesis. The action simulated by Tom would likely have some effect on the animal, but it is more likely that the effect on Tom himself would be the focus of the premise, such as regret if the simulation did not go as planned or if it caused undesirable consequences for the animal. The second hypothesis (It stood up and fought with toes) is not directly related to the premise.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's action was a sitimulation for the animal.",
+        "effect",
+        "Undesirable consequences made him regret.",
+        "It stood up and fought with toes."
+      ],
+      "processing_time": 2.9668772220611572,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom has bought some oats.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe got some viable seeds.\n\nHypothesis 2:\nHe has found tyrosine in them.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has bought some oats.",
+        "effect",
+        "He got some viable seeds.",
+        "He has found tyrosine in them."
+      ],
+      "processing_time": 0.14393353462219238,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom's motion had strong frictions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis motion was strongly resisted.\n\nHypothesis 2:\nBy analyzing the economic curve before the stock market disaster in the past, he successfully predicted the financial crisis in 2008.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's motion had strong frictions.",
+        "effect",
+        "His motion was strongly resisted.",
+        "By analyzing the economic curve before the stock market disaster in the past, he successfully predicted the financial crisis in 2008."
+      ],
+      "processing_time": 0.1435246467590332,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHis family immediately took him to medical attention.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nBob felt some nausea.\n\nHypothesis 2:\nTom suffered from seizures.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation:\nThe given premise states that his family took him to medical attention, which suggests that he was ill or injured in some way. Nausea is a symptom that could lead to seeking medical attention, so Hypothesis 1 is a possible cause. On the other hand, seizures might also require medical attention, but they are not necessarily the cause of the action described in the premise. Therefore, Hypothesis 1 is the correct choice.",
+      "expected_output": "0",
+      "question_values": [
+        "His family immediately took him to medical attention.",
+        "cause",
+        "Bob felt some nausea.",
+        "Tom suffered from seizures."
+      ],
+      "processing_time": 3.482585906982422,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nDisaccharides are added to food.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nOligosaccharides can be added to food in a certain amount as a health additive.\n\nHypothesis 2:\nOligosaccharides are sugar compounds.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. Disaccharides are a type of sugar compound, and adding them to food is a common practice. However, it's important to note that disaccharides are not the only sugar compounds that can be added to food. Oligosaccharides, which are a type of carbohydrate, can also be added as a health additive in certain amounts.",
+      "expected_output": "0",
+      "question_values": [
+        "Disaccharides are added to food.",
+        "cause",
+        "Oligosaccharides can be added to food in a certain amount as a health additive.",
+        "Oligosaccharides are sugar compounds."
+      ],
+      "processing_time": 2.953636884689331,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nLeah takes pictures in the daytime.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLeah thinks it's ideal to take pictures in the sunlight.\n\nHypothesis 2:\nLeah likes to take pictures.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Leah likes to take pictures) is the correct hypothesis. The given premise does not provide enough information to definitively say that Leah thinks it's ideal to take pictures in sunlight, only that she takes pictures during the daytime, which could be due to various reasons such as sunlight being available, her schedule, or other factors. However, the fact that she takes pictures implies that she likes to do so, as taking pictures is typically an activity people engage in when they enjoy it.",
+      "expected_output": "0",
+      "question_values": [
+        "Leah takes pictures in the daytime.",
+        "cause",
+        "Leah thinks it's ideal to take pictures in the sunlight.",
+        "Leah likes to take pictures."
+      ],
+      "processing_time": 3.2055375576019287,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIt reduces stress on my vital joints when jogging.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe bottom of my shoes are made of iron.\n\nHypothesis 2:\nThe bottom of my shoes are made of rubber.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (The bottom of my shoes are made of rubber)\n\nExplanation: The stress reduction on vital joints while jogging is more likely caused by the shock absorption properties of the rubber material in the soles of the shoes, rather than the material being made of iron. Iron does not have the same shock-absorbing properties as rubber, which helps reduce the impact on joints during jogging.",
+      "expected_output": "1",
+      "question_values": [
+        "It reduces stress on my vital joints when jogging.",
+        "cause",
+        "The bottom of my shoes are made of iron.",
+        "The bottom of my shoes are made of rubber."
+      ],
+      "processing_time": 2.688788890838623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nSean likes to put more vinegar in cooking.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nSean's health counselor agrees with his behavior.\n\nHypothesis 2:\nSean's wife likes to eat the dishes he cooks.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Sean's wife likes to eat the dishes he cooks) is the more likely effect of Sean liking to put more vinegar in cooking. The health counselor's agreement with his behavior is not directly related to the amount of vinegar he uses in cooking. However, the taste of the dishes cooked with more vinegar might influence whether his wife enjoys eating them.",
+      "expected_output": "0",
+      "question_values": [
+        "Sean likes to put more vinegar in cooking.",
+        "effect",
+        "Sean's health counselor agrees with his behavior.",
+        "Sean's wife likes to eat the dishes he cooks."
+      ],
+      "processing_time": 2.558793783187866,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIn this society, we are involved into different competitions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThis leads to invagination.\n\nHypothesis 2:\nWe need to do our things without any hesitation.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 for Hypothesis 2: \"We need to do our things without any hesitation.\"\n\nThe given premise does not suggest any direct causal relationship with invagination, which is a term typically used in biology to describe a folding inward of a tissue or membrane. However, the premise does imply that being involved in competitions might require one to act decisively and without hesitation.",
+      "expected_output": "1",
+      "question_values": [
+        "In this society, we are involved into different competitions.",
+        "effect",
+        "This leads to invagination.",
+        "We need to do our things without any hesitation."
+      ],
+      "processing_time": 2.79714035987854,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom doesn't believe in any religion.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom thinks that all the moral and religious beliefs are meaningless.\n\nHypothesis 2:\nTom is a man of no principle.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Tom thinks that all the moral and religious beliefs are meaningless) is the correct hypothesis. The given premise states that Tom doesn't believe in any religion, which implies that he may not find religious beliefs meaningful or valuable, leading to the conclusion that he thinks that all the moral and religious beliefs are meaningless. However, this does not necessarily mean that he is a man of no principle, as the absence of religious beliefs does not equate to a lack of personal principles or values.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom doesn't believe in any religion.",
+        "cause",
+        "Tom thinks that all the moral and religious beliefs are meaningless.",
+        "Tom is a man of no principle."
+      ],
+      "processing_time": 3.197751045227051,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe is good at Biochemistry.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is an expert in maths.\n\nHypothesis 2:\nTom knows how to apply physical chemical principles to biological systems.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "1",
+      "question_values": [
+        "He is good at Biochemistry.",
+        "cause",
+        "Tom is an expert in maths.",
+        "Tom knows how to apply physical chemical principles to biological systems."
+      ],
+      "processing_time": 0.1443309783935547,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe threw a lot of gypsum into it.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLuck checked the baseball in his hand.\n\nHypothesis 2:\nJohn wanted to increase the salt content of the lake.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "1",
+      "question_values": [
+        "He threw a lot of gypsum into it.",
+        "cause",
+        "Luck checked the baseball in his hand.",
+        "John wanted to increase the salt content of the lake."
+      ],
+      "processing_time": 0.14282822608947754,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom got sunburn.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom saw the covers of his textbooks.\n\nHypothesis 2:\nTom was exposed under the strong sunshine.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Tom was exposed under the strong sunshine)",
+      "expected_output": "1",
+      "question_values": [
+        "Tom got sunburn.",
+        "cause",
+        "Tom saw the covers of his textbooks.",
+        "Tom was exposed under the strong sunshine."
+      ],
+      "processing_time": 0.452930212020874,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nI avoid intimacy with them.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nCustomers are hard to mess with.\n\nHypothesis 2:\nI dont want connect with boys.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "1",
+      "question_values": [
+        "I avoid intimacy with them.",
+        "cause",
+        "Customers are hard to mess with.",
+        "I dont want connect with boys."
+      ],
+      "processing_time": 0.1431128978729248,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThere are many kinds of people in this world.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey have different characteristics.\n\nHypothesis 2:\nThey stretched themselves at the first step.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1: They have different characteristics) is the correct hypothesis. The statement \"There are many kinds of people in this world\" implies that there are multiple distinct groups or categories of people, which suggests that they have different characteristics. The second hypothesis is not related to the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "There are many kinds of people in this world.",
+        "effect",
+        "They have different characteristics.",
+        "They stretched themselves at the first step."
+      ],
+      "processing_time": 2.0421342849731445,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nSam's sole is blackened.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nSam suffered from depression.\n\nHypothesis 2:\nSam walked on the street which has just been asphalted.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Sam walked on the street which has just been asphalted) is the more likely cause for Sam's sole being blackened. Depression would not directly cause his sole to be blackened. Walking on fresh asphalt can cause the sole of shoes to become blackened.",
+      "expected_output": "1",
+      "question_values": [
+        "Sam's sole is blackened.",
+        "cause",
+        "Sam suffered from depression.",
+        "Sam walked on the street which has just been asphalted."
+      ],
+      "processing_time": 1.968918800354004,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nA lot carbon inside became part of my cell.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nI ate a lot rice containing carbohydrates.\n\nHypothesis 2:\nThe fire was a stimulus to my skin.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (I ate a lot of rice containing carbohydrates) is the correct hypothesis. Carbon is a component of carbohydrates, and consuming food containing carbohydrates is the most likely cause for carbon to become part of your cells. The second hypothesis is not related to the intake of carbon.",
+      "expected_output": "0",
+      "question_values": [
+        "A lot carbon inside became part of my cell.",
+        "cause",
+        "I ate a lot rice containing carbohydrates.",
+        "The fire was a stimulus to my skin."
+      ],
+      "processing_time": 2.2040529251098633,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe is certified as disabled and can live on government assistance.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHis leg was so badly injured that he could not carry out intensive work.\n\nHypothesis 2:\nJack is chronically malnourished.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) is the correct hypothesis. The given premise suggests that the individual is certified as disabled, which typically implies a physical or mental impairment that prevents them from engaging in substantial gainful activity. This impairment could be due to various reasons, including a badly injured leg. The second hypothesis, while possible, is not directly suggested by the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "He is certified as disabled and can live on government assistance.",
+        "cause",
+        "His leg was so badly injured that he could not carry out intensive work.",
+        "Jack is chronically malnourished."
+      ],
+      "processing_time": 2.6131346225738525,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe scientist has collected some minerals.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe has found magnesium.\n\nHypothesis 2:\nShe has to collect data related to resource usage.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\nThe premise does not provide information about the specific mineral collected, only that minerals were collected. Therefore, the action of collecting data related to resource usage (Hypothesis 2) is not directly caused by the collection of minerals (Premise). However, it could be a subsequent action related to the minerals, but the premise does not provide enough information to confirm this. On the other hand, finding a specific mineral (Hypothesis 1) is not directly caused by the collection of minerals (Premise) as the premise does not specify the type of mineral collected.",
+      "expected_output": "0",
+      "question_values": [
+        "The scientist has collected some minerals.",
+        "effect",
+        "He has found magnesium.",
+        "She has to collect data related to resource usage."
+      ],
+      "processing_time": 4.460075855255127,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nAfter his election defeat, his fanaticism fans marched and rioted which caused many injuires.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTm drank a lot of alcohol.\n\nHypothesis 2:\nPeter is a charismatic politician who gained a large number of fanaticism fans.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Peter is a charismatic politician who gained a large number of fanaticism fans) is the correct hypothesis. The election defeat led to the fanaticism fans marching and rioting, causing injuries. This chain of events suggests that Peter, as the politician in question, had a large number of fanaticism fans.",
+      "expected_output": "1",
+      "question_values": [
+        "After his election defeat, his fanaticism fans marched and rioted which caused many injuires.",
+        "cause",
+        "Tm drank a lot of alcohol.",
+        "Peter is a charismatic politician who gained a large number of fanaticism fans."
+      ],
+      "processing_time": 2.23199200630188,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe tried to escape from the tidal waves.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe swimmer noticed the earthquake.\n\nHypothesis 2:\nWhen Tom was sailing at sea, he felt that his ship was being slowly hit by something.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. The tidal waves are typically caused by various factors such as earthquakes, volcanic eruptions, or landslides. However, in the given premise, it is not explicitly stated that the person noticed an earthquake. The second hypothesis suggests that the person was sailing at sea and felt their ship being hit, which could be the cause of the tidal waves.",
+      "expected_output": "0",
+      "question_values": [
+        "He tried to escape from the tidal waves.",
+        "cause",
+        "The swimmer noticed the earthquake.",
+        "When Tom was sailing at sea, he felt that his ship was being slowly hit by something."
+      ],
+      "processing_time": 2.8872339725494385,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe magnet was heated in the oven.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nIt uses self-distraction.\n\nHypothesis 2:\nIt became non-magnetic.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (It became non-magnetic) is the correct hypothesis. Heating a magnet in an oven can cause it to lose its magnetic properties. This phenomenon is known as magnetic annealing, where the heat causes the magnetic domains within the magnet to realign randomly, reducing its overall magnetic strength. However, it's important to note that not all magnets will lose their magnetism when heated, and the degree of loss depends on the type of magnet and the specific heating conditions.",
+      "expected_output": "1",
+      "question_values": [
+        "The magnet was heated in the oven.",
+        "effect",
+        "It uses self-distraction.",
+        "It became non-magnetic."
+      ],
+      "processing_time": 3.128573417663574,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe wanted to know the density of this wood.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe calculated the weight per unit volume.\n\nHypothesis 2:\nHe found chromatids.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "0",
+      "question_values": [
+        "He wanted to know the density of this wood.",
+        "effect",
+        "He calculated the weight per unit volume.",
+        "He found chromatids."
+      ],
+      "processing_time": 0.14493870735168457,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe project is divided into four stages equally.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe construction of this bridge is a twelve-year project.\n\nHypothesis 2:\nThis old couple intends to create a family.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The premise only mentions the division of a project into four stages, but it does not specify the duration of the project. Therefore, we cannot infer that the construction of the bridge is a twelve-year project. The premise does not provide any information about the couple's family plans either, so we cannot infer that they intend to create a family.",
+      "expected_output": "0",
+      "question_values": [
+        "The project is divided into four stages equally.",
+        "cause",
+        "The construction of this bridge is a twelve-year project.",
+        "This old couple intends to create a family."
+      ],
+      "processing_time": 2.8084585666656494,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nA hyena got lost in the forest.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nIt ate some leaves.\n\nHypothesis 2:\nIt was scard and wanted to found its partners.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (It was scared and wanted to find its partners) is the more likely effect given the premise. A hyena getting lost in the forest would likely cause it to feel scared and seek its pack for safety, rather than eating leaves. However, it's important to note that this is an assumption based on typical hyena behavior and not definitive fact.",
+      "expected_output": "1",
+      "question_values": [
+        "A hyena got lost in the forest.",
+        "effect",
+        "It ate some leaves.",
+        "It was scard and wanted to found its partners."
+      ],
+      "processing_time": 2.390916585922241,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe has good insight.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHe is used to observing other people's words and deeds.\n\nHypothesis 2:\nMike has talents in math.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (He is used to observing other people's words and deeds) is the more likely cause for the given premise \"He has good insight.\" The ability to observe and analyze others' words and deeds can lead to a better understanding of situations, which is a key component of good insight. The talent in math mentioned in Hypothesis 2 does not directly contribute to having good insight.",
+      "expected_output": "0",
+      "question_values": [
+        "He has good insight.",
+        "cause",
+        "He is used to observing other people's words and deeds.",
+        "Mike has talents in math."
+      ],
+      "processing_time": 2.713918447494507,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe fell down suddenly.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis knees were skinned.\n\nHypothesis 2:\nHe has gained a lot of profits.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1: His knees were skinned) is the correct hypothesis. The given premise suggests that he fell down suddenly, which could cause physical injuries such as skinned knees. The second hypothesis (he has gained a lot of profits) is not a likely effect of falling down suddenly.",
+      "expected_output": "0",
+      "question_values": [
+        "He fell down suddenly.",
+        "effect",
+        "His knees were skinned.",
+        "He has gained a lot of profits."
+      ],
+      "processing_time": 2.053964853286743,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe went back his house and fell asleep.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom couldn't fall asleep because of whoop noise from upstair.\n\nHypothesis 2:\nThe miner was tired.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) The miner was tired. This hypothesis is more likely to be the cause as it explains why he went back to his house and fell asleep. The first hypothesis does not provide a clear reason for him falling asleep.",
+      "expected_output": "1",
+      "question_values": [
+        "He went back his house and fell asleep.",
+        "cause",
+        "Tom couldn't fall asleep because of whoop noise from upstair.",
+        "The miner was tired."
+      ],
+      "processing_time": 1.6652655601501465,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom has collected some bats in the laboratory.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey fly around.\n\nHypothesis 2:\nThere are no more insects.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2: There are no more insects)\n\nExplanation: The premise states that Tom has collected some bats in the laboratory, not that they are currently flying around. The presence of bats in a laboratory would likely reduce the number of insects, as bats are known for eating insects. However, it's important to note that this is a causal relationship based on general knowledge about bats, not a direct causation from the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom has collected some bats in the laboratory.",
+        "effect",
+        "They fly around.",
+        "There are no more insects."
+      ],
+      "processing_time": 3.344972610473633,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe physiotherapist opened the bright light.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe patient is treated with the phototherapy.\n\nHypothesis 2:\nTom was in shock from drinking too much wine.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) is the correct hypothesis. The action of the physiotherapist opening the bright light is likely related to the treatment of a patient with phototherapy. The other hypothesis (Hypothesis 2) does not have a direct causal relationship with the action of the physiotherapist opening the bright light.",
+      "expected_output": "0",
+      "question_values": [
+        "The physiotherapist opened the bright light.",
+        "cause",
+        "The patient is treated with the phototherapy.",
+        "Tom was in shock from drinking too much wine."
+      ],
+      "processing_time": 2.4031355381011963,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe used chromatography.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom put the iguana in a fluid free environment.\n\nHypothesis 2:\nHe wanted to separate the substances that were dissolved in the liquid.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (He wanted to separate the substances that were dissolved in the liquid.)\n\nExplanation: Chromatography is a laboratory technique used to separate, identify, or quantify mixtures of substances that have different rates of movement through a stationary phase and a mobile phase. The process does not involve putting an iguana in a fluid-free environment.",
+      "expected_output": "1",
+      "question_values": [
+        "He used chromatography.",
+        "cause",
+        "Tom put the iguana in a fluid free environment.",
+        "He wanted to separate the substances that were dissolved in the liquid."
+      ],
+      "processing_time": 2.5323634147644043,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nFood was provided for them.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe octopi was hungry.\n\nHypothesis 2:\nThe Bushbucks were locked in a cage.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "1",
+      "question_values": [
+        "Food was provided for them.",
+        "cause",
+        "The octopi was hungry.",
+        "The Bushbucks were locked in a cage."
+      ],
+      "processing_time": 0.15137529373168945,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom went to the library in his school.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nTom studed by himself quietly.\n\nHypothesis 2:\nHe finds a prodigious amount of documents concerning this topic.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2)\n\nThe given premise does not directly imply that Tom studied by himself quietly. However, it does imply that he might find documents related to his topic of interest, as libraries are places where books and other resources are available.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom went to the library in his school.",
+        "effect",
+        "Tom studed by himself quietly.",
+        "He finds a prodigious amount of documents concerning this topic."
+      ],
+      "processing_time": 1.8371729850769043,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nA lady took her family to the shop.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nShe bought some snacks for her children.\n\nHypothesis 2:\nThey always went to the marsh.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (She bought some snacks for her children) is the correct hypothesis as it is the effect of the lady taking her family to the shop. The other hypothesis (They always went to the marsh) does not logically follow from the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "A lady took her family to the shop.",
+        "effect",
+        "She bought some snacks for her children.",
+        "They always went to the marsh."
+      ],
+      "processing_time": 1.7780134677886963,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom thought duchesses had beautiful eyes.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe cerebral cortex of his brain was damaged.\n\nHypothesis 2:\nTom thought duchesses had beautiful features.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1",
+      "expected_output": "1",
+      "question_values": [
+        "Tom thought duchesses had beautiful eyes.",
+        "cause",
+        "The cerebral cortex of his brain was damaged.",
+        "Tom thought duchesses had beautiful features."
+      ],
+      "processing_time": 0.1467115879058838,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHis parents scared him that if he doesn't sleep anymore, the dragon will come and eat him.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis boy was the only child of his parents.\n\nHypothesis 2:\nThe child doesn't sleep.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (The child doesn't sleep)",
+      "expected_output": "1",
+      "question_values": [
+        "His parents scared him that if he doesn't sleep anymore, the dragon will come and eat him.",
+        "cause",
+        "This boy was the only child of his parents.",
+        "The child doesn't sleep."
+      ],
+      "processing_time": 0.4048726558685303,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTwo cars were crashed.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThere will be hurricanes here every few days.\n\nHypothesis 2:\nOne of them can't be driven any more.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (One of them can't be driven any more)",
+      "expected_output": "1",
+      "question_values": [
+        "Two cars were crashed.",
+        "effect",
+        "There will be hurricanes here every few days.",
+        "One of them can't be driven any more."
+      ],
+      "processing_time": 0.5416929721832275,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIt is not dead.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nNew hair is found on this seemingly dead body.\n\nHypothesis 2:\nThe Myofibrils have different numbers of myofilaments.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)\n\nExplanation: The given premise states that something is not dead. Finding new hair on a seemingly dead body would be a sign of life, thus causing the entity to no longer be considered dead. The second hypothesis is about the structure of muscle fibers and does not relate to the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "It is not dead.",
+        "cause",
+        "New hair is found on this seemingly dead body.",
+        "The Myofibrils have different numbers of myofilaments."
+      ],
+      "processing_time": 2.454695224761963,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nScientists have tested the ingredients in feces.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe scientist found that the main composition was mineral calcite.\n\nHypothesis 2:\nScientists have discovered the zygote.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1)",
+      "expected_output": "1",
+      "question_values": [
+        "Scientists have tested the ingredients in feces.",
+        "effect",
+        "The scientist found that the main composition was mineral calcite.",
+        "Scientists have discovered the zygote."
+      ],
+      "processing_time": 0.3927013874053955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThere is no chance of whistlers.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThere is no lightning strike in the area.\n\nHypothesis 2:\nThe power was out this morning.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "To determine the causal relationship, we need to understand that whistlers are a type of radio emission that occur in the ionosphere, and they are often caused by lightning strikes. So, if there is no chance of whistlers, it implies that there was no lightning strike in the area. Therefore, the correct hypothesis is Hypothesis 1: There is no lightning strike in the area. (0)",
+      "expected_output": "0",
+      "question_values": [
+        "There is no chance of whistlers.",
+        "cause",
+        "There is no lightning strike in the area.",
+        "The power was out this morning."
+      ],
+      "processing_time": 2.718170642852783,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom's sisters came gack home to celebrate the traditional festival.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis day is the Spring Festival.\n\nHypothesis 2:\nTom's family has a wheat field.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's sisters came gack home to celebrate the traditional festival.",
+        "cause",
+        "This day is the Spring Festival.",
+        "Tom's family has a wheat field."
+      ],
+      "processing_time": 0.1504840850830078,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom wants to see his lymph nodes.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe got x-ray report via Lymphangiography.\n\nHypothesis 2:\nHe spent a lot of money.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2)\n\nTom wanting to see his lymph nodes doesn't necessarily mean he got an x-ray report via Lymphangiography, which is a specific medical imaging technique. The action of wanting to see his lymph nodes could imply that he might be concerned about his health, and as a result, he might have spent a lot of money on a consultation or diagnostic tests. However, this is a general assumption and not a definitive causal relationship.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom wants to see his lymph nodes.",
+        "effect",
+        "He got x-ray report via Lymphangiography.",
+        "He spent a lot of money."
+      ],
+      "processing_time": 3.446070432662964,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHenry lost his ability of perception.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe lost his consciousness.\n\nHypothesis 2:\nHis taste was damaged.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2: His taste was damaged) is not directly related to the loss of perception. The ability of perception generally refers to the senses of sight, hearing, touch, taste, and smell. However, the given premise does not specify which sense was affected, so it's hard to make a definitive conclusion. But since taste is not typically associated with perception in the way the term is commonly used, Hypothesis 1 (He lost his consciousness) would be a more reasonable assumption, although it's important to note that the premise does not explicitly state that he lost consciousness.",
+      "expected_output": "0",
+      "question_values": [
+        "Henry lost his ability of perception.",
+        "effect",
+        "He lost his consciousness.",
+        "His taste was damaged."
+      ],
+      "processing_time": 4.025280237197876,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThey reached the stage of puberty.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nTheir sleep-wake cycle changed.\n\nHypothesis 2:\nTheir mouths were dripping with saliva.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) is the correct hypothesis. The onset of puberty often leads to changes in the sleep-wake cycle, including the onset of sleep disorders and changes in sleep patterns. However, saliva production is not directly related to puberty.",
+      "expected_output": "0",
+      "question_values": [
+        "They reached the stage of puberty.",
+        "effect",
+        "Their sleep-wake cycle changed.",
+        "Their mouths were dripping with saliva."
+      ],
+      "processing_time": 1.937082052230835,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe yelled due to pain from the bruise.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man with implants in his jawbone approached the metal detector.\n\nHypothesis 2:\nJerry stepped on a piece of gravel.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Jerry stepped on a piece of gravel) is the correct hypothesis. The given premise describes a person yelling due to pain from a bruise, which suggests that the pain was caused by some physical action or event. While the first hypothesis doesn't directly relate to causing pain, the second hypothesis describes an action (stepping on gravel) that could potentially lead to a bruise and subsequent pain.",
+      "expected_output": "1",
+      "question_values": [
+        "He yelled due to pain from the bruise.",
+        "cause",
+        "The man with implants in his jawbone approached the metal detector.",
+        "Jerry stepped on a piece of gravel."
+      ],
+      "processing_time": 2.7264814376831055,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nJames accidentally swallowed a silver coin.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nJames was eventually poisoned.\n\nHypothesis 2:\nHe was electrocuted and taken to hospital.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (James was not electrocuted and taken to hospital. Swallowing a silver coin does not cause electrocution.) The swallowing of a silver coin can cause discomfort, pain, or blockage in the digestive system, but it does not lead to electrocution. The coin itself is not electrically conductive. However, if James had a pre-existing condition or the coin got stuck in a way that caused complications, he might need medical attention. But the initial premise does not suggest electrocution.",
+      "expected_output": "0",
+      "question_values": [
+        "James accidentally swallowed a silver coin.",
+        "effect",
+        "James was eventually poisoned.",
+        "He was electrocuted and taken to hospital."
+      ],
+      "processing_time": 3.5179879665374756,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe gardener trimmed the length of the willow branches neatly.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe yard was overgrown with weeds.\n\nHypothesis 2:\nThe branches of the willow tree are messy.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) is the correct hypothesis. The action of trimming the willow branches neatly implies that the branches were previously messy or unkempt. The gardener's action was a response to the state of the branches, not the yard's overgrowth with weeds.",
+      "expected_output": "1",
+      "question_values": [
+        "The gardener trimmed the length of the willow branches neatly.",
+        "cause",
+        "The yard was overgrown with weeds.",
+        "The branches of the willow tree are messy."
+      ],
+      "processing_time": 2.125730514526367,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nSloths haveslower metabolism than any other mammal.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nFewer muscles means slower metabolism.\n\nHypothesis 2:\nInnumerous metabolic processes generated heat in the body.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Innumerous metabolic processes generated heat in the body)\n\nExplanation: Sloths have a lower metabolism because they have fewer muscles, which require less energy to maintain and generate heat. However, the primary reason for their low metabolism is the slow rate of their metabolic processes, which generate less heat in their bodies compared to other mammals. This is due to their adaptation to their arboreal lifestyle, where conserving energy is crucial for survival.",
+      "expected_output": "0",
+      "question_values": [
+        "Sloths haveslower metabolism than any other mammal.",
+        "cause",
+        "Fewer muscles means slower metabolism.",
+        "Innumerous metabolic processes generated heat in the body."
+      ],
+      "processing_time": 3.2827200889587402,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHis rice didn't grow at all.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man planted rice on dry land.\n\nHypothesis 2:\nHis intestines do not function well sometimes.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1) The man didn't grow the rice; he planted it. The non-growth of the rice is likely due to unfavorable conditions for rice growth, such as dry land, lack of water, or poor soil quality. The second hypothesis (his intestines not functioning well) does not seem to have a direct causal relationship with the growth of rice.",
+      "expected_output": "0",
+      "question_values": [
+        "His rice didn't grow at all.",
+        "cause",
+        "The man planted rice on dry land.",
+        "His intestines do not function well sometimes."
+      ],
+      "processing_time": 2.6978394985198975,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHost companies want to attract more customers.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey have invited a lot of people.\n\nHypothesis 2:\nThey decide to add Chinese language.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (They decide to add Chinese language)\n\nExplanation: While inviting more people can potentially attract more customers, the premise does not specify that they have invited a lot of people. On the other hand, adding a language like Chinese could potentially attract more customers from the Chinese-speaking market, assuming that there is a significant Chinese-speaking population that the host companies are trying to reach.",
+      "expected_output": "1",
+      "question_values": [
+        "Host companies want to attract more customers.",
+        "effect",
+        "They have invited a lot of people.",
+        "They decide to add Chinese language."
+      ],
+      "processing_time": 2.6788461208343506,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIncontinence occurs.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nMany elderly people can't control their intestinal system.\n\nHypothesis 2:\nBladder pressure exceeds sphincter resistance.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Bladder pressure exceeds sphincter resistance) is the correct hypothesis. Incontinence, particularly urinary incontinence, is often caused by an imbalance between bladder pressure and the ability of the sphincter to resist that pressure. This can occur due to various factors such as age, certain medical conditions, or medications. However, it's important to note that this is a simplified explanation and the causes can be complex and multifactorial.",
+      "expected_output": "1",
+      "question_values": [
+        "Incontinence occurs.",
+        "cause",
+        "Many elderly people can't control their intestinal system.",
+        "Bladder pressure exceeds sphincter resistance."
+      ],
+      "processing_time": 3.1614480018615723,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe amount of hemoglobin in Tom's blood has decreased.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe doctor advised Tom to add more nutrition.\n\nHypothesis 2:\nTom has anemia.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Tom has anemia)",
+      "expected_output": "1",
+      "question_values": [
+        "The amount of hemoglobin in Tom's blood has decreased.",
+        "effect",
+        "The doctor advised Tom to add more nutrition.",
+        "Tom has anemia."
+      ],
+      "processing_time": 0.35529041290283203,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe shows compulsive behavior.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom has obsessive thoughts.\n\nHypothesis 2:\nSeniors in my family have been suffering from chronic diseases.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Tom has obsessive thoughts) is a more likely cause for the compulsive behavior. While there could be a connection between chronic diseases and compulsive behavior in some cases, it is not as direct or immediate as the relationship between obsessive thoughts and compulsive behavior. However, it's important to note that this is a simplified example, and real-life causes for compulsive behavior can be complex and multifactorial.",
+      "expected_output": "0",
+      "question_values": [
+        "He shows compulsive behavior.",
+        "cause",
+        "Tom has obsessive thoughts.",
+        "Seniors in my family have been suffering from chronic diseases."
+      ],
+      "processing_time": 3.019317865371704,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nIt died.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe cell was soaked in liquid containing Cytotoxins.\n\nHypothesis 2:\nHis neck artery was blocked by embolus.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "To determine the cause of the death in the given premise, we need more specific information about the subject that died. However, based on the provided hypotheses, we can infer that:\n\nHypothesis 1: If the cell was soaked in a liquid containing cytotoxins, it would cause the cell to die. This could be a possible cause, but it's not specific enough for a whole organism.\n\nHypothesis 2: If his neck artery was blocked by an embolus, it could potentially cause death in a human or animal with a similar circulatory system. This hypothesis seems more likely to be a cause of death for a whole organism.\n\nSince we don't have enough information to definitively choose between the two hypotheses, it's best to consider additional factors or information to make a more accurate determination. However, based on the provided hypotheses, hypothesis 2 seems more likely to be the cause of death for a whole organism.\n\nFinal answer: 1 (His neck artery was blocked by embolus)",
+      "expected_output": "0",
+      "question_values": [
+        "It died.",
+        "cause",
+        "The cell was soaked in liquid containing Cytotoxins.",
+        "His neck artery was blocked by embolus."
+      ],
+      "processing_time": 7.025201320648193,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHere, they dance together.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThey choose swing dance for their party.\n\nHypothesis 2:\nMark becomes a ventriloquist after years of training.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (They choose swing dance for their party) is the correct hypothesis. The given premise suggests that they are dancing together, and swing dance is a type of dance where multiple people can dance together. The second hypothesis (Mark becomes a ventriloquist after years of training) does not directly relate to the premise.",
+      "expected_output": "0",
+      "question_values": [
+        "Here, they dance together.",
+        "cause",
+        "They choose swing dance for their party.",
+        "Mark becomes a ventriloquist after years of training."
+      ],
+      "processing_time": 2.141308546066284,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom has acute sensation.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis recognizance of nerve vibration is sharp.\n\nHypothesis 2:\nTom has knowledge.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (Hypothesis 1: His recognizance of nerve vibration is sharp.)\n\nThe given premise states that Tom has an acute sensation, which typically refers to a heightened or abnormally keen sense of something, such as touch, hearing, or taste. This suggests that Tom's sensory perception is particularly sharp, not necessarily that he has knowledge. Therefore, the correct hypothesis is that his recognizance of nerve vibration is sharp.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has acute sensation.",
+        "effect",
+        "His recognizance of nerve vibration is sharp.",
+        "Tom has knowledge."
+      ],
+      "processing_time": 3.0655710697174072,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nJohn realized the essense of their tyranny of truth.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe found that they were exposed.\n\nHypothesis 2:\nHe became the general against Totalitarianism.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (He found that they were exposed) is the more likely effect given the premise. The essence of tyranny of truth could refer to understanding the nature or characteristics of a situation, in this case, the tyranny, and finding out that they (whoever \"they\" refers to) are exposed could mean they are revealed to be unjust, dishonest, or oppressive. The second hypothesis is less likely because becoming a general against Totalitarianism is a more significant action that might not directly follow from realizing the essence of their tyranny of truth.",
+      "expected_output": "1",
+      "question_values": [
+        "John realized the essense of their tyranny of truth.",
+        "effect",
+        "He found that they were exposed.",
+        "He became the general against Totalitarianism."
+      ],
+      "processing_time": 3.7391245365142822,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe experimenter went to the fecal field to collect a large amount of feces.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe greenhouse cannot be completed this year.\n\nHypothesis 2:\nThe greenhouse needs a lot of methane as fuel.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) The greenhouse needs a lot of methane as fuel.\n\nExplanation: The premise mentions the collection of a large amount of feces, which is a common source of methane. Methane can be used as a fuel, and if the greenhouse requires this as a fuel source, then the collection of feces could be a causal factor in the greenhouse's fuel supply. The greenhouse completion is not directly related to the collection of feces in this scenario.",
+      "expected_output": "1",
+      "question_values": [
+        "The experimenter went to the fecal field to collect a large amount of feces.",
+        "cause",
+        "The greenhouse cannot be completed this year.",
+        "The greenhouse needs a lot of methane as fuel."
+      ],
+      "processing_time": 3.5078420639038086,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nTom suffered from liver cancer.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe fortuneteller told Tom he had freckles.\n\nHypothesis 2:\nTom's face was like wax due to the accumulation of toxic.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Tom's face was like wax due to the accumulation of toxic) is not directly related to Tom suffering from liver cancer. The accumulation of toxins in the body is more likely to be a symptom or side effect of liver cancer, not a cause.\n\nThe correct hypothesis for the effect of Tom suffering from liver cancer would be more related to symptoms or complications of the disease, such as weight loss, jaundice, or changes in appetite. However, the given hypotheses do not accurately reflect these symptoms.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom suffered from liver cancer.",
+        "effect",
+        "The fortuneteller told Tom he had freckles.",
+        "Tom's face was like wax due to the accumulation of toxic."
+      ],
+      "processing_time": 3.510291576385498,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nJack wanted to find the most ancient of living creatures.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis friend recommended dinosaurs to him.\n\nHypothesis 2:\nHis friend recommended the dragonfly to him.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2)\n\nExplanation:\nThe premise does not specify any interaction with dinosaurs, which are extinct. However, dragonflies are among the oldest living insects and are considered ancient creatures. Therefore, it is more likely that his friend recommended the dragonfly to Jack as a suggestion for finding the most ancient of living creatures.",
+      "expected_output": "1",
+      "question_values": [
+        "Jack wanted to find the most ancient of living creatures.",
+        "effect",
+        "His friend recommended dinosaurs to him.",
+        "His friend recommended the dragonfly to him."
+      ],
+      "processing_time": 2.502140760421753,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nHe filtered the ink.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe found that there were bromine atoms in it.\n\nHypothesis 2:\nNo solid matter was filtered out.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Hypothesis 2) - The act of filtering the ink does not necessarily reveal the presence of specific elements like bromine atoms, nor does it guarantee that no solid matter will be filtered out. However, it does separate the ink into liquid and solid components, or separate the ink from other substances it might have been mixed with.",
+      "expected_output": "1",
+      "question_values": [
+        "He filtered the ink.",
+        "effect",
+        "He found that there were bromine atoms in it.",
+        "No solid matter was filtered out."
+      ],
+      "processing_time": 2.3285818099975586,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nExposion to chemicals had an impact on his heart.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe was injected with medicine containing toxin.\n\nHypothesis 2:\nHe was injected with medicine containing Amiodarone.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (He was injected with medicine containing Amiodarone)\n\nExplanation: The given premise states that exposure to chemicals had an impact on his heart. While both hypotheses involve the use of chemicals, Amiodarone is a specific type of medicine that can have an impact on the heart. It is an antiarrhythmic medication used to prevent irregular heart rhythms. Therefore, it is more likely that the individual was injected with medicine containing Amiodarone, which caused the impact on his heart. The first hypothesis does not specify the type of toxin, making it less likely.",
+      "expected_output": "1",
+      "question_values": [
+        "Exposion to chemicals had an impact on his heart.",
+        "effect",
+        "He was injected with medicine containing toxin.",
+        "He was injected with medicine containing Amiodarone."
+      ],
+      "processing_time": 4.059075593948364,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nThe piano produced beautiful music.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe piano is an automatic music player.\n\nHypothesis 2:\nMark tapped the keyboard.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "1 (Mark tapped the keyboard) is the more likely cause for the piano producing beautiful music in this scenario. The premise does not suggest that the piano is an automatic music player. Instead, it implies that someone (presumably Mark) played the piano to produce the music.",
+      "expected_output": "1",
+      "question_values": [
+        "The piano produced beautiful music.",
+        "cause",
+        "The piano is an automatic music player.",
+        "Mark tapped the keyboard."
+      ],
+      "processing_time": 1.880950689315796,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a premise and asked to determine the correct causal relationship.\n\nPremise:\nJack was shivering in the rain.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe went home and had a bowl of ginger soup.\n\nHypothesis 2:\nHe went home and ate a lot of cake.\n\nSelect the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2):",
+      "response": "0 (He went home and had a bowl of ginger soup) is the more likely causal effect to alleviate Jack's shivering in the rain, as ginger is known for its warming properties. Eating cake would not have the same effect in this context.",
+      "expected_output": "0",
+      "question_values": [
+        "Jack was shivering in the rain.",
+        "effect",
+        "He went home and had a bowl of ginger soup.",
+        "He went home and ate a lot of cake."
+      ],
+      "processing_time": 1.8730552196502686,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "0",
+    "1",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "0"
+  ],
+  "processing_stats": {
+    "total_time": 231.05708742141724,
+    "avg_time": 2.3105708742141724,
+    "min_time": 0.1420748233795166,
+    "max_time": 7.025201320648193,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}
