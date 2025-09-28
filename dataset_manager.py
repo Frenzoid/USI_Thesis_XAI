@@ -675,7 +675,7 @@ class DatasetManager:
         
         Args:
             file_path: Path to JSONL file
-            chunk_size: If specified, process in chunks
+            chunk_size: If specified, process in chunks (currently ignored - use load_dataset_chunked for chunking)
             
         Returns:
             pd.DataFrame: Loaded data
@@ -695,11 +695,6 @@ class DatasetManager:
                     try:
                         record = json.loads(line)
                         records.append(record)
-                        
-                        if chunk_size and len(records) >= chunk_size:
-                            yield pd.DataFrame(records)
-                            records = []
-                            
                     except json.JSONDecodeError as e:
                         logger.warning(f"Skipping invalid JSON on line {line_num}: {e}")
                         continue
@@ -711,7 +706,7 @@ class DatasetManager:
             raise ValueError(f"No valid JSON records found in {file_path}")
         
         return pd.DataFrame(records)
-    
+
     # =============================================================================
     # ENHANCED DATASET VALIDATION
     # =============================================================================
@@ -736,6 +731,7 @@ class DatasetManager:
         
         if setup_name not in self.datasets:
             df = self.load_dataset(setup_name)
+            logger.error("Failed to load dataset for validation")
             if df is None:
                 return False
         else:
