@@ -1,0 +1,1583 @@
+{
+  "experiment_name": "ecare_choice_selection__hf-mistral-nemo-12b__zero-shot__ecare_choice_selection_expert_medical__100__0p100",
+  "experiment_config": {
+    "model": "hf-mistral-nemo-12b",
+    "setup": "ecare_choice_selection",
+    "prompt": "ecare_choice_selection_expert_medical",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-28T22:37:19.515544",
+  "dataset_info": {
+    "name": "ecare_choice_selection",
+    "original_size": 14928,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 14928,
+    "sampled_size": 100,
+    "columns": [
+      "index",
+      "premise",
+      "ask-for",
+      "hypothesis1",
+      "hypothesis2",
+      "label"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 14928,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "mistralai/Mistral-Nemo-Instruct-2407",
+    "description": "Mistral Nemo 12B parameter model with 128k context - Medium",
+    "parameters": "12B",
+    "size_category": "medium",
+    "max_tokens": 512,
+    "context_length": "128k",
+    "finetuned": false,
+    "load_in_4bit": false,
+    "use_unsloth": false,
+    "use_chat_template": true,
+    "trust_remote_code": true,
+    "local_files_only": false,
+    "torch_dtype": "auto",
+    "device_map": "auto",
+    "generation_config": {
+      "temperature": 0.3,
+      "top_p": 0.8,
+      "max_new_tokens": 512,
+      "do_sample": true
+    }
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "ecare_choice_selection",
+    "template": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\n{}\n\nWhat you're looking for:\n{}\n\nHypothesis 1:\n{}\n\nHypothesis 2:\n{}\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+    "description": "Medical doctor selects correct causal hypothesis using medical expertise"
+  },
+  "responses": [
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe saw its inner component.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man had contact with the source of wealth.\n\nHypothesis 2:\nTom opened the back cover of the TV.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"Tom opened the back cover of the TV.\" The phrase \"he saw its inner component\" suggests that someone gained visual access to the interior of an object, which is consistent with opening a back cover. There's no medical context that would suggest the man had contact with the source of wealth, so Hypothesis 1 is less likely. Therefore, my selection is 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "He saw its inner component.",
+        "cause",
+        "The man had contact with the source of wealth.",
+        "Tom opened the back cover of the TV."
+      ],
+      "processing_time": 3.6525075435638428,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe digs holes from the root to the top of the mountain to find the voles.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis Heron is fierce by nature.\n\nHypothesis 2:\nTom is assigned to capture all the voles living in a tall mountain near the sea.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, we would approach this situation by considering the most likely cause for the heron's behavior. The behavior described is digging holes from the root to the top of the mountain, which is unusual for a heron. Herons typically fish or catch small prey near water, not dig holes in mountains.\n\nHypothesis 1 suggests that the heron is fierce by nature, but this doesn't explain the digging behavior. Herons can be aggressive, but they don't typically dig holes in mountains.\n\nHypothesis 2 provides a more plausible reason for the heron's behavior. Voles are small rodents that live in burrows, and a heron might be digging to find and capture them. The detail about the tall mountain near the sea provides a specific context for this behavior.\n\nTherefore, based on medical reasoning and clinical experience, the most likely cause for the heron's behavior is Hypothesis 2: Tom is assigned to capture all the voles living in a tall mountain near the sea. So, the answer is 1.",
+      "expected_output": "1",
+      "question_values": [
+        "He digs holes from the root to the top of the mountain to find the voles.",
+        "cause",
+        "This Heron is fierce by nature.",
+        "Tom is assigned to capture all the voles living in a tall mountain near the sea."
+      ],
+      "processing_time": 7.942721366882324,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHis father took him to a neurologist.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom's brain was injured in a car accident.\n\nHypothesis 2:\nFrank was diagnosed with melanomas.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise that \"His father took him to a neurologist,\" the most likely cause is a neurological condition, not a skin condition like melanoma. Therefore, Hypothesis 1 is more likely:\n\nHypothesis 1: Tom's brain was injured in a car accident. (0)\n\nHypothesis 2: Frank was diagnosed with melanomas. (1)",
+      "expected_output": "0",
+      "question_values": [
+        "His father took him to a neurologist.",
+        "cause",
+        "Tom's brain was injured in a car accident.",
+        "Frank was diagnosed with melanomas."
+      ],
+      "processing_time": 2.808356285095215,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nGrate the beans.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nStratification is formed.\n\nHypothesis 2:\nSoybeans precipitate to make tofu.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: Grating beans does not lead to stratification (layering) or precipitation to form tofu. These processes involve specific chemical reactions and conditions that are not achieved by simply grating beans. Grating beans would likely result in a mixture of bean particles, not a stratified or precipitated substance like tofu. Therefore, Hypothesis 1 is incorrect, and Hypothesis 2 is also incorrect based on medical knowledge and clinical experience.",
+      "expected_output": "1",
+      "question_values": [
+        "Grate the beans.",
+        "effect",
+        "Stratification is formed.",
+        "Soybeans precipitate to make tofu."
+      ],
+      "processing_time": 3.27970027923584,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIt was so long and with so many little fins.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe fisherman got a bluefin.\n\nHypothesis 2:\nThe Pahoehoe was presented in dark light.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The premise \"It was so long and with so many little fins\" describes a fish, not a geological formation like Pahoehoe lava. Therefore, Hypothesis 1 is more likely to be correct. As a medical doctor, while I can't directly identify the fish species, I can recognize that the description fits a fish, not lava.",
+      "expected_output": "0",
+      "question_values": [
+        "It was so long and with so many little fins.",
+        "cause",
+        "The fisherman got a bluefin.",
+        "The Pahoehoe was presented in dark light."
+      ],
+      "processing_time": 2.738494873046875,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe finds a rarely known kind of bees called sawfly and conducts his experiment.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nMario wants to cultivate a new speices with wasps and butterflies.\n\nHypothesis 2:\nMario wants to cultivate a new species by hybridizing wasps and their relatives.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, neither hypothesis is directly applicable as they involve entomology (the study of insects) rather than human or animal medicine. However, I can provide an analysis based on biological principles:\n\n1. Hypothesis 1: Mario wants to cultivate a new species with wasps and butterflies.\n   - Butterflies and wasps are both insects, but they belong to different orders (Lepidoptera and Hymenoptera, respectively). They have distinct genetic makeups and reproductive strategies. Therefore, it's highly unlikely that they can be crossed to create a new species.\n\n2. Hypothesis 2: Mario wants to cultivate a new species by hybridizing wasps and their relatives.\n   - Wasps and their relatives (like sawflies) belong to the order Hymenoptera. While they are more closely related than butterflies and wasps, they still have significant genetic differences. However, there are examples of hybridizations within the Hymenoptera order, such as between different species of wasps or bees.\n\nGiven the information provided, Hypothesis 2 is more plausible from a biological perspective, as it involves organisms that are more closely related and have a higher likelihood of successful hybridization. Therefore, I would select 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "He finds a rarely known kind of bees called sawfly and conducts his experiment.",
+        "cause",
+        "Mario wants to cultivate a new speices with wasps and butterflies.",
+        "Mario wants to cultivate a new species by hybridizing wasps and their relatives."
+      ],
+      "processing_time": 9.405060529708862,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom didn't pay much attention about the question while he had a clear awareness of his owner gender.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom annoyed his girlfriend and he wanted to know where he was wrong.\n\nHypothesis 2:\nPeople were always curious about the gender of Tom.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise provided, neither hypothesis directly relates to medical knowledge or clinical experience. However, we can analyze the situation from a psychological perspective, which is still within the scope of medicine.\n\nThe premise states that Tom was aware of his owner's gender but didn't pay much attention to the question about it. This suggests a lack of interest or engagement with the topic, rather than annoyance or curiosity.\n\nHypothesis 1: \"Tom annoyed his girlfriend and he wanted to know where he was wrong.\" - This hypothesis introduces a new element (annoying his girlfriend) that is not mentioned in the premise. It also assumes that Tom's lack of attention to the gender question is due to this issue, which is not supported by the given information.\n\nHypothesis 2: \"People were always curious about the gender of Tom.\" - This hypothesis is more aligned with the premise. It suggests that Tom's lack of attention to the gender question is due to a general lack of interest or engagement with the topic, possibly because he is used to people being curious about his gender.\n\nTherefore, based on the given information and a psychological interpretation, Hypothesis 2 is more likely. However, it's important to note that without more context, we cannot definitively determine the cause of Tom's behavior.\n\nFinal answer: 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom didn't pay much attention about the question while he had a clear awareness of his owner gender.",
+        "cause",
+        "Tom annoyed his girlfriend and he wanted to know where he was wrong.",
+        "People were always curious about the gender of Tom."
+      ],
+      "processing_time": 9.942323207855225,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHis math teacher advised him to use fractals.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom wanted some lahars.\n\nHypothesis 2:\nHe wanted to find a mathematical function that could represent a complex variable.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, neither hypothesis directly relates to a medical condition or situation that I could diagnose or treat. However, I can infer that the phrase \"use fractals\" suggests a mathematical concept, which is more aligned with Hypothesis 2. Therefore, I would select:\n\n1 for Hypothesis 2: He wanted to find a mathematical function that could represent a complex variable.",
+      "expected_output": "1",
+      "question_values": [
+        "His math teacher advised him to use fractals.",
+        "cause",
+        "Tom wanted some lahars.",
+        "He wanted to find a mathematical function that could represent a complex variable."
+      ],
+      "processing_time": 2.991586208343506,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe tried to measure brightness.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe used nits.\n\nHypothesis 2:\nHe was failed.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"He tried to measure brightness,\" neither hypothesis directly relates to medical knowledge or clinical experience. However, if we consider the context of measuring brightness, \"nits\" is the correct unit of measurement for luminance, which is a measure of the amount of light emitted per unit area. Therefore, the correct hypothesis is:\n\nHypothesis 1: He used nits. (0 for Hypothesis 1, 1 for Hypothesis 2)",
+      "expected_output": "0",
+      "question_values": [
+        "He tried to measure brightness.",
+        "effect",
+        "He used nits.",
+        "He was failed."
+      ],
+      "processing_time": 3.4595837593078613,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nInactivity is a disease of the man.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nBread can satisfy him.\n\nHypothesis 2:\nThe man's health is as bad as those who smoke.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"The man's health is as bad as those who smoke.\" Here's why:\n\nInactivity, or a sedentary lifestyle, is indeed a significant health risk factor, often referred to as the \"sitting disease.\" It's associated with numerous health issues, including obesity, heart disease, diabetes, certain cancers, and even mental health problems like depression and anxiety.\n\nComparatively, smoking is well-known for its detrimental effects on health, including lung cancer, heart disease, stroke, and many other serious health issues. While the extent and specific nature of the health impacts may differ, the fact is that both inactivity and smoking are major risk factors for numerous health problems.\n\nTherefore, I would argue that the health of an inactive individual can indeed be as poor as that of a smoker, making Hypothesis 2 the more accurate statement.",
+      "expected_output": "1",
+      "question_values": [
+        "Inactivity is a disease of the man.",
+        "effect",
+        "Bread can satisfy him.",
+        "The man's health is as bad as those who smoke."
+      ],
+      "processing_time": 6.734424829483032,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe returned his camp.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe soldier needs bigger sharks.\n\nHypothesis 2:\nThe soldier needs more facilities.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"He returned his camp,\" neither hypothesis directly relates to medical knowledge or clinical experience. However, if we consider \"returned his camp\" as a metaphor for a soldier returning to his base or unit, neither hypothesis provides a medical cause for this action. Therefore, I cannot select either hypothesis based on medical knowledge or clinical experience. The answer is 0 (Hypothesis 1) as it's the closest to a neutral response in this context.",
+      "expected_output": "1",
+      "question_values": [
+        "He returned his camp.",
+        "cause",
+        "The soldier needs bigger sharks.",
+        "The soldier needs more facilities."
+      ],
+      "processing_time": 3.499284029006958,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe judge asked the witness to speak.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe described his experience.\n\nHypothesis 2:\nHe went into the field.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The phrase \"He went into the field\" suggests a physical action or movement, which is not directly related to the action of speaking, as prompted by the judge. On the other hand, \"He described his experience\" is a more likely outcome of being asked to speak, as it involves communicating verbally about one's past experiences. Therefore, Hypothesis 1 is more medically and clinically relevant to the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "The judge asked the witness to speak.",
+        "effect",
+        "He described his experience.",
+        "He went into the field."
+      ],
+      "processing_time": 3.318774938583374,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIt went out for food.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe potto was always hungry at night.\n\nHypothesis 2:\nThe foxhound would feel hungry.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"It went out for food,\" the correct hypothesis is:\n\nHypothesis 2: The foxhound would feel hungry.\n\nHere's why:\n\n1. Potto (Hypothesis 1): Potto is a nocturnal primate, but it's not known for having an unusually high or constant hunger at night. Its feeding habits are not exceptional in the context of nocturnal animals.\n\n2. Foxhound (Hypothesis 2): Foxhounds are known for their high energy levels and increased appetite, which is typical for working dogs. They are often fed multiple times a day, including at night, to maintain their energy levels.\n\nSo, based on typical animal behaviors and the premise given, the foxhound feeling hungry is the more likely cause for going out for food.",
+      "expected_output": "0",
+      "question_values": [
+        "It went out for food.",
+        "cause",
+        "The potto was always hungry at night.",
+        "The foxhound would feel hungry."
+      ],
+      "processing_time": 5.973467826843262,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom has many patterns with different colors and shapes.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe can easily  put them into different boxs according to their colors and shapes.\n\nHypothesis 2:\nHe concluded some patterns to classify them.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2. The description \"Tom has many patterns with different colors and shapes\" suggests a cognitive process of categorization and classification, which is a higher-order cognitive function. This is more indicative of a process of conclusion and classification (Hypothesis 2) rather than a simple sorting task (Hypothesis 1).",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has many patterns with different colors and shapes.",
+        "effect",
+        "He can easily  put them into different boxs according to their colors and shapes.",
+        "He concluded some patterns to classify them."
+      ],
+      "processing_time": 2.919238805770874,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe asked me where to put the scraps.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nI said the wastebasket.\n\nHypothesis 2:\nHe puts all the needed elements into the advertisement.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The premise \"He asked me where to put the scraps\" suggests a simple, everyday scenario where someone is asking for a location to dispose of waste. The response \"I said the wastebasket\" is a straightforward and appropriate answer to this question, given the context. There's no indication that this conversation is related to creating an advertisement or putting \"needed elements\" into one, as suggested in Hypothesis 2. Therefore, Hypothesis 1 is the most accurate and medically relevant response, as it aligns with the given premise.",
+      "expected_output": "0",
+      "question_values": [
+        "He asked me where to put the scraps.",
+        "effect",
+        "I said the wastebasket.",
+        "He puts all the needed elements into the advertisement."
+      ],
+      "processing_time": 4.263970136642456,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nI happened to meet a dervish.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe was devoted to muslim.\n\nHypothesis 2:\nScientists find that this anglerfish glow to attract prey.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nAs a medical doctor, I would not select either hypothesis based on my medical knowledge and clinical experience. The first hypothesis is a statement about the religious devotion of an individual, which is not something that can be medically diagnosed or observed. The second hypothesis is about the behavior of an anglerfish, which is a biological fact but not relevant to human medicine. Therefore, neither hypothesis is applicable or relevant in a medical context.",
+      "expected_output": "0",
+      "question_values": [
+        "I happened to meet a dervish.",
+        "effect",
+        "He was devoted to muslim.",
+        "Scientists find that this anglerfish glow to attract prey."
+      ],
+      "processing_time": 3.2097342014312744,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe doctor checked the sick Guppies.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe said they had fatty livers.\n\nHypothesis 2:\nHe observed different symptoms on them.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"He observed different symptoms on them.\" Here's why:\n\n- Fatty liver disease, also known as hepatic steatosis, is typically diagnosed through imaging techniques like ultrasound, CT scan, or MRI, not by visual inspection of the fish. Therefore, it's unlikely that the doctor could have determined that the guppies had fatty livers just by checking them.\n\n- On the other hand, observing different symptoms is a common first step in any clinical examination. Symptoms could include changes in behavior, appearance, or physical characteristics that might indicate an underlying health issue.\n\nSo, the more likely effect of the doctor checking the sick guppies is that he observed different symptoms on them, rather than diagnosing fatty livers directly.",
+      "expected_output": "0",
+      "question_values": [
+        "The doctor checked the sick Guppies.",
+        "effect",
+        "He said they had fatty livers.",
+        "He observed different symptoms on them."
+      ],
+      "processing_time": 5.901501655578613,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nA magnet was pushed towards a coin.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey attached to each other.\n\nHypothesis 2:\nIt presence was indicated.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The scenario described is a physical interaction between a magnet and a coin, not a medical situation. As a medical doctor, I would not be involved in interpreting such a scenario. The correct hypothesis is 1, \"It presence was indicated,\" as the magnet's presence would be indicated by its attraction to the coin, assuming the coin is ferromagnetic.",
+      "expected_output": "0",
+      "question_values": [
+        "A magnet was pushed towards a coin.",
+        "effect",
+        "They attached to each other.",
+        "It presence was indicated."
+      ],
+      "processing_time": 2.773120880126953,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe went on walking.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHe wants to have a trip.\n\nHypothesis 2:\nHe wants to have a sleep.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"He went on walking,\" neither hypothesis directly relates to the action described. Walking is an activity that typically occurs when awake, not when one wants to sleep. Therefore, neither hypothesis is directly supported by the given information. However, if we consider the action of walking as a sign of his current state, we might infer that he is awake and not sleepy. Thus, Hypothesis 2 is less likely.\n\nFinal answer: 0 (Hypothesis 1 is more likely, as it doesn't contradict the action of walking)",
+      "expected_output": "0",
+      "question_values": [
+        "He went on walking.",
+        "cause",
+        "He wants to have a trip.",
+        "He wants to have a sleep."
+      ],
+      "processing_time": 4.116737127304077,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe man died.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis relatives attended his burial.\n\nHypothesis 2:\nThe latter didn't eat the mouse until the mouse died.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nHypothesis 1 is consistent with the premise \"The man died.\" The death of a person typically leads to a funeral or burial, attended by his relatives. This is a common and expected outcome in such a situation.\n\nHypothesis 2, however, is not directly related to the premise \"The man died.\" The eating habits of a mouse and its subsequent death are not causally linked to the man's death. Therefore, Hypothesis 2 is not supported by the given premise.\n\nAs a medical doctor, I would select Hypothesis 1 as it is the most relevant and logical conclusion based on the given information.",
+      "expected_output": "0",
+      "question_values": [
+        "The man died.",
+        "effect",
+        "His relatives attended his burial.",
+        "The latter didn't eat the mouse until the mouse died."
+      ],
+      "processing_time": 4.738020896911621,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe knows how to cultivate grapes.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom wants to produce wool.\n\nHypothesis 2:\nHe studied viniculture in university.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The premise \"He knows how to cultivate grapes\" directly relates to the skill of growing grapes, which is a part of viticulture or enology, not wool production. Therefore, Hypothesis 1 is not supported by the given premise. Hypothesis 2, however, directly connects the premise to the knowledge gained from studying viniculture in university, making it the more likely cause for his grape cultivation skill.",
+      "expected_output": "1",
+      "question_values": [
+        "He knows how to cultivate grapes.",
+        "cause",
+        "Tom wants to produce wool.",
+        "He studied viniculture in university."
+      ],
+      "processing_time": 3.210365056991577,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nExcept for the food they get, they can also exercise they body and have family united during the harvest.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nPeople harvest their crops every autumn.\n\nHypothesis 2:\nFamilies living throughout temperate Eurasia like eating fresh vegetables.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: \"People harvest their crops every autumn.\" Here's why:\n\n1. **Seasonal Availability of Food**: In temperate regions, crops are typically planted in spring, grow throughout the summer, and are harvested in autumn. This is a well-established agricultural pattern that ensures the best yield and quality of produce.\n\n2. **Nutritional Needs**: Harvesting in autumn ensures a steady supply of fresh produce during the winter months when fresh food is scarce. This is crucial for maintaining a balanced diet and preventing nutritional deficiencies.\n\n3. **Family Unity and Exercise**: The statement mentions that families are united and can exercise during the harvest. This is more likely to occur during a specific time of the year (autumn) when the harvest takes place, rather than being a year-round activity.\n\nWhile Hypothesis 2 is not incorrect, it's too general to be the direct cause of the specific scenario described. People in temperate Eurasia may indeed enjoy eating fresh vegetables, but this doesn't explain the specific timing of the harvest or the family unity and exercise aspects mentioned in the premise. Therefore, Hypothesis 1 is the more accurate cause for the given situation.",
+      "expected_output": "0",
+      "question_values": [
+        "Except for the food they get, they can also exercise they body and have family united during the harvest.",
+        "cause",
+        "People harvest their crops every autumn.",
+        "Families living throughout temperate Eurasia like eating fresh vegetables."
+      ],
+      "processing_time": 8.997495889663696,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThere are some people who believe in religions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey would go to the church and pay for pray.\n\nHypothesis 2:\nThese people were sincere.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "As a medical doctor, I would select Hypothesis 2: \"These people were sincere.\" Here's why:\n\n1. **Medical Perspective**: In medicine, we often deal with the concept of sincerity in the context of patient-doctor interactions. A sincere patient is one who is truthful about their symptoms, adheres to their treatment plan, and is genuinely committed to their health and recovery. This concept is transferable to the context of religious beliefs.\n\n2. **Clinical Experience**: Over the years, I've encountered patients from diverse backgrounds, including those with strong religious beliefs. Their sincerity in their faith is often evident in their actions, words, and the comfort they find in their beliefs, even in times of illness or distress.\n\n3. **Lack of Evidence**: Hypothesis 1, \"They would go to the church and pay for pray,\" is not necessarily false, but it's not universally applicable and doesn't provide a clear insight into the people's sincerity. Some people may not attend church regularly or pay for prayers, yet still hold sincere religious beliefs.\n\nSo, based on medical knowledge and clinical experience, the more accurate and universally applicable hypothesis is that these people were sincere in their beliefs.",
+      "expected_output": "0",
+      "question_values": [
+        "There are some people who believe in religions.",
+        "effect",
+        "They would go to the church and pay for pray.",
+        "These people were sincere."
+      ],
+      "processing_time": 8.955997943878174,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nPhysicists have found that cohesion are related to the function of a single module and processing elements.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nGrazier wields his goad towards a herd of oxen.\n\nHypothesis 2:\nPhysicists are studying cohesion.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"Physicists are studying cohesion.\" This hypothesis is directly related to the premise provided, which discusses the findings of physicists regarding cohesion. The first hypothesis, while it may be a complete sentence, does not relate to the given premise and is not a valid option in this context. Therefore, my selection is 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "Physicists have found that cohesion are related to the function of a single module and processing elements.",
+        "cause",
+        "Grazier wields his goad towards a herd of oxen.",
+        "Physicists are studying cohesion."
+      ],
+      "processing_time": 3.2096645832061768,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIn the zoo, the students saw a kangaroo chewing all the time without eating food.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe teacher explained that this is because of the function of ruminant stomaches.\n\nHypothesis 2:\nThe kangaroo is chewing gum.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1. Here's why:\n\n1. **Ruminant Stomach Function**: Kangaroos, like many marsupials, have a four-chambered stomach, similar to ruminants (like cows and sheep). This type of stomach allows them to regurgitate and chew their food multiple times, aiding in digestion. This is a normal behavior for kangaroos and does not indicate any health issues.\n\n2. **Chewing Gum Unlikely**: Chewing gum is a behavior typically associated with primates, not marsupials like kangaroos. Moreover, kangaroos do not have the manual dexterity to handle or manipulate gum like humans do.\n\nSo, the most likely explanation for the kangaroo's constant chewing is the normal function of its ruminant stomach, supporting Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "In the zoo, the students saw a kangaroo chewing all the time without eating food.",
+        "effect",
+        "The teacher explained that this is because of the function of ruminant stomaches.",
+        "The kangaroo is chewing gum."
+      ],
+      "processing_time": 6.8489015102386475,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom came home to be disinfected.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom's flight has taken off.\n\nHypothesis 2:\nIt's a flu season recently.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, the most likely cause for Tom to want to disinfect his home upon returning is Hypothesis 2: \"It's a flu season recently.\" This is because:\n\n1. Flu viruses are spread through respiratory droplets and can live on surfaces for several hours to several days.\n2. During flu season, people are more likely to be infected and carry the virus on their clothes or belongings.\n3. Disinfecting the home can help reduce the risk of spreading the flu virus.\n\nWhile Hypothesis 1 could potentially lead to Tom wanting to clean his home (e.g., if he's concerned about germs from the plane), it's less likely to specifically prompt him to disinfect his home. Therefore, I select Hypothesis 2 as the most probable cause.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom came home to be disinfected.",
+        "cause",
+        "Tom's flight has taken off.",
+        "It's a flu season recently."
+      ],
+      "processing_time": 5.972323894500732,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThey opened the windows .\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe room was lack of oxygen.\n\nHypothesis 2:\nThe room was cold.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: \"The room was lacking oxygen.\" Here's why:\n\n- Opening windows is a common action taken to increase ventilation and oxygen supply in a room.\n- If the room was cold, other actions like turning on heat or closing windows would be more appropriate to address that issue.\n- Lack of oxygen can lead to symptoms such as dizziness, lightheadedness, and shortness of breath, which would prompt someone to open windows for fresh air.\n\nSo, the most likely cause for opening the windows is to increase oxygen supply in the room.",
+      "expected_output": "0",
+      "question_values": [
+        "They opened the windows .",
+        "cause",
+        "The room was lack of oxygen.",
+        "The room was cold."
+      ],
+      "processing_time": 4.5164148807525635,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nEconomists got the value of efficiency.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nEconomists calculated the ratio of deposits to administrative expenses.\n\nHypothesis 2:\nMy mom considers the Efficiency when she deposits her money.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "As a medical doctor, I would select Hypothesis 2. While Hypothesis 1 is a valid economic metric, it doesn't directly relate to the value economists place on efficiency. Efficiency in economics is more broadly defined as the relationship between inputs and outputs, and it's not solely based on the ratio of deposits to administrative expenses. On the other hand, Hypothesis 2 aligns with the general understanding of efficiency in economics, as it implies that the individual is considering the best use of their resources (inputs) to achieve their goal (output - depositing money). Therefore, the correct answer is 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "Economists got the value of efficiency.",
+        "cause",
+        "Economists calculated the ratio of deposits to administrative expenses.",
+        "My mom considers the Efficiency when she deposits her money."
+      ],
+      "processing_time": 4.734546661376953,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe should know the continuity of topology.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is a geographer.\n\nHypothesis 2:\nThe professor needs to answer student's all mathematical questions.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The statement \"He should know the continuity of topology\" is a mathematical concept, not a medical one. Therefore, the medical knowledge and clinical experience gained over 20 years would not be relevant in determining whether Tom, a geographer, should know this concept. Thus, Hypothesis 1 is not supported by medical knowledge or clinical experience.",
+      "expected_output": "1",
+      "question_values": [
+        "He should know the continuity of topology.",
+        "cause",
+        "Tom is a geographer.",
+        "The professor needs to answer student's all mathematical questions."
+      ],
+      "processing_time": 2.7357404232025146,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nShe felt both emotional loss and physical loss.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLucy experienced Mastectomy.\n\nHypothesis 2:\nShe got a cataract.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information provided, \"She felt both emotional loss and physical loss,\" both hypotheses could potentially cause emotional loss, but only one is more likely to cause a physical loss that would be immediately felt. Here's why:\n\n- **Hypothesis 1: Lucy experienced a Mastectomy** - This would indeed cause emotional loss due to the nature of the surgery and its implications. It would also cause immediate physical loss, as part of the breast tissue is removed. This hypothesis is more likely to cause a physical loss that would be felt immediately.\n\n- **Hypothesis 2: She got a cataract** - While this can cause emotional distress due to vision loss and the implications of the condition, it does not cause an immediate physical loss that would be felt. Cataracts develop gradually, and the physical loss of lens tissue occurs during surgery, which is not necessarily the cause of the emotional loss mentioned.\n\nGiven the information provided, Hypothesis 1 is more likely to cause both emotional and immediate physical loss. Therefore, the correct answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "She felt both emotional loss and physical loss.",
+        "cause",
+        "Lucy experienced Mastectomy.",
+        "She got a cataract."
+      ],
+      "processing_time": 7.971150636672974,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThis European hunter often caught small mammals.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHedgehogs are his most common aims.\n\nHypothesis 2:\nHe paid no effort to avoid the most dangerous vipers.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1: \"Hedgehogs are his most common aims.\" Here's why:\n\n1. **Common Prey in Europe**: Hedgehogs are common in Europe and are often hunted by humans for their meat and fur. They are also relatively easy to catch compared to other small mammals.\n\n2. **Safety**: Hedgehogs, while having spines, are generally not aggressive and can be handled safely with proper precautions. This makes them a less risky prey compared to other small mammals or reptiles.\n\n3. **Nutritional Value**: Hedgehogs provide a good source of protein and fat, making them a valuable prey for hunters.\n\nOn the other hand, Hypothesis 2 is less likely because:\n\n- **Danger**: Vipers, such as the European adder (Vipera berus), are venomous and pose a significant risk to humans. A hunter would typically take precautions to avoid these snakes.\n\n- **Rarity**: Vipers are not as common as hedgehogs, making them less likely to be the most common aim of a hunter.\n\nSo, based on medical knowledge and clinical experience, the most likely hypothesis is that hedgehogs are his most common aims.",
+      "expected_output": "0",
+      "question_values": [
+        "This European hunter often caught small mammals.",
+        "effect",
+        "Hedgehogs are his most common aims.",
+        "He paid no effort to avoid the most dangerous vipers."
+      ],
+      "processing_time": 9.42743968963623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom cuts the silvery-white terbium.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe metal isn't cut apart.\n\nHypothesis 2:\nThe metal is cut into several pieces.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: Terbium is a soft, silvery-white metal. When cut, it would typically be cut apart into several pieces, not remain as a single, uncut piece. Therefore, Hypothesis 1 is incorrect, and Hypothesis 2 is correct.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom cuts the silvery-white terbium.",
+        "effect",
+        "The metal isn't cut apart.",
+        "The metal is cut into several pieces."
+      ],
+      "processing_time": 2.1180028915405273,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe can guarantee his basic life.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is an individual.\n\nHypothesis 2:\nHe lived in a capitalist country.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the statement \"He can guarantee his basic life\" does not directly relate to the individual's status as an individual (Hypothesis 1) or their residence in a capitalist country (Hypothesis 2). Both hypotheses are irrelevant to the medical interpretation of the given statement. Therefore, neither hypothesis is correct in the context of medical analysis. The answer is 0 for Hypothesis 1 and 0 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "He can guarantee his basic life.",
+        "cause",
+        "Tom is an individual.",
+        "He lived in a capitalist country."
+      ],
+      "processing_time": 3.5344104766845703,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThis system of taxonomic hierarchies contributes to the accuracy of the study of animalia.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLinnaeus used his newly created \"double name nomenclature\" to name animals and plants uniformly.\n\nHypothesis 2:\nLinnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2. While Hypothesis 1 is true, it does not directly contribute to the accuracy of the study of animalia as Hypothesis 2 does. Linnaeus' establishment of a system of taxonomic hierarchies, with animals classified into 5 hierarchies and 6 classes, greatly improved the organization and understanding of the natural world, including animals, which is directly relevant to the medical field. This hierarchical system allows for a more accurate and systematic study of animalia, which can have implications for medical research, such as the study of diseases that affect specific animal groups or the discovery of new medicinal compounds from animals. Therefore, I would choose 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "This system of taxonomic hierarchies contributes to the accuracy of the study of animalia.",
+        "cause",
+        "Linnaeus used his newly created \"double name nomenclature\" to name animals and plants uniformly.",
+        "Linnaeus established a system of taxonomic hierarchies, classifying animals into 5 hierarchies and 6 classes."
+      ],
+      "processing_time": 5.541966438293457,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe is an abusor.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom always rejects the customary beliefs in morality or religion.\n\nHypothesis 2:\nMy father often mistreats my pet and other animals.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2. While Hypothesis 1 could potentially contribute to a person's behavior, it does not directly cause abuse. On the other hand, Hypothesis 2 describes a pattern of mistreatment, which is a clear indicator of abusive behavior. As a medical doctor, I would be more likely to consider Hypothesis 2 as a cause for concern and a potential indicator of an abusive dynamic. Therefore, my selection would be 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "He is an abusor.",
+        "cause",
+        "Tom always rejects the customary beliefs in morality or religion.",
+        "My father often mistreats my pet and other animals."
+      ],
+      "processing_time": 3.9346632957458496,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nFarmers are satisfied.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe factory processed a large  amount of zinc.\n\nHypothesis 2:\nThe government has given some explanation about the policy of the land.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "As a medical doctor, I don't have direct knowledge about farming or factory processes. However, I can analyze the given information based on general knowledge and logical reasoning. The statement \"Farmers are satisfied\" suggests that there's something that has positively affected the farmers' situation. Here's how the hypotheses fare:\n\nHypothesis 1: \"The factory processed a large amount of zinc.\"\n- This hypothesis doesn't directly relate to farmers' satisfaction. Processing zinc in a factory wouldn't typically affect farmers' satisfaction unless there's a connection not mentioned in the premise.\n\nHypothesis 2: \"The government has given some explanation about the policy of the land.\"\n- This hypothesis is more likely to affect farmers' satisfaction. Changes in land policy could directly impact farmers' livelihoods, and clear communication from the government about these changes could alleviate uncertainty and lead to satisfaction.\n\nBased on this analysis, the more likely cause for farmers' satisfaction is Hypothesis 2. Therefore, I would select 1.",
+      "expected_output": "1",
+      "question_values": [
+        "Farmers are satisfied.",
+        "cause",
+        "The factory processed a large  amount of zinc.",
+        "The government has given some explanation about the policy of the land."
+      ],
+      "processing_time": 7.392953634262085,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom's action was a sitimulation for the animal.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nUndesirable consequences made him regret.\n\nHypothesis 2:\nIt stood up and fought with toes.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"Tom's action was a simulation for the animal,\" and the given hypotheses, neither option makes sense from a medical perspective. The term \"simulation\" typically refers to a mimic or imitation, not an action that would provoke a physical response like fighting with toes. Therefore, neither hypothesis accurately describes an effect that could result from a simulation for an animal. I would not select either hypothesis based on medical knowledge and clinical experience.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's action was a sitimulation for the animal.",
+        "effect",
+        "Undesirable consequences made him regret.",
+        "It stood up and fought with toes."
+      ],
+      "processing_time": 3.2806921005249023,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom has bought some oats.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe got some viable seeds.\n\nHypothesis 2:\nHe has found tyrosine in them.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: While it's true that oats contain tyrosine, a non-essential amino acid, the premise that Tom has \"bought some oats\" does not provide enough information to suggest that he has \"found tyrosine in them.\" The statement \"He has found tyrosine in them\" implies a conscious action or discovery on Tom's part, which is not suggested by the given premise. Therefore, Hypothesis 2 is not supported by the information provided.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has bought some oats.",
+        "effect",
+        "He got some viable seeds.",
+        "He has found tyrosine in them."
+      ],
+      "processing_time": 3.4617011547088623,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom's motion had strong frictions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis motion was strongly resisted.\n\nHypothesis 2:\nBy analyzing the economic curve before the stock market disaster in the past, he successfully predicted the financial crisis in 2008.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1: \"His motion was strongly resisted.\" The term \"frictions\" in the premise is a physical concept that directly translates to resistance or opposition to motion in a medical context. There's no medical relevance or context provided for the second hypothesis about predicting a financial crisis. Therefore, the answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's motion had strong frictions.",
+        "effect",
+        "His motion was strongly resisted.",
+        "By analyzing the economic curve before the stock market disaster in the past, he successfully predicted the financial crisis in 2008."
+      ],
+      "processing_time": 3.027066946029663,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHis family immediately took him to medical attention.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nBob felt some nausea.\n\nHypothesis 2:\nTom suffered from seizures.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise that \"His family immediately took him to medical attention,\" the most likely cause is Hypothesis 2: \"Tom suffered from seizures.\" Seizures are a medical emergency that requires immediate attention, unlike nausea which can often be managed at home. Therefore, I select 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "His family immediately took him to medical attention.",
+        "cause",
+        "Bob felt some nausea.",
+        "Tom suffered from seizures."
+      ],
+      "processing_time": 2.4075658321380615,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nDisaccharides are added to food.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nOligosaccharides can be added to food in a certain amount as a health additive.\n\nHypothesis 2:\nOligosaccharides are sugar compounds.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"Oligosaccharides are sugar compounds.\" This is because:\n\n- Oligosaccharides are indeed sugar compounds, typically consisting of 3 to 10 monosaccharides linked by glycosidic bonds.\n- While it's true that oligosaccharides can be added to food as a health additive (Hypothesis 1), this is not a fundamental fact about their nature. The premise only mentions the addition of disaccharides to food, not oligosaccharides.\n\nTherefore, the correct answer is 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "Disaccharides are added to food.",
+        "cause",
+        "Oligosaccharides can be added to food in a certain amount as a health additive.",
+        "Oligosaccharides are sugar compounds."
+      ],
+      "processing_time": 4.5531229972839355,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nLeah takes pictures in the daytime.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLeah thinks it's ideal to take pictures in the sunlight.\n\nHypothesis 2:\nLeah likes to take pictures.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: Leah likes to take pictures. The premise \"Leah takes pictures in the daytime\" does not necessarily imply that she thinks it's ideal to take pictures in sunlight, as there could be other reasons for her daytime photography. However, it does suggest that she enjoys taking pictures, as she chooses to do so during the day. Therefore, the answer is 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "Leah takes pictures in the daytime.",
+        "cause",
+        "Leah thinks it's ideal to take pictures in the sunlight.",
+        "Leah likes to take pictures."
+      ],
+      "processing_time": 3.4993951320648193,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIt reduces stress on my vital joints when jogging.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe bottom of my shoes are made of iron.\n\nHypothesis 2:\nThe bottom of my shoes are made of rubber.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: \"The bottom of my shoes are made of iron.\" Here's why:\n\n- Iron is much heavier and harder than rubber. When you jog, the impact of each step is absorbed by your shoes. If the soles were made of iron, they would not absorb impact as well as rubber, potentially increasing stress on your vital joints.\n\n- Rubber, on the other hand, is a flexible and shock-absorbing material. It's commonly used in shoe soles to cushion the impact of walking or running, reducing stress on joints.\n\nSo, if the statement is true that jogging reduces stress on your vital joints, it's more likely due to the shock-absorbing properties of rubber soles, not iron. Therefore, Hypothesis 2 is more likely to be true.",
+      "expected_output": "1",
+      "question_values": [
+        "It reduces stress on my vital joints when jogging.",
+        "cause",
+        "The bottom of my shoes are made of iron.",
+        "The bottom of my shoes are made of rubber."
+      ],
+      "processing_time": 6.407918691635132,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nSean likes to put more vinegar in cooking.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nSean's health counselor agrees with his behavior.\n\nHypothesis 2:\nSean's wife likes to eat the dishes he cooks.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"Sean's wife likes to eat the dishes he cooks.\" Here's why:\n\n1. **No Medical Implication**: The health counselor's agreement or disagreement with Sean's behavior doesn't have a direct medical implication. It's more about dietary preferences and advice, which is not a medical diagnosis or treatment.\n\n2. **Potential Health Impact**: Sean's preference for more vinegar in cooking could potentially have health implications if consumed in excess. Vinegar is acidic and can contribute to dental erosion, gastrointestinal upset, and drug interactions. However, without more information about the amounts and frequency, it's difficult to make a definitive statement about Sean's health.\n\n3. **Likelihood**: The statement \"Sean likes to put more vinegar in cooking\" suggests a regular behavior. If Sean's wife enjoys his cooking, it's likely that she regularly consumes these dishes, which could potentially lead to the same health implications if the vinegar consumption is excessive.\n\nSo, while Hypothesis 1 is possible, Hypothesis 2 is more likely based on the information given and has potential health implications that I, as a medical doctor, would consider. Therefore, I select Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "Sean likes to put more vinegar in cooking.",
+        "effect",
+        "Sean's health counselor agrees with his behavior.",
+        "Sean's wife likes to eat the dishes he cooks."
+      ],
+      "processing_time": 9.352206230163574,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIn this society, we are involved into different competitions.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThis leads to invagination.\n\nHypothesis 2:\nWe need to do our things without any hesitation.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"We need to do our things without any hesitation.\" The term \"invagination\" in Hypothesis 1 refers to a medical condition where one segment of the intestine folds into another, causing a blockage. This condition is not directly related to societal competition. Therefore, Hypothesis 1 is not supported by medical knowledge or clinical experience.",
+      "expected_output": "1",
+      "question_values": [
+        "In this society, we are involved into different competitions.",
+        "effect",
+        "This leads to invagination.",
+        "We need to do our things without any hesitation."
+      ],
+      "processing_time": 3.1353611946105957,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom doesn't believe in any religion.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom thinks that all the moral and religious beliefs are meaningless.\n\nHypothesis 2:\nTom is a man of no principle.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1: \"Tom thinks that all the moral and religious beliefs are meaningless.\" This hypothesis is more likely to be the cause of Tom's lack of belief in any religion, as it directly addresses the reason behind his disbelief. Hypothesis 2, \"Tom is a man of no principle,\" is too vague and doesn't necessarily explain why Tom doesn't believe in any religion. Therefore, the answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom doesn't believe in any religion.",
+        "cause",
+        "Tom thinks that all the moral and religious beliefs are meaningless.",
+        "Tom is a man of no principle."
+      ],
+      "processing_time": 3.7888023853302,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe is good at Biochemistry.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom is an expert in maths.\n\nHypothesis 2:\nTom knows how to apply physical chemical principles to biological systems.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"He is good at Biochemistry\" and the given hypotheses, I would select Hypothesis 2: \"Tom knows how to apply physical chemical principles to biological systems.\" This hypothesis is more directly related to the field of biochemistry, which involves the application of chemical principles to living organisms and their biological processes. While Hypothesis 1 suggests a general expertise in math, it does not directly relate to the given premise. Therefore, my selection is 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "He is good at Biochemistry.",
+        "cause",
+        "Tom is an expert in maths.",
+        "Tom knows how to apply physical chemical principles to biological systems."
+      ],
+      "processing_time": 3.7180228233337402,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe threw a lot of gypsum into it.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nLuck checked the baseball in his hand.\n\nHypothesis 2:\nJohn wanted to increase the salt content of the lake.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, neither hypothesis directly relates to a medical cause or effect. However, if we consider the phrase \"threw a lot of gypsum into it\" in a broader context, it could imply an environmental or industrial scenario rather than a medical one. Gypsum is often used in construction and mining, and throwing it into a lake could potentially increase the salt content, leading to changes in the lake's ecosystem. Therefore, Hypothesis 2 is more aligned with this context, although it's not a medical cause.\n\nFinal answer: 1 (Hypothesis 2)",
+      "expected_output": "1",
+      "question_values": [
+        "He threw a lot of gypsum into it.",
+        "cause",
+        "Luck checked the baseball in his hand.",
+        "John wanted to increase the salt content of the lake."
+      ],
+      "processing_time": 4.517276763916016,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom got sunburn.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom saw the covers of his textbooks.\n\nHypothesis 2:\nTom was exposed under the strong sunshine.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, the correct hypothesis is 1 for Hypothesis 2: \"Tom was exposed under the strong sunshine.\" Sunburn is typically caused by exposure to ultraviolet (UV) radiation from the sun, which damages the skin. The covers of textbooks, even if they are bright or shiny, would not emit UV radiation capable of causing sunburn. Therefore, Hypothesis 1 is less likely to be the cause of Tom's sunburn.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom got sunburn.",
+        "cause",
+        "Tom saw the covers of his textbooks.",
+        "Tom was exposed under the strong sunshine."
+      ],
+      "processing_time": 3.498535394668579,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nI avoid intimacy with them.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nCustomers are hard to mess with.\n\nHypothesis 2:\nI dont want connect with boys.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"I avoid intimacy with them,\" neither hypothesis directly relates to a medical condition or clinical diagnosis. However, if we consider the premise in the context of psychological well-being, Hypothesis 2, \"I don't want to connect with boys,\" could be a sign of a psychological or emotional issue, such as:\n\n1. **Aversion Disorder**: This is a rare psychological condition where a person has an intense and persistent fear or aversion to a specific group of people or situation.\n\n2. **Social Anxiety Disorder**: While not specific to one gender, it can manifest as avoidance of intimacy with certain groups.\n\n3. **Trauma**: Past traumatic experiences could lead to avoidance of intimacy with specific groups.\n\nHypothesis 1, \"Customers are hard to mess with,\" is too vague and doesn't provide a clear psychological or medical basis for avoiding intimacy.\n\nSo, based on medical knowledge and clinical experience, I would select Hypothesis 2 (1 for Hypothesis 2) as it opens up avenues for further exploration into potential psychological or emotional issues that could be addressed with appropriate professional help.",
+      "expected_output": "1",
+      "question_values": [
+        "I avoid intimacy with them.",
+        "cause",
+        "Customers are hard to mess with.",
+        "I dont want connect with boys."
+      ],
+      "processing_time": 8.15259575843811,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThere are many kinds of people in this world.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey have different characteristics.\n\nHypothesis 2:\nThey stretched themselves at the first step.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1: \"They have different characteristics.\" This is because people indeed have diverse physical, genetic, psychological, and social characteristics that make them unique. This diversity is well-established in medical literature and clinical practice. For instance, people have different blood types, genetic predispositions to diseases, personality traits, and cultural backgrounds, all of which can influence their health and behavior.\n\nHypothesis 2: \"They stretched themselves at the first step\" is not a universally applicable statement and does not align with medical knowledge or clinical experience. Not all people would stretch at the first step, and even if they did, it wouldn't necessarily be a universal characteristic of all individuals.\n\nSo, my selection is: 0 for Hypothesis 1, and 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "There are many kinds of people in this world.",
+        "effect",
+        "They have different characteristics.",
+        "They stretched themselves at the first step."
+      ],
+      "processing_time": 6.299004316329956,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nSam's sole is blackened.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nSam suffered from depression.\n\nHypothesis 2:\nSam walked on the street which has just been asphalted.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, the correct hypothesis is 1: \"Sam suffered from depression.\" Blackened soles are a common sign of depression due to a condition called \"dirty feet syndrome\" or \"trash feet,\" where individuals may neglect personal hygiene, including foot care, due to lack of motivation or energy. This is more likely than the second hypothesis, as walking on an asphalted street would not cause the sole to become blackened in the way described.",
+      "expected_output": "1",
+      "question_values": [
+        "Sam's sole is blackened.",
+        "cause",
+        "Sam suffered from depression.",
+        "Sam walked on the street which has just been asphalted."
+      ],
+      "processing_time": 3.6071479320526123,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nA lot carbon inside became part of my cell.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nI ate a lot rice containing carbohydrates.\n\nHypothesis 2:\nThe fire was a stimulus to my skin.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"A lot of carbon became part of my cell,\" and the given hypotheses, I would select Hypothesis 2: \"The fire was a stimulus to my skin.\" Here's why:\n\n1. **Hypothesis 1**: Eating a lot of rice containing carbohydrates would not directly cause carbon to become part of your cells. Carbohydrates are broken down into glucose, which is used for energy, stored as glycogen, or converted into fat, but not into carbon that would accumulate in cells.\n\n2. **Hypothesis 2**: If you were exposed to a fire, it's possible that carbon particles could enter your body through inhalation or, to a lesser extent, through skin contact. These carbon particles could potentially become part of your cells, especially if they were inhaled and entered the bloodstream. This is a known risk in cases of smoke inhalation and carbon monoxide poisoning.\n\nSo, based on medical knowledge and clinical experience, Hypothesis 2 is more likely to be the cause of carbon becoming part of your cells.",
+      "expected_output": "0",
+      "question_values": [
+        "A lot carbon inside became part of my cell.",
+        "cause",
+        "I ate a lot rice containing carbohydrates.",
+        "The fire was a stimulus to my skin."
+      ],
+      "processing_time": 7.716411590576172,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe is certified as disabled and can live on government assistance.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHis leg was so badly injured that he could not carry out intensive work.\n\nHypothesis 2:\nJack is chronically malnourished.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information provided, the most likely cause for his disability and need for government assistance is not explicitly stated. However, given the options, \"His leg was so badly injured that he could not carry out intensive work\" (Hypothesis 1) is more likely to lead to a certified disability and the need for assistance than chronic malnourishment (Hypothesis 2), which typically has more visible and systemic symptoms that would have been noticed and addressed earlier. Therefore, I would select:\n\n0 for Hypothesis 1: His leg was so badly injured that he could not carry out intensive work.",
+      "expected_output": "0",
+      "question_values": [
+        "He is certified as disabled and can live on government assistance.",
+        "cause",
+        "His leg was so badly injured that he could not carry out intensive work.",
+        "Jack is chronically malnourished."
+      ],
+      "processing_time": 4.553868532180786,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe scientist has collected some minerals.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe has found magnesium.\n\nHypothesis 2:\nShe has to collect data related to resource usage.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: Magnesium is a mineral that is essential for many biochemical reactions in the body, including muscle and nerve function, blood glucose control, and blood pressure regulation. It's often found in foods like leafy greens, whole grains, and nuts. However, the premise states that the scientist has \"collected\" minerals, which suggests a process of gathering or obtaining them, not necessarily using them or studying their effects. Therefore, Hypothesis 1 is more likely to be correct as it directly relates to the action of collecting minerals. Hypothesis 2, while it could be a related activity, is not the direct effect of collecting minerals.",
+      "expected_output": "0",
+      "question_values": [
+        "The scientist has collected some minerals.",
+        "effect",
+        "He has found magnesium.",
+        "She has to collect data related to resource usage."
+      ],
+      "processing_time": 4.8794333934783936,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nAfter his election defeat, his fanaticism fans marched and rioted which caused many injuires.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTm drank a lot of alcohol.\n\nHypothesis 2:\nPeter is a charismatic politician who gained a large number of fanaticism fans.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2. Here's why:\n\n- Hypothesis 1, \"Tm drank a lot of alcohol,\" does not directly relate to the cause of the riots. While excessive alcohol consumption can lead to impaired judgment and aggressive behavior in individuals, it does not explain the collective action of a group of people rioting.\n\n- Hypothesis 2, \"Peter is a charismatic politician who gained a large number of fanaticism fans,\" is more likely to be the cause of the riots. Charismatic leaders can inspire strong emotions and loyalty in their followers, which can sometimes lead to extreme actions, including riots, when they feel their leader has been wronged. This is a well-documented phenomenon in psychology and sociology, and it's supported by the premise that the riots occurred after the politician's election defeat.\n\nSo, based on my medical knowledge and clinical experience, I would select 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "After his election defeat, his fanaticism fans marched and rioted which caused many injuires.",
+        "cause",
+        "Tm drank a lot of alcohol.",
+        "Peter is a charismatic politician who gained a large number of fanaticism fans."
+      ],
+      "processing_time": 7.3204920291900635,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe tried to escape from the tidal waves.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe swimmer noticed the earthquake.\n\nHypothesis 2:\nWhen Tom was sailing at sea, he felt that his ship was being slowly hit by something.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: \"The swimmer noticed the earthquake.\" Here's why:\n\n1. Earthquakes can generate tsunamis, which are essentially tidal waves. If the swimmer noticed the earthquake, they would likely be aware of the impending danger and try to escape.\n\n2. Hypothesis 2 suggests that Tom felt his ship being hit by something while sailing at sea. This could indicate a collision or a storm, but it doesn't necessarily imply that he was aware of tidal waves.\n\nSo, the most medically plausible cause for his attempt to escape from tidal waves is that he noticed the earthquake that generated them. Therefore, the answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "He tried to escape from the tidal waves.",
+        "cause",
+        "The swimmer noticed the earthquake.",
+        "When Tom was sailing at sea, he felt that his ship was being slowly hit by something."
+      ],
+      "processing_time": 5.46122670173645,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe magnet was heated in the oven.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nIt uses self-distraction.\n\nHypothesis 2:\nIt became non-magnetic.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: It became non-magnetic.\n\nHere's why:\n\n1. **Heat and Magnetic Properties**: When a magnet is heated, its magnetic properties can be altered or even destroyed. This is due to the change in the alignment of the magnetic domains within the magnet. This is a well-known phenomenon in materials science and physics.\n\n2. **No Evidence for Self-Distraction**: There's no medical or scientific basis to suggest that a magnet would use \"self-distraction\" as a result of being heated in an oven. This term is not recognized in any scientific or medical context.\n\nSo, based on the given premise and the options provided, the most likely effect of heating a magnet in an oven is that it would lose its magnetic properties, making Hypothesis 2 the correct one.",
+      "expected_output": "1",
+      "question_values": [
+        "The magnet was heated in the oven.",
+        "effect",
+        "It uses self-distraction.",
+        "It became non-magnetic."
+      ],
+      "processing_time": 6.338062286376953,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe wanted to know the density of this wood.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe calculated the weight per unit volume.\n\nHypothesis 2:\nHe found chromatids.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The phrase \"density of this wood\" is a metaphorical way of saying \"how heavy this wood is compared to its size.\" In medical terms, density is often used to describe the concentration of a substance, like the density of red blood cells in a blood sample. However, in the context of wood, it's more commonly referred to as specific gravity or weight per unit volume. Therefore, Hypothesis 1 is more accurate. Hypothesis 2, \"He found chromatids,\" is a biological term related to cell division and doesn't apply to the context of wood density.",
+      "expected_output": "0",
+      "question_values": [
+        "He wanted to know the density of this wood.",
+        "effect",
+        "He calculated the weight per unit volume.",
+        "He found chromatids."
+      ],
+      "processing_time": 4.516776084899902,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe project is divided into four stages equally.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe construction of this bridge is a twelve-year project.\n\nHypothesis 2:\nThis old couple intends to create a family.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The duration of a bridge construction project is typically determined by factors such as size, complexity, and available resources, not by the age or intentions of the project managers or stakeholders. Therefore, Hypothesis 1 is not supported by medical knowledge or clinical experience. Hypothesis 2, however, could be influenced by factors like fertility, health, and personal goals, which are within the realm of medical knowledge and clinical experience.",
+      "expected_output": "0",
+      "question_values": [
+        "The project is divided into four stages equally.",
+        "cause",
+        "The construction of this bridge is a twelve-year project.",
+        "This old couple intends to create a family."
+      ],
+      "processing_time": 3.2796268463134766,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nA hyena got lost in the forest.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nIt ate some leaves.\n\nHypothesis 2:\nIt was scard and wanted to found its partners.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"It was scared and wanted to find its partners.\" Here's why:\n\n1. **Behavioral Instincts**: Hyenas are social animals that live in close-knit groups. When separated from their group, they typically exhibit behaviors aimed at reuniting with their clan, such as calling out and searching for their partners.\n\n2. **Stress Response**: Being lost in an unfamiliar environment can cause stress and fear in animals, similar to humans. This stress response can trigger behaviors aimed at finding safety and returning to familiar surroundings.\n\nWhile hyenas do eat leaves as part of their omnivorous diet, the context of being lost in the forest suggests that the primary driving force for the hyena's behavior would be to find its way back to its group, rather than simply foraging for food. Therefore, I would select Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "A hyena got lost in the forest.",
+        "effect",
+        "It ate some leaves.",
+        "It was scard and wanted to found its partners."
+      ],
+      "processing_time": 6.846479415893555,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe has good insight.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nHe is used to observing other people's words and deeds.\n\nHypothesis 2:\nMike has talents in math.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"He has good insight,\" neither hypothesis directly relates to medical knowledge or clinical experience. However, \"good insight\" typically refers to a person's ability to understand and interpret situations or people accurately. This is more aligned with social intelligence or emotional intelligence, rather than mathematical talent.\n\nHypothesis 1: \"He is used to observing other people's words and deeds\" is more related to social awareness and understanding, which could contribute to good insight.\n\nHypothesis 2: \"Mike has talents in math\" does not directly relate to having good insight.\n\nTherefore, based on the given information and my medical background, I would select Hypothesis 1 as the more likely cause for \"He has good insight.\" Final answer: 0",
+      "expected_output": "0",
+      "question_values": [
+        "He has good insight.",
+        "cause",
+        "He is used to observing other people's words and deeds.",
+        "Mike has talents in math."
+      ],
+      "processing_time": 5.57013726234436,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe fell down suddenly.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis knees were skinned.\n\nHypothesis 2:\nHe has gained a lot of profits.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, the most likely effect of \"He fell down suddenly\" is Hypothesis 1: \"His knees were skinned.\" This is because falls often result in skin abrasions, especially on protruding parts of the body like the knees. Hypothesis 2, \"He has gained a lot of profits,\" is not a typical or expected outcome of a fall and is not related to the given premise. Therefore, I select Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "He fell down suddenly.",
+        "effect",
+        "His knees were skinned.",
+        "He has gained a lot of profits."
+      ],
+      "processing_time": 3.573349714279175,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe went back his house and fell asleep.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom couldn't fall asleep because of whoop noise from upstair.\n\nHypothesis 2:\nThe miner was tired.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"He went back to his house and fell asleep,\" the most likely cause for his ability to fall asleep is not the whoop noise from upstairs (Hypothesis 1), as the premise doesn't mention any difficulty in falling asleep. Instead, the phrase \"fell asleep\" suggests that he was able to sleep without any mentioned obstacles.\n\nGiven the information provided, the most probable cause for his ability to fall asleep is that he was tired (Hypothesis 2). Tiredness is a common reason for falling asleep, and it's a normal physiological response after a day's activities.\n\nTherefore, the correct hypothesis is 1: The miner was tired.",
+      "expected_output": "1",
+      "question_values": [
+        "He went back his house and fell asleep.",
+        "cause",
+        "Tom couldn't fall asleep because of whoop noise from upstair.",
+        "The miner was tired."
+      ],
+      "processing_time": 5.0643086433410645,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom has collected some bats in the laboratory.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey fly around.\n\nHypothesis 2:\nThere are no more insects.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "As a medical doctor, I would select Hypothesis 1: \"They fly around.\" This is because bats are known for their ability to fly, and it's a typical behavior for them. The second hypothesis, \"There are no more insects,\" is not necessarily a direct effect of the bats being in the laboratory. While bats do eat insects, the absence of insects would depend on various factors such as the number of bats, the size of the laboratory, and the initial insect population. Therefore, I would not select Hypothesis 2 based solely on the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom has collected some bats in the laboratory.",
+        "effect",
+        "They fly around.",
+        "There are no more insects."
+      ],
+      "processing_time": 4.226139068603516,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe physiotherapist opened the bright light.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe patient is treated with the phototherapy.\n\nHypothesis 2:\nTom was in shock from drinking too much wine.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the given premise and the two hypotheses, I would select Hypothesis 1: \"The patient is treated with phototherapy.\" Here's why:\n\n1. **Relevance to the Premise**: The action of opening a bright light is more likely to be related to a medical treatment than to a patient being in shock from drinking too much wine.\n\n2. **Clinical Experience**: Phototherapy is a common medical treatment used for various conditions, such as neonatal jaundice, skin conditions, and certain types of cancer. It involves exposing the patient to specific wavelengths of light.\n\n3. **Lack of Evidence for Hypothesis 2**: The premise does not provide any evidence that Tom was in shock or that he had consumed excessive amounts of wine. Therefore, Hypothesis 2 is less likely based on the information given.\n\nSo, the correct answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "The physiotherapist opened the bright light.",
+        "cause",
+        "The patient is treated with the phototherapy.",
+        "Tom was in shock from drinking too much wine."
+      ],
+      "processing_time": 6.590733051300049,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe used chromatography.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom put the iguana in a fluid free environment.\n\nHypothesis 2:\nHe wanted to separate the substances that were dissolved in the liquid.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"He wanted to separate the substances that were dissolved in the liquid.\" Chromatography is a laboratory technique used to separate mixtures into their individual components. It's often used in chemistry, biochemistry, and medical research to separate and identify compounds in a mixture. Therefore, the most likely cause for using chromatography is to separate substances dissolved in a liquid. Hypothesis 1 doesn't directly relate to the use of chromatography.",
+      "expected_output": "1",
+      "question_values": [
+        "He used chromatography.",
+        "cause",
+        "Tom put the iguana in a fluid free environment.",
+        "He wanted to separate the substances that were dissolved in the liquid."
+      ],
+      "processing_time": 3.718113899230957,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nFood was provided for them.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe octopi was hungry.\n\nHypothesis 2:\nThe Bushbucks were locked in a cage.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: \"The octopi was hungry.\" Here's why:\n\n- The premise states that food was provided for \"them,\" which implies that the food was provided for the octopi, not the Bushbucks.\n- As a medical doctor, we understand that animals, including octopi, require food to survive and maintain their health. Therefore, if food was provided, it's likely that the octopi was hungry and the food was provided to satisfy that hunger.\n- The second hypothesis, \"The Bushbucks were locked in a cage,\" doesn't directly relate to the premise about food being provided. While it's possible that Bushbucks were also present, the information given doesn't suggest that they were hungry or that the food was provided for them.\n\nSo, based on the given information, the most likely cause is that the octopi was hungry and the food was provided to satisfy its hunger.",
+      "expected_output": "1",
+      "question_values": [
+        "Food was provided for them.",
+        "cause",
+        "The octopi was hungry.",
+        "The Bushbucks were locked in a cage."
+      ],
+      "processing_time": 7.1347057819366455,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom went to the library in his school.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nTom studed by himself quietly.\n\nHypothesis 2:\nHe finds a prodigious amount of documents concerning this topic.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nAs a medical doctor, I would select Hypothesis 1: \"Tom studied by himself quietly.\" This is because libraries are typically quiet places where people go to study or read, and it's reasonable to assume that Tom went there with the intention of studying quietly. Hypothesis 2, while possible, is not directly related to the premise and does not necessarily follow from it.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom went to the library in his school.",
+        "effect",
+        "Tom studed by himself quietly.",
+        "He finds a prodigious amount of documents concerning this topic."
+      ],
+      "processing_time": 2.881226062774658,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nA lady took her family to the shop.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nShe bought some snacks for her children.\n\nHypothesis 2:\nThey always went to the marsh.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The premise \"A lady took her family to the shop\" does not provide any indication that they always went to the marsh. The action of going to the shop is a one-time event, and there's no information given about any regular trips to the marsh. Therefore, Hypothesis 2 is not supported by the given premise. On the other hand, Hypothesis 1 is a reasonable and likely outcome of the premise, as people typically buy items, including snacks, when they go to a shop.",
+      "expected_output": "0",
+      "question_values": [
+        "A lady took her family to the shop.",
+        "effect",
+        "She bought some snacks for her children.",
+        "They always went to the marsh."
+      ],
+      "processing_time": 3.899111270904541,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom thought duchesses had beautiful eyes.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe cerebral cortex of his brain was damaged.\n\nHypothesis 2:\nTom thought duchesses had beautiful features.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information given, neither hypothesis directly explains why Tom thought duchesses had beautiful eyes. Hypothesis 1 suggests a brain injury, which might affect perception or cognition, but it doesn't specifically relate to the content of Tom's thoughts about duchesses. Hypothesis 2 is more aligned with the given premise, as it directly relates to Tom's perception of duchesses. However, it doesn't provide a medical cause for this perception.\n\nSince the question asks for a medical cause, and neither hypothesis provides one, I would select 0 for Hypothesis 1, as it at least suggests a medical condition, albeit not a specific one that would explain Tom's thought process. Hypothesis 2, while more aligned with the premise, doesn't provide a medical cause.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom thought duchesses had beautiful eyes.",
+        "cause",
+        "The cerebral cortex of his brain was damaged.",
+        "Tom thought duchesses had beautiful features."
+      ],
+      "processing_time": 5.716984987258911,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHis parents scared him that if he doesn't sleep anymore, the dragon will come and eat him.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis boy was the only child of his parents.\n\nHypothesis 2:\nThe child doesn't sleep.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information provided, the correct hypothesis is 1: \"This boy was the only child of his parents.\" This hypothesis is more likely to be the cause of the parents' behavior in scaring their child with the threat of a dragon. Here's why:\n\n- The phrase \"His parents\" suggests that there's more than one parent, indicating a family structure.\n- The use of \"scared him\" implies that the parents are intentionally trying to influence their child's behavior, which is more likely to happen with their only child as they may feel they have more control or influence over them.\n- The child's fear of not sleeping and the threat of a dragon could be a result of the parents' overprotection or overcontrol, which is more common with only children.\n\nWhile Hypothesis 2, \"The child doesn't sleep,\" could be a consequence of the parents' actions, it's not the cause of the parents' behavior as described in the premise. Therefore, Hypothesis 1 is more likely to be the cause.",
+      "expected_output": "1",
+      "question_values": [
+        "His parents scared him that if he doesn't sleep anymore, the dragon will come and eat him.",
+        "cause",
+        "This boy was the only child of his parents.",
+        "The child doesn't sleep."
+      ],
+      "processing_time": 7.717294931411743,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTwo cars were crashed.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThere will be hurricanes here every few days.\n\nHypothesis 2:\nOne of them can't be driven any more.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"One of them can't be driven any more.\" This is because car crashes often result in significant vehicle damage, making one or both cars undrivable. This is a direct effect of the crash, whereas Hypothesis 1 is unrelated to car crashes and thus not a likely effect.",
+      "expected_output": "1",
+      "question_values": [
+        "Two cars were crashed.",
+        "effect",
+        "There will be hurricanes here every few days.",
+        "One of them can't be driven any more."
+      ],
+      "processing_time": 2.774235248565674,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIt is not dead.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nNew hair is found on this seemingly dead body.\n\nHypothesis 2:\nThe Myofibrils have different numbers of myofilaments.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"The Myofibrils have different numbers of myofilaments.\" Here's why:\n\n- Hypothesis 1, \"New hair is found on this seemingly dead body,\" is not a reliable indicator of life. Hair growth can continue for some time after death due to post-mortem changes.\n\n- Hypothesis 2, however, involves myofibrils, the contractile units of muscle cells. The number of myofilaments (actin and myosin) in myofibrils is a key factor in muscle contraction and relaxation. A change in this number could indicate an underlying medical condition or process that might explain why the body is not dead, such as certain types of muscle disorders or even some forms of rigor mortis.\n\nTherefore, I would select 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "It is not dead.",
+        "cause",
+        "New hair is found on this seemingly dead body.",
+        "The Myofibrils have different numbers of myofilaments."
+      ],
+      "processing_time": 6.480595111846924,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nScientists have tested the ingredients in feces.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe scientist found that the main composition was mineral calcite.\n\nHypothesis 2:\nScientists have discovered the zygote.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0 for Hypothesis 1.\n\nThe main composition of feces is not mineral calcite. Feces primarily consists of undigested food residue, bacteria, and other waste products from the body. While it may contain some minerals, it's not primarily composed of calcite. Therefore, Hypothesis 1 is incorrect.\n\nHypothesis 2 is also incorrect, as scientists cannot discover a zygote in feces. A zygote is a fertilized egg, which is not present in feces. Feces are the end product of digestion and elimination, not reproduction.",
+      "expected_output": "1",
+      "question_values": [
+        "Scientists have tested the ingredients in feces.",
+        "effect",
+        "The scientist found that the main composition was mineral calcite.",
+        "Scientists have discovered the zygote."
+      ],
+      "processing_time": 4.228229284286499,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThere is no chance of whistlers.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThere is no lightning strike in the area.\n\nHypothesis 2:\nThe power was out this morning.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "As a medical doctor, I would select Hypothesis 2: \"The power was out this morning.\" This is because the absence of whistlers, which are typically caused by lightning strikes, could be attributed to a lack of electrical activity in the area. A power outage would explain this absence. While Hypothesis 1 could also be true, it doesn't directly explain the absence of whistlers like Hypothesis 2 does. Therefore, my selection is 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "There is no chance of whistlers.",
+        "cause",
+        "There is no lightning strike in the area.",
+        "The power was out this morning."
+      ],
+      "processing_time": 3.7508418560028076,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom's sisters came gack home to celebrate the traditional festival.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThis day is the Spring Festival.\n\nHypothesis 2:\nTom's family has a wheat field.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, neither hypothesis directly relates to medical conditions or patient care. However, we can analyze the information given and the hypotheses based on cultural knowledge and common sense.\n\nThe phrase \"came back home\" suggests that Tom's sisters were away and have returned for the festival. The term \"traditional festival\" is vague, but it's more likely to be a festival that involves family reunions, as that's a common theme in many traditional festivals worldwide. The Spring Festival, also known as the Chinese New Year, is one such festival that emphasizes family reunions.\n\nOn the other hand, the presence of a wheat field does not necessarily indicate that a festival is taking place. While wheat is a common crop, it's not a unique indicator of a festival.\n\nTherefore, based on the information given, Hypothesis 1 is more likely to be the cause of Tom's sisters coming back home. I select 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom's sisters came gack home to celebrate the traditional festival.",
+        "cause",
+        "This day is the Spring Festival.",
+        "Tom's family has a wheat field."
+      ],
+      "processing_time": 7.099372863769531,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom wants to see his lymph nodes.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe got x-ray report via Lymphangiography.\n\nHypothesis 2:\nHe spent a lot of money.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: Lymphangiography is a procedure that uses a special dye and X-rays to examine the lymph vessels and lymph nodes. It's an invasive procedure that requires a radiologist to inject the dye directly into the lymph vessels, usually in the feet or hands. If Tom wanted to see his lymph nodes, he would likely have had this procedure done, and the results would be in the form of an X-ray report. Therefore, Hypothesis 1 is correct. Hypothesis 2 is not necessarily true; while medical procedures can be expensive, there's no information given that suggests Tom spent a lot of money.",
+      "expected_output": "0",
+      "question_values": [
+        "Tom wants to see his lymph nodes.",
+        "effect",
+        "He got x-ray report via Lymphangiography.",
+        "He spent a lot of money."
+      ],
+      "processing_time": 4.627559185028076,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHenry lost his ability of perception.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe lost his consciousness.\n\nHypothesis 2:\nHis taste was damaged.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise that Henry \"lost his ability of perception,\" the most accurate interpretation is that he has lost his consciousness. The term \"perception\" in this context likely refers to the state of being aware of one's surroundings and environment, which is a key aspect of consciousness. Therefore, the correct hypothesis is:\n\nHypothesis 1: He lost his consciousness.\n\nSo, the answer is 0.",
+      "expected_output": "0",
+      "question_values": [
+        "Henry lost his ability of perception.",
+        "effect",
+        "He lost his consciousness.",
+        "His taste was damaged."
+      ],
+      "processing_time": 3.062382936477661,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThey reached the stage of puberty.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nTheir sleep-wake cycle changed.\n\nHypothesis 2:\nTheir mouths were dripping with saliva.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, the correct hypothesis is 0: \"Their sleep-wake cycle changed.\" This is a common effect of reaching puberty due to changes in hormone levels, particularly melatonin, which regulates sleep-wake cycles. In contrast, excessive saliva production, or sialorrhea, is not a typical effect of puberty and is not represented in Hypothesis 2. Therefore, the answer is 0.",
+      "expected_output": "0",
+      "question_values": [
+        "They reached the stage of puberty.",
+        "effect",
+        "Their sleep-wake cycle changed.",
+        "Their mouths were dripping with saliva."
+      ],
+      "processing_time": 3.278884172439575,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe yelled due to pain from the bruise.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man with implants in his jawbone approached the metal detector.\n\nHypothesis 2:\nJerry stepped on a piece of gravel.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise that the person yelled due to pain from a bruise, the most likely cause would be an acute injury to the skin and underlying tissues, such as stepping on a piece of gravel. Implants in the jawbone, while potentially causing discomfort, would not typically result in a bruise or sudden, intense pain that would cause someone to yell. Therefore, the correct hypothesis is:\n\n1: Jerry stepped on a piece of gravel.",
+      "expected_output": "1",
+      "question_values": [
+        "He yelled due to pain from the bruise.",
+        "cause",
+        "The man with implants in his jawbone approached the metal detector.",
+        "Jerry stepped on a piece of gravel."
+      ],
+      "processing_time": 3.3548285961151123,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nJames accidentally swallowed a silver coin.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nJames was eventually poisoned.\n\nHypothesis 2:\nHe was electrocuted and taken to hospital.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, neither hypothesis accurately describes the most likely outcome. Here's why:\n\n1. **Hypothesis 1: James was eventually poisoned.** - Silver coins are not toxic, so there's no risk of poisoning from ingesting one.\n\n2. **Hypothesis 2: He was electrocuted and taken to hospital.** - Swallowing a silver coin does not pose an electrocution risk. Silver coins are not electrical conductors in the body, and they do not generate an electrical current.\n\nThe most likely effect is that the coin will pass through James' digestive system and be eliminated in his stool, similar to other swallowed foreign bodies. However, if the coin is large or causes an obstruction, it may require endoscopic removal or surgery. Therefore, neither hypothesis is correct.\n\nFinal answer: 0 (Hypothesis 1 is incorrect, and Hypothesis 2 is also incorrect).",
+      "expected_output": "0",
+      "question_values": [
+        "James accidentally swallowed a silver coin.",
+        "effect",
+        "James was eventually poisoned.",
+        "He was electrocuted and taken to hospital."
+      ],
+      "processing_time": 6.915498971939087,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe gardener trimmed the length of the willow branches neatly.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe yard was overgrown with weeds.\n\nHypothesis 2:\nThe branches of the willow tree are messy.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, we don't typically use these principles to diagnose or treat patients. However, if we were to apply a similar logical approach, we would look for the most likely cause based on the information given. The statement \"The gardener trimmed the length of the willow branches neatly\" suggests that the branches were in a state that required trimming, implying they were overgrown or messy. Therefore, the most likely cause is:\n\nHypothesis 2: The branches of the willow tree were messy.\n\nSo, the answer is 1.",
+      "expected_output": "1",
+      "question_values": [
+        "The gardener trimmed the length of the willow branches neatly.",
+        "cause",
+        "The yard was overgrown with weeds.",
+        "The branches of the willow tree are messy."
+      ],
+      "processing_time": 4.300282955169678,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nSloths haveslower metabolism than any other mammal.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nFewer muscles means slower metabolism.\n\nHypothesis 2:\nInnumerous metabolic processes generated heat in the body.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1: \"Fewer muscles means slower metabolism.\" Here's why:\n\n1. **Muscle Tissue and Metabolism**: Muscle tissue is one of the most metabolically active tissues in the body. It requires a significant amount of energy, even at rest. Sloths have less muscle mass compared to other mammals, which means they have less tissue requiring energy, leading to a slower overall metabolism.\n\n2. **Body Temperature Regulation**: Sloths are ectothermic, meaning they rely on their environment to regulate their body temperature. They don't need to maintain a high body temperature like endothermic mammals (like humans), which also contributes to their slower metabolism.\n\nWhile Hypothesis 2 suggests that numerous metabolic processes generate heat, this is more applicable to endothermic mammals that need to maintain a high body temperature. Sloths, with their unique physiology and lifestyle, don't require this level of metabolic activity.\n\nSo, the correct answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "Sloths haveslower metabolism than any other mammal.",
+        "cause",
+        "Fewer muscles means slower metabolism.",
+        "Innumerous metabolic processes generated heat in the body."
+      ],
+      "processing_time": 7.8287317752838135,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHis rice didn't grow at all.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe man planted rice on dry land.\n\nHypothesis 2:\nHis intestines do not function well sometimes.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nHypothesis 1 is more likely to be the cause of the rice not growing. Hypothesis 2, while possible, is not directly related to the growth of rice and is not a typical cause for such an observation. As a medical doctor, I would not typically consider a person's intestinal function as a cause for their rice not growing.",
+      "expected_output": "0",
+      "question_values": [
+        "His rice didn't grow at all.",
+        "cause",
+        "The man planted rice on dry land.",
+        "His intestines do not function well sometimes."
+      ],
+      "processing_time": 2.6663901805877686,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHost companies want to attract more customers.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThey have invited a lot of people.\n\nHypothesis 2:\nThey decide to add Chinese language.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, neither hypothesis directly relates to attracting more customers. However, if we consider the principles of communication and accessibility in healthcare, which are transferable to this context, we can make an inference.\n\nHypothesis 1: \"They have invited a lot of people\" - While inviting more people could potentially increase the customer base, it doesn't guarantee that these people will become customers. It's like prescribing a medication without considering the patient's adherence to the treatment plan.\n\nHypothesis 2: \"They decide to add Chinese language\" - This is more likely to attract a specific segment of the population who speak Chinese, increasing accessibility and inclusivity. In healthcare, this would be akin to providing translated materials or having interpreters to ensure all patients understand their treatment plan, which is known to improve patient outcomes and satisfaction.\n\nTherefore, based on the principle of increasing accessibility and inclusivity, Hypothesis 2 is more likely to have the desired effect of attracting more customers. So, the answer is 1.",
+      "expected_output": "1",
+      "question_values": [
+        "Host companies want to attract more customers.",
+        "effect",
+        "They have invited a lot of people.",
+        "They decide to add Chinese language."
+      ],
+      "processing_time": 7.646772146224976,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIncontinence occurs.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nMany elderly people can't control their intestinal system.\n\nHypothesis 2:\nBladder pressure exceeds sphincter resistance.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"Bladder pressure exceeds sphincter resistance.\" This is a more accurate and specific cause of incontinence, particularly stress urinary incontinence, which is common in elderly individuals. Hypothesis 1, while it may be true that some elderly people have difficulty controlling their intestinal system, is not a specific cause of incontinence and does not directly relate to the urinary or fecal incontinence that is typically discussed in medical contexts. Therefore, I would select 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "Incontinence occurs.",
+        "cause",
+        "Many elderly people can't control their intestinal system.",
+        "Bladder pressure exceeds sphincter resistance."
+      ],
+      "processing_time": 4.043760061264038,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe amount of hemoglobin in Tom's blood has decreased.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe doctor advised Tom to add more nutrition.\n\nHypothesis 2:\nTom has anemia.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: Tom has anemia. A decrease in hemoglobin levels is a key indicator of anemia, which is a condition where the body does not have enough healthy red blood cells to carry oxygen throughout the body. While adding more nutrition could potentially help if the anemia is due to a nutritional deficiency like iron deficiency, the doctor's advice would likely be more specific and may include further diagnostic tests to determine the underlying cause of the anemia. Therefore, the most accurate effect of the decreased hemoglobin level is that Tom has anemia.",
+      "expected_output": "1",
+      "question_values": [
+        "The amount of hemoglobin in Tom's blood has decreased.",
+        "effect",
+        "The doctor advised Tom to add more nutrition.",
+        "Tom has anemia."
+      ],
+      "processing_time": 4.262514352798462,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe shows compulsive behavior.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nTom has obsessive thoughts.\n\nHypothesis 2:\nSeniors in my family have been suffering from chronic diseases.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information provided, the compulsive behavior could be a symptom of an underlying condition. While both hypotheses present possible associations, Hypothesis 1 is more directly related to the presented symptom of compulsive behavior. Obsessive thoughts are a key feature of Obsessive-Compulsive Disorder (OCD), which is characterized by persistent, unwanted thoughts (obsessions) and/or repetitive behaviors (compulsions).\n\nOn the other hand, Hypothesis 2 suggests a family history of chronic diseases, which is not directly related to the observed compulsive behavior. While a family history of chronic diseases is important medical information, it does not explain the current symptom of compulsive behavior.\n\nTherefore, based on medical knowledge and clinical experience, I would select Hypothesis 1: Tom has obsessive thoughts.",
+      "expected_output": "0",
+      "question_values": [
+        "He shows compulsive behavior.",
+        "cause",
+        "Tom has obsessive thoughts.",
+        "Seniors in my family have been suffering from chronic diseases."
+      ],
+      "processing_time": 5.936174154281616,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nIt died.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe cell was soaked in liquid containing Cytotoxins.\n\nHypothesis 2:\nHis neck artery was blocked by embolus.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information provided, \"It died\" is quite vague and could refer to a living organism or a cell. However, since you've provided two hypotheses, I'll assume we're discussing a living organism. In that case, the most likely cause of death given the options is:\n\nHypothesis 2: His neck artery was blocked by an embolus.\n\nThis is because an embolus blocking a major artery, such as the carotid artery in the neck, can lead to a sudden loss of blood flow to the brain, causing immediate loss of consciousness and death. This is a medical emergency known as a stroke.\n\nHypothesis 1, while possible, is less likely to cause immediate death. Cytotoxins would need to be present in a high enough concentration and would typically cause cellular damage and death over time, not instantaneously.\n\nSo, the answer is 1 for Hypothesis 2.",
+      "expected_output": "0",
+      "question_values": [
+        "It died.",
+        "cause",
+        "The cell was soaked in liquid containing Cytotoxins.",
+        "His neck artery was blocked by embolus."
+      ],
+      "processing_time": 6.70124363899231,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHere, they dance together.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThey choose swing dance for their party.\n\nHypothesis 2:\nMark becomes a ventriloquist after years of training.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "0\n\nExplanation: The premise \"Here, they dance together\" does not provide any information that suggests Mark has become a ventriloquist. The hypothesis \"Mark becomes a ventriloquist after years of training\" is not supported by the given information. Therefore, the correct hypothesis is 0, which is \"They choose swing dance for their party.\"",
+      "expected_output": "0",
+      "question_values": [
+        "Here, they dance together.",
+        "cause",
+        "They choose swing dance for their party.",
+        "Mark becomes a ventriloquist after years of training."
+      ],
+      "processing_time": 2.700864315032959,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom has acute sensation.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis recognizance of nerve vibration is sharp.\n\nHypothesis 2:\nTom has knowledge.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise that Tom has \"acute sensation,\" the correct hypothesis is:\n\nHypothesis 1: \"His recognition of nerve vibration is sharp.\"\n\nThis hypothesis aligns with the medical term \"acute,\" which often refers to a sudden onset or sharp, intense sensation. It suggests that Tom is experiencing a heightened sensitivity to nerve vibrations, which could be due to various conditions such as nerve damage, inflammation, or certain neurological disorders.\n\nHypothesis 2: \"Tom has knowledge\" is not directly related to the given premise and does not provide a medical explanation for Tom's acute sensation.\n\nSo, the answer is: 0 (Hypothesis 1)",
+      "expected_output": "0",
+      "question_values": [
+        "Tom has acute sensation.",
+        "effect",
+        "His recognizance of nerve vibration is sharp.",
+        "Tom has knowledge."
+      ],
+      "processing_time": 4.918482542037964,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nJohn realized the essense of their tyranny of truth.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe found that they were exposed.\n\nHypothesis 2:\nHe became the general against Totalitarianism.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the premise \"John realized the essence of their tyranny of truth,\" neither hypothesis directly relates to medical knowledge or clinical experience. However, we can analyze the premise and hypotheses from a logical and linguistic perspective.\n\nThe premise suggests that John has gained a deep understanding of the oppressive nature of a certain truth or truths. This realization could lead to various outcomes, but it doesn't necessarily mean he discovered that they were exposed (Hypothesis 1) or that he became a leader against totalitarianism (Hypothesis 2).\n\nThe phrase \"realized the essence\" implies an intellectual or spiritual understanding rather than a physical or medical one. Therefore, neither hypothesis can be confirmed or refuted based on medical knowledge or clinical experience.\n\nHowever, if we consider the most likely outcome based on the premise, Hypothesis 2 seems more plausible. Realizing the essence of tyranny could indeed inspire someone to take a stand against it, becoming a general against totalitarianism. Hypothesis 1, on the other hand, doesn't directly follow from the premise.\n\nSo, while neither hypothesis can be confirmed based on medical knowledge, Hypothesis 2 is more likely based on the premise. Therefore, the answer is 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "John realized the essense of their tyranny of truth.",
+        "effect",
+        "He found that they were exposed.",
+        "He became the general against Totalitarianism."
+      ],
+      "processing_time": 9.252442121505737,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe experimenter went to the fecal field to collect a large amount of feces.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe greenhouse cannot be completed this year.\n\nHypothesis 2:\nThe greenhouse needs a lot of methane as fuel.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2: \"The greenhouse needs a lot of methane as fuel.\" Here's why:\n\nFeces contain a significant amount of organic matter that can be broken down by bacteria to produce methane, a potent greenhouse gas. The experimenter collecting a large amount of feces suggests they are interested in harnessing this methane for fuel, likely for a biogas plant or similar facility. This aligns with the hypothesis that the greenhouse needs methane as fuel.\n\nHypothesis 1, \"The greenhouse cannot be completed this year,\" does not directly relate to the action of collecting feces and does not provide a clear cause-and-effect relationship. Therefore, I would not select it based on the given premise.",
+      "expected_output": "1",
+      "question_values": [
+        "The experimenter went to the fecal field to collect a large amount of feces.",
+        "cause",
+        "The greenhouse cannot be completed this year.",
+        "The greenhouse needs a lot of methane as fuel."
+      ],
+      "processing_time": 5.614563703536987,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nTom suffered from liver cancer.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nThe fortuneteller told Tom he had freckles.\n\nHypothesis 2:\nTom's face was like wax due to the accumulation of toxic.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 2. Here's why:\n\n1. **Hypothesis 1**: The statement \"The fortuneteller told Tom he had freckles\" is irrelevant to Tom's liver cancer. Freckles are a benign condition of the skin and have no connection to liver cancer.\n\n2. **Hypothesis 2**: \"Tom's face was like wax due to the accumulation of toxins.\" This could be a sign of a condition called \"hepatic encephalopathy,\" which is a consequence of liver failure, often seen in advanced liver cancer. In hepatic encephalopathy, toxins that the liver would normally remove build up in the body and can affect the brain, leading to changes in personality, confusion, and sometimes a waxy appearance of the face. This hypothesis is consistent with Tom's liver cancer diagnosis.\n\nSo, the correct answer is 1 for Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "Tom suffered from liver cancer.",
+        "effect",
+        "The fortuneteller told Tom he had freckles.",
+        "Tom's face was like wax due to the accumulation of toxic."
+      ],
+      "processing_time": 6.9987993240356445,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nJack wanted to find the most ancient of living creatures.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHis friend recommended dinosaurs to him.\n\nHypothesis 2:\nHis friend recommended the dragonfly to him.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: His friend recommended dinosaurs to him. Here's why:\n\n1. **Dinosaurs**: Dinosaurs are indeed the most ancient of living creatures, with the earliest known dinosaurs appearing around 230 million years ago. While they went extinct about 66 million years ago, their fossils are well-preserved and studied, making them a valid answer to Jack's quest.\n\n2. **Dragonfly**: While dragonflies are ancient, they are not the most ancient of living creatures. The earliest known dragonflies date back to around 320 million years ago, which is still later than the earliest dinosaurs. Therefore, recommending dragonflies does not fulfill Jack's desire to find the most ancient of living creatures.\n\nSo, the correct answer is 0 for Hypothesis 1.",
+      "expected_output": "1",
+      "question_values": [
+        "Jack wanted to find the most ancient of living creatures.",
+        "effect",
+        "His friend recommended dinosaurs to him.",
+        "His friend recommended the dragonfly to him."
+      ],
+      "processing_time": 6.4835240840911865,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nHe filtered the ink.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe found that there were bromine atoms in it.\n\nHypothesis 2:\nNo solid matter was filtered out.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on medical knowledge and clinical experience, the correct hypothesis is 1: \"He found that there were bromine atoms in it.\" Here's why:\n\n- In medical terms, \"filtering\" often refers to processes like dialysis or filtration systems used in medical equipment, where the goal is to remove specific substances or particles from a solution or fluid.\n- Bromine is a halogen that can be found in some inks, and it's known to have toxic effects, especially when inhaled or absorbed through the skin. Its presence in ink could be a health concern, which is why one might filter the ink to check for it.\n- Hypothesis 2, \"No solid matter was filtered out,\" doesn't directly relate to the action of filtering the ink for bromine atoms. It's more of an observation about the filtration process itself, not the substance being filtered.\n\nSo, the more relevant and medically grounded hypothesis is 1.",
+      "expected_output": "1",
+      "question_values": [
+        "He filtered the ink.",
+        "effect",
+        "He found that there were bromine atoms in it.",
+        "No solid matter was filtered out."
+      ],
+      "processing_time": 6.8811914920806885,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nExposion to chemicals had an impact on his heart.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe was injected with medicine containing toxin.\n\nHypothesis 2:\nHe was injected with medicine containing Amiodarone.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on the information provided, I would select Hypothesis 2: He was injected with medicine containing Amiodarone. Here's why:\n\n1. Amiodarone is a medication used to treat certain heart rhythm problems. It can have side effects on the heart, including changes in heart rhythm and heart failure, which could be consistent with the impact on his heart mentioned in the premise.\n\n2. Hypothesis 1 suggests a toxin, which could have a wide range of effects, not necessarily limited to the heart. While it's possible that a toxin could affect the heart, Amiodarone's known cardiac effects make Hypothesis 2 more specific and likely.\n\n3. Without additional information, it's more reasonable to consider a known medication with cardiac effects (Amiodarone) than an unspecified toxin.",
+      "expected_output": "1",
+      "question_values": [
+        "Exposion to chemicals had an impact on his heart.",
+        "effect",
+        "He was injected with medicine containing toxin.",
+        "He was injected with medicine containing Amiodarone."
+      ],
+      "processing_time": 5.900972127914429,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nThe piano produced beautiful music.\n\nWhat you're looking for:\ncause\n\nHypothesis 1:\nThe piano is an automatic music player.\n\nHypothesis 2:\nMark tapped the keyboard.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "As a medical doctor, I would select Hypothesis 2: \"Mark tapped the keyboard.\" Here's why:\n\n1. **Causality**: In the given premise, the piano produced beautiful music. The action of \"tapping the keyboard\" directly causes the piano to play music.\n\n2. **Mechanism of Action**: When keys on a piano are pressed or tapped, the corresponding strings inside the piano are struck, producing musical notes. This is a well-understood mechanical process.\n\n3. **Lack of Evidence for Hypothesis 1**: There's no information provided to suggest that the piano is an automatic music player. Without additional context, it's more reasonable to assume a human interaction with the piano.\n\nSo, based on medical reasoning (though this isn't a medical scenario, it's about cause and effect), the most likely cause for the piano producing beautiful music is that someone, in this case \"Mark,\" tapped the keyboard. Therefore, I select Hypothesis 2.",
+      "expected_output": "1",
+      "question_values": [
+        "The piano produced beautiful music.",
+        "cause",
+        "The piano is an automatic music player.",
+        "Mark tapped the keyboard."
+      ],
+      "processing_time": 7.392843246459961,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You are a medical doctor with 20 years of clinical experience. You analyze situations through medical knowledge and clinical expertise.\n\nPremise:\nJack was shivering in the rain.\n\nWhat you're looking for:\neffect\n\nHypothesis 1:\nHe went home and had a bowl of ginger soup.\n\nHypothesis 2:\nHe went home and ate a lot of cake.\n\nAs a medical doctor, select the correct hypothesis (0 for Hypothesis 1, 1 for Hypothesis 2) based on your medical knowledge and clinical experience:",
+      "response": "Based on my medical knowledge and clinical experience, I would select Hypothesis 1: He went home and had a bowl of ginger soup. Here's why:\n\n1. **Warmth**: Ginger soup is warm, which can help raise Jack's body temperature and alleviate the shivering caused by being cold and wet in the rain.\n\n2. **Hydration**: It's important to rehydrate after being out in the rain, and soup can help with this.\n\n3. **No adverse effects**: Unlike Hypothesis 2, eating a lot of cake wouldn't have any immediate medical benefits and could potentially lead to issues like a sugar crash or digestive discomfort.\n\nSo, the correct answer is 0 for Hypothesis 1.",
+      "expected_output": "0",
+      "question_values": [
+        "Jack was shivering in the rain.",
+        "effect",
+        "He went home and had a bowl of ginger soup.",
+        "He went home and ate a lot of cake."
+      ],
+      "processing_time": 5.428473949432373,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "0",
+    "1",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "0"
+  ],
+  "processing_stats": {
+    "total_time": 513.0119988918304,
+    "avg_time": 5.130119988918304,
+    "min_time": 2.1180028915405273,
+    "max_time": 9.942323207855225,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}
