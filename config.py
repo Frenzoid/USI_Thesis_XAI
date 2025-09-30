@@ -23,6 +23,7 @@ class Config:
     PROMPTS_JSON = os.path.join(CONFIGS_DIR, "prompts.json")
     SETUPS_JSON = os.path.join(CONFIGS_DIR, "setups.json")
     MODELS_JSON = os.path.join(CONFIGS_DIR, "models.json")
+    FINETUNES_JSON = os.path.join(CONFIGS_DIR, "finetunes.json")
     
     # Data and output directories - main storage locations
     DATA_DIR = "./datasets"          # Downloaded datasets

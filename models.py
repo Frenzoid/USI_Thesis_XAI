@@ -63,6 +63,11 @@ class ModelManager:
         Returns:
             bool: True if model is accessible, False otherwise
         """
+    
+        # For local filesystem paths, just check if they exist
+        if os.path.exists(model_path):
+            logger.debug(f"Model '{model_name}' found at local path: {model_path}")
+            return True
         try:
             from huggingface_hub import model_info, HfApi
             
@@ -309,21 +314,6 @@ class ModelManager:
             self.cleanup_current_model()
             raise
     
-    def load_finetuned_model(self, model_path: str):
-        """Load a finetuned model from local filesystem"""
-        logger.info(f"Loading finetuned model from: {model_path}")
-        
-        # Create default config for finetuned model
-        config = {
-            **Config.get_default_model_loading_config(),
-            'local_files_only': True,
-            'finetuned': True
-        }
-        
-        model_name = f"finetuned_{os.path.basename(model_path)}"
-        self.models_config[model_name] = config
-        
-        self.load_open_source_model(model_name, model_path)
     
     def _prepare_chat_prompt(self, prompt: str) -> str:
         """Prepare prompt using chat template if configured"""

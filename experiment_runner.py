@@ -321,13 +321,7 @@ class ExperimentRunner:
         
         try:
             if model_config['type'] == 'local':
-                if model_config.get('finetuned', False):
-                    model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
-                                            model_config['model_path'].split('/')[-1] + '_finetuned')
-                    self.model_manager.load_finetuned_model(model_path)
-                else:
-                    self.model_manager.load_open_source_model(model_name, model_config['model_path'])
-                
+                self.model_manager.load_open_source_model(model_name, model_config['model_path'])
                 logger.info(f"Successfully loaded local model: {model_name}")
                 return True, ""
                 

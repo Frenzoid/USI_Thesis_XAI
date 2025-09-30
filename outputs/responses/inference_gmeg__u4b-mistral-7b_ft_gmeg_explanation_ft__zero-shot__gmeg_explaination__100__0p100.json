@@ -1,0 +1,1296 @@
+{
+  "experiment_name": "gmeg__u4b-mistral-7b_ft_gmeg_explanation_ft__zero-shot__gmeg_explaination__100__0p100",
+  "experiment_config": {
+    "model": "u4b-mistral-7b_ft_gmeg_explanation_ft",
+    "setup": "gmeg",
+    "prompt": "gmeg_explaination",
+    "mode": "zero-shot",
+    "few_shot_row": null,
+    "size": 100,
+    "temperature": 0.1
+  },
+  "timestamp": "2025-09-30T10:29:55.343981",
+  "dataset_info": {
+    "name": "gmeg",
+    "original_size": 2536,
+    "pruned_rows": 0,
+    "final_size_before_sampling": 2536,
+    "sampled_size": 100,
+    "columns": [
+      "_unit_id",
+      "_created_at",
+      "_id",
+      "_started_at",
+      "_tainted",
+      "_channel",
+      "_trust",
+      "_worker_id",
+      "_country",
+      "_region",
+      "_city",
+      "_ip",
+      "comments",
+      "describe_why_this_is_not_annotatable",
+      "not_annotatable",
+      "please_explain_the_revisions_write_na_if_not_annotatable",
+      "aligned",
+      "id",
+      "original",
+      "revised"
+    ]
+  },
+  "pruning_stats": {
+    "rows_pruned": 0,
+    "rows_kept_after_pruning": 2536,
+    "prune_reasons_sample": [],
+    "total_prune_reasons": 0
+  },
+  "model_info": {
+    "type": "local",
+    "model_path": "/teamspace/studios/this_studio/USI_Thesis_XAI/finetuned_models/u4b-mistral-7b_ft_gmeg_explanation_ft",
+    "description": "Finetuned Mistral 7B parameter model (4-bit quantized with Unsloth) - Small for gmeg task",
+    "parameters": "7B",
+    "size_category": "small",
+    "max_tokens": 256,
+    "finetuned": true,
+    "load_in_4bit": true,
+    "use_unsloth": true,
+    "use_chat_template": true,
+    "base_model": "u4b-mistral-7b",
+    "tune_name": "gmeg_explanation_ft",
+    "training_info": {
+      "setup_name": "gmeg",
+      "prompt_name": "gmeg_explaination",
+      "train_size": 375,
+      "val_size": 46,
+      "timestamp": "2025-09-30T10:25:27.278811"
+    },
+    "local_files_only": true
+  },
+  "prompt_info": {
+    "mode": "zero-shot",
+    "compatible_setup": "gmeg",
+    "template": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+    "description": "Annotators were shown one aligned sentence at a time. For each sentence, we instructed annotators to provide an explanation for all the revisions in the sentence in a bulleted list."
+  },
+  "responses": [
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThat was not {=>what} your advertisement had shown .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"What\" was added to improve the clarity and fluency of the sentence.",
+      "expected_output": "- \"What\" was inserted to link \"that\" and \"the advertisement had shown.\"",
+      "question_values": [
+        "That was not {=>what} your advertisement had shown ."
+      ],
+      "processing_time": 2.5283477306365967,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHad Tilly not gone into {labour=>labor} , Cotton and Topsy would have {succeded=>succeeded} in killing Castro .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Labour\" was changed to \"labor\" to follow American English spelling conventions.\r\n- \"Succeded\" was corrected to \"succeeded.\" This is the correct spelling of the word.",
+      "expected_output": "- The spelling of the word \"labor\" was corrected to conform to American English spelling.\r\n- A spelling error was corrected. The correct spelling is \"succeeded.\"",
+      "question_values": [
+        "Had Tilly not gone into {labour=>labor} , Cotton and Topsy would have {succeded=>succeeded} in killing Castro ."
+      ],
+      "processing_time": 2.2315330505371094,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWe have n't asked for any special clothes {=>,} so I would wear casual and comfortable clothes , although you can come {well-dressed ,=>well dressed} if you feel {=>that would be} better .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"so\" to offset the following dependent clause.\r\n- \"Well-dressed\" was changed to \"well dressed\" to follow American English spelling conventions.\r\n- \"That would be\" was removed for conciseness.",
+      "expected_output": "- Comma added before \"so\" to introduce new clause.\r\n- Unnecessary hyphen removed in \"well dressed.\" Unless it is before a noun, a compound adjective doesn't usually need a hyphen.\r\n- Unnecessary comma removed after \"well dressed.\"\r\n-NA",
+      "question_values": [
+        "We have n't asked for any special clothes {=>,} so I would wear casual and comfortable clothes , although you can come {well-dressed ,=>well dressed} if you feel {=>that would be} better ."
+      ],
+      "processing_time": 2.4036171436309814,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTake the 67 route {=>,} and it will take you {just=>right} in front of The Royal Hall .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"route\" to separate the following dependent clause from the main clause.\r\n- \"Just\" was replaced with \"right\" to improve fluency and clarity.",
+      "expected_output": "- A comma was inserted as the two phrases are complete and could be independent.\r\n- \"Just\" was replaced with \"right\" as it is more commonly used with the phrase \"in front of.\"",
+      "question_values": [
+        "Take the 67 route {=>,} and it will take you {just=>right} in front of The Royal Hall ."
+      ],
+      "processing_time": 1.7587668895721436,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would like to travel in July because during that period I will be free from work {, my=>. My} current post finishes at the end of June {=>,} but I will start another job at the beginning of August .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The comma was replaced with a period and \"my\" was capitalized because the following sentence is a new sentence and the first word of the sentence should be capitalized.\r\n- A comma was added after \"June\" to separate the two independent clauses.",
+      "expected_output": "- The comma was changed to a period in order to separate two sentences. \"My\" was capitalized since it is at the beginning of a sentence.\r\n-  A comma was added after \"June\" because \"but\" is separating two independent clauses.",
+      "question_values": [
+        "I would like to travel in July because during that period I will be free from work {, my=>. My} current post finishes at the end of June {=>,} but I will start another job at the beginning of August ."
+      ],
+      "processing_time": 2.4454753398895264,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI was very surprised {,=>} when I saw that singers are n't so sophisticated and self-confident as they are written {=>about} in the newspapers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The comma was removed because the dependent clause that follows the main clause is complete and independent.\n\n- \"about\" was added to improve fluency and clarity.",
+      "expected_output": "- The comma before \"when\" was deleted \" because there is no comma when the dependent clause comes after the main clause.\r\n- The preposition \"about\" was added after the verb \"written\" because \"about\" carries the meaning of \"on the subject of.\"",
+      "question_values": [
+        "I was very surprised {,=>} when I saw that singers are n't so sophisticated and self-confident as they are written {=>about} in the newspapers ."
+      ],
+      "processing_time": 1.5940678119659424,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would be grateful if you could put me into the tent side of {accomodation=>accommodation} because I have had all {holidays=>vacations} with my parents in luxury hotels {before=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"accommodation\" is the standard spelling of \"accomodation.\"\r\n- \"vacations\" is the American English term for \"holidays.\"\r\n- \"before\" was removed to improve conciseness.",
+      "expected_output": "- \"accommodation\" fixes a spelling error.\r\n- \"vacations\" is the American English term.",
+      "question_values": [
+        "I would be grateful if you could put me into the tent side of {accomodation=>accommodation} because I have had all {holidays=>vacations} with my parents in luxury hotels {before=>} ."
+      ],
+      "processing_time": 2.2553486824035645,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space {=>,} seen most often after right hemisphere brain injury .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"space\" to separate the parenthetical information from the main clause. This is a common convention in English.",
+      "expected_output": "",
+      "question_values": [
+        "Hemispatial neglect , also called unilateral neglect or spatial neglect , is a deficit in attention to the left side of space {=>,} seen most often after right hemisphere brain injury ."
+      ],
+      "processing_time": 1.3689274787902832,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut {=>,} this was also the moment when my nightmare started to come alive .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"But\" to mark the beginning of a dependent clause. This is the correct punctuation when the dependent clause comes after the independent clause.",
+      "expected_output": "",
+      "question_values": [
+        "But {=>,} this was also the moment when my nightmare started to come alive ."
+      ],
+      "processing_time": 1.5543055534362793,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nEven when precise maps are available , the {length=>distance} measurement is not always clear .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Length\" was replaced with \"distance\" to improve fluency and clarity. The word \"distance\" is more commonly used when referring to measurement in general.",
+      "expected_output": "",
+      "question_values": [
+        "Even when precise maps are available , the {length=>distance} measurement is not always clear ."
+      ],
+      "processing_time": 1.492436170578003,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nEndless imagination and {=>the} development of technology will lead us to future fashion .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"The\" was added before \"development\" to improve fluency and clarity.",
+      "expected_output": "-The determiner is added to improve fluency.",
+      "question_values": [
+        "Endless imagination and {=>the} development of technology will lead us to future fashion ."
+      ],
+      "processing_time": 0.877708911895752,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn popular culture , including films such as Rosemary 's Baby , {,=>} The Exorcism of Emily Rose , The Devil Inside {=>,} and The Omen , inverted crosses are often displayed to represent Satan .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The comma was removed from between \"Rosemary's Baby\" and \"The Exorcism of Emily Rose.\" Commas are typically not used between titles when listing multiple works.\n\n- A comma was added after \"The Devil Inside.\" Commas are typically used to separate titles when listing multiple works.\n\n- The comma was removed from between \"The Omen\" and \"in popular culture.\" Commas are typically not used between titles and the following prepositional phrase.",
+      "expected_output": "- The extra comma was removed to avoid two consecutive commas.\r\n- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+      "question_values": [
+        "In popular culture , including films such as Rosemary 's Baby , {,=>} The Exorcism of Emily Rose , The Devil Inside {=>,} and The Omen , inverted crosses are often displayed to represent Satan ."
+      ],
+      "processing_time": 4.484308242797852,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe was also {surgeon in chief=>surgeon-in-chief} of a division in the Fifteenth Army Corps and of the district of Memphis .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The hyphen was added to \"surgeon-in-chief\" to indicate that the title is a single unit. This is the standard form for titles like this.",
+      "expected_output": "- The phrase \"surgeon-in-chief\" was hyphenated. In American English, many occupations are hyphenated to show that all the included words are related to the same job title.",
+      "question_values": [
+        "He was also {surgeon in chief=>surgeon-in-chief} of a division in the Fifteenth Army Corps and of the district of Memphis ."
+      ],
+      "processing_time": 1.6277709007263184,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would rather type some coursework up than {=>to} hand-write it .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"to\" was removed from the sentence because it is not needed when the verb is \"type.\"",
+      "expected_output": "-The infinitive should not be used here but instead the verb conjugated for the first person singular.",
+      "question_values": [
+        "I would rather type some coursework up than {=>to} hand-write it ."
+      ],
+      "processing_time": 1.0063951015472412,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut on July 17 , 1999 {=>,} the band did the biggest concert to date , {infront=>in front} of a home {crowed=>crowd} of 45,000 people at Lansdowne Road .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"But\" to offset the following independent clause.\r\n- \"Infront\" was corrected to \"in front.\" This is the standard spelling of the word in American English.\r\n- \"Crowed\" was corrected to \"crowd.\" This is the standard spelling of the word in American English.",
+      "expected_output": "-A comma is inserted because it is needed after an introductory phrase.\r\n-The correct spelling is \"in front.\"\r\n-The correct spelling is \"crowd.\"",
+      "question_values": [
+        "But on July 17 , 1999 {=>,} the band did the biggest concert to date , {infront=>in front} of a home {crowed=>crowd} of 45,000 people at Lansdowne Road ."
+      ],
+      "processing_time": 3.0476906299591064,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI look {=>forward} to hearing from you soon .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Forward\" was added to improve the fluency of the sentence.",
+      "expected_output": "- \"forward\" was added because of the high collocation with \"look.\" This edit increases the readability and fluency of the sentence.",
+      "question_values": [
+        "I look {=>forward} to hearing from you soon ."
+      ],
+      "processing_time": 0.7679243087768555,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn 2009 , Tenet {pay=>paid} $ 85 million USD in a class action settlement for not paying overtime after a change in California law {entitled them to overtime=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Pay\" was changed to \"paid\" because the verb tense is incorrect for the context of the sentence. The past tense is needed because the settlement was paid in 2009.\r\n- \"Them to overtime\" was removed because it is redundant. The phrase \"entitled to overtime\" is already included in the previous clause.",
+      "expected_output": "- \"Pay\" was changed to \"paid\" to match the past tense implied by the prepositional phrase \"in 2009.\"\r\n- \"Entitled them to overtime\" was deleted to avoid redundancy and improve conciseness.",
+      "question_values": [
+        "In 2009 , Tenet {pay=>paid} $ 85 million USD in a class action settlement for not paying overtime after a change in California law {entitled them to overtime=>} ."
+      ],
+      "processing_time": 3.1627557277679443,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPost source decay is a process specific to MALDI ( LDI ) {process=>,} where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"process\" to separate the following parenthetical from the main clause. This is a common convention in American English.",
+      "expected_output": "",
+      "question_values": [
+        "Post source decay is a process specific to MALDI ( LDI ) {process=>,} where fragments are produced from parent ions due to laser-induced fragmentation or high-energy collision-induced dissociation ( HE CID ) ."
+      ],
+      "processing_time": 1.3781886100769043,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut to solve this problem , we {may=>should} think first about its origin {...=>.}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"May\" was replaced with \"should\" to improve fluency and clarity.\r\n- The ellipsis was removed because the sentence is complete.",
+      "expected_output": "- NA\r\n- Unnecessary ellipsis replaced with single period.",
+      "question_values": [
+        "But to solve this problem , we {may=>should} think first about its origin {...=>.}"
+      ],
+      "processing_time": 1.4108421802520752,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{MITs investigate=>MIT investigates} cases of murder , manslaughter , {=>and} attempted murder where the evidence of intent is unambiguous , or where a risk {assesment=>assessment} identifies {substantative=>substantive} risk to life .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"MIT investigates\" is the correct form of the verb in this context.\r\n- \"assesment\" is the correct spelling of \"assessment.\"\r\n- \"substantative\" is the correct spelling of \"substantive.\"",
+      "expected_output": "- An \"and\" was added to adhere to the correct grammar for lists.\r\n- \"assessment\" is the correct spelling.\r\n- \"substantive\" is the correct spelling.",
+      "question_values": [
+        "{MITs investigate=>MIT investigates} cases of murder , manslaughter , {=>and} attempted murder where the evidence of intent is unambiguous , or where a risk {assesment=>assessment} identifies {substantative=>substantive} risk to life ."
+      ],
+      "processing_time": 2.277259588241577,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{=>\"} Mendel Palace , {=>\"} originally released in Japan as {=>\"Quinty} , {=>\"} is a 1989 action / puzzle arcade game developed by KID and published by Namco .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The quotation marks were added around \"Mendel Palace\" and \"Quinty\" because these are the titles of the game. Titles should be surrounded by quotation marks.\r\n- The quotation marks were added around \"originally released in Japan as\" because this is a parenthetical, or explanatory, aside. Parentheticals should be surrounded by commas and enclosed within quotation marks. \r\n- The quotation marks were added around \"Quinty\" because this is the title of the game. Titles should be surrounded by quotation marks.",
+      "expected_output": "-These quotation marks are added because what is within them is the title of something.\r\n-These quotation marks are added because what is within them is the title of something.",
+      "question_values": [
+        "{=>\"} Mendel Palace , {=>\"} originally released in Japan as {=>\"Quinty} , {=>\"} is a 1989 action / puzzle arcade game developed by KID and published by Namco ."
+      ],
+      "processing_time": 5.038050889968872,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWhen the Los Alamos lab was first being {organised=>organized ,} a {descision=>decision} was made by Oppenheimer to not compartmentalize the technical information among different departments .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"organised\" was changed to \"organized\" to follow American English spelling conventions.\r\n- \"descision\" was changed to \"decision\" to follow American English spelling conventions.",
+      "expected_output": "-\"Organised\" was substituted for \"organized\" to follow American English spelling conventions.\r\n-The correct spelling is \"decision.\"",
+      "question_values": [
+        "When the Los Alamos lab was first being {organised=>organized ,} a {descision=>decision} was made by Oppenheimer to not compartmentalize the technical information among different departments ."
+      ],
+      "processing_time": 1.9043290615081787,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAmong all these {=>,} the {theatre=>theater} restaurant was closed {,=>} because the {shef=>chef} and the waiters {where=>were} on {holiday=>vacation} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"theater\" to separate the parenthetical information from the main clause.\r\n- \"Theatre\" was changed to \"theater\" to follow American English spelling conventions.\r\n- A comma was removed after \"because.\" In American English, commas are not typically used between the subordinating conjunction and the dependent clause.\r\n- \"Shef\" was changed to \"chef.\" This is the correct spelling of the word.\r\n- \"Where\" was changed to \"were.\" This is the correct form of the verb for this context.\r\n- \"Holiday\" was changed to \"vacation.\" This is a more common term in American English.\r\n- A comma was removed after \"waiters.\" In American English, commas are not typically used between the subordinating conjunction and the dependent clause.",
+      "expected_output": "- A comma was added after the introductory phrase to improve the clarity of the sentence.\r\n- \"theater\" is the American English spelling of \"theatre.\"\r\n- A comma was removed before \"because\" since the subordinating clause comes after the main clause. A comma might be used if the sentence becomes ambiguous otherwise or if the subordinating clause provides an explanation for the content in the main clause.\r\n- \"shef\" is a misspelling of \"chef.\"\r\n- \"where\" is a misspelling of \"were.\"\r\n- \"vacation\" is preferred in American English over \"holiday.\"",
+      "question_values": [
+        "Among all these {=>,} the {theatre=>theater} restaurant was closed {,=>} because the {shef=>chef} and the waiters {where=>were} on {holiday=>vacation} ."
+      ],
+      "processing_time": 7.560818672180176,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{\"=>It} aired on TBS Superstation in the 1990s after it was {cancelled ,=>canceled} and was also added to the ABC Family Channel {line-up=>lineup} in the late 1990s / early 2000s .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"It\" was inserted to improve fluency.\r\n- \"Cancelled\" was changed to \"canceled\" to follow American English spelling conventions.\r\n- \"Line-up\" was changed to \"lineup\" to follow American English spelling conventions.",
+      "expected_output": "- The quote was changed to \"It\" to create a complete clause.\r\n- \"Cancelled\" was changed to \"canceled\" to reflect the version used more often in American English.\r\n- \"Line-up\" was corrected to the standard \"lineup.\"",
+      "question_values": [
+        "{\"=>It} aired on TBS Superstation in the 1990s after it was {cancelled ,=>canceled} and was also added to the ABC Family Channel {line-up=>lineup} in the late 1990s / early 2000s ."
+      ],
+      "processing_time": 2.45885968208313,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAlso , I belonged to {=>a} golf club when I {went to=>was in} university in Japan .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"a\" was added before \"golf club\" to improve fluency.\r\n- \"went to\" was replaced with \"was in\" to improve fluency and clarity.",
+      "expected_output": "- An article was added because the noun it quantifies is a countable noun, which requires an article if it is singular, but it can be omitted if it is plural.",
+      "question_values": [
+        "Also , I belonged to {=>a} golf club when I {went to=>was in} university in Japan ."
+      ],
+      "processing_time": 1.6967790126800537,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWood 's name is inscribed in one of the base stones of The Sloat Monument {=>,} erected at the Presidio in Monterey , California {=>,} in commemoration of the US Navy 's Pacific Fleet taking {posession=>possession} of California in 1846 .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"California\" to separate the parenthetical information from the main clause.\r\n- The misspelling \"posession\" was corrected to \"possession.\"",
+      "expected_output": "- 'Possession' is the correct spelling of 'posession.'\r\n- A comma was inserted after 'California.' When a city and state combination is presented in the middle of a sentence, the state must be surrounded by commas.",
+      "question_values": [
+        "Wood 's name is inscribed in one of the base stones of The Sloat Monument {=>,} erected at the Presidio in Monterey , California {=>,} in commemoration of the US Navy 's Pacific Fleet taking {posession=>possession} of California in 1846 ."
+      ],
+      "processing_time": 1.7787492275238037,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThere {xere importants=>were important} rugby matches in the Stadium .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"were\" was inserted before \"important\" to improve the clarity and fluency of the sentence.",
+      "expected_output": "- Corrected misspellings of \"were\" and \"important.\"",
+      "question_values": [
+        "There {xere importants=>were important} rugby matches in the Stadium ."
+      ],
+      "processing_time": 1.1020400524139404,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nMax talked to her and took Lauren to get her ears {peirced=>pierced} for accepting Bradley .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The correct spelling is \"pierced.\" This is the standard American English spelling of the word.",
+      "expected_output": "-This edit corrects the spelling to 'pierced.'",
+      "question_values": [
+        "Max talked to her and took Lauren to get her ears {peirced=>pierced} for accepting Bradley ."
+      ],
+      "processing_time": 1.087432622909546,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents {=>,} and narco-armies since the country {gain it 's independance=>gained its independence} from Great Britain .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"dissidents\" to separate the following independent clause. Commas are typically used to separate independent clauses joined by \"and.\"\r\n- \"Gain\" was replaced with \"gained\" to reflect the past tense of the verb.",
+      "expected_output": "-  A comma was introduced after 'dissidents' because commas must separate every time in a list in American English.\r\n- \"Gain\" was written in its past tense form because the event already occurred.\r\n- \"It's\" was changed to \"its\" to indicate possession as opposed to the contraction \"it is.\"",
+      "question_values": [
+        "The \" Tatmadaw \" has been engaged in bitter battle with ethnic insurgents , political dissidents {=>,} and narco-armies since the country {gain it 's independance=>gained its independence} from Great Britain ."
+      ],
+      "processing_time": 2.452554941177368,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI find shopping {is=>to be} the most {time consuming=>time-consuming} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"is\" replaced with \"to be\" to improve fluency and clarity.\r\n- Hyphen added to \"time-consuming.\" Hyphens are typically used with compound adjectives that precede the noun they modify.",
+      "expected_output": "-\"Is\" was changed to \"to be\" because that is the collocation that is often used in \"find + something + adjective\" form.\r\n-A hyphen is added to time consuming when we use the term \"time-consuming\" the adjective in a sentence.",
+      "question_values": [
+        "I find shopping {is=>to be} the most {time consuming=>time-consuming} ."
+      ],
+      "processing_time": 2.202504873275757,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAt first I felt really annoyed and disappointed {=>,} so I {run=>ran} to my brother {in order=>} to explain {=>to} him what I had seen .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"disappointed\" to separate two independent clauses joined by a coordinating conjunction.\r\n- \"Run\" was changed to past tense \"ran\" to maintain tense consistency throughout the sentence.\r\n- \"In order\" was removed for conciseness.\r\n- \"To\" was added before \"him\" to indicate the direct object of the verb \"explain.\"",
+      "expected_output": "- A comma was inserted before \"so\" because \"so\" functions as a coordinating conjunction combining two independent clauses.\r\n-The verb tense was changed from present tense \"run\" to past tense \"ran\" to maintain the same verb tense throughout the sentence.\r\n- The phrase \"in order\" was deleted to maintain conciseness. \r\n- The preposition \"to\" was added because it is needed before the object \"him.\"",
+      "question_values": [
+        "At first I felt really annoyed and disappointed {=>,} so I {run=>ran} to my brother {in order=>} to explain {=>to} him what I had seen ."
+      ],
+      "processing_time": 3.489790916442871,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI would like to suggest a change in the {programme=>program} by giving up shopping and going to the London Fashion and Leisure Show .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The British English spelling of \"program\" was used. This is the standard spelling used in American English as well.",
+      "expected_output": "-\"Programme\" is substituted for \"program\" to follow American English spelling conventions.",
+      "question_values": [
+        "I would like to suggest a change in the {programme=>program} by giving up shopping and going to the London Fashion and Leisure Show ."
+      ],
+      "processing_time": 1.1990699768066406,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nNow the only {think=>thing} I have to do is to go to {=>the} computer room and turn on the computer .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Think\" was replaced with \"thing\" because \"think\" is not the correct noun form in this context.\r\n- \"The\" was added before \"computer room\" because \"computer room\" is a common noun phrase and requires an article when it appears at the end of the sentence.",
+      "expected_output": "-The word that fits this context and is likely intended by the author is 'thing.'\r\n-Common nouns like 'computer room' require articles in English if they are singular, so 'the' is added.",
+      "question_values": [
+        "Now the only {think=>thing} I have to do is to go to {=>the} computer room and turn on the computer ."
+      ],
+      "processing_time": 2.7766900062561035,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn the winter {=>,} you 'll freeze .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"winter\" to separate the introductory prepositional phrase from the main clause. This is typically required when the introductory phrase comes at the beginning of the sentence.",
+      "expected_output": "",
+      "question_values": [
+        "In the winter {=>,} you 'll freeze ."
+      ],
+      "processing_time": 1.9191524982452393,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAs with GI Joe , during the 60s , Action Man had a {: Image : AMfootlockerLid.JPGwooden=>wooden} footlocker ( Kit locker box ) to store his accessories in .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"wooden\" was changed to lowercase because it is part of the prepositional phrase \"wooden footlocker.\" In American English, prepositions and the articles \"a\" and \"the\" are not capitalized.",
+      "expected_output": "- The phrase is replaced with \"wooden\" to improve conciseness.",
+      "question_values": [
+        "As with GI Joe , during the 60s , Action Man had a {: Image : AMfootlockerLid.JPGwooden=>wooden} footlocker ( Kit locker box ) to store his accessories in ."
+      ],
+      "processing_time": 2.2133517265319824,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThere are many historical buildings {remain=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The verb \"remain\" was removed from the sentence. This is an acceptable revision because the verb is not necessary in this context. The sentence is conveying that there are many historical buildings, not that they are remaining.",
+      "expected_output": "- The verb \"remain\" is deleted because the sentence already has the auxiliary verb \"are.\" However, if \"remain\" refers to the noun \"remains,\" as in \"remains of historical buildings,\" then this revision is incorrect.",
+      "question_values": [
+        "There are many historical buildings {remain=>} ."
+      ],
+      "processing_time": 2.009953260421753,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe appears only in the {sidestory=>side story ,\"} Saint Seiya {=>: The} Lost {Canvas=>Canvas,\"} not authored by Masami Kurumada , {=>the status of} which {status=>} as canon is unknown {..=>.}\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The hyphen was removed from \"side story\" because hyphens are not used with common noun phrases like \"side story.\"\r\n- The phrase \"which status\" was changed to \"the status of\" to improve clarity and fluency.\r\n- The phrase \"the status\" was changed to \"which status\" to improve clarity and fluency.\r\n- The period was added after the sentence to mark the end of the sentence.",
+      "expected_output": "- \"Sidestory\" was separated to two words: \"side\" and \"story.\"\r\n- A comma and quotation mark was added on either end of the title name. Short story titles should be surrounded by quotation marks. The commas confirm that, while relevant, the story title is not mandatory to include. \r\n- The phrase \"which status\" was restructured to read \"the status of which.\" This change elevates the writing by improving flow and academic quality.\r\n- A pair of periods was reduced to just one period, as is normal.",
+      "question_values": [
+        "He appears only in the {sidestory=>side story ,\"} Saint Seiya {=>: The} Lost {Canvas=>Canvas,\"} not authored by Masami Kurumada , {=>the status of} which {status=>} as canon is unknown {..=>.}"
+      ],
+      "processing_time": 3.804021120071411,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTherefore {=>,} we should try to educate ourselves {so as to=>and} respect {altrui in his=>everyone 's} privacy .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"therefore\" to separate the introductory prepositional phrase from the main clause.\r\n- \"So as to\" was changed to \"and\" to improve conciseness and clarity.\r\n- \"Altrui\" was changed to \"everyone's\" to improve fluency and clarity.",
+      "expected_output": "- A comma was added after \"therefore\" as is typically required when it is at the beginning of a sentence.\r\n- \"So as to\" was changed to \"and\" to make the phrase more concise and improve fluency.",
+      "question_values": [
+        "Therefore {=>,} we should try to educate ourselves {so as to=>and} respect {altrui in his=>everyone 's} privacy ."
+      ],
+      "processing_time": 2.9737305641174316,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti {=>,} & Somalia , where they made notable geographical explorations and natural history discoveries .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"Djibouti\" to separate the list of countries. This is the correct punctuation when listing multiple countries.",
+      "expected_output": "-A comma was added before a conjunction joining two clauses.",
+      "question_values": [
+        "The Ghikas , father and son , had both and between 1894 and 1895 ventured deeper than any European in the Horn of Africa , crossing today 's Ethiopia , Djibouti {=>,} & Somalia , where they made notable geographical explorations and natural history discoveries ."
+      ],
+      "processing_time": 1.445643663406372,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTo sum {=>it} up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"It\" was added after \"up\" to improve fluency and clarity.",
+      "expected_output": "-\"It\" is inserted because an object is needed for the verb \"to sum.\"",
+      "question_values": [
+        "To sum {=>it} up , the Olympic Museum is a very attractive place and could be a good trip with your family or your student group ."
+      ],
+      "processing_time": 0.8392579555511475,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn addition , it would be nice if you could send me an address {which=>where} I am going to stay , so that I can keep in touch with my friends and family .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"which\" replaced with \"where.\" \"Which\" is typically used when connecting two clauses with \"and,\" but \"where\" is more appropriate when asking for a location.",
+      "expected_output": "-The determiner was changed because \"where\" is used for location.",
+      "question_values": [
+        "In addition , it would be nice if you could send me an address {which=>where} I am going to stay , so that I can keep in touch with my friends and family ."
+      ],
+      "processing_time": 1.6710216999053955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nCreative Directors rise to become Executive Creative Directors , a position with executive {reponsibility=>responsibility} for the entire creative department .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The correct spelling is \"responsibility.\"",
+      "expected_output": "-A spelling error was corrected. The correct spelling is \"responsibility.\"",
+      "question_values": [
+        "Creative Directors rise to become Executive Creative Directors , a position with executive {reponsibility=>responsibility} for the entire creative department ."
+      ],
+      "processing_time": 0.5644741058349609,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nOn the other hand {=>,} I would like to request all details of {=>the} accommodation and if you could {specifie=>specify} what this trip includes , since I need to know how much money {I have=>} to {take=>bring} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"On the other hand\" to separate the independent clause from the dependent clause.\r\n- \"The\" was added before \"accommodation\" for clarity and fluency.\r\n- \"Specifie\" was changed to \"specify\" for spelling.\r\n- \"I have\" was removed for conciseness and fluency.\r\n- \"Take\" was changed to \"bring\" for clarity and fluency.",
+      "expected_output": "- Comma added after \"On the other hand.\" A comma is usually  needed after transitional phrases like this.\r\n- \"The\" added before \"accommodation\" for clarity.\r\n- Spelling of \"specify\" corrected.\r\n- \"I have\" removed for conciseness.\r\n- NA",
+      "question_values": [
+        "On the other hand {=>,} I would like to request all details of {=>the} accommodation and if you could {specifie=>specify} what this trip includes , since I need to know how much money {I have=>} to {take=>bring} ."
+      ],
+      "processing_time": 4.0490593910217285,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPsychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism {in=>from} the academic community .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"in\" was replaced with \"from\" to improve fluency and clarity.",
+      "expected_output": "",
+      "question_values": [
+        "Psychohistory remains a controversial field of study , and deMause and other psychohistorians face criticism {in=>from} the academic community ."
+      ],
+      "processing_time": 0.8560190200805664,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nFirst of all , the hotel booked for the group is the Palace Hotel , which is {very=>} impressive in terms of comfort and facilities .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The adverb \"very\" was removed from the sentence to improve conciseness and fluency.",
+      "expected_output": "-\"Very\" was removed from the sentence for conciseness.",
+      "question_values": [
+        "First of all , the hotel booked for the group is the Palace Hotel , which is {very=>} impressive in terms of comfort and facilities ."
+      ],
+      "processing_time": 0.9936947822570801,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{Discovery=>The discovery} of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities {=>,} and {russian=>Russian} fiction became more entertaining .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Discovery\" was moved to the front of the sentence to improve clarity and flow.\r\n- A comma was added after \"priorities\" to separate the dependent clause from the main clause.\r\n- \"Russian\" was capitalized because it is part of the name of a country.",
+      "expected_output": "-The determiner is inserted because \"discovery\" is a singular noun and a determiner is necessary with a singular noun. Due to the determiner being introduced, the capitalization has to change because it alters what word begins the sentence and needs to be capitalized.\r\n-The comma was inserted because it is needed before a conjunction and independent clause.\r\n-This is a capitalization error. \"Russian\" is an adjective based on the name of a country and should be capitalized.",
+      "question_values": [
+        "{Discovery=>The discovery} of the \" ex-unreliable \" foreign sci-fi and fantasy after the end of the Cold War changed priorities {=>,} and {russian=>Russian} fiction became more entertaining ."
+      ],
+      "processing_time": 2.6497342586517334,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIt always happens with people , does n't {=>it} ?\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"It\" was inserted after \"doesn't\" to improve fluency. The pronoun is needed to connect the independent clause to the preceding dependent clause.",
+      "expected_output": "-It was inserted at the end of the sentence because the tag question \"doesn't it\" is what we usually use.",
+      "question_values": [
+        "It always happens with people , does n't {=>it} ?"
+      ],
+      "processing_time": 1.557023048400879,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI went to the \" International Arts Festival \" on {=>November} 21-22 {November=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The month of November was inserted before the day of the month to improve clarity and fluency.",
+      "expected_output": "-This edit puts the month in front of the day because that is the convention in American English.",
+      "question_values": [
+        "I went to the \" International Arts Festival \" on {=>November} 21-22 {November=>} ."
+      ],
+      "processing_time": 0.9697394371032715,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe restaurant should {had=>have} been {oppened=>opened} when I came out , but it was closed because of the hour the show finished .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"had\" replaced with \"have.\" This is the correct form of the verb when combined with the past participle form \"opened.\"\r\n- \"oppened\" replaced with \"opened.\" This is the correct spelling of the word.",
+      "expected_output": "- \"Opened\" is the correct spelling of \"oppened.\"\r\n- \"Have\" replaces \"had.\"",
+      "question_values": [
+        "The restaurant should {had=>have} been {oppened=>opened} when I came out , but it was closed because of the hour the show finished ."
+      ],
+      "processing_time": 2.2437100410461426,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI understood everything he said {=>,} and Sting {said to=>told} me that I {spoken=>spoke English} very well {English=>} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"everything\" to offset the parenthetical information \"and Sting said to.\"\r\n- \"Said to\" was changed to \"told\" for fluency and clarity.\r\n- \"Spoken\" was changed to \"spoke\" for spelling.\r\n- \"English\" was moved to the end of the sentence for clarity and fluency.",
+      "expected_output": "- A comma should be used when a conjunction joins two clauses.\r\n-While \"said to me\" is acceptable, \"told\" is used more commonly in this context.\r\n-\"spoken\" is a participle, in this case, it should be in past tense, not participle form.\r\n-\"English\" should immediately follow \"spoke\" as it is the object of the verb.",
+      "question_values": [
+        "I understood everything he said {=>,} and Sting {said to=>told} me that I {spoken=>spoke English} very well {English=>} ."
+      ],
+      "processing_time": 3.472484588623047,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked {ever=>even} more German cities from 1942 until Germany surrendered .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"even\" was corrected for spelling. \"even\" is the correct spelling of \"ever\" in this context.",
+      "expected_output": "- The word \"ever\" was replaced with \"even\" because the context shows that the sentence is referring to \"even more German cities.\"",
+      "question_values": [
+        "The weapon was presented by Nazi propaganda as a retaliation for the bombers that attacked {ever=>even} more German cities from 1942 until Germany surrendered ."
+      ],
+      "processing_time": 1.2078642845153809,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAs well as touring Europe , Japan , and Australia , they {toured=>played} with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer {=>,} and Ozma .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Toured\" was replaced with \"played\" to improve fluency and clarity.\r\n- A comma was added after \"Weezer\" to separate the penultimate and final acts in the list. This is a common convention in English when listing multiple acts.",
+      "expected_output": "- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+      "question_values": [
+        "As well as touring Europe , Japan , and Australia , they {toured=>played} with such acts as Green Day , The Anniversary , Koufax , Hot Rod Circuit , Jebediah , Weezer {=>,} and Ozma ."
+      ],
+      "processing_time": 2.5041799545288086,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTherefore , if you want to learn something about the Olympic Games , it must be the best place for {this=>that} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"This\" was replaced with \"that\" to improve fluency. \"That\" is a more natural filler word in this context.",
+      "expected_output": "- The word \"this\" was replaced with \"that\" because \"that\" functions as a substitute for \"knowledge about the Olympic Games.\"",
+      "question_values": [
+        "Therefore , if you want to learn something about the Olympic Games , it must be the best place for {this=>that} ."
+      ],
+      "processing_time": 1.3223421573638916,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nRobert 's film \" Leave , \" a psychological thriller {,=>} starring Frank John , Hughes , Rick Gomez , {Vinessa=>Vanessa} Shaw , Bryan Cranston {=>,} and Ron Livingston is due out in 2010 .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The comma was removed from between \"Leave\" and \"a\" because the title of the film is surrounded by commas, and the descriptive phrase \"a psychological thriller\" is placed after the title.\r\n- The misspelling \"Vinessa\" was corrected to \"Vanessa.\"\r\n- A comma was added after \"Ron Livingston\" to separate the last two names in the list of actors. This is the standard format when listing multiple actors in a film.",
+      "expected_output": "- A comma was removed after \"thriller\" as the following information is essential to the main clause.\r\n- The name \"Vinessa\" was corrected to \"Vanessa\" as this may have been a spelling error.\r\n- A comma was inserted as the list is a series of names.",
+      "question_values": [
+        "Robert 's film \" Leave , \" a psychological thriller {,=>} starring Frank John , Hughes , Rick Gomez , {Vinessa=>Vanessa} Shaw , Bryan Cranston {=>,} and Ron Livingston is due out in 2010 ."
+      ],
+      "processing_time": 4.411039352416992,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPolish Brethren , Antitrinitians , Arians , or Socinians {was=>were} the {name=>names} of a Polish sect from 16th century .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"was\" replaced with \"were\" because the plural form is needed when referring to multiple people.\r\n- \"name\" was changed to \"names\" because the plural form is needed when referring to multiple things.",
+      "expected_output": "-The verb was replaced with \"were\" to fulfill subject-verb agreement.\r\n-The noun was pluralized to fulfill number agreement with the listed, multiple names.",
+      "question_values": [
+        "Polish Brethren , Antitrinitians , Arians , or Socinians {was=>were} the {name=>names} of a Polish sect from 16th century ."
+      ],
+      "processing_time": 1.944213628768921,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHowever , some elements , such as iron , readily {forms=>form} iron oxide , or rust , at standard conditions {for=>with} temperature and pressure .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Forms\" was changed to \"form\" because the noun that follows it does not require a plural verb form.\r\n- \"For\" was changed to \"with\" to improve fluency.",
+      "expected_output": "-The verb form is changed to agree with the subject.\r\n-The preposition was changed. This is a stylistic edit.",
+      "question_values": [
+        "However , some elements , such as iron , readily {forms=>form} iron oxide , or rust , at standard conditions {for=>with} temperature and pressure ."
+      ],
+      "processing_time": 1.8428044319152832,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWill I be going out much , or just {stay in=>staying at} Camp California {all=>} the {=>whole} time ?\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Stay in\" was changed to \"staying at\" to improve fluency and clarity.\r\n- \"All\" was removed because it is redundant with \"the whole.\"",
+      "expected_output": "- \"Stay in\" was changed to \"staying at.\" The gerund form of the verb 'stay' was used to create parallelism with 'going out.' The prepositions 'in' and 'at' both refer to location, but 'in' is more general while 'at' is more specific.\r\n- The phrase \"all the time\" is changed to \"the whole time.\" This is an optional change, and the meanings are nearly identical in this context.",
+      "question_values": [
+        "Will I be going out much , or just {stay in=>staying at} Camp California {all=>} the {=>whole} time ?"
+      ],
+      "processing_time": 1.7920305728912354,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBut , it 's not easy for workers , because the shops close their doors {=>at} about {5.30=>5 : 30} pm ( half past five ) .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"at\" was added before \"about\" to improve fluency and clarity.\r\n- The colon and space were removed from \"5:30\" to improve formatting and clarity.",
+      "expected_output": "- The preposition \"at\" was added because \"at\" is used to discuss a specific time frame.\r\n-To indicate time, the period was changed to a colon to separate hours and minutes.",
+      "question_values": [
+        "But , it 's not easy for workers , because the shops close their doors {=>at} about {5.30=>5 : 30} pm ( half past five ) ."
+      ],
+      "processing_time": 1.7373554706573486,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn the {=>summer of} 2008 {summer=>,} Roberge signed for Greek {side=>club ,} Aris Thessaloniki FC , penning a three-year contract .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Summer of\" was added to improve fluency and clarity.\r\n- A comma was added after \"summer\" to separate the parenthetical information from the main clause.",
+      "expected_output": "- \"Summer of\" was inserted before \"2008\" and \"summer\" was removed from after \"2008\" to produce the phrase, \"summer of 2008.\" This slight change improved the natural flow of the sentence.\r\n- A comma was inserted before \"Aris\" to separate a name.",
+      "question_values": [
+        "In the {=>summer of} 2008 {summer=>,} Roberge signed for Greek {side=>club ,} Aris Thessaloniki FC , penning a three-year contract ."
+      ],
+      "processing_time": 1.7622504234313965,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{ddddddThe=>The} first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The article \"the\" was inserted before the noun \"patent\" to improve fluency.",
+      "expected_output": "-The correct spelling is \"The.\"",
+      "question_values": [
+        "{ddddddThe=>The} first patent for the paper clip was awarded to Samuel B. Fay of the United States in 1867 ."
+      ],
+      "processing_time": 1.007824420928955,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nFor spring 2009 they focused on touring Canada , while also playing some concerts in the {north-eastern=>Northeastern} US .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The hyphen was removed from \"northeastern\" because it is a common noun phrase. Hyphens are typically only used in compound nouns.",
+      "expected_output": "- Changing \"north-eastern\" fixes a spelling error, and it is capitalized because it is referring to a well-known areas in the country.",
+      "question_values": [
+        "For spring 2009 they focused on touring Canada , while also playing some concerts in the {north-eastern=>Northeastern} US ."
+      ],
+      "processing_time": 1.5827617645263672,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBoth of them are my favorite sports {=>,} and I 'm quite good .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"sports\" to separate the parenthetical information from the main clause.",
+      "expected_output": "- A comma was added because \"and\" is separating two independent clauses.",
+      "question_values": [
+        "Both of them are my favorite sports {=>,} and I 'm quite good ."
+      ],
+      "processing_time": 1.086867094039917,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIf any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law {=>,} and could be fined $ 2,500 for every download .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"California law\" to separate the parenthetical from the main clause. This is typically required when a parenthetical is inserted in the middle of a sentence.",
+      "expected_output": "-Added a comma, which is necessary before a conjunction joining two independent clauses.",
+      "question_values": [
+        "If any developer of an application that could be used by a Californian does n't display a privacy policy statement when their application is installed they are breaking California law {=>,} and could be fined $ 2,500 for every download ."
+      ],
+      "processing_time": 1.8449833393096924,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{As well as=>In addition to} this , the stars should n't {complaint=>complain} at any time about their fans and their {lost=>loss} of privacy .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"As well as\" was replaced with \"in addition to\" for fluency and conciseness.\r\n- \"complaint\" was replaced with \"complain\" for spelling.\r\n- \"lost\" was replaced with \"loss\" for spelling.",
+      "expected_output": "- \"complaint\" was changed to \"complain\" because a verb is required after \"shouldn't.\"\r\n- \"lost\" was changed to \"loss\" because a noun is required after \"their.\"",
+      "question_values": [
+        "{As well as=>In addition to} this , the stars should n't {complaint=>complain} at any time about their fans and their {lost=>loss} of privacy ."
+      ],
+      "processing_time": 2.4405300617218018,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAlso {Iternet=>the Internet} has influence on my daily life , {beause=>because} I can find {there=>} many interesting things , or I can meet with people from all over the world {=>,} which is exciting for me .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Iternet\" was changed to \"the Internet.\" This is the standard form of the word.\n\n- \"beause\" was changed to \"because.\" This is the correct spelling of the word.\n\n- \"there\" was removed. This is not necessary in this context.\n\n- A comma was added after \"which.\" This is the correct punctuation for this clause.",
+      "expected_output": "- \"The\" added before \"internet.\" The word usually appears with \"the.\"\r\n- Spelling of \"internet\" corrected.\r\n- Spelling of \"because\" corrected.\r\n- \"There\" removed for clarity and conciseness.\r\n- Comma added before \"which.\" A comma is frequently used to introduce this type of clause.",
+      "question_values": [
+        "Also {Iternet=>the Internet} has influence on my daily life , {beause=>because} I can find {there=>} many interesting things , or I can meet with people from all over the world {=>,} which is exciting for me ."
+      ],
+      "processing_time": 3.6147029399871826,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nMusic , sports , {the theatre=>theater ,} and other {students=>student} activities help create a healthy and balanced environment .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Theatre\" was changed to \"theater\" to follow American English spelling conventions.\r\n- \"Students\" was changed to \"student\" to follow American English grammar conventions. In American English, the plural form of \"student\" is only used when referring to more than one student. When referring to a single student, the singular form is used.",
+      "expected_output": "- \"The theatre\" was changed to \"theater ,\" as the later is the standard American English spelling. \r\n- \"Students\" was changed to \"student\" as it is being used as to describe the noun \"activities.\"",
+      "question_values": [
+        "Music , sports , {the theatre=>theater ,} and other {students=>student} activities help create a healthy and balanced environment ."
+      ],
+      "processing_time": 3.309746026992798,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nNagase has dated J-Pop singer and former actress {=>,} Ayumi Hamasaki {=>,} since the beginning of both of their acting careers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"Ayumi Hamasaki\" to separate the non-restrictive relative clause from the main clause. A non-restrictive relative clause provides extra, non-essential information about the noun it precedes. It is set off by commas.",
+      "expected_output": "-A comma was inserted before and after the name \"Ayumi Hamasaki\" to separate this nonessential phrase, which provides extra information, from the main clause.",
+      "question_values": [
+        "Nagase has dated J-Pop singer and former actress {=>,} Ayumi Hamasaki {=>,} since the beginning of both of their acting careers ."
+      ],
+      "processing_time": 2.7219061851501465,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe intensity of the fighting had lead to a severe shortage of ammunition among the defenders {, and=>;} attempts to resupply the Australians were plagued by heavy shelling .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The comma was replaced with a semicolon to separate two independent clauses.",
+      "expected_output": "- The comma and coordinating conjunction were replaced with a semicolon. Both options of combining two independent clauses are acceptable.",
+      "question_values": [
+        "The intensity of the fighting had lead to a severe shortage of ammunition among the defenders {, and=>;} attempts to resupply the Australians were plagued by heavy shelling ."
+      ],
+      "processing_time": 0.8822946548461914,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe {=>websites of the} two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , {had their websites=>} immediately stalled {by=>due to} web traffic immediately after the announcement .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"websites of the\" was removed for conciseness.\r\n- \"had their websites\" was removed for conciseness.\r\n- \"by\" was replaced with \"due to\" for fluency.",
+      "expected_output": "-This stylistic edit makes the sentence active voice, which is often preferable.\r\n-This stylistic edit fits \"web traffic\" better because \"web traffic\" isn't an agent.",
+      "question_values": [
+        "The {=>websites of the} two licensed stores selling them within the United Kingdom , Premier Farnell and RS Components , {had their websites=>} immediately stalled {by=>due to} web traffic immediately after the announcement ."
+      ],
+      "processing_time": 1.992591142654419,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe PAL versions of the console looked identical to the Japanese Super Famicom , except for {labelling=>the label} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"labelling\" was changed to \"the label\" to improve fluency and clarity. The noun \"label\" is followed by the article \"the\" because it is a specific label.",
+      "expected_output": "- \"Labelling\" was changed to \"label.\" First, \"labelling\" is not a spelling choice in American English. Secondly, the noun form of this word is a better choice. \"The\" was added as a determiner for this singular noun.",
+      "question_values": [
+        "The PAL versions of the console looked identical to the Japanese Super Famicom , except for {labelling=>the label} ."
+      ],
+      "processing_time": 1.779000997543335,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn the first two years of international competition , Cyprus {have=>has} managed to {=>lose} only {loss=>} one match {, an=>and} promotion / relegation playoff away to Israel .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"have\" replaced with \"has\" because the noun it refers to, \"Cyprus,\" is singular.\r\n- \"lose\" added before \"only\" to improve clarity and fluency.\r\n- \"loss\" removed because it is not needed in this context.\r\n- \"an\" replaced with \"and\" to improve clarity and fluency.",
+      "expected_output": "- \"Has\" replaces \"have\" because the noun to which it refers is singular. \r\n- The verb \"lose\" is inserted in place of the noun \"loss,\" as the verb is needed to state the purpose.\r\n- A comma is removed because the following phrase is dependent on the previous phrase.\r\n- \"And\" is the correct spelling of \"an.\"",
+      "question_values": [
+        "In the first two years of international competition , Cyprus {have=>has} managed to {=>lose} only {loss=>} one match {, an=>and} promotion / relegation playoff away to Israel ."
+      ],
+      "processing_time": 3.2765188217163086,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe was born in Brunswick Square , London in 1821 , his father Jonathan Dawson {=>,} being Principal of the Baptist Seminary .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"Dawson\" to separate the parenthetical information from the main clause.",
+      "expected_output": "",
+      "question_values": [
+        "He was born in Brunswick Square , London in 1821 , his father Jonathan Dawson {=>,} being Principal of the Baptist Seminary ."
+      ],
+      "processing_time": 1.1261036396026611,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHowever \" Megamind \" won the weekend earning earning $ 30 million to \" {Unstoppable=>Unstoppable's} \" {'s=>} $ 23.9 million .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The apostrophe was added to \"Unstoppable\" to indicate that the following noun phrase refers to the movie \"Unstoppable.\"\r\n- The apostrophe was removed from \"'s\" because the possessive form is not needed in this context. The apostrophe was added to indicate that the following noun phrase refers to the movie \"Unstoppable.\"",
+      "expected_output": "- The apostrophe \"'s\" outside the double quotation marks was placed inside the quotation marks because the possessive noun is formed by adding the apostrophe \"'s\" to the noun,  as in \"Unstoppable's.\"",
+      "question_values": [
+        "However \" Megamind \" won the weekend earning earning $ 30 million to \" {Unstoppable=>Unstoppable's} \" {'s=>} $ 23.9 million ."
+      ],
+      "processing_time": 3.420055389404297,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{we=>We} do n't think that {there is=>,} less {of=>than} a hundred years {=>ago} , {nothing=>none} of that existed .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"We\" was capitalized because it is at the beginning of the sentence.\r\n- \"there is\" was removed for conciseness.\r\n- \"of\" was replaced with \"than\" to improve clarity and fluency.\r\n- \"ago\" was added to improve clarity and fluency.",
+      "expected_output": "- The first word of the sentence was capitalized.\r\n- The phrase \"there is\" was removed and replaced with a comma to introduce a clause with extra detail about the main subject.\r\n- The preposition \"of\" was replaced with \"than.\" This construction gives a sense of comparison and emphasis.\r\n- The word \"ago\" was added to convey the sense of projection backward in time.",
+      "question_values": [
+        "{we=>We} do n't think that {there is=>,} less {of=>than} a hundred years {=>ago} , {nothing=>none} of that existed ."
+      ],
+      "processing_time": 2.636251211166382,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{Home grown=>Home-grown} talent , like quarterbacks Tony Adams and Danny White {=>,} quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The hyphen was added to \"home-grown\" to form the adjective phrase \"home-grown talent.\"\r\n- A comma was added after \"Danny White\" to separate the two independent clauses.",
+      "expected_output": "- A hyphen was added to \"home-grown.\" Hyphens are required for compound adjectives when they are before a noun.\r\n- A comma was added after \"Danny White.\" It is generally required that there be commas on both sides of phrases starting with \"like\" when they give specifics in cases like this.",
+      "question_values": [
+        "{Home grown=>Home-grown} talent , like quarterbacks Tony Adams and Danny White {=>,} quickly bolted for the NFL , with Adams landing with the Kansas City Chiefs , and White with the Dallas Cowboys ."
+      ],
+      "processing_time": 2.133096694946289,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThese officials {then=>} take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"then\" was removed from the sentence. This is a stylistic edit that improves the flow of the sentence.",
+      "expected_output": "-\"Then\" was removed from the sentence since we usually use \"then\" to convey that this action happened after a previous action.",
+      "question_values": [
+        "These officials {then=>} take both former Presidents on Marine One , and tell them that Haney wanted to see them at Camp David ."
+      ],
+      "processing_time": 1.2720210552215576,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIn my opinion , shopping is {like=>} relaxing .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"like\" was removed from the sentence. This is a stylistic edit that improves the conciseness and fluency of the sentence.",
+      "expected_output": "-\"Like\" is deleted to improve conciseness.",
+      "question_values": [
+        "In my opinion , shopping is {like=>} relaxing ."
+      ],
+      "processing_time": 1.4687113761901855,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBenoni 's school is a {recognised=>recognized} school for tourism located in the heart of Brussels , Belgium .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The spelling of \"recognized\" was changed to conform to American English spelling guidelines.",
+      "expected_output": "\"Recognized\" is the American English spelling of \"recognised.\"",
+      "question_values": [
+        "Benoni 's school is a {recognised=>recognized} school for tourism located in the heart of Brussels , Belgium ."
+      ],
+      "processing_time": 0.952242374420166,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWhether Schumann found it unnecessary to specify {Metronome=>metronome} speeds for the second and fourth movements is unknown .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"metronome\" was changed to lowercase because it is a common noun. Common nouns are not capitalized unless they are at the beginning of a sentence.",
+      "expected_output": "- \"Metronome\" is used as a common noun. Common nouns do not need to be capitalized.",
+      "question_values": [
+        "Whether Schumann found it unnecessary to specify {Metronome=>metronome} speeds for the second and fourth movements is unknown ."
+      ],
+      "processing_time": 1.7255375385284424,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nFirstly , I wanted to see DANN BLOCK playing {=>,} as your advertisement already said , but there was a different actor instead of him {at=>} that evening .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"but\" to offset the following independent clause.\n\n- \"at\" was removed from the sentence. This is the correct preposition to use when referring to a specific time.",
+      "expected_output": "-A comma is needed when a conjunction joins two clauses.\r\n-\"that evening\" is idiomatically acting as an adverb, so a preposition is not needed, and \"at\" has been removed.",
+      "question_values": [
+        "Firstly , I wanted to see DANN BLOCK playing {=>,} as your advertisement already said , but there was a different actor instead of him {at=>} that evening ."
+      ],
+      "processing_time": 1.9050307273864746,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nLamson had {learnt=>learned} about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The British English spelling \"learnt\" was changed to the American English spelling \"learned.\" This is the standard spelling in American English.",
+      "expected_output": "- \"Learnt\" was changed to the American English Standard \"learned.\"",
+      "question_values": [
+        "Lamson had {learnt=>learned} about aconitine as a medical student from Professor Robert Christison , who had taught that it was undetectable - but forensic science had improved since Lamson 's student days ."
+      ],
+      "processing_time": 1.4332966804504395,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nPreviously , the city was the provincial capital of Arachosia {=>,} and was ruled by the Achaemenid Empire .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"Arachosia\" to separate the parenthetical information from the main clause. This is a common convention in English.",
+      "expected_output": "",
+      "question_values": [
+        "Previously , the city was the provincial capital of Arachosia {=>,} and was ruled by the Achaemenid Empire ."
+      ],
+      "processing_time": 1.4749176502227783,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nIt was the very last day of my trip {=>,} and at that time I was in Kyoto .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"day\" to separate the subordinate clause from the main clause. This is typically required when the subordinate clause comes after the main clause.",
+      "expected_output": "-A comma was inserted before the conjunction \"and.\" We use commas before conjunctions in order to join two independent clauses.",
+      "question_values": [
+        "It was the very last day of my trip {=>,} and at that time I was in Kyoto ."
+      ],
+      "processing_time": 1.6886937618255615,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWe {=>would} also {would=>} like to have a history {on=>lesson} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"on\" replaced with \"lesson\" for fluency and clarity.\r\n- \"would\" added before \"also\" for fluency and clarity.",
+      "expected_output": "- The word order was changed to improve the fluency and clarity of the sentence. So \"also would like\" was changed to \"would also like.\"\r\n- The preposition \"on\" was replaced with the noun \"lesson\" because the noun phrase needs to have a noun.",
+      "question_values": [
+        "We {=>would} also {would=>} like to have a history {on=>lesson} ."
+      ],
+      "processing_time": 1.471130132675171,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHe was very {out spoken=>outspoken} on his views and known for {self mutalation=>self-mutilation} during live shows .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Outspoken\" is one word and was hyphenated incorrectly.\r\n- \"Self-mutilation\" is the correct spelling of \"self mutalation.\" The hyphen is inserted between \"self\" and \"mutilation\" because \"self\" is a prefix and \"mutilation\" is a noun.",
+      "expected_output": "- The words \"out\" and \"spoken\" were combined to produce the correctly spelled \"outspoken.\"\r\n- The words \"self\" and \"mutalation\" were hyphenated to produce the correctly spelled \"self-mutilation.\"",
+      "question_values": [
+        "He was very {out spoken=>outspoken} on his views and known for {self mutalation=>self-mutilation} during live shows ."
+      ],
+      "processing_time": 3.0364224910736084,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nHowever , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing {along=>around} 38 of Shi {Hu=>Hu's} grandsons and the rest of the Shi clan .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"along\" was replaced with \"around\" for fluency and clarity.\r\n- \"Hu\" was added as a possessive to clarify that \"Shi Hu's\" refers to the grandsons of Shi Hu.",
+      "expected_output": "-\"along\" was replaced with the more sensible \"around.\"\r\n-\"Hu\" was made into a possessive.",
+      "question_values": [
+        "However , the Shi Jian 's eunuchs reported that to Shi Min and Li Nong , and they quickly returned to Yecheng and executed Shi Jian , killing {along=>around} 38 of Shi {Hu=>Hu's} grandsons and the rest of the Shi clan ."
+      ],
+      "processing_time": 2.2372970581054688,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThese tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they {succeded=>succeeded} .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"succeeded\" was corrected for spelling.",
+      "expected_output": "- \"Succeeded\" is the correct spelling of \"succeded.\"",
+      "question_values": [
+        "These tools were more sophisticated in their conception and construction and much more effective than the tools of the Oldowan industry they {succeded=>succeeded} ."
+      ],
+      "processing_time": 0.7536165714263916,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nKuklinski was the chief of a planning division of the Polish army {,=>} and {was=>} a {liason=>liaison} between the Polish army and the Russian military .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The comma was removed because the following clause is dependent on the previous one.\r\n- \"Liaison\" is the standard spelling of \"liason.\"",
+      "expected_output": "- The comma was removed because the second half of the sentence does not have a new subject.\r\n- \"Liaison\" is the correct spelling of \"liason.\"",
+      "question_values": [
+        "Kuklinski was the chief of a planning division of the Polish army {,=>} and {was=>} a {liason=>liaison} between the Polish army and the Russian military ."
+      ],
+      "processing_time": 1.5317564010620117,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nCovering an area of more than {2104=>2,104} acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation {Golf=>golf} course {=>,} and other features .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The commas were added around \"golf\" and \"course\" to offset the parenthetical information from the main clause.\r\n- The commas were added around \"and\" to offset the following list of items from the main clause. This is a common convention in American English.",
+      "expected_output": "-This edit adds a comma to delineate the thousands place in this number.\r\n-This edit makes 'golf' lower case because it is a common noun.\r\n-This edit adds an Oxford comma because it is Grammarly's preferred convention.",
+      "question_values": [
+        "Covering an area of more than {2104=>2,104} acres , the resort with its lush green parks , sinuous lakes , an 18 hole regulation {Golf=>golf} course {=>,} and other features ."
+      ],
+      "processing_time": 2.555497884750366,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{K '=>K'} and Maxima are once again separated from their teammates {,=>} but are joined {Whip=>by Whip,} who joins them after revealing her identity to K ' .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The single quotation mark was removed from \"K\" because it is not necessary when the name is being used in the middle of the sentence.\r\n- The comma was removed because the following clause is dependent on the previous clause.\r\n- The name \"Whip\" was separated from the preposition \"by\" to improve the clarity and flow of the sentence.",
+      "expected_output": "-An unnecessary space before an apostrophe has been removed.\r\n-A comma was added before a conjunction joining two clauses.\r\n-The preposition \"by\" was added since \"join\" can't take an object.",
+      "question_values": [
+        "{K '=>K'} and Maxima are once again separated from their teammates {,=>} but are joined {Whip=>by Whip,} who joins them after revealing her identity to K ' ."
+      ],
+      "processing_time": 3.2433080673217773,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe 4Music stage will also host loads of exclusive short sets from {up and coming=>up-and-coming} bands that they reckon are going to be huge this time next year .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The hyphen was added to \"up-and-coming\" to combine the two words into an adjective phrase. This is the standard form when two words are used together to describe a noun.",
+      "expected_output": "- As three words that come before the noun and function together as an adjective to describe \"bands,\" \"up and coming\" were combined and hyphenated to produce \"up-and-coming.\"",
+      "question_values": [
+        "The 4Music stage will also host loads of exclusive short sets from {up and coming=>up-and-coming} bands that they reckon are going to be huge this time next year ."
+      ],
+      "processing_time": 1.916111946105957,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nI also wanted to know if I {have=>need} to take some money to buy souvenirs and food {=>,} or {=>will} that {will=>} be paid for {me=>} , too ?\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"have\" replaced with \"need\" for fluency and clarity.\r\n- A comma was added after \"or\" to separate two independent clauses.\r\n- \"will\" added before \"that\" for clarity and fluency.\r\n- \"me\" removed for clarity and fluency.",
+      "expected_output": "- A comma was inserted to separate two independent questions within the sentence.\r\n- \"That will\" was changed to \"will that\" because in English, the question word always comes first.",
+      "question_values": [
+        "I also wanted to know if I {have=>need} to take some money to buy souvenirs and food {=>,} or {=>will} that {will=>} be paid for {me=>} , too ?"
+      ],
+      "processing_time": 2.6897242069244385,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nWith the help of {some=>} modern technology {=>,} our daily life {would=>will} not {=>be} so difficult .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"some\" was removed for conciseness.\r\n- A comma was added after \"technology\" to offset the parenthetical information.\r\n- \"be\" was added after \"will\" to complete the conditional clause.",
+      "expected_output": "- \"some\" was removed because it's not necessary and removing it improves the flow of the sentence.\r\n- A comma was added after technology because commas are added after introductory phrases in English. \r\n- \"be\" was added because a verb is needed to make the sentence grammatical.",
+      "question_values": [
+        "With the help of {some=>} modern technology {=>,} our daily life {would=>will} not {=>be} so difficult ."
+      ],
+      "processing_time": 2.140399217605591,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nThe Soviet view was that as efforts to {'=>\"} surround {'=>\"} Hitler failed , and as the {western=>Western} powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some {accomodation=>arrangement} had to be reached with Germany in order to buy time .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The single quotation marks were removed from around \"surround\" and \"accommodation\" because these are not titles and do not require quotation marks.\r\n- The single quotation marks were removed from around \"Hitler\" because it is a proper name and does not require quotation marks.\r\n- The single quotation marks were removed from around \"accommodation\" because it is a common noun and does not require quotation marks.\r\n- The word \"accommodation\" was replaced with \"arrangement\" to improve fluency and clarity.\r\n- The word \"western\" was capitalized because it is part of a title.",
+      "expected_output": "-These two edits replace the single quotes 'surround' had been in with full quotes because it is a direct quote.\r\n-'Western' is capitalized here because it is a proper noun.\r\n-This is an optional stylistic edit that chooses to use 'arrangement' here for unclear reasons.",
+      "question_values": [
+        "The Soviet view was that as efforts to {'=>\"} surround {'=>\"} Hitler failed , and as the {western=>Western} powers seemed to allow Nazi expansion in Central Europe ( as long as it was not aimed westward ) , some {accomodation=>arrangement} had to be reached with Germany in order to buy time ."
+      ],
+      "processing_time": 5.7974019050598145,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nBourne is next seen on a train {travelling=>, traveling} from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"Travelling\" was changed to \"traveling\" to follow American English spelling conventions.",
+      "expected_output": "- \"Traveling\" is the American English standard of spelling for \"travelling.\"",
+      "question_values": [
+        "Bourne is next seen on a train {travelling=>, traveling} from France to Switzerland , with the device containing the information regarding the Swiss bank account in his hand ."
+      ],
+      "processing_time": 1.0836455821990967,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{Lemon grass=>Lemongrass} is {=>a} widely used {as a=>} herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- The word \"Lemongrass\" was corrected for spelling.\r\n- The preposition \"as\" was removed and replaced with \"a\" to indicate that \"herb\" is a common noun. This is the correct collocation when talking about \"widely used.\"\r\n- The preposition \"a\" was removed before the noun phrase \"widely used.\" This is not necessary in this context.",
+      "expected_output": "- The unnecessary space between \"lemon\" and \"grass\" in the compound word \"lemongrass\" was removed.\r\n- The sentence was corrected for clarity. Instead of stating that it is \"widely used as a herb,\" the corrected form states that it is \"a widely used herb.\"",
+      "question_values": [
+        "{Lemon grass=>Lemongrass} is {=>a} widely used {as a=>} herb in Asian ( particularly Thai , Lao , Khmer and Vietnamese ) and Caribbean cooking ."
+      ],
+      "processing_time": 3.6957454681396484,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nEddie Keith Bonine ( born June 6 , {1981=>1981,} in Columbus , Georgia ) is {=>a} Major League Baseball starting pitcher for the Detroit Tigers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after the year in the date to separate the day, month, and year. This is the standard format for dates in American English.\r\n- The word \"a\" was added before the noun \"Major League Baseball starting pitcher.\" This is the standard way to introduce a noun phrase with \"for.\"",
+      "expected_output": "-A comma is added after the year because when using the month-date-year format, a comma is required after the year.\r\n- Indefinite article \"a\" is inserted before the singular noun \"Major League Baseball starting pitcher.\"",
+      "question_values": [
+        "Eddie Keith Bonine ( born June 6 , {1981=>1981,} in Columbus , Georgia ) is {=>a} Major League Baseball starting pitcher for the Detroit Tigers ."
+      ],
+      "processing_time": 3.0498838424682617,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nTales about the Bakunawa say that it is the cause {=>of} eclipses .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"of\" was added after \"cause\" to improve fluency and clarity.",
+      "expected_output": "-This edit inserted a preposition to be grammatical.",
+      "question_values": [
+        "Tales about the Bakunawa say that it is the cause {=>of} eclipses ."
+      ],
+      "processing_time": 0.8730556964874268,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\nAround 185 million people live in the catchment area of the rivers that flow into the North Sea {=>,} encompassing some highly industrialized areas .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- A comma was added after \"North Sea\" to separate the parenthetical information from the main clause. This is a common convention in English.",
+      "expected_output": "- A comma is inserted before \"encompassing\" to mark the beginning of a nonrestrictive clause that includes nonessential information.",
+      "question_values": [
+        "Around 185 million people live in the catchment area of the rivers that flow into the North Sea {=>,} encompassing some highly industrialized areas ."
+      ],
+      "processing_time": 1.4537224769592285,
+      "success": true,
+      "error": null
+    },
+    {
+      "prompt": "You will be given a sentence showing revisions made for grammar and fluency.\n\nSentence:\n{That=>At that} time {=>,} I met the magic world of computers .\n\nProvide a quick and short explanation for each revision in the sentence in a bulleted list. Even if you disagree with a revision because it is stylistic or you would have preferred a different revision, you should still explain the revision. However, if you feel a particular revision is truly incorrect, mark the item as 'Not annotatable'. Write 'NA' if not annotatable.",
+      "response": "- \"That\" was replaced with \"at that\" to improve fluency and clarity.\r\n- A comma was added after \"time\" to separate the introductory prepositional phrase from the main clause.",
+      "expected_output": "-The preposition \"at\" should be used to indicate that what follows happened during \"that time.\"\r\n-This is an introductory phrase, so it should be followed by a comma.",
+      "question_values": [
+        "{That=>At that} time {=>,} I met the magic world of computers ."
+      ],
+      "processing_time": 1.9380195140838623,
+      "success": true,
+      "error": null
+    }
+  ],
+  "expected_outputs": [
+    "- \"What\" was inserted to link \"that\" and \"the advertisement had shown.\"",
+    "- The spelling of the word \"labor\" was corrected to conform to American English spelling.\r\n- A spelling error was corrected. The correct spelling is \"succeeded.\"",
+    "- Comma added before \"so\" to introduce new clause.\r\n- Unnecessary hyphen removed in \"well dressed.\" Unless it is before a noun, a compound adjective doesn't usually need a hyphen.\r\n- Unnecessary comma removed after \"well dressed.\"\r\n-NA",
+    "- A comma was inserted as the two phrases are complete and could be independent.\r\n- \"Just\" was replaced with \"right\" as it is more commonly used with the phrase \"in front of.\"",
+    "- The comma was changed to a period in order to separate two sentences. \"My\" was capitalized since it is at the beginning of a sentence.\r\n-  A comma was added after \"June\" because \"but\" is separating two independent clauses.",
+    "- The comma before \"when\" was deleted \" because there is no comma when the dependent clause comes after the main clause.\r\n- The preposition \"about\" was added after the verb \"written\" because \"about\" carries the meaning of \"on the subject of.\"",
+    "- \"accommodation\" fixes a spelling error.\r\n- \"vacations\" is the American English term.",
+    "",
+    "",
+    "",
+    "-The determiner is added to improve fluency.",
+    "- The extra comma was removed to avoid two consecutive commas.\r\n- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+    "- The phrase \"surgeon-in-chief\" was hyphenated. In American English, many occupations are hyphenated to show that all the included words are related to the same job title.",
+    "-The infinitive should not be used here but instead the verb conjugated for the first person singular.",
+    "-A comma is inserted because it is needed after an introductory phrase.\r\n-The correct spelling is \"in front.\"\r\n-The correct spelling is \"crowd.\"",
+    "- \"forward\" was added because of the high collocation with \"look.\" This edit increases the readability and fluency of the sentence.",
+    "- \"Pay\" was changed to \"paid\" to match the past tense implied by the prepositional phrase \"in 2009.\"\r\n- \"Entitled them to overtime\" was deleted to avoid redundancy and improve conciseness.",
+    "",
+    "- NA\r\n- Unnecessary ellipsis replaced with single period.",
+    "- An \"and\" was added to adhere to the correct grammar for lists.\r\n- \"assessment\" is the correct spelling.\r\n- \"substantive\" is the correct spelling.",
+    "-These quotation marks are added because what is within them is the title of something.\r\n-These quotation marks are added because what is within them is the title of something.",
+    "-\"Organised\" was substituted for \"organized\" to follow American English spelling conventions.\r\n-The correct spelling is \"decision.\"",
+    "- A comma was added after the introductory phrase to improve the clarity of the sentence.\r\n- \"theater\" is the American English spelling of \"theatre.\"\r\n- A comma was removed before \"because\" since the subordinating clause comes after the main clause. A comma might be used if the sentence becomes ambiguous otherwise or if the subordinating clause provides an explanation for the content in the main clause.\r\n- \"shef\" is a misspelling of \"chef.\"\r\n- \"where\" is a misspelling of \"were.\"\r\n- \"vacation\" is preferred in American English over \"holiday.\"",
+    "- The quote was changed to \"It\" to create a complete clause.\r\n- \"Cancelled\" was changed to \"canceled\" to reflect the version used more often in American English.\r\n- \"Line-up\" was corrected to the standard \"lineup.\"",
+    "- An article was added because the noun it quantifies is a countable noun, which requires an article if it is singular, but it can be omitted if it is plural.",
+    "- 'Possession' is the correct spelling of 'posession.'\r\n- A comma was inserted after 'California.' When a city and state combination is presented in the middle of a sentence, the state must be surrounded by commas.",
+    "- Corrected misspellings of \"were\" and \"important.\"",
+    "-This edit corrects the spelling to 'pierced.'",
+    "-  A comma was introduced after 'dissidents' because commas must separate every time in a list in American English.\r\n- \"Gain\" was written in its past tense form because the event already occurred.\r\n- \"It's\" was changed to \"its\" to indicate possession as opposed to the contraction \"it is.\"",
+    "-\"Is\" was changed to \"to be\" because that is the collocation that is often used in \"find + something + adjective\" form.\r\n-A hyphen is added to time consuming when we use the term \"time-consuming\" the adjective in a sentence.",
+    "- A comma was inserted before \"so\" because \"so\" functions as a coordinating conjunction combining two independent clauses.\r\n-The verb tense was changed from present tense \"run\" to past tense \"ran\" to maintain the same verb tense throughout the sentence.\r\n- The phrase \"in order\" was deleted to maintain conciseness. \r\n- The preposition \"to\" was added because it is needed before the object \"him.\"",
+    "-\"Programme\" is substituted for \"program\" to follow American English spelling conventions.",
+    "-The word that fits this context and is likely intended by the author is 'thing.'\r\n-Common nouns like 'computer room' require articles in English if they are singular, so 'the' is added.",
+    "",
+    "- The phrase is replaced with \"wooden\" to improve conciseness.",
+    "- The verb \"remain\" is deleted because the sentence already has the auxiliary verb \"are.\" However, if \"remain\" refers to the noun \"remains,\" as in \"remains of historical buildings,\" then this revision is incorrect.",
+    "- \"Sidestory\" was separated to two words: \"side\" and \"story.\"\r\n- A comma and quotation mark was added on either end of the title name. Short story titles should be surrounded by quotation marks. The commas confirm that, while relevant, the story title is not mandatory to include. \r\n- The phrase \"which status\" was restructured to read \"the status of which.\" This change elevates the writing by improving flow and academic quality.\r\n- A pair of periods was reduced to just one period, as is normal.",
+    "- A comma was added after \"therefore\" as is typically required when it is at the beginning of a sentence.\r\n- \"So as to\" was changed to \"and\" to make the phrase more concise and improve fluency.",
+    "-A comma was added before a conjunction joining two clauses.",
+    "-\"It\" is inserted because an object is needed for the verb \"to sum.\"",
+    "-The determiner was changed because \"where\" is used for location.",
+    "-A spelling error was corrected. The correct spelling is \"responsibility.\"",
+    "- Comma added after \"On the other hand.\" A comma is usually  needed after transitional phrases like this.\r\n- \"The\" added before \"accommodation\" for clarity.\r\n- Spelling of \"specify\" corrected.\r\n- \"I have\" removed for conciseness.\r\n- NA",
+    "",
+    "-\"Very\" was removed from the sentence for conciseness.",
+    "-The determiner is inserted because \"discovery\" is a singular noun and a determiner is necessary with a singular noun. Due to the determiner being introduced, the capitalization has to change because it alters what word begins the sentence and needs to be capitalized.\r\n-The comma was inserted because it is needed before a conjunction and independent clause.\r\n-This is a capitalization error. \"Russian\" is an adjective based on the name of a country and should be capitalized.",
+    "-It was inserted at the end of the sentence because the tag question \"doesn't it\" is what we usually use.",
+    "-This edit puts the month in front of the day because that is the convention in American English.",
+    "- \"Opened\" is the correct spelling of \"oppened.\"\r\n- \"Have\" replaces \"had.\"",
+    "- A comma should be used when a conjunction joins two clauses.\r\n-While \"said to me\" is acceptable, \"told\" is used more commonly in this context.\r\n-\"spoken\" is a participle, in this case, it should be in past tense, not participle form.\r\n-\"English\" should immediately follow \"spoke\" as it is the object of the verb.",
+    "- The word \"ever\" was replaced with \"even\" because the context shows that the sentence is referring to \"even more German cities.\"",
+    "- A serial comma was added after the penultimate item in a list. This is typically used to avoid ambiguity in a sentence.",
+    "- The word \"this\" was replaced with \"that\" because \"that\" functions as a substitute for \"knowledge about the Olympic Games.\"",
+    "- A comma was removed after \"thriller\" as the following information is essential to the main clause.\r\n- The name \"Vinessa\" was corrected to \"Vanessa\" as this may have been a spelling error.\r\n- A comma was inserted as the list is a series of names.",
+    "-The verb was replaced with \"were\" to fulfill subject-verb agreement.\r\n-The noun was pluralized to fulfill number agreement with the listed, multiple names.",
+    "-The verb form is changed to agree with the subject.\r\n-The preposition was changed. This is a stylistic edit.",
+    "- \"Stay in\" was changed to \"staying at.\" The gerund form of the verb 'stay' was used to create parallelism with 'going out.' The prepositions 'in' and 'at' both refer to location, but 'in' is more general while 'at' is more specific.\r\n- The phrase \"all the time\" is changed to \"the whole time.\" This is an optional change, and the meanings are nearly identical in this context.",
+    "- The preposition \"at\" was added because \"at\" is used to discuss a specific time frame.\r\n-To indicate time, the period was changed to a colon to separate hours and minutes.",
+    "- \"Summer of\" was inserted before \"2008\" and \"summer\" was removed from after \"2008\" to produce the phrase, \"summer of 2008.\" This slight change improved the natural flow of the sentence.\r\n- A comma was inserted before \"Aris\" to separate a name.",
+    "-The correct spelling is \"The.\"",
+    "- Changing \"north-eastern\" fixes a spelling error, and it is capitalized because it is referring to a well-known areas in the country.",
+    "- A comma was added because \"and\" is separating two independent clauses.",
+    "-Added a comma, which is necessary before a conjunction joining two independent clauses.",
+    "- \"complaint\" was changed to \"complain\" because a verb is required after \"shouldn't.\"\r\n- \"lost\" was changed to \"loss\" because a noun is required after \"their.\"",
+    "- \"The\" added before \"internet.\" The word usually appears with \"the.\"\r\n- Spelling of \"internet\" corrected.\r\n- Spelling of \"because\" corrected.\r\n- \"There\" removed for clarity and conciseness.\r\n- Comma added before \"which.\" A comma is frequently used to introduce this type of clause.",
+    "- \"The theatre\" was changed to \"theater ,\" as the later is the standard American English spelling. \r\n- \"Students\" was changed to \"student\" as it is being used as to describe the noun \"activities.\"",
+    "-A comma was inserted before and after the name \"Ayumi Hamasaki\" to separate this nonessential phrase, which provides extra information, from the main clause.",
+    "- The comma and coordinating conjunction were replaced with a semicolon. Both options of combining two independent clauses are acceptable.",
+    "-This stylistic edit makes the sentence active voice, which is often preferable.\r\n-This stylistic edit fits \"web traffic\" better because \"web traffic\" isn't an agent.",
+    "- \"Labelling\" was changed to \"label.\" First, \"labelling\" is not a spelling choice in American English. Secondly, the noun form of this word is a better choice. \"The\" was added as a determiner for this singular noun.",
+    "- \"Has\" replaces \"have\" because the noun to which it refers is singular. \r\n- The verb \"lose\" is inserted in place of the noun \"loss,\" as the verb is needed to state the purpose.\r\n- A comma is removed because the following phrase is dependent on the previous phrase.\r\n- \"And\" is the correct spelling of \"an.\"",
+    "",
+    "- The apostrophe \"'s\" outside the double quotation marks was placed inside the quotation marks because the possessive noun is formed by adding the apostrophe \"'s\" to the noun,  as in \"Unstoppable's.\"",
+    "- The first word of the sentence was capitalized.\r\n- The phrase \"there is\" was removed and replaced with a comma to introduce a clause with extra detail about the main subject.\r\n- The preposition \"of\" was replaced with \"than.\" This construction gives a sense of comparison and emphasis.\r\n- The word \"ago\" was added to convey the sense of projection backward in time.",
+    "- A hyphen was added to \"home-grown.\" Hyphens are required for compound adjectives when they are before a noun.\r\n- A comma was added after \"Danny White.\" It is generally required that there be commas on both sides of phrases starting with \"like\" when they give specifics in cases like this.",
+    "-\"Then\" was removed from the sentence since we usually use \"then\" to convey that this action happened after a previous action.",
+    "-\"Like\" is deleted to improve conciseness.",
+    "\"Recognized\" is the American English spelling of \"recognised.\"",
+    "- \"Metronome\" is used as a common noun. Common nouns do not need to be capitalized.",
+    "-A comma is needed when a conjunction joins two clauses.\r\n-\"that evening\" is idiomatically acting as an adverb, so a preposition is not needed, and \"at\" has been removed.",
+    "- \"Learnt\" was changed to the American English Standard \"learned.\"",
+    "",
+    "-A comma was inserted before the conjunction \"and.\" We use commas before conjunctions in order to join two independent clauses.",
+    "- The word order was changed to improve the fluency and clarity of the sentence. So \"also would like\" was changed to \"would also like.\"\r\n- The preposition \"on\" was replaced with the noun \"lesson\" because the noun phrase needs to have a noun.",
+    "- The words \"out\" and \"spoken\" were combined to produce the correctly spelled \"outspoken.\"\r\n- The words \"self\" and \"mutalation\" were hyphenated to produce the correctly spelled \"self-mutilation.\"",
+    "-\"along\" was replaced with the more sensible \"around.\"\r\n-\"Hu\" was made into a possessive.",
+    "- \"Succeeded\" is the correct spelling of \"succeded.\"",
+    "- The comma was removed because the second half of the sentence does not have a new subject.\r\n- \"Liaison\" is the correct spelling of \"liason.\"",
+    "-This edit adds a comma to delineate the thousands place in this number.\r\n-This edit makes 'golf' lower case because it is a common noun.\r\n-This edit adds an Oxford comma because it is Grammarly's preferred convention.",
+    "-An unnecessary space before an apostrophe has been removed.\r\n-A comma was added before a conjunction joining two clauses.\r\n-The preposition \"by\" was added since \"join\" can't take an object.",
+    "- As three words that come before the noun and function together as an adjective to describe \"bands,\" \"up and coming\" were combined and hyphenated to produce \"up-and-coming.\"",
+    "- A comma was inserted to separate two independent questions within the sentence.\r\n- \"That will\" was changed to \"will that\" because in English, the question word always comes first.",
+    "- \"some\" was removed because it's not necessary and removing it improves the flow of the sentence.\r\n- A comma was added after technology because commas are added after introductory phrases in English. \r\n- \"be\" was added because a verb is needed to make the sentence grammatical.",
+    "-These two edits replace the single quotes 'surround' had been in with full quotes because it is a direct quote.\r\n-'Western' is capitalized here because it is a proper noun.\r\n-This is an optional stylistic edit that chooses to use 'arrangement' here for unclear reasons.",
+    "- \"Traveling\" is the American English standard of spelling for \"travelling.\"",
+    "- The unnecessary space between \"lemon\" and \"grass\" in the compound word \"lemongrass\" was removed.\r\n- The sentence was corrected for clarity. Instead of stating that it is \"widely used as a herb,\" the corrected form states that it is \"a widely used herb.\"",
+    "-A comma is added after the year because when using the month-date-year format, a comma is required after the year.\r\n- Indefinite article \"a\" is inserted before the singular noun \"Major League Baseball starting pitcher.\"",
+    "-This edit inserted a preposition to be grammatical.",
+    "- A comma is inserted before \"encompassing\" to mark the beginning of a nonrestrictive clause that includes nonessential information.",
+    "-The preposition \"at\" should be used to indicate that what follows happened during \"that time.\"\r\n-This is an introductory phrase, so it should be followed by a comma."
+  ],
+  "processing_stats": {
+    "total_time": 213.41991543769836,
+    "avg_time": 2.134199154376984,
+    "min_time": 0.5644741058349609,
+    "max_time": 7.560818672180176,
+    "success_count": 100,
+    "error_count": 0,
+    "authentication_failures": 0
+  },
+  "system_info": {
+    "hf_token_configured": true,
+    "gpu_available": true,
+    "model_accessibility_checked": true,
+    "gpu_count": 1,
+    "gpu_name": "NVIDIA L40S"
+  }
+}

@@ -8,6 +8,12 @@ Handles multiple space-separated inputs with intelligent compatibility checking.
 Supports JSON/JSONL datasets with nested field path resolution.
 """
 
+try:
+    import unsloth
+except:
+    print("Unsloth not available, defaulting to transformers...")
+    pass 
+
 import argparse
 import sys
 import os
@@ -844,12 +850,7 @@ def run_experiment_command(args):
         model_loaded = False
         if model_config['type'] == 'local':
             try:
-                if model_config.get('finetuned', False):
-                    model_path = os.path.join(Config.FINETUNED_MODELS_DIR, 
-                                            model_config['model_path'].split('/')[-1] + '_finetuned')
-                    runner.model_manager.load_finetuned_model(model_path)
-                else:
-                    runner.model_manager.load_open_source_model(model_name, model_config['model_path'])
+                runner.model_manager.load_open_source_model(model_name, model_config['model_path'])
                 model_loaded = True
                 logger.info(f"Model {model_name} loaded successfully")
             except ValueError as e:

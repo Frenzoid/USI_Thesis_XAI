@@ -40,7 +40,7 @@ class FinetuneManager:
     
     def _load_finetune_config(self) -> Dict[str, Any]:
         """Load finetune configuration from JSON file"""
-        finetune_json_path = os.path.join(Config.CONFIGS_DIR, "finetunes.json")
+        finetune_json_path = Config.FINETUNES_JSON
         
         try:
             with open(finetune_json_path, 'r') as f:
@@ -317,7 +317,7 @@ class FinetuneManager:
             from transformers import TrainingArguments
             from datasets import Dataset
         except ImportError as e:
-            raise ImportError(f"Unsloth training requires additional packages: {e}")
+            raise ImportError(f"Unsloth training requires additional packages: {e}\nInstall with: pip install unsloth trl")
         
         model_config = self.models_config[model_name]
         model_path = model_config['model_path']
@@ -353,6 +353,61 @@ class FinetuneManager:
         train_dataset = Dataset.from_list(train_data)
         val_dataset = Dataset.from_list(val_data) if val_data else None
         
+        # Define formatting function for Unsloth
+        # FIX: Check if model has chat template before using it
+        has_chat_template = hasattr(tokenizer, 'chat_template') and tokenizer.chat_template is not None
+        
+        def formatting_func(examples):
+            """Format training examples for Unsloth"""
+            # Check if this is a single example or batched
+            # Single: {"conversations": [{"from": "human", ...}, {"from": "gpt", ...}]}
+            # Batched: {"conversations": [[{"from": "human", ...}, ...], [{"from": "human", ...}, ...]]}
+            
+            if "conversations" not in examples:
+                raise ValueError("Examples must contain 'conversations' field")
+            
+            conversations_data = examples["conversations"]
+            
+            # Detect if this is a single example or batch
+            # Single example: conversations is a list of dicts (conversation turns)
+            # Batched: conversations is a list of lists of dicts
+            is_single = False
+            if conversations_data and isinstance(conversations_data[0], dict):
+                # First element is a dict, so this is a single conversation
+                is_single = True
+                conversations_list = [conversations_data]
+            else:
+                # First element is a list, so this is batched
+                conversations_list = conversations_data
+            
+            texts = []
+            
+            for conversations in conversations_list:
+                if has_chat_template:
+                    try:
+                        text = tokenizer.apply_chat_template(
+                            conversations,
+                            tokenize=False,
+                            add_generation_prompt=False
+                        )
+                    except Exception as e:
+                        logger.warning(f"Chat template failed, using simple format: {e}")
+                        # Fallback to simple format
+                        text = ""
+                        for msg in conversations:
+                            role = "Human" if msg.get("from") == "human" else "Assistant"
+                            text += f"### {role}: {msg.get('value', '')}\n\n"
+                else:
+                    # Simple format without chat template
+                    text = ""
+                    for msg in conversations:
+                        role = "Human" if msg.get("from") == "human" else "Assistant"
+                        text += f"### {role}: {msg.get('value', '')}\n\n"
+                texts.append(text)
+            
+            # Return single text if single example, list if batched
+            return texts
+        
         # Training arguments
         output_dir = os.path.join(Config.FINETUNED_MODELS_DIR, f"{model_name}_ft_{tune_name}")
         os.makedirs(output_dir, exist_ok=True)
@@ -372,18 +427,19 @@ class FinetuneManager:
             seed=Config.RANDOM_SEED,
             output_dir=output_dir,
             save_strategy="epoch",
-            evaluation_strategy="epoch" if val_dataset else "no",
+            eval_strategy="epoch" if val_dataset else "no",
             load_best_model_at_end=True if val_dataset else False,
             report_to="none"  # Disable wandb
         )
         
         # Initialize trainer
+        # FIX: Use formatting_prompts_func instead of formatting_func for better compatibility
         trainer = SFTTrainer(
             model=model,
             tokenizer=tokenizer,
             train_dataset=train_dataset,
             eval_dataset=val_dataset,
-            dataset_text_field="conversations",
+            formatting_func=formatting_func,
             max_seq_length=hyperparameters.get('max_seq_length', Config.MAX_SEQ_LENGTH),
             dataset_num_proc=2,
             packing=False,
@@ -428,7 +484,7 @@ class FinetuneManager:
             from datasets import Dataset
             from peft import LoraConfig, get_peft_model, TaskType
         except ImportError as e:
-            raise ImportError(f"HuggingFace training requires additional packages: {e}")
+            raise ImportError(f"HuggingFace training requires additional packages: {e}\nInstall with: pip install transformers peft")
         
         model_config = self.models_config[model_name]
         model_path = model_config['model_path']
@@ -445,19 +501,22 @@ class FinetuneManager:
         tokenizer = AutoTokenizer.from_pretrained(
             model_path,
             token=Config.HF_ACCESS_TOKEN if Config.HF_ACCESS_TOKEN else None,
-            cache_dir=Config.CACHED_MODELS_DIR
+            cache_dir=Config.CACHED_MODELS_DIR,
+            trust_remote_code=True
         )
         
         # Ensure pad token is set
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
+            tokenizer.pad_token_id = tokenizer.eos_token_id
         
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             token=Config.HF_ACCESS_TOKEN if Config.HF_ACCESS_TOKEN else None,
             cache_dir=Config.CACHED_MODELS_DIR,
             torch_dtype=torch.float16,
-            device_map="auto"
+            device_map="auto",
+            trust_remote_code=True
         )
         
         # Configure LoRA
@@ -466,37 +525,118 @@ class FinetuneManager:
             r=hyperparameters.get('lora_r', 16),
             lora_alpha=hyperparameters.get('lora_alpha', 32),
             lora_dropout=hyperparameters.get('lora_dropout', 0.1),
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj"]
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+            bias="none"
         )
         
         model = get_peft_model(model, lora_config)
+        model.print_trainable_parameters()
         
-        # Tokenize datasets
+        # FIX: Proper batched tokenization function
+        has_chat_template = hasattr(tokenizer, 'chat_template') and tokenizer.chat_template is not None
+        
         def tokenize_function(examples):
-            if "messages" in examples:
-                # Chat format
-                texts = []
-                for messages in examples["messages"]:
-                    text = tokenizer.apply_chat_template(messages, tokenize=False)
-                    texts.append(text)
-            else:
-                # Simple text format
-                texts = examples["text"]
+            """Tokenize examples with proper batch handling"""
+            texts = []
             
-            return tokenizer(
+            # Check if this is batched data (dict with lists) or single example
+            if "messages" in examples:
+                messages_list = examples["messages"]
+                
+                # Handle batched format
+                if isinstance(messages_list, list) and len(messages_list) > 0:
+                    if isinstance(messages_list[0], list):
+                        # Batched: list of message lists
+                        for messages in messages_list:
+                            if has_chat_template:
+                                try:
+                                    text = tokenizer.apply_chat_template(
+                                        messages,
+                                        tokenize=False,
+                                        add_generation_prompt=False
+                                    )
+                                except Exception as e:
+                                    logger.warning(f"Chat template failed, using simple format: {e}")
+                                    text = ""
+                                    for msg in messages:
+                                        role = "Human" if msg["role"] == "user" else "Assistant"
+                                        text += f"### {role}: {msg['content']}\n\n"
+                            else:
+                                text = ""
+                                for msg in messages:
+                                    role = "Human" if msg["role"] == "user" else "Assistant"
+                                    text += f"### {role}: {msg['content']}\n\n"
+                            texts.append(text)
+                    else:
+                        # Single example wrapped in dict
+                        messages = messages_list
+                        if has_chat_template:
+                            try:
+                                text = tokenizer.apply_chat_template(
+                                    messages,
+                                    tokenize=False,
+                                    add_generation_prompt=False
+                                )
+                            except Exception as e:
+                                logger.warning(f"Chat template failed, using simple format: {e}")
+                                text = ""
+                                for msg in messages:
+                                    role = "Human" if msg["role"] == "user" else "Assistant"
+                                    text += f"### {role}: {msg['content']}\n\n"
+                        else:
+                            text = ""
+                            for msg in messages:
+                                role = "Human" if msg["role"] == "user" else "Assistant"
+                                text += f"### {role}: {msg['content']}\n\n"
+                        texts.append(text)
+                        
+            elif "text" in examples:
+                # Simple text format
+                if isinstance(examples["text"], list):
+                    texts = examples["text"]
+                else:
+                    texts = [examples["text"]]
+            else:
+                raise ValueError("Dataset must have either 'messages' or 'text' field")
+            
+            # Tokenize all texts
+            tokenized = tokenizer(
                 texts,
                 truncation=True,
                 padding=False,
-                max_length=hyperparameters.get('max_seq_length', Config.MAX_SEQ_LENGTH)
+                max_length=hyperparameters.get('max_seq_length', Config.MAX_SEQ_LENGTH),
+                return_tensors=None  # Return lists, not tensors
             )
+            
+            # Add labels (same as input_ids for causal LM)
+            tokenized["labels"] = tokenized["input_ids"].copy()
+            
+            return tokenized
         
+        # Create datasets
         train_dataset = Dataset.from_list(train_data)
-        train_dataset = train_dataset.map(tokenize_function, batched=True)
+        
+        # FIX: Use batched=True with proper batch size for efficiency
+        logger.info("Tokenizing training data...")
+        train_dataset = train_dataset.map(
+            tokenize_function,
+            batched=True,
+            batch_size=100,
+            remove_columns=train_dataset.column_names,
+            desc="Tokenizing training data"
+        )
         
         val_dataset = None
         if val_data:
             val_dataset = Dataset.from_list(val_data)
-            val_dataset = val_dataset.map(tokenize_function, batched=True)
+            logger.info("Tokenizing validation data...")
+            val_dataset = val_dataset.map(
+                tokenize_function,
+                batched=True,
+                batch_size=100,
+                remove_columns=val_dataset.column_names,
+                desc="Tokenizing validation data"
+            )
         
         # Training arguments
         output_dir = os.path.join(Config.FINETUNED_MODELS_DIR, f"{model_name}_ft_{tune_name}")
@@ -509,12 +649,14 @@ class FinetuneManager:
             warmup_steps=hyperparameters.get('warmup_steps', 100),
             num_train_epochs=hyperparameters.get('num_epochs', 3),
             learning_rate=hyperparameters.get('learning_rate', 2e-4),
-            fp16=True,
+            fp16=torch.cuda.is_available() and not torch.cuda.is_bf16_supported(),
+            bf16=torch.cuda.is_available() and torch.cuda.is_bf16_supported(),
             logging_steps=10,
             save_strategy="epoch",
-            evaluation_strategy="epoch" if val_dataset else "no",
+            eval_strategy="epoch" if val_dataset else "no",
             load_best_model_at_end=True if val_dataset else False,
-            report_to="none"
+            report_to="none",
+            seed=Config.RANDOM_SEED
         )
         
         # Data collator
@@ -563,10 +705,13 @@ class FinetuneManager:
         # Get base model config
         base_config = self.models_config[base_model_name].copy()
         
+        # FIX: Use absolute path for model_path
+        absolute_model_path = os.path.abspath(model_path)
+        
         # Create finetuned model config
         finetuned_config = {
             **base_config,
-            "model_path": model_path,
+            "model_path": absolute_model_path,
             "description": f"Finetuned {base_config['description']} for {info['setup_name']} task",
             "finetuned": True,
             "base_model": base_model_name,
@@ -599,7 +744,7 @@ class FinetuneManager:
         self.models_config[finetuned_model_name] = finetuned_config
         
         logger.info(f"Registered finetuned model: {finetuned_model_name}")
-        logger.info(f"Model path: {model_path}")
+        logger.info(f"Model path: {absolute_model_path}")
         logger.info(f"Training details: {info['train_size']} train samples, {info['val_size']} val samples")
     
     def run_finetune(self, model_name: str, tune_name: str, max_samples: Optional[int] = None) -> bool:
