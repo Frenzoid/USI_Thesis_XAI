@@ -165,9 +165,9 @@ class FinetuneManager:
         
         # Limit samples if specified
         if max_samples and len(dataset) > max_samples:
-            logger.info(f"Limiting dataset from {len(dataset)} to {max_samples} samples")
-            dataset = dataset.sample(n=max_samples, random_state=Config.RANDOM_SEED).reset_index(drop=True)
-        
+            logger.info(f"Limiting dataset from {len(dataset)} to LAST {max_samples} samples for training")
+            dataset = dataset.tail(max_samples).reset_index(drop=True)
+                
         # Generate training examples using existing prompt infrastructure
         training_examples = []
         failed_count = 0
