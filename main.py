@@ -2082,7 +2082,7 @@ def list_commands_command():
     print("       --model MODEL_NAME       Name of the local model to finetune (required for 'run')")
     print("       --tune TUNE_NAME         Name of the finetune configuration to use (required for 'run')")
     print("       --max-samples N          Limit to N training samples (optional for 'run')")
-    print("      --force                  Skip confirmation prompt (optional for 'run')")
+    print("       --force                  Skip confirmation prompt (optional for 'run')")
     print("     list                     List all available finetune configurations")
     print("     models                   List all finetuned models in the system")
     

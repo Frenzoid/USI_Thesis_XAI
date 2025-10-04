@@ -25,6 +25,7 @@ class EvaluationRunner:
     5. Includes pruning statistics from inference stage
     6. Saves evaluation results with metadata
     7. Provides batch evaluation across multiple experiments
+    8. Generates aggregated summaries comparing prompts and models
     """
     
     def __init__(self):
@@ -393,6 +394,7 @@ class EvaluationRunner:
                     'mode': metadata['mode'],
                     'model': metadata['model'],
                     'setup': metadata['setup'],
+                    'prompt': metadata['prompt'],
                     'evaluation_file': output_file,
                     'metrics': evaluation_result.get('aggregated_scores', {}),
                     'num_samples': evaluation_result.get('num_samples', 0),
@@ -419,7 +421,205 @@ class EvaluationRunner:
             if total_pruned > 0:
                 logger.info(f"Overall pruning summary: {total_pruned} rows pruned out of {total_original} original rows ({total_pruned/total_original*100:.1f}%)")
         
+        # Generate aggregated summary comparing all prompts and models
+        if results:
+            logger.info("Generating aggregated summary for all experiments...")
+            self.generate_aggregated_summary(results)
+        
         return results
+    
+    # =============================================================================
+    # AGGREGATED SUMMARY GENERATION
+    # =============================================================================
+    
+    def generate_aggregated_summary(self, results: List[Dict[str, Any]]) -> str:
+        """
+        Generate aggregated summary comparing all prompts and models.
+        
+        Args:
+            results: List of evaluation results from evaluate_all_experiments()
+            
+        Returns:
+            str: Path to saved summary file
+        """
+        if not results:
+            logger.warning("No results to aggregate")
+            return ""
+        
+        logger.info(f"Generating aggregated summary from {len(results)} experiments")
+        
+        # Group results by prompt and model
+        by_prompt = {}
+        by_model = {}
+        by_prompt_model = {}
+        
+        for result in results:
+            prompt = result.get('prompt', 'unknown')
+            model = result.get('model', 'unknown')
+            setup = result.get('setup', 'unknown')
+            metrics = result.get('metrics', {})
+            
+            # Group by prompt
+            if prompt not in by_prompt:
+                by_prompt[prompt] = []
+            by_prompt[prompt].append(result)
+            
+            # Group by model
+            if model not in by_model:
+                by_model[model] = []
+            by_model[model].append(result)
+            
+            # Group by prompt+model combination
+            key = f"{prompt}_{model}"
+            if key not in by_prompt_model:
+                by_prompt_model[key] = []
+            by_prompt_model[key].append(result)
+        
+        # Compute aggregate statistics for each grouping
+        summary = {
+            'generation_timestamp': datetime.now().isoformat(),
+            'total_experiments': len(results),
+            'unique_prompts': len(by_prompt),
+            'unique_models': len(by_model),
+            'by_prompt': {},
+            'by_model': {},
+            'by_prompt_model': {},
+            'overall_best_performers': {}
+        }
+        
+        # Aggregate by prompt
+        for prompt, prompt_results in by_prompt.items():
+            summary['by_prompt'][prompt] = self._aggregate_results_group(
+                prompt_results, 
+                group_name=f"Prompt: {prompt}"
+            )
+        
+        # Aggregate by model
+        for model, model_results in by_model.items():
+            summary['by_model'][model] = self._aggregate_results_group(
+                model_results,
+                group_name=f"Model: {model}"
+            )
+        
+        # Aggregate by prompt+model combination
+        for key, combo_results in by_prompt_model.items():
+            summary['by_prompt_model'][key] = self._aggregate_results_group(
+                combo_results,
+                group_name=f"Combination: {key}"
+            )
+        
+        # Find overall best performers
+        summary['overall_best_performers'] = self._find_best_performers(results)
+        
+        # Save summary file
+        summary_file = os.path.join(Config.EVALUATIONS_DIR, "aggregated_summary.json")
+        try:
+            with open(summary_file, 'w') as f:
+                json.dump(summary, f, indent=2, default=str)
+            logger.info(f"Aggregated summary saved: {summary_file}")
+            
+            # Log key findings
+            self._log_summary_highlights(summary)
+            
+            return summary_file
+        except Exception as e:
+            logger.error(f"Error saving aggregated summary: {e}")
+            return ""
+    
+    def _aggregate_results_group(self, results: List[Dict[str, Any]], group_name: str) -> Dict[str, Any]:
+        """
+        Aggregate metrics across a group of results.
+        
+        Args:
+            results: List of evaluation results to aggregate
+            group_name: Name of this group for logging
+            
+        Returns:
+            dict: Aggregated statistics for this group
+        """
+        if not results:
+            return {}
+        
+        # Collect all metric values across experiments
+        all_metrics = {}
+        
+        for result in results:
+            metrics = result.get('metrics', {})
+            for metric_name, metric_stats in metrics.items():
+                if metric_name not in all_metrics:
+                    all_metrics[metric_name] = []
+                
+                # Use mean value if available, otherwise the value itself
+                if isinstance(metric_stats, dict) and 'mean' in metric_stats:
+                    all_metrics[metric_name].append(metric_stats['mean'])
+                elif isinstance(metric_stats, (int, float)):
+                    all_metrics[metric_name].append(metric_stats)
+        
+        # Compute aggregate statistics
+        aggregated = {
+            'num_experiments': len(results),
+            'experiments': [r['experiment_name'] for r in results],
+            'setups': list(set(r.get('setup', 'unknown') for r in results)),
+            'metrics': {}
+        }
+        
+        for metric_name, values in all_metrics.items():
+            if values:
+                aggregated['metrics'][metric_name] = {
+                    'mean': float(np.mean(values)),
+                    'std': float(np.std(values)),
+                    'min': float(np.min(values)),
+                    'max': float(np.max(values)),
+                    'median': float(np.median(values)),
+                    'values': [float(v) for v in values]
+                }
+        
+        return aggregated
+    
+    def _find_best_performers(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        # Collect all unique metric names across results
+        all_metric_names = set()
+        for result in results:
+            all_metric_names.update(result.get('metrics', {}).keys())
+        
+        best_performers = {}
+        
+        # Find best performer for each metric
+        for metric_name in all_metric_names:
+            best = max(results, key=lambda r: r.get('metrics', {}).get(metric_name, {}).get('mean', 0), default=None)
+            if best:
+                best_performers[f'by_{metric_name}'] = {
+                    'experiment_name': best['experiment_name'],
+                    'prompt': best.get('prompt', 'unknown'),
+                    'model': best.get('model', 'unknown'),
+                    'setup': best.get('setup', 'unknown'),
+                    'score': best.get('metrics', {}).get(metric_name, {}).get('mean', 0)
+                }
+        
+        return best_performers
+    
+    def _log_summary_highlights(self, summary: Dict[str, Any]):
+        """Log key highlights from the aggregated summary."""
+        logger.info("=" * 60)
+        logger.info("AGGREGATED SUMMARY HIGHLIGHTS")
+        logger.info("=" * 60)
+        logger.info(f"Total experiments: {summary['total_experiments']}")
+        logger.info(f"Unique prompts: {summary['unique_prompts']}")
+        logger.info(f"Unique models: {summary['unique_models']}")
+        
+        # Log best performers
+        best = summary.get('overall_best_performers', {})
+        if best.get('by_f1_score'):
+            logger.info(f"Best F1 Score: {best['by_f1_score']['score']:.3f} "
+                       f"(Prompt: {best['by_f1_score']['prompt']}, "
+                       f"Model: {best['by_f1_score']['model']})")
+        
+        if best.get('by_semantic_similarity'):
+            logger.info(f"Best Semantic Similarity: {best['by_semantic_similarity']['score']:.3f} "
+                       f"(Prompt: {best['by_semantic_similarity']['prompt']}, "
+                       f"Model: {best['by_semantic_similarity']['model']})")
+        
+        logger.info("=" * 60)
     
     # =============================================================================
     # EVALUATION SUMMARY AND ANALYTICS
