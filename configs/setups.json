@@ -14,7 +14,7 @@
       "please_explain_the_revisions_write_na_if_not_annotatable": [""]
     },
     "custom_metrics": {
-      "module_path": "custom_metrics.gmeg_metrics",
+      "module_path": "custom_metrics.gmeg_cm",
       "metrics_registry": "GMEG_METRICS"
     }
   },
@@ -33,7 +33,7 @@
       "please_explain_the_revisions_write_na_if_not_annotatable": [""]
     },
     "custom_metrics": {
-      "module_path": "custom_metrics.gmeg_metrics",
+      "module_path": "custom_metrics.gmeg_cm",
       "metrics_registry": "GMEG_METRICS"
     }
   },
@@ -48,6 +48,10 @@
     "prompt_fields": {
       "question_fields": ["question", "answer"],
       "answer_field": "our_explanation"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.cose_explaination_w_answer_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_JUSTIFICATION_METRICS"
     }
   },
   "RHAI_cose_explanation_with_answer_and_questions": {
@@ -60,6 +64,10 @@
     "prompt_fields": {
       "question_fields": ["question", "choices", "answer"],
       "answer_field": "our_explanation"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.cose_explaination_w_answer_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_JUSTIFICATION_METRICS"
     }
   },
   "RHAI_cose_explanation": {
@@ -72,6 +80,10 @@
     "prompt_fields": {
       "question_fields": ["question", "choices"],
       "answer_field": "our_explanation"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.cose_explaination_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_EXPLANATION_METRICS"
     }
   },
   "RHAI_cose_choice_selection": {
@@ -84,6 +96,10 @@
     "prompt_fields": {
       "question_fields": ["question", "choices"],
       "answer_field": "answer"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.cose_choice_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_METRICS"
     }
   },
 
@@ -98,6 +114,10 @@
     "prompt_fields": {
       "question_fields": ["q_concept", "q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5"],
       "answer_field": "q_ans"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecqa_choice_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_METRICS"
     }
   },
   "ecqa_choice_selection_3choices": {
@@ -110,6 +130,10 @@
     "prompt_fields": {
       "question_fields": ["q_concept", "q_text", "q_op1", "q_ans", "q_op3"],
       "answer_field": "q_ans"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecqa_choice_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_METRICS"
     }
   },
   "ecqa_choice_selection_no_concept":{
@@ -122,6 +146,10 @@
     "prompt_fields": {
       "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5"],
       "answer_field": "q_ans"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecqa_choice_cm",
+      "metrics_registry": "COMMONSENSE_REASONING_METRICS"
     }
   },
   "ecqa_positive": {
@@ -134,6 +162,10 @@
     "prompt_fields": {
       "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
       "answer_field": "taskA_pos"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecqa_positive_cm",
+      "metrics_registry": "POSITIVE_JUSTIFICATION_METRICS"
     }
   },
   "ecqa_negative": {
@@ -146,6 +178,10 @@
     "prompt_fields": {
       "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
       "answer_field": "taskA_neg"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecqa_negative_cm",
+      "metrics_registry": "NEGATIVE_PROPERTIES_METRICS"
     }
   },
   "ecqa_freeflow": {
@@ -158,6 +194,10 @@
     "prompt_fields": {
       "question_fields": ["q_text", "q_op1", "q_op2", "q_op3", "q_op4", "q_op5", "q_ans"],
       "answer_field": "taskB"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecqa_freeflow_cm",
+      "metrics_registry": "EXPLANATION_GENERATION_METRICS"
     }
   },
 
@@ -172,6 +212,10 @@
     "prompt_fields": {
       "question_fields": ["premise", "ask-for", "hypothesis1", "hypothesis2"],
       "answer_field": "label"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecare_choice_cm",
+      "metrics_registry": "CAUSAL_REASONING_METRICS"
     }
   },
 
@@ -185,6 +229,10 @@
     "prompt_fields": {
       "question_fields": ["cause", "effect"],
       "answer_field": "conceptual_explanation"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.ecare_explaination_cm",
+      "metrics_registry": "CONCEPTUAL_EXPLANATION_METRICS"
     }
   },
 
@@ -200,6 +248,10 @@
     "prompt_fields": {
       "question_fields": ["question", "json:context.contexts[*]", "long_answer"],
       "answer_field": "final_decision"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.pubmedqa_free_cm",
+      "metrics_registry": "MEDICAL_QA_METRICS"
     }
   },
   "pubmedqa_reasoning_required": {
@@ -213,26 +265,10 @@
     "prompt_fields": {
       "question_fields": ["question", "json:context.contexts[*]"],
       "answer_field": "final_decision"
+    },
+    "custom_metrics": {
+      "module_path": "custom_metrics.pubmedqa_required_cm",
+      "metrics_registry": "EVIDENCE_BASED_MEDICAL_QA_METRICS"
     }
-  },
-
-
-
-
-  "hatebrxplain": {
-    "download_link": "https://github.com/franciellevargas/HateBR/archive/refs/heads/main.zip",
-    "download_path": "DS_HateBRXplain",
-    "csv_file": "",
-    "question_fields": [],
-    "answer_field": "",
-    "description": "HateBRXplain is a dataset for hate speech detection in Brazilian Portuguese, providing annotated examples of hate speech along with explanations for model predictions."
-  },
-  "explainationhardness": {
-    "download_link": "https://github.com/swarnaHub/ExplanationHardness/archive/refs/heads/main.zip",
-    "download_path": "DS_ExplainationHardness",
-    "csv_file": "",
-    "question_fields": [],
-    "answer_field": "",
-    "description": "A dataset that provides a collection of explanations for various tasks, focusing on the hardness of explanations in terms of their complexity and interpretability."
   }
 }

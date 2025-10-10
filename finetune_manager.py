@@ -433,7 +433,6 @@ class FinetuneManager:
         )
         
         # Initialize trainer
-        # FIX: Use formatting_prompts_func instead of formatting_func for better compatibility
         trainer = SFTTrainer(
             model=model,
             tokenizer=tokenizer,
