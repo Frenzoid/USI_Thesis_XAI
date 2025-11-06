@@ -8,7 +8,7 @@ Expected output: A simple string containing only the chosen answer (e.g., "libra
 
 Key problems observed:
 1. Looping/repetition failures (models get stuck repeating phrases)
-2. Instruction non-compliance (adding explanations, conversational fluff, code blocks)
+2. Instruction non-compliance (adding explanations, conversational fluff)
 3. Answer extraction difficulty (correct answer buried in verbose text)
 
 Each metric function receives a response dictionary with the following fields:
@@ -91,7 +91,7 @@ def response_conciseness(response_data):
     Measure adherence to "return only that choice" instruction.
     
     The instruction explicitly says to return ONLY the choice, not explanations,
-    not conversational additions, not code blocks.
+    not conversational additions.
     
     Scoring based on response length:
     - 1.0: Very concise (≤20 chars) - just the answer
@@ -144,16 +144,14 @@ def instruction_following_penalty(response_data):
     
     This metric checks for:
     1. Conversational additions ("Let me know if...", "Have a great day!")
-    2. Code blocks (```python, def, etc.)
-    3. Multiple questions or answers in the response
-    4. Excessive explanations or reasoning
-    5. Repetitive looping patterns
+    2. Multiple questions or answers in the response
+    3. Excessive explanations or reasoning
+    4. Repetitive looping patterns
     
     Scoring:
     - 1.0: Clean answer with no violations
     - Penalties for each violation type:
       - -0.3: Conversational fluff
-      - -0.3: Code blocks
       - -0.2: Multiple questions/answers
       - -0.2: Excessive explanation markers
       - -0.5: Repetitive looping detected
@@ -191,24 +189,12 @@ def instruction_following_penalty(response_data):
     if any(phrase in generated_lower for phrase in conversational_phrases):
         score -= 0.3
     
-    # Check 2: Code blocks
-    code_indicators = [
-        '```python',
-        '```',
-        'def ',
-        'import ',
-        'return ',
-    ]
-    
-    if any(indicator in generated for indicator in code_indicators):
-        score -= 0.3
-    
-    # Check 3: Multiple questions (indicates model generated unrelated content)
+    # Check 2: Multiple questions (indicates model generated unrelated content)
     question_count = generated.count('Question:')
     if question_count > 1:
         score -= 0.2
     
-    # Check 4: Excessive explanation markers
+    # Check 3: Excessive explanation markers
     explanation_markers = [
         'reasoning',
         'because',
@@ -222,7 +208,7 @@ def instruction_following_penalty(response_data):
     if explanation_count >= 2:
         score -= 0.2
     
-    # Check 5: Repetitive looping patterns
+    # Check 4: Repetitive looping patterns
     # If same phrase appears 3+ times, likely a loop
     lines = generated.split('\n')
     if len(lines) > 10:

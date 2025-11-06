@@ -29,15 +29,17 @@ def simple_atomic_sentences(response_data):
     
     Atomic sentences should:
     - Contain one fact that cannot be broken down further
-    - Avoid subordinate clauses (because, since, as, when, if, etc.)
+    - Avoid excessive subordinate clauses
     - Avoid coordinating conjunctions in the middle (and, but, so, etc.)
     - Be simple declarative statements
     
+    Note: Some causal language (because, since) is acceptable for justifications,
+    but we penalize overly complex nested clauses.
+    
     This metric penalizes:
-    - "because" clauses and other causal subordination
-    - "which/that" relative clauses
     - Multiple facts joined by "and"
-    - Complex sentence structures
+    - Complex sentence structures with nested clauses
+    - Very long sentences
     
     Scoring based on sentence simplicity and atomicity.
     
@@ -65,15 +67,12 @@ def simple_atomic_sentences(response_data):
     score = 0.0
     
     # Patterns that indicate non-atomic sentences
+    # Reduced penalties for simple causal language
     complexity_patterns = [
-        (r'\bbecause\b', 0.4),        # "X because Y" - causal clause
-        (r'\bsince\b', 0.3),          # "X since Y" - causal clause
-        (r'\bas\b.*\b(is|are|was|were|provides|makes)\b', 0.3),  # "X as Y" - causal
         (r'\bwhich\b', 0.3),          # "X which Y" - relative clause
         (r'\bthat\b.*\b(is|are|was|were|provides|makes)\b', 0.25), # "X that Y" - relative clause
         (r'\bwhen\b', 0.2),           # "X when Y" - temporal clause
         (r'\bif\b', 0.2),             # "X if Y" - conditional
-        (r'\bso\b', 0.2),             # "X so Y" - result clause
         (r',\s*and\b', 0.25),         # "X, and Y" - compound sentence
         (r',\s*but\b', 0.25),         # "X, but Y" - compound sentence
         (r',\s*which\b', 0.3),        # "X, which Y" - non-restrictive clause

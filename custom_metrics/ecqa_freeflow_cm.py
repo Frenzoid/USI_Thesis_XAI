@@ -251,9 +251,9 @@ def explanation_depth(response_data):
             redundant_words = sum(1 for word in explanation_words if word in question_words)
             redundancy_ratio = redundant_words / len(explanation_words) if explanation_words else 0
             
-            # Penalize if more than 20% of explanation is question words
-            if redundancy_ratio > 0.2:
-                penalty = min((redundancy_ratio - 0.2) * 1.5, 0.3)
+            # Penalize if more than 30% of explanation is question words (was 20%, increased tolerance)
+            if redundancy_ratio > 0.3:
+                penalty = min((redundancy_ratio - 0.3) * 1.0, 0.3)
                 score -= penalty
     
     # 6. Check for shallow content patterns (subtract up to 0.2)

@@ -85,18 +85,18 @@ def maybe_overuse_penalty(response_data):
     - Definitive answers ("yes" or "no") - shows confidence
     - "maybe" when it's actually the correct answer
     
-    This metric penalizes:
+    This metric penalizes (but not too harshly):
     - "maybe" when experimental evidence supports a definitive answer
     
     Scoring:
     - 1.0: Response is definitive ("yes" or "no"), OR response is "maybe" and expected is "maybe"
-    - 0.0: Response is "maybe" when expected answer was definitive ("yes" or "no")
+    - 0.3: Response is "maybe" when expected answer was definitive (shows overcaution)
     
     Args:
         response_data: Dictionary containing response fields
         
     Returns:
-        float: Overuse penalty score (1.0 = appropriate, 0.0 = overusing "maybe")
+        float: Overuse penalty score (1.0 = appropriate, lower = overusing "maybe")
     """
     if not response_data.get('success', False):
         return 0.0
@@ -133,35 +133,34 @@ def maybe_overuse_penalty(response_data):
         return 1.0
     elif extracted == 'maybe' and expected in definitive_answers:
         # Overusing "maybe" when evidence supports definitive answer
-        return 0.0
+        # Penalty but not too harsh (0.3 instead of 0.0)
+        return 0.3
     
     return 0.5  # Fallback
 
 
-def correct_definitive_answers(response_data):
+def confidence_calibration(response_data):
     """
-    Among definitive answers, measure correctness (confidence calibration).
+    Measure whether the model's confidence level is appropriate.
     
-    When models give "yes" or "no" (not "maybe"), how often are they correct?
-    This measures whether the model's confidence is well-calibrated.
-    
-    - High score: Model's definitive answers are usually correct (good calibration)
-    - Low score: Model gives definitive answers but they're often wrong (overconfident)
-    - Neutral (0.5): Model only gives "maybe" (not applicable)
+    This metric assesses whether the model makes definitive claims appropriately:
+    - When model says "yes" or "no", is it usually correct? (confidence)
+    - When model says "maybe", is that reasonable? (caution)
     
     Scoring:
-    - 1.0: Definitive answer and correct
-    - 0.0: Definitive answer and incorrect
-    - 0.5: Response was "maybe" (neutral - not applicable)
+    - 1.0: Definitive answer and correct (well-calibrated confidence)
+    - 0.5: Definitive answer but incorrect (overconfident)
+    - 0.7: Says "maybe" when answer is actually "maybe" (appropriate caution)
+    - 0.5: Says "maybe" when answer was definitive (overcautious, not as bad as overconfident)
     
     Args:
         response_data: Dictionary containing response fields
         
     Returns:
-        float: Confidence calibration score (1.0 = correct when definitive)
+        float: Calibration score (1.0 = well-calibrated)
     """
     if not response_data.get('success', False):
-        return 0.5  # Neutral
+        return 0.0
     
     generated = response_data.get('response', '').strip().lower()
     expected = response_data.get('expected_output', '').strip().lower()
@@ -184,24 +183,28 @@ def correct_definitive_answers(response_data):
                 break
         else:
             # No valid answer found
-            return 0.5  # Neutral
-    
-    # Check if response is definitive
-    if extracted not in definitive_answers:
-        # Response was "maybe" - not applicable
-        return 0.5  # Neutral
+            return 0.0
     
     # Response is definitive ("yes" or "no")
-    # Check if it matches expected
-    if extracted == expected:
-        return 1.0  # Correct definitive answer
-    else:
-        return 0.0  # Incorrect definitive answer
+    if extracted in definitive_answers:
+        if extracted == expected:
+            return 1.0  # Correct definitive answer (well-calibrated)
+        else:
+            return 0.5  # Incorrect definitive answer (overconfident)
+    
+    # Response is "maybe"
+    if extracted == 'maybe':
+        if expected == 'maybe':
+            return 0.7  # Correctly uncertain (appropriate caution)
+        else:
+            return 0.5  # Overcautious (not as bad as overconfident)
+    
+    return 0.0  # Fallback
 
 
 # Metric registry for Evidence-Based Medical Research Question Answering task
 EVIDENCE_BASED_MEDICAL_QA_METRICS = {
     'answer_correctness': answer_correctness,
     'maybe_overuse_penalty': maybe_overuse_penalty,
-    'correct_definitive_answers': correct_definitive_answers
+    'confidence_calibration': confidence_calibration
 }

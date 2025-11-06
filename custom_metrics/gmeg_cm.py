@@ -19,11 +19,16 @@ def bullet_point_ratio(response_data):
     Many GMEG explanations use bullet points to list corrections.
     This metric measures how well the model matches the expected bullet point usage.
     
+    Scoring:
+    - 1.0: Perfect match in bullet point count
+    - Gradually decreases as ratio deviates from 1.0
+    - 0.0: Very large mismatch or inappropriate bullet point usage
+    
     Args:
         response_data: Dictionary containing response fields
         
     Returns:
-        float: Ratio of generated to expected bullet points (capped at 2.0)
+        float: Bullet point match score (1.0 = perfect match, 0.0 = poor match)
     """
     generated = response_data.get('response', '')
     expected = response_data.get('expected_output', '')
@@ -37,14 +42,28 @@ def bullet_point_ratio(response_data):
     exp_bullets = len([line for line in expected.split('\n') 
                       if line.strip().startswith(('-', '•', '*'))])
     
-    # Calculate ratio (capped at 2.0 to avoid extreme values)
+    # Calculate ratio and convert to 0-1 score
     if exp_bullets == 0 and gen_bullets == 0:
         return 1.0  # Perfect match when both have no bullets
     elif exp_bullets == 0:
         return 0.0  # Generated has bullets but expected doesn't
     else:
         ratio = gen_bullets / exp_bullets
-        return min(ratio, 2.0)
+        
+        # Convert ratio to 0-1 score
+        # Perfect match (ratio = 1.0) -> score = 1.0
+        # Ratio deviates from 1.0 -> score decreases
+        if ratio >= 0.8 and ratio <= 1.2:
+            # Very close match
+            score = 1.0 - abs(ratio - 1.0) * 2.0
+        elif ratio >= 0.5 and ratio <= 1.5:
+            # Acceptable match
+            score = 0.8 - abs(ratio - 1.0) * 1.5
+        else:
+            # Poor match
+            score = max(0.0, 0.5 - abs(ratio - 1.0) * 0.5)
+        
+        return max(0.0, min(score, 1.0))
 
 
 def correction_terminology_recall(response_data):

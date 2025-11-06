@@ -160,13 +160,12 @@ def format_cleanliness(response_data):
     
     The response should be a clean explanation without:
     1. Step-by-step formatting (## Step 1, ## Step 2)
-    2. Math formatting ($\\boxed{...}$)
-    3. Meta-commentary ("The best answer is X" when answer already given)
-    4. Unrelated content generation (random questions/riddles)
-    5. Looping/repetition
+    2. Meta-commentary ("The best answer is X" when answer already given)
+    3. Unrelated content generation (random questions/riddles)
+    4. Looping/repetition
     
     Scoring starts at 1.0 with penalties:
-    - -0.3: Step-by-step or formal math formatting
+    - -0.2: Step-by-step formatting
     - -0.2: Meta-commentary about "best answer"
     - -0.3: Unrelated content generation
     - -0.5: Looping/repetition detected
@@ -192,12 +191,11 @@ def format_cleanliness(response_data):
     step_patterns = [
         r'##\s*step\s*\d+',
         r'step\s*\d+:',
-        r'\$\\boxed\{',
         r'the final answer is:',
     ]
     
     if any(re.search(pattern, generated_lower) for pattern in step_patterns):
-        score -= 0.3
+        score -= 0.2
     
     # Check 2: Meta-commentary about "best answer"
     # The answer was already given, so saying "The best answer is X" is redundant

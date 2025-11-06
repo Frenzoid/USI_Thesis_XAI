@@ -113,7 +113,6 @@ def conceptual_abstraction_level(response_data):
         # Detailed reasoning markers
         (r'first|second|third|finally', 0.2),
         (r'step\s*\d+|stage\s*\d+', 0.2),
-        (r'because|therefore|thus|hence|consequently', 0.1),
         
         # Academic/citation markers
         (r'\(\d{4}\)', 0.3),  # Year citations like (2015)

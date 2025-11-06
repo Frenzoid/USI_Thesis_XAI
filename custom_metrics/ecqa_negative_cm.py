@@ -186,7 +186,7 @@ def external_knowledge_usage(response_data):
     - Say "X is not Y" without explaining why
     
     This metric:
-    - Penalizes high overlap with question text
+    - Penalizes high overlap with question text (but more tolerance than before)
     - Rewards explanatory language
     - Checks for meaningful content beyond question restatement
     
@@ -210,7 +210,7 @@ def external_knowledge_usage(response_data):
     
     score = 1.0
     
-    # 1. Calculate overlap with question (penalty for high overlap)
+    # 1. Calculate overlap with question (penalty for high overlap, but more tolerant)
     if question_text:
         # Extract significant words from question (5+ characters)
         question_words = set(word.strip('.,!?;:') for word in question_text.split() 
@@ -224,9 +224,9 @@ def external_knowledge_usage(response_data):
             overlap_count = sum(1 for word in generated_words if word in question_words)
             overlap_ratio = overlap_count / len(generated_words)
             
-            # Penalize if more than 30% overlap
-            if overlap_ratio > 0.3:
-                penalty = min((overlap_ratio - 0.3) * 1.5, 0.4)
+            # More lenient: penalize only if more than 50% overlap (was 30%)
+            if overlap_ratio > 0.5:
+                penalty = min((overlap_ratio - 0.5) * 1.0, 0.3)
                 score -= penalty
     
     # 2. Check for explanatory/knowledge-indicating language (bonus)
