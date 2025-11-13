@@ -25,7 +25,7 @@ class EvaluationRunner:
     5. Includes pruning statistics from inference stage
     6. Saves evaluation results with metadata
     7. Provides batch evaluation across multiple experiments
-    8. Generates aggregated summaries comparing prompts and models
+    8. Generates aggregated summaries comparing prompts and models by setup
     """
     
     def __init__(self):
@@ -255,14 +255,18 @@ class EvaluationRunner:
             if evaluation_result.get('aggregated_scores'):
                 agg_scores = evaluation_result['aggregated_scores']
                 f1_mean = agg_scores.get('f1_score', {}).get('mean', 0)
+                bleu_mean = agg_scores.get('bleu', {}).get('mean', 0)
+                rouge1_mean = agg_scores.get('rouge1_f', {}).get('mean', 0)
                 sem_sim_mean = agg_scores.get('semantic_similarity', {}).get('mean', 0)
                 exact_match_mean = agg_scores.get('exact_match', {}).get('mean', 0)
                 
-                logger.info(f"Results - F1: {f1_mean:.3f}, Semantic Similarity: {sem_sim_mean:.3f}, Exact Match: {exact_match_mean:.3f}")
+                logger.info(f"Results - F1: {f1_mean:.3f}, BLEU: {bleu_mean:.3f}, ROUGE-1: {rouge1_mean:.3f}, "
+                           f"Semantic Similarity: {sem_sim_mean:.3f}, Exact Match: {exact_match_mean:.3f}")
                 
                 # Log custom metrics if any were computed
                 custom_metrics = [metric for metric in agg_scores.keys() 
-                                if metric not in ['f1_score', 'semantic_similarity', 'exact_match', 'precision', 'recall', 'jaccard']]
+                                if metric not in ['f1_score', 'bleu', 'rouge1_f', 'rouge2_f', 'rougeL_f',
+                                                 'semantic_similarity', 'exact_match', 'precision', 'recall', 'jaccard']]
                 if custom_metrics:
                     logger.info(f"Custom metrics computed: {', '.join(custom_metrics)}")
             
@@ -421,7 +425,7 @@ class EvaluationRunner:
             if total_pruned > 0:
                 logger.info(f"Overall pruning summary: {total_pruned} rows pruned out of {total_original} original rows ({total_pruned/total_original*100:.1f}%)")
         
-        # Generate aggregated summary comparing all prompts and models
+        # Generate aggregated summary comparing all prompts and models by setup
         if results:
             logger.info("Generating aggregated summary for all experiments...")
             self.generate_aggregated_summary(results)
@@ -434,7 +438,7 @@ class EvaluationRunner:
     
     def generate_aggregated_summary(self, results: List[Dict[str, Any]]) -> str:
         """
-        Generate aggregated summary comparing all prompts and models.
+        Generate aggregated summary comparing prompts and models organized by setup.
         
         Args:
             results: List of evaluation results from evaluate_all_experiments()
@@ -448,68 +452,64 @@ class EvaluationRunner:
         
         logger.info(f"Generating aggregated summary from {len(results)} experiments")
         
-        # Group results by prompt and model
-        by_prompt = {}
-        by_model = {}
-        by_prompt_model = {}
+        # Group results by setup -> prompt -> model
+        by_setup = {}
         
         for result in results:
+            setup = result.get('setup', 'unknown')
             prompt = result.get('prompt', 'unknown')
             model = result.get('model', 'unknown')
-            setup = result.get('setup', 'unknown')
-            metrics = result.get('metrics', {})
             
-            # Group by prompt
-            if prompt not in by_prompt:
-                by_prompt[prompt] = []
-            by_prompt[prompt].append(result)
+            # Initialize nested structure
+            if setup not in by_setup:
+                by_setup[setup] = {}
+            if prompt not in by_setup[setup]:
+                by_setup[setup][prompt] = {}
+            if model not in by_setup[setup][prompt]:
+                by_setup[setup][prompt][model] = []
             
-            # Group by model
-            if model not in by_model:
-                by_model[model] = []
-            by_model[model].append(result)
-            
-            # Group by prompt+model combination
-            key = f"{prompt}_{model}"
-            if key not in by_prompt_model:
-                by_prompt_model[key] = []
-            by_prompt_model[key].append(result)
+            by_setup[setup][prompt][model].append(result)
         
-        # Compute aggregate statistics for each grouping
+        # Compute aggregate statistics for each setup -> prompt -> model combination
         summary = {
             'generation_timestamp': datetime.now().isoformat(),
             'total_experiments': len(results),
-            'unique_prompts': len(by_prompt),
-            'unique_models': len(by_model),
-            'by_prompt': {},
-            'by_model': {},
-            'by_prompt_model': {},
-            'overall_best_performers': {}
+            'unique_setups': len(by_setup),
+            'by_setup': {},
+            'overall_statistics': {}
         }
         
-        # Aggregate by prompt
-        for prompt, prompt_results in by_prompt.items():
-            summary['by_prompt'][prompt] = self._aggregate_results_group(
-                prompt_results, 
-                group_name=f"Prompt: {prompt}"
-            )
+        # Process each setup
+        for setup_name, setup_data in by_setup.items():
+            summary['by_setup'][setup_name] = {
+                'unique_prompts': len(setup_data),
+                'unique_models': len(set(model for prompt_data in setup_data.values() for model in prompt_data.keys())),
+                'by_prompt': {}
+            }
+            
+            # Process each prompt within the setup
+            for prompt_name, prompt_data in setup_data.items():
+                summary['by_setup'][setup_name]['by_prompt'][prompt_name] = {
+                    'unique_models': len(prompt_data),
+                    'by_model': {}
+                }
+                
+                # Process each model within the prompt
+                for model_name, model_results in prompt_data.items():
+                    aggregated_metrics = self._aggregate_results_group(
+                        model_results,
+                        group_name=f"Setup: {setup_name}, Prompt: {prompt_name}, Model: {model_name}"
+                    )
+                    
+                    summary['by_setup'][setup_name]['by_prompt'][prompt_name]['by_model'][model_name] = aggregated_metrics
         
-        # Aggregate by model
-        for model, model_results in by_model.items():
-            summary['by_model'][model] = self._aggregate_results_group(
-                model_results,
-                group_name=f"Model: {model}"
-            )
-        
-        # Aggregate by prompt+model combination
-        for key, combo_results in by_prompt_model.items():
-            summary['by_prompt_model'][key] = self._aggregate_results_group(
-                combo_results,
-                group_name=f"Combination: {key}"
-            )
-        
-        # Find overall best performers
-        summary['overall_best_performers'] = self._find_best_performers(results)
+        # Compute overall statistics across all experiments
+        summary['overall_statistics'] = {
+            'by_setup': self._compute_setup_statistics(by_setup, results),
+            'by_prompt': self._compute_prompt_statistics(results),
+            'by_model': self._compute_model_statistics(results),
+            'best_performers': self._find_best_performers(results)
+        }
         
         # Save summary file
         summary_file = os.path.join(Config.EVALUATIONS_DIR, "aggregated_summary.json")
@@ -559,7 +559,6 @@ class EvaluationRunner:
         aggregated = {
             'num_experiments': len(results),
             'experiments': [r['experiment_name'] for r in results],
-            'setups': list(set(r.get('setup', 'unknown') for r in results)),
             'metrics': {}
         }
         
@@ -576,7 +575,59 @@ class EvaluationRunner:
         
         return aggregated
     
+    def _compute_setup_statistics(self, by_setup: Dict, results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Compute statistics aggregated by setup."""
+        setup_stats = {}
+        
+        for setup_name in by_setup.keys():
+            setup_results = [r for r in results if r.get('setup') == setup_name]
+            setup_stats[setup_name] = self._aggregate_results_group(
+                setup_results,
+                group_name=f"Setup: {setup_name}"
+            )
+        
+        return setup_stats
+    
+    def _compute_prompt_statistics(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Compute statistics aggregated by prompt across all setups."""
+        by_prompt = {}
+        
+        for result in results:
+            prompt = result.get('prompt', 'unknown')
+            if prompt not in by_prompt:
+                by_prompt[prompt] = []
+            by_prompt[prompt].append(result)
+        
+        prompt_stats = {}
+        for prompt_name, prompt_results in by_prompt.items():
+            prompt_stats[prompt_name] = self._aggregate_results_group(
+                prompt_results,
+                group_name=f"Prompt: {prompt_name}"
+            )
+        
+        return prompt_stats
+    
+    def _compute_model_statistics(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Compute statistics aggregated by model across all setups."""
+        by_model = {}
+        
+        for result in results:
+            model = result.get('model', 'unknown')
+            if model not in by_model:
+                by_model[model] = []
+            by_model[model].append(result)
+        
+        model_stats = {}
+        for model_name, model_results in by_model.items():
+            model_stats[model_name] = self._aggregate_results_group(
+                model_results,
+                group_name=f"Model: {model_name}"
+            )
+        
+        return model_stats
+    
     def _find_best_performers(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Find best performing setup-prompt-model combinations for each metric."""
         # Collect all unique metric names across results
         all_metric_names = set()
         for result in results:
@@ -590,9 +641,9 @@ class EvaluationRunner:
             if best:
                 best_performers[f'by_{metric_name}'] = {
                     'experiment_name': best['experiment_name'],
+                    'setup': best.get('setup', 'unknown'),
                     'prompt': best.get('prompt', 'unknown'),
                     'model': best.get('model', 'unknown'),
-                    'setup': best.get('setup', 'unknown'),
                     'score': best.get('metrics', {}).get(metric_name, {}).get('mean', 0)
                 }
         
@@ -604,19 +655,37 @@ class EvaluationRunner:
         logger.info("AGGREGATED SUMMARY HIGHLIGHTS")
         logger.info("=" * 60)
         logger.info(f"Total experiments: {summary['total_experiments']}")
-        logger.info(f"Unique prompts: {summary['unique_prompts']}")
-        logger.info(f"Unique models: {summary['unique_models']}")
+        logger.info(f"Unique setups: {summary['unique_setups']}")
+        
+        # Log setup breakdown
+        for setup_name, setup_data in summary['by_setup'].items():
+            logger.info(f"  Setup '{setup_name}': {setup_data['unique_prompts']} prompts, {setup_data['unique_models']} models")
         
         # Log best performers
-        best = summary.get('overall_best_performers', {})
+        best = summary.get('overall_statistics', {}).get('best_performers', {})
+        
         if best.get('by_f1_score'):
             logger.info(f"Best F1 Score: {best['by_f1_score']['score']:.3f} "
-                       f"(Prompt: {best['by_f1_score']['prompt']}, "
+                       f"(Setup: {best['by_f1_score']['setup']}, "
+                       f"Prompt: {best['by_f1_score']['prompt']}, "
                        f"Model: {best['by_f1_score']['model']})")
+        
+        if best.get('by_bleu'):
+            logger.info(f"Best BLEU: {best['by_bleu']['score']:.3f} "
+                       f"(Setup: {best['by_bleu']['setup']}, "
+                       f"Prompt: {best['by_bleu']['prompt']}, "
+                       f"Model: {best['by_bleu']['model']})")
+        
+        if best.get('by_rouge1_f'):
+            logger.info(f"Best ROUGE-1: {best['by_rouge1_f']['score']:.3f} "
+                       f"(Setup: {best['by_rouge1_f']['setup']}, "
+                       f"Prompt: {best['by_rouge1_f']['prompt']}, "
+                       f"Model: {best['by_rouge1_f']['model']})")
         
         if best.get('by_semantic_similarity'):
             logger.info(f"Best Semantic Similarity: {best['by_semantic_similarity']['score']:.3f} "
-                       f"(Prompt: {best['by_semantic_similarity']['prompt']}, "
+                       f"(Setup: {best['by_semantic_similarity']['setup']}, "
+                       f"Prompt: {best['by_semantic_similarity']['prompt']}, "
                        f"Model: {best['by_semantic_similarity']['model']})")
         
         logger.info("=" * 60)
@@ -659,8 +728,12 @@ class EvaluationRunner:
         if not valid_evaluations:
             return {"message": "No valid evaluation results found"}
         
-        # Compute summary statistics
+        # Compute summary statistics for all default metrics
         all_f1_scores = []
+        all_bleu_scores = []
+        all_rouge1_scores = []
+        all_rouge2_scores = []
+        all_rougeL_scores = []
         all_semantic_similarities = []
         all_exact_matches = []
         total_samples = 0
@@ -669,6 +742,14 @@ class EvaluationRunner:
             agg_scores = eval_data.get('aggregated_scores', {})
             if 'f1_score' in agg_scores:
                 all_f1_scores.append(agg_scores['f1_score']['mean'])
+            if 'bleu' in agg_scores:
+                all_bleu_scores.append(agg_scores['bleu']['mean'])
+            if 'rouge1_f' in agg_scores:
+                all_rouge1_scores.append(agg_scores['rouge1_f']['mean'])
+            if 'rouge2_f' in agg_scores:
+                all_rouge2_scores.append(agg_scores['rouge2_f']['mean'])
+            if 'rougeL_f' in agg_scores:
+                all_rougeL_scores.append(agg_scores['rougeL_f']['mean'])
             if 'semantic_similarity' in agg_scores:
                 all_semantic_similarities.append(agg_scores['semantic_similarity']['mean'])
             if 'exact_match' in agg_scores:
@@ -686,6 +767,7 @@ class EvaluationRunner:
             }
         }
         
+        # Add statistics for each metric
         if all_f1_scores:
             summary['f1_score_stats'] = {
                 'mean': np.mean(all_f1_scores),
@@ -693,6 +775,42 @@ class EvaluationRunner:
                 'min': np.min(all_f1_scores),
                 'max': np.max(all_f1_scores),
                 'median': np.median(all_f1_scores)
+            }
+        
+        if all_bleu_scores:
+            summary['bleu_stats'] = {
+                'mean': np.mean(all_bleu_scores),
+                'std': np.std(all_bleu_scores),
+                'min': np.min(all_bleu_scores),
+                'max': np.max(all_bleu_scores),
+                'median': np.median(all_bleu_scores)
+            }
+        
+        if all_rouge1_scores:
+            summary['rouge1_f_stats'] = {
+                'mean': np.mean(all_rouge1_scores),
+                'std': np.std(all_rouge1_scores),
+                'min': np.min(all_rouge1_scores),
+                'max': np.max(all_rouge1_scores),
+                'median': np.median(all_rouge1_scores)
+            }
+        
+        if all_rouge2_scores:
+            summary['rouge2_f_stats'] = {
+                'mean': np.mean(all_rouge2_scores),
+                'std': np.std(all_rouge2_scores),
+                'min': np.min(all_rouge2_scores),
+                'max': np.max(all_rouge2_scores),
+                'median': np.median(all_rouge2_scores)
+            }
+        
+        if all_rougeL_scores:
+            summary['rougeL_f_stats'] = {
+                'mean': np.mean(all_rougeL_scores),
+                'std': np.std(all_rougeL_scores),
+                'min': np.min(all_rougeL_scores),
+                'max': np.max(all_rougeL_scores),
+                'median': np.median(all_rougeL_scores)
             }
         
         if all_semantic_similarities:

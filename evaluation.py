@@ -6,6 +6,8 @@ from datetime import datetime
 from tqdm import tqdm
 import importlib
 import os
+from sacrebleu import corpus_bleu, sentence_bleu
+from rouge_score import rouge_scorer
 
 from utils import setup_logging
 from config import Config
@@ -18,12 +20,14 @@ class EvaluationFramework:
     
     This framework provides:
     1. Token-based metrics (F1, precision, recall, exact match)
-    2. Semantic similarity using embeddings
-    3. Dynamic custom metrics loaded from setup-specific modules
-    4. Custom metric registration system
-    5. Batch processing with aggregation
-    6. Evaluation history and comparison tools
-    7. Setup-specific configuration support
+    2. BLEU score for n-gram overlap
+    3. ROUGE scores (ROUGE-1, ROUGE-2, ROUGE-L) for summary quality
+    4. Semantic similarity using embeddings
+    5. Dynamic custom metrics loaded from setup-specific modules
+    6. Custom metric registration system
+    7. Batch processing with aggregation
+    8. Evaluation history and comparison tools
+    9. Setup-specific configuration support
     
     Note: Row pruning/filtering is now handled during inference in experiment_runner.py,
     so this class focuses purely on metric computation for provided responses.
@@ -36,7 +40,10 @@ class EvaluationFramework:
         self.custom_metrics = {}        # Registry for custom evaluation metrics
         self.setup_custom_metrics = {}  # Cache for loaded setup-specific metrics
         
-        logger.info("🚀 EvaluationFramework initialized")
+        # Initialize ROUGE scorer with all variants
+        self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+        
+        logger.info("🚀 EvaluationFramework initialized with BLEU and ROUGE metrics")
     
     # =============================================================================
     # CUSTOM METRICS LOADING AND MANAGEMENT
@@ -135,6 +142,106 @@ class EvaluationFramework:
         
         self.custom_metrics[name] = metric_func
         logger.info(f"✅ Registered custom metric: {name}")
+    
+    # =============================================================================
+    # BLEU SCORE COMPUTATION
+    # =============================================================================
+    
+    def compute_bleu(self, generated: str, expected: str) -> float:
+        """
+        Compute BLEU score between generated and expected text.
+        
+        BLEU (Bilingual Evaluation Understudy) measures n-gram overlap
+        between generated and reference text. Commonly used for machine translation
+        and text generation evaluation.
+        
+        Args:
+            generated: Generated text from model
+            expected: Expected/reference text
+            
+        Returns:
+            float: BLEU score between 0 and 100
+        """
+        try:
+            # Convert to strings and handle None/empty cases
+            gen_clean = str(generated).strip() if generated else ""
+            exp_clean = str(expected).strip() if expected else ""
+            
+            # Handle edge cases
+            if not gen_clean and not exp_clean:
+                return 100.0  # Both empty - perfect match
+            elif not gen_clean or not exp_clean:
+                return 0.0  # One empty, one not - no match
+            
+            # Compute sentence BLEU
+            bleu = sentence_bleu(gen_clean, [exp_clean])
+            return bleu.score
+            
+        except Exception as e:
+            logger.error(f"❌ Error computing BLEU score: {e}")
+            return 0.0
+    
+    # =============================================================================
+    # ROUGE SCORE COMPUTATION
+    # =============================================================================
+    
+    def compute_rouge(self, generated: str, expected: str) -> Dict[str, float]:
+        """
+        Compute ROUGE scores between generated and expected text.
+        
+        ROUGE (Recall-Oriented Understudy for Gisting Evaluation) measures
+        recall-based n-gram overlap. Commonly used for summarization evaluation.
+        
+        Computes:
+        - ROUGE-1: Unigram overlap
+        - ROUGE-2: Bigram overlap
+        - ROUGE-L: Longest common subsequence
+        
+        Args:
+            generated: Generated text from model
+            expected: Expected/reference text
+            
+        Returns:
+            dict: Dictionary with rouge1_f, rouge2_f, rougeL_f scores
+        """
+        try:
+            # Convert to strings and handle None/empty cases
+            gen_clean = str(generated).strip() if generated else ""
+            exp_clean = str(expected).strip() if expected else ""
+            
+            # Handle edge cases
+            if not gen_clean and not exp_clean:
+                # Both empty - perfect match
+                return {
+                    'rouge1_f': 1.0,
+                    'rouge2_f': 1.0,
+                    'rougeL_f': 1.0
+                }
+            elif not gen_clean or not exp_clean:
+                # One empty, one not - no match
+                return {
+                    'rouge1_f': 0.0,
+                    'rouge2_f': 0.0,
+                    'rougeL_f': 0.0
+                }
+            
+            # Compute ROUGE scores
+            scores = self.rouge_scorer.score(exp_clean, gen_clean)
+            
+            # Extract F1 scores for each ROUGE variant
+            return {
+                'rouge1_f': scores['rouge1'].fmeasure,
+                'rouge2_f': scores['rouge2'].fmeasure,
+                'rougeL_f': scores['rougeL'].fmeasure
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Error computing ROUGE scores: {e}")
+            return {
+                'rouge1_f': 0.0,
+                'rouge2_f': 0.0,
+                'rougeL_f': 0.0
+            }
     
     # =============================================================================
     # SEMANTIC SIMILARITY COMPUTATION
@@ -270,12 +377,23 @@ class EvaluationFramework:
                 'recall': 0.0,
                 'f1_score': 0.0,
                 'jaccard': 0.0,
+                'bleu': 0.0,
+                'rouge1_f': 0.0,
+                'rouge2_f': 0.0,
+                'rougeL_f': 0.0,
                 'semantic_similarity': 0.0,
                 'generation_failed': 1.0
             }
         
         # Compute core token-based metrics
         metrics = self.compute_token_metrics(generated, expected)
+        
+        # Add BLEU score
+        metrics['bleu'] = self.compute_bleu(generated, expected)
+        
+        # Add ROUGE scores
+        rouge_scores = self.compute_rouge(generated, expected)
+        metrics.update(rouge_scores)
         
         # Add semantic similarity using embeddings
         metrics['semantic_similarity'] = self.compute_text_similarity(generated, expected, embedding_model)
@@ -421,8 +539,10 @@ class EvaluationFramework:
         # Log key performance metrics
         if aggregated:
             f1_mean = aggregated.get('f1_score', {}).get('mean', 0)
+            bleu_mean = aggregated.get('bleu', {}).get('mean', 0)
+            rouge1_mean = aggregated.get('rouge1_f', {}).get('mean', 0)
             sem_sim_mean = aggregated.get('semantic_similarity', {}).get('mean', 0)
-            logger.info(f"🎯 Batch results - F1: {f1_mean:.4f}, Semantic Similarity: {sem_sim_mean:.4f}")
+            logger.info(f"🎯 Batch results - F1: {f1_mean:.4f}, BLEU: {bleu_mean:.4f}, ROUGE-1: {rouge1_mean:.4f}, Semantic Similarity: {sem_sim_mean:.4f}")
         
         # Add to evaluation history for later analysis
         self.evaluation_history.append(result)
