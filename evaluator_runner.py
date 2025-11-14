@@ -1,3 +1,10 @@
+"""
+Evaluation Runner Module
+
+Handles evaluation of experiment results using various metrics.
+Supports custom metrics per setup and generates aggregated summaries.
+"""
+
 import os
 import json
 import glob
@@ -433,12 +440,59 @@ class EvaluationRunner:
         return results
     
     # =============================================================================
-    # AGGREGATED SUMMARY GENERATION
+    # AGGREGATED SUMMARY GENERATION - SIMPLIFIED VERSION
     # =============================================================================
+    
+    def _aggregate_results_group(self, results: List[Dict[str, Any]], group_name: str) -> Dict[str, Any]:
+        """
+        Aggregate metrics across a group of results - SIMPLIFIED VERSION.
+        
+        Returns only mean values for a cleaner summary.
+        
+        Args:
+            results: List of evaluation results to aggregate
+            group_name: Name of this group for logging
+            
+        Returns:
+            dict: Simplified aggregated metrics (mean values only)
+        """
+        if not results:
+            return {}
+        
+        # Collect all metric values across experiments
+        all_metrics = {}
+        
+        for result in results:
+            metrics = result.get('metrics', {})
+            for metric_name, metric_stats in metrics.items():
+                if metric_name not in all_metrics:
+                    all_metrics[metric_name] = []
+                
+                # Use mean value if available, otherwise the value itself
+                if isinstance(metric_stats, dict) and 'mean' in metric_stats:
+                    all_metrics[metric_name].append(metric_stats['mean'])
+                elif isinstance(metric_stats, (int, float)):
+                    all_metrics[metric_name].append(metric_stats)
+        
+        # Compute only mean values for cleaner output
+        aggregated = {
+            'num_experiments': len(results),
+            'experiment_names': [r['experiment_name'] for r in results],
+            'metrics': {}
+        }
+        
+        for metric_name, values in all_metrics.items():
+            if values:
+                aggregated['metrics'][metric_name] = round(float(np.mean(values)), 4)
+        
+        return aggregated
     
     def generate_aggregated_summary(self, results: List[Dict[str, Any]]) -> str:
         """
-        Generate aggregated summary comparing prompts and models organized by setup.
+        Generate aggregated summary - SIMPLIFIED VERSION.
+        
+        Creates a clean, concise summary organized by:
+        setup -> prompt -> model -> average metrics
         
         Args:
             results: List of evaluation results from evaluate_all_experiments()
@@ -470,45 +524,49 @@ class EvaluationRunner:
             
             by_setup[setup][prompt][model].append(result)
         
-        # Compute aggregate statistics for each setup -> prompt -> model combination
+        # Build clean summary structure
         summary = {
             'generation_timestamp': datetime.now().isoformat(),
             'total_experiments': len(results),
-            'unique_setups': len(by_setup),
-            'by_setup': {},
-            'overall_statistics': {}
+            'total_setups': len(by_setup),
+            'results': {}
         }
         
         # Process each setup
-        for setup_name, setup_data in by_setup.items():
-            summary['by_setup'][setup_name] = {
-                'unique_prompts': len(setup_data),
-                'unique_models': len(set(model for prompt_data in setup_data.values() for model in prompt_data.keys())),
-                'by_prompt': {}
-            }
+        for setup_name, setup_prompts in by_setup.items():
+            summary['results'][setup_name] = {}
             
             # Process each prompt within the setup
-            for prompt_name, prompt_data in setup_data.items():
-                summary['by_setup'][setup_name]['by_prompt'][prompt_name] = {
-                    'unique_models': len(prompt_data),
-                    'by_model': {}
-                }
+            for prompt_name, prompt_models in setup_prompts.items():
+                summary['results'][setup_name][prompt_name] = {}
                 
                 # Process each model within the prompt
-                for model_name, model_results in prompt_data.items():
+                for model_name, model_results in prompt_models.items():
                     aggregated_metrics = self._aggregate_results_group(
                         model_results,
-                        group_name=f"Setup: {setup_name}, Prompt: {prompt_name}, Model: {model_name}"
+                        group_name=f"{setup_name}/{prompt_name}/{model_name}"
                     )
                     
-                    summary['by_setup'][setup_name]['by_prompt'][prompt_name]['by_model'][model_name] = aggregated_metrics
+                    # Store only essential info
+                    summary['results'][setup_name][prompt_name][model_name] = {
+                        'num_experiments': aggregated_metrics['num_experiments'],
+                        'metrics': aggregated_metrics['metrics']
+                    }
         
-        # Compute overall statistics across all experiments
-        summary['overall_statistics'] = {
-            'by_setup': self._compute_setup_statistics(by_setup, results),
-            'by_prompt': self._compute_prompt_statistics(results),
-            'by_model': self._compute_model_statistics(results),
-            'best_performers': self._find_best_performers(results)
+        # Find best performers for each metric
+        summary['best_performers'] = self._find_best_performers(results)
+        
+        # Add quick statistics
+        summary['summary_statistics'] = {
+            'total_setups': len(by_setup),
+            'total_prompts': len(set((r['setup'], r['prompt']) for r in results)),
+            'total_models': len(set(r['model'] for r in results)),
+            'setups': sorted(list(by_setup.keys())),
+            'models': sorted(list(set(r['model'] for r in results))),
+            'prompts_per_setup': {
+                setup: sorted(list(prompts.keys())) 
+                for setup, prompts in by_setup.items()
+            }
         }
         
         # Save summary file
@@ -519,112 +577,12 @@ class EvaluationRunner:
             logger.info(f"Aggregated summary saved: {summary_file}")
             
             # Log key findings
-            self._log_summary_highlights(summary)
+            self._log_summary_highlights_simplified(summary)
             
             return summary_file
         except Exception as e:
             logger.error(f"Error saving aggregated summary: {e}")
             return ""
-    
-    def _aggregate_results_group(self, results: List[Dict[str, Any]], group_name: str) -> Dict[str, Any]:
-        """
-        Aggregate metrics across a group of results.
-        
-        Args:
-            results: List of evaluation results to aggregate
-            group_name: Name of this group for logging
-            
-        Returns:
-            dict: Aggregated statistics for this group
-        """
-        if not results:
-            return {}
-        
-        # Collect all metric values across experiments
-        all_metrics = {}
-        
-        for result in results:
-            metrics = result.get('metrics', {})
-            for metric_name, metric_stats in metrics.items():
-                if metric_name not in all_metrics:
-                    all_metrics[metric_name] = []
-                
-                # Use mean value if available, otherwise the value itself
-                if isinstance(metric_stats, dict) and 'mean' in metric_stats:
-                    all_metrics[metric_name].append(metric_stats['mean'])
-                elif isinstance(metric_stats, (int, float)):
-                    all_metrics[metric_name].append(metric_stats)
-        
-        # Compute aggregate statistics
-        aggregated = {
-            'num_experiments': len(results),
-            'experiments': [r['experiment_name'] for r in results],
-            'metrics': {}
-        }
-        
-        for metric_name, values in all_metrics.items():
-            if values:
-                aggregated['metrics'][metric_name] = {
-                    'mean': float(np.mean(values)),
-                    'std': float(np.std(values)),
-                    'min': float(np.min(values)),
-                    'max': float(np.max(values)),
-                    'median': float(np.median(values)),
-                    'values': [float(v) for v in values]
-                }
-        
-        return aggregated
-    
-    def _compute_setup_statistics(self, by_setup: Dict, results: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Compute statistics aggregated by setup."""
-        setup_stats = {}
-        
-        for setup_name in by_setup.keys():
-            setup_results = [r for r in results if r.get('setup') == setup_name]
-            setup_stats[setup_name] = self._aggregate_results_group(
-                setup_results,
-                group_name=f"Setup: {setup_name}"
-            )
-        
-        return setup_stats
-    
-    def _compute_prompt_statistics(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Compute statistics aggregated by prompt across all setups."""
-        by_prompt = {}
-        
-        for result in results:
-            prompt = result.get('prompt', 'unknown')
-            if prompt not in by_prompt:
-                by_prompt[prompt] = []
-            by_prompt[prompt].append(result)
-        
-        prompt_stats = {}
-        for prompt_name, prompt_results in by_prompt.items():
-            prompt_stats[prompt_name] = self._aggregate_results_group(
-                prompt_results,
-                group_name=f"Prompt: {prompt_name}"
-            )
-        
-        return prompt_stats
-    
-    def _compute_model_statistics(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Compute statistics aggregated by model across all setups."""
-        by_model = {}
-        
-        for result in results:
-            model = result.get('model', 'unknown')
-            if model not in by_model:
-                by_model[model] = []
-            by_model[model].append(result)
-        
-        model_stats = {}
-        for model_name, model_results in by_model.items():
-            model_stats[model_name] = self._aggregate_results_group(
-                model_results,
-                group_name=f"Model: {model_name}"
-            )
-        
-        return model_stats
     
     def _find_best_performers(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Find best performing setup-prompt-model combinations for each metric."""
@@ -637,58 +595,80 @@ class EvaluationRunner:
         
         # Find best performer for each metric
         for metric_name in all_metric_names:
-            best = max(results, key=lambda r: r.get('metrics', {}).get(metric_name, {}).get('mean', 0), default=None)
-            if best:
+            best_result = None
+            best_value = -float('inf')
+            
+            for result in results:
+                metrics = result.get('metrics', {})
+                if metric_name in metrics:
+                    metric_data = metrics[metric_name]
+                    
+                    # Extract mean value
+                    if isinstance(metric_data, dict) and 'mean' in metric_data:
+                        value = metric_data['mean']
+                    elif isinstance(metric_data, (int, float)):
+                        value = metric_data
+                    else:
+                        continue
+                    
+                    if value > best_value:
+                        best_value = value
+                        best_result = result
+            
+            if best_result:
                 best_performers[f'by_{metric_name}'] = {
-                    'experiment_name': best['experiment_name'],
-                    'setup': best.get('setup', 'unknown'),
-                    'prompt': best.get('prompt', 'unknown'),
-                    'model': best.get('model', 'unknown'),
-                    'score': best.get('metrics', {}).get(metric_name, {}).get('mean', 0)
+                    'experiment_name': best_result['experiment_name'],
+                    'setup': best_result.get('setup'),
+                    'prompt': best_result.get('prompt'),
+                    'model': best_result.get('model'),
+                    'score': round(float(best_value), 4)
                 }
         
         return best_performers
     
-    def _log_summary_highlights(self, summary: Dict[str, Any]):
-        """Log key highlights from the aggregated summary."""
-        logger.info("=" * 60)
+    def _log_summary_highlights_simplified(self, summary: Dict[str, Any]):
+        """Log key highlights from the simplified aggregated summary."""
+        logger.info("=" * 80)
         logger.info("AGGREGATED SUMMARY HIGHLIGHTS")
-        logger.info("=" * 60)
+        logger.info("=" * 80)
         logger.info(f"Total experiments: {summary['total_experiments']}")
-        logger.info(f"Unique setups: {summary['unique_setups']}")
+        logger.info(f"Setups: {summary['total_setups']}")
+        logger.info(f"Models: {summary['summary_statistics']['total_models']}")
+        logger.info(f"Unique prompt-setup combinations: {summary['summary_statistics']['total_prompts']}")
         
         # Log setup breakdown
-        for setup_name, setup_data in summary['by_setup'].items():
-            logger.info(f"  Setup '{setup_name}': {setup_data['unique_prompts']} prompts, {setup_data['unique_models']} models")
+        results = summary['results']
+        for setup_name in results.keys():
+            num_prompts = len(results[setup_name])
+            total_models = sum(len(models) for models in results[setup_name].values())
+            logger.info(f"  Setup '{setup_name}': {num_prompts} prompts, {total_models} prompt-model combinations")
         
         # Log best performers
-        best = summary.get('overall_statistics', {}).get('best_performers', {})
+        best = summary.get('best_performers', {})
         
-        if best.get('by_f1_score'):
-            logger.info(f"Best F1 Score: {best['by_f1_score']['score']:.3f} "
-                       f"(Setup: {best['by_f1_score']['setup']}, "
-                       f"Prompt: {best['by_f1_score']['prompt']}, "
-                       f"Model: {best['by_f1_score']['model']})")
+        # Show top performers for standard metrics
+        standard_metrics_to_show = ['f1_score', 'bleu', 'semantic_similarity', 'rouge1_f']
         
-        if best.get('by_bleu'):
-            logger.info(f"Best BLEU: {best['by_bleu']['score']:.3f} "
-                       f"(Setup: {best['by_bleu']['setup']}, "
-                       f"Prompt: {best['by_bleu']['prompt']}, "
-                       f"Model: {best['by_bleu']['model']})")
+        logger.info("\n🏆 Best Performers (Standard Metrics):")
+        for metric in standard_metrics_to_show:
+            metric_key = f'by_{metric}'
+            if metric_key in best:
+                perf = best[metric_key]
+                logger.info(f"  {metric.upper()}: {perf['score']:.4f}")
+                logger.info(f"    └─ {perf['model']} on {perf['setup']}/{perf['prompt']}")
         
-        if best.get('by_rouge1_f'):
-            logger.info(f"Best ROUGE-1: {best['by_rouge1_f']['score']:.3f} "
-                       f"(Setup: {best['by_rouge1_f']['setup']}, "
-                       f"Prompt: {best['by_rouge1_f']['prompt']}, "
-                       f"Model: {best['by_rouge1_f']['model']})")
+        # Show custom metrics count
+        custom_metrics = [k for k in best.keys() if not any(
+            std_metric in k for std_metric in 
+            ['exact_match', 'precision', 'recall', 'f1_score', 'jaccard', 
+             'bleu', 'rouge', 'semantic_similarity']
+        )]
         
-        if best.get('by_semantic_similarity'):
-            logger.info(f"Best Semantic Similarity: {best['by_semantic_similarity']['score']:.3f} "
-                       f"(Setup: {best['by_semantic_similarity']['setup']}, "
-                       f"Prompt: {best['by_semantic_similarity']['prompt']}, "
-                       f"Model: {best['by_semantic_similarity']['model']})")
+        if custom_metrics:
+            logger.info(f"\n📊 Custom Metrics: {len(custom_metrics)} metrics evaluated")
+            logger.info(f"  (Use JSON file for detailed custom metric analysis)")
         
-        logger.info("=" * 60)
+        logger.info("=" * 80)
     
     # =============================================================================
     # EVALUATION SUMMARY AND ANALYTICS

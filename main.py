@@ -39,7 +39,7 @@ from config import Config
 from utils import setup_logging, initialize_system, print_system_status, validate_gpu_requirements_for_command
 from experiment_runner import ExperimentRunner
 from evaluator_runner import EvaluationRunner
-from plotter import PlottingRunner
+from plotting_runner import EvaluationReportGenerator
 from dataset_manager import DatasetManager
 from prompt_manager import PromptManager
 from finetune_manager import FinetuneManager
@@ -1231,45 +1231,42 @@ def plot_command(args):
     """Generate plots from evaluation results"""
     logger.info("Starting plot generation...")
     
-    # Initialize plotting runner
-    plotter = PlottingRunner()
-    
     try:
+        # Initialize report generator
+        report_generator = EvaluationReportGenerator()
+        
         if args.experiment:
-            # Plot specific experiment(s)
-            experiments_to_plot = args.experiment.split(',')
+            # Parse experiment names
+            experiments_to_plot = [e.strip() for e in args.experiment.split(',')]
             
-            if args.compare:
-                # Generate comparison plots
-                results = plotter.create_comparison_plots(experiments_to_plot)
-                if results:
-                    logger.info(f"Generated comparison plots: {results}")
-                else:
-                    logger.error("Failed to generate comparison plots")
-            else:
-                # Generate individual plots
-                success_count = 0
-                for experiment_name in experiments_to_plot:
-                    result = plotter.create_individual_plot(experiment_name.strip())
-                    if result:
-                        success_count += 1
-                        logger.info(f"Generated plot for: {experiment_name}")
-                    else:
-                        logger.error(f"Failed to generate plot for: {experiment_name}")
-                
-                return success_count > 0
+            logger.warning("Note: Individual experiment plotting not supported with new aggregated structure")
+            logger.info("The new plotting system works with aggregated_summary.json")
+            logger.info("Run 'python main.py evaluate' first to generate aggregated results")
+            logger.info("Then use 'python main.py plot' (without --experiment) to generate all visualizations")
+            return False
         else:
-            # Plot all experiments
-            results = plotter.create_all_plots()
-            if results:
-                logger.info(f"Generated plots for {len(results)} experiments")
+            # Generate full report from aggregated summary
+            logger.info("Generating complete visualization report from aggregated summary...")
+            
+            try:
+                report_metadata = report_generator.generate_full_report()
+                
+                logger.info("Plot generation completed successfully!")
+                logger.info(f"Generated {sum(len(plots) for plots in report_metadata['plots_generated'].values())} plots")
+                logger.info(f"HTML Dashboard: {report_metadata['html_dashboard']}")
+                logger.info(f"Output directory: {report_metadata['output_directory']}")
+                
                 return True
-            else:
-                logger.error("Failed to generate plots")
+                
+            except FileNotFoundError as e:
+                logger.error(f"Aggregated summary not found: {e}")
+                logger.info("Please run evaluation first: python main.py evaluate")
                 return False
                 
     except Exception as e:
         logger.error(f"Plot generation failed: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
         return False
 
 def show_prompt_command(args):
@@ -2094,10 +2091,9 @@ def list_commands_command():
     print("     --experiment NAMES       Specific experiment(s) to evaluate (comma-separated)")
     
     print("\n4. plot")
-    print("   Description: Generate plots and visualizations from evaluation results")
-    print("   Arguments:")
-    print("     --experiment NAMES       Specific experiment(s) to plot (comma-separated)")
-    print("     --compare               Generate comparison plots instead of individual")
+    print("   Description: Generate comprehensive visualization report from aggregated evaluations")
+    print("   Arguments: None (automatically uses aggregated_summary.json)")
+    print("   Note: Run 'python main.py evaluate' first to generate aggregated results")
     
     print("\n5. show-prompt")
     print("   Description: Display a populated prompt template with field path validation")
@@ -2201,7 +2197,11 @@ def list_commands_command():
     print("")
     print("# Force incompatible combinations")
     print("python main.py run-experiment --prompt 'gmeg_explaination qald_v1_basic' --force")
-
+    print("")
+    print("# Generate complete visualization report after evaluation")
+    print("python main.py evaluate  # First, run evaluation to generate aggregated_summary.json")
+    print("python main.py plot      # Then generate all visualizations")
+    
 def main():
     """Main CLI entry point"""
     # Initialize system

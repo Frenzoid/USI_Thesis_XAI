@@ -146,7 +146,6 @@ class EvaluationFramework:
     # =============================================================================
     # BLEU SCORE COMPUTATION
     # =============================================================================
-    
     def compute_bleu(self, generated: str, expected: str) -> float:
         """
         Compute BLEU score between generated and expected text.
@@ -160,7 +159,7 @@ class EvaluationFramework:
             expected: Expected/reference text
             
         Returns:
-            float: BLEU score between 0 and 100
+            float: BLEU score normalized to 0-1 range (original 0-100 scale divided by 100)
         """
         try:
             # Convert to strings and handle None/empty cases
@@ -169,13 +168,14 @@ class EvaluationFramework:
             
             # Handle edge cases
             if not gen_clean and not exp_clean:
-                return 100.0  # Both empty - perfect match
+                return 1.0  # Both empty - perfect match
             elif not gen_clean or not exp_clean:
                 return 0.0  # One empty, one not - no match
             
-            # Compute sentence BLEU
+            # Compute sentence BLEU (returns 0-100 scale)
             bleu = sentence_bleu(gen_clean, [exp_clean])
-            return bleu.score
+            # Normalize to 0-1 scale for consistency with other metrics
+            return bleu.score / 100.0
             
         except Exception as e:
             logger.error(f"❌ Error computing BLEU score: {e}")
