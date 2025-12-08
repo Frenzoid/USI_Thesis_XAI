@@ -1,4 +1,5 @@
 # XAI Explanation Evaluation Framework
+## MSc Tehsis on Artifical Intelligence - Elvi Mihai Sabau Sabau
 
 A command-line framework for evaluating LLMs on explainable AI tasks with support for custom metrics, multiple prompting strategies, and interactive visualizations.
 
